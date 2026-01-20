@@ -9,87 +9,32 @@ const TechStack = () => {
     const sectionRef = useRef(null);
 
     const technologies = [
-        { name: 'React', icon: 'logos:react' },
-        { name: 'TypeScript', icon: 'logos:typescript-icon' },
-        { name: 'Tailwind', icon: 'logos:tailwindcss-icon' },
-        { name: 'Node.js', icon: 'logos:nodejs-icon' },
-        { name: 'Figma', icon: 'logos:figma' },
-        { name: 'Motion', icon: 'logos:framer' },
+        { name: 'Spring Boot', icon: 'logos:spring-icon' },
+        { name: 'Docker', icon: 'logos:docker-icon' },
+        { name: 'AWS', icon: 'logos:aws' },
+        { name: 'Go', icon: 'logos:go' },
         { name: 'Next.js', icon: 'logos:nextjs-icon' },
-        { name: 'WebGL', icon: 'tabler:box-model' },
-        // Added a couple more to feel fuller if needed, or stick to list
+        { name: 'React', icon: 'logos:react' },
+        { name: 'MySQL', icon: 'logos:mysql' },
+        { name: 'Jenkins', icon: 'logos:jenkins' },
     ];
 
     useEffect(() => {
         const ctx = gsap.context(() => {
-            // 1. Initial Reveal
-            gsap.fromTo('.tech-item',
-                { y: 40, opacity: 0 },
+            gsap.fromTo('.palette-card',
+                { y: 30, opacity: 0 },
                 {
                     scrollTrigger: {
                         trigger: sectionRef.current,
-                        start: 'top 90%',
-                        toggleActions: 'play none none none',
+                        start: 'top 80%',
                     },
                     y: 0,
                     opacity: 1,
-                    stagger: 0.08,
-                    duration: 0.6,
-                    ease: 'power3.out',
-                    onComplete: startFloating
+                    stagger: 0.1,
+                    duration: 1.2,
+                    ease: 'power2.out'
                 }
             );
-
-            // 2. Floating "Chaos" (starts after reveal)
-            function startFloating() {
-                const items = gsap.utils.toArray('.tech-item');
-                items.forEach((item) => {
-                    // Random float parameters
-                    const dur = gsap.utils.random(2, 4);
-                    const yOffset = gsap.utils.random(-10, 10);
-                    const xOffset = gsap.utils.random(-10, 10);
-                    const rotation = gsap.utils.random(-5, 5);
-
-                    gsap.to(item, {
-                        x: xOffset,
-                        y: yOffset,
-                        rotation: rotation,
-                        duration: dur,
-                        repeat: -1,
-                        yoyo: true,
-                        ease: 'sine.inOut',
-                        delay: gsap.utils.random(0, 1) // random start time
-                    });
-                });
-            }
-
-            // 3. Scatter on Scroll
-            // We use a proxy to detect scroll velocity and apply it to rotation/scale
-            ScrollTrigger.create({
-                trigger: sectionRef.current,
-                start: 'top bottom',
-                end: 'bottom top',
-                onUpdate: (self) => {
-                    const velocity = self.getVelocity();
-                    // Just a subtle shake/scale based on speed
-                    const normalizedVelocity = Math.min(Math.abs(velocity) / 2000, 1);
-
-                    if (normalizedVelocity > 0.1) {
-                        gsap.to('.tech-item', {
-                            scale: 1 + normalizedVelocity * 0.1, // Pulse up
-                            duration: 0.2,
-                            overwrite: 'auto'
-                        });
-                    } else {
-                        gsap.to('.tech-item', {
-                            scale: 1,
-                            duration: 0.5,
-                            overwrite: 'auto'
-                        });
-                    }
-                }
-            });
-
         }, sectionRef);
 
         return () => ctx.revert();
@@ -99,76 +44,102 @@ const TechStack = () => {
         <section
             ref={sectionRef}
             style={{
-                padding: '8rem 1.5rem',
-                borderTop: '1px solid rgba(255, 255, 255, 0.05)',
-                borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
-                background: 'rgba(255, 255, 255, 0.02)',
-                overflow: 'hidden'
+                padding: '10rem 1.5rem',
+                position: 'relative',
+                background: 'linear-gradient(to bottom, rgba(5, 5, 5, 0), rgba(5, 5, 5, 0.3))'
             }}
         >
-            <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-                {/* Section Label */}
-                <p
-                    className="font-mono"
-                    style={{
-                        textAlign: 'center',
-                        color: 'var(--red-primary)',
-                        marginBottom: '4rem',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.2em',
-                        fontSize: '0.875rem',
-                    }}
-                >
-                    // My Arsenal
+            <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+                <p className="font-serif-italic" style={{
+                    textAlign: 'center',
+                    color: 'var(--text-muted)',
+                    marginBottom: '1rem',
+                    fontSize: '1.25rem'
+                }}>
+                    The tools of my expression
                 </p>
+                <h2 className="font-display" style={{
+                    textAlign: 'center',
+                    color: 'white',
+                    marginBottom: '5rem',
+                    fontSize: '3rem',
+                    letterSpacing: '-0.02em'
+                }}>
+                    THE <span style={{ color: 'var(--red-primary)' }}>PALETTE</span>
+                </h2>
 
-                {/* Tech Grid */}
-                <div
-                    style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(2, 1fr)',
-                        gap: '2rem',
-                    }}
-                    className="tech-grid"
-                >
+                <div className="palette-grid">
                     {technologies.map((tech, index) => (
-                        <div key={index} className="tech-item" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', cursor: 'grab' }}>
-                            <div className="tech-icon" style={{
-                                width: '5rem', height: '5rem',
-                                background: 'rgba(255,255,255,0.05)',
-                                borderRadius: '50%',
-                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                border: '1px solid rgba(255,255,255,0.1)',
-                                transition: 'background 0.3s'
-                            }}>
-                                <Icon icon={tech.icon} style={{ fontSize: '2.5rem' }} />
+                        <div key={index} className="palette-card">
+                            <div className="icon-wrapper">
+                                <Icon icon={tech.icon} className="tech-icon" />
                             </div>
-                            <span className="tech-label" style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{tech.name}</span>
+                            <span className="tech-name font-sans">{tech.name}</span>
                         </div>
                     ))}
                 </div>
             </div>
 
             <style>{`
-                @media (min-width: 640px) {
-                    .tech-grid {
-                        grid-template-columns: repeat(3, 1fr) !important;
-                    }
+                .palette-grid {
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 1.5rem;
                 }
-                @media (min-width: 768px) {
-                    .tech-grid {
-                        grid-template-columns: repeat(4, 1fr) !important;
-                    }
+                @media (min-width: 640px) { .palette-grid { grid-template-columns: repeat(4, 1fr); gap: 2rem; } }
+
+                .palette-card {
+                    background: rgba(255, 255, 255, 0.03);
+                    border: 1px solid rgba(255, 255, 255, 0.05);
+                    border-radius: 1rem;
+                    padding: 2.5rem 1.5rem;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 1.5rem;
+                    cursor: pointer;
+                    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+                    backdrop-filter: blur(4px);
                 }
-                @media (min-width: 1024px) {
-                    .tech-grid {
-                        grid-template-columns: repeat(4, 1fr) !important;
-                        gap: 4rem !important;
-                    }
+
+                .palette-card:hover {
+                    background: rgba(255, 255, 255, 0.06);
+                    border-color: rgba(255, 255, 255, 0.1);
+                    transform: translateY(-5px);
+                    box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
                 }
-                .tech-item:hover .tech-icon {
-                    background: var(--red-glow);
-                    border-color: var(--red-primary);
+
+                .icon-wrapper {
+                    font-size: 2.5rem;
+                    color: var(--text-secondary);
+                    transition: all 0.5s ease;
+                    filter: grayscale(100%) opacity(0.7);
+                }
+
+                .palette-card:hover .icon-wrapper {
+                    filter: grayscale(0%) opacity(1);
+                    transform: scale(1.1);
+                    animation: heartbeat 1.5s ease-in-out infinite;
+                }
+
+                @keyframes heartbeat {
+                    0% { transform: scale(1.1); }
+                    14% { transform: scale(1.2); }
+                    28% { transform: scale(1.1); }
+                    42% { transform: scale(1.2); }
+                    70% { transform: scale(1.1); }
+                }
+
+                .tech-name {
+                    font-size: 0.875rem;
+                    color: var(--text-muted);
+                    font-weight: 500;
+                    letter-spacing: 0.05em;
+                    transition: color 0.3s ease;
+                }
+
+                .palette-card:hover .tech-name {
+                    color: white;
                 }
             `}</style>
         </section>

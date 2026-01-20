@@ -130,7 +130,7 @@ const Contact = () => {
                         lineHeight: 1.7,
                     }}
                 >
-                    Currently looking for new challenges in frontend development and UI design.
+                    Currently looking for new challenges in Backend Engineering, DevOps, and Fullstack Development.
                 </p>
 
                 {/* Email CTA */}

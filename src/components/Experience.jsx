@@ -10,89 +10,82 @@ const Experience = () => {
     const sectionRef = useRef(null);
     const containerRef = useRef(null);
     const pathRef = useRef(null);
-    // Store refs to the cards to calculate their positions
     const cardRefs = useRef([]);
 
     const experiences = [
         {
             id: 1,
             period: 'PRESENT',
-            year: '2025',
-            title: 'Software Engineer',
+            year: 'Oct 2025',
+            title: 'Software Engineer (Contract)',
             company: 'SCB Siam Commercial Bank',
-            description: 'Building secure and scalable financial technologies.',
-            tech: ['REACT', 'JAVA', 'KAFKA'],
+            description: 'Re-architected AMLX rule engine into a database-driven system. Enhanced modules in React and Spring Boot.',
+            tech: ['React', 'Spring Boot', 'SQL'],
             logo: '/scb-logo.png',
             glowColor: 'var(--bg-black)',
         },
         {
             id: 2,
             period: 'INTERNSHIP',
-            year: '2024',
-            title: 'Software Engineer Intern',
-            company: 'TMBThanachart Bank PCL',
-            description: 'Assisting in the development of digital banking features.',
-            tech: ['Go', 'React', 'PostgreSQL'],
+            year: 'May-Sep 2025',
+            title: 'Software Engineer (Intern)',
+            company: 'TTB (TMBThanachart Bank)',
+            description: 'Built an internal productivity dashboard adopted by 7 team leads and used by 100+ developers.',
+            tech: ['React', 'Data Viz', 'Tools'],
             logo: '/ttb-logo.png',
             glowColor: 'var(--red-primary)',
         },
         {
             id: 3,
-            period: 'INTERNSHIP',
-            year: '2023',
-            title: 'Fullstack Developer Intern',
-            company: 'TOMATO ideas',
-            description: 'Building scalable web solutions and internal dashboards.',
-            tech: ['Next.js', 'Node.js', 'MongoDB'],
-            logo: '/tomato-logo.jpg',
-            glowColor: '#3b82f6',
+            period: 'FREELANCE',
+            year: 'Feb 2025',
+            title: 'Fullstack Developer',
+            company: 'Freelance',
+            description: 'Delivering end-to-end web applications using React, Spring Boot, and PostgreSQL for global clients.',
+            tech: ['React', 'Spring Boot', 'PostgreSQL'],
+            logo: '/icon.png', // Fallback to icon for freelance
+            glowColor: '#a855f7',
         },
         {
             id: 4,
-            period: 'FREELANCE',
-            year: '2022-25',
-            title: 'Fullstack Developer',
-            company: 'Freelance',
-            description: 'Delivering custom web solutions for diverse clients globally.',
-            tech: ['React', 'WordPress', 'Shopify'],
-            glowColor: '#a855f7',
+            period: 'INTERNSHIP',
+            year: 'Jan-May 2025',
+            title: 'Fullstack Developer (Intern)',
+            company: 'TOMATO ideas',
+            description: 'Developed POC features and middleware APIs using Node.js and Elysia.js.',
+            tech: ['Node.js', 'Elysia.js', 'Bun'],
+            logo: '/tomato-logo.jpg',
+            glowColor: '#3b82f6',
         },
     ];
 
-    // Function to calculate the zigzag path string
     const updatePath = () => {
         if (!containerRef.current || !pathRef.current || cardRefs.current.length === 0) return;
 
-        // Get relative positions inside the container
         const containerRect = containerRef.current.getBoundingClientRect();
         const points = cardRefs.current.map(card => {
             if (!card) return [0, 0];
             const rect = card.getBoundingClientRect();
-            // Calculate center point relative to container - moved to TOP CENTER for the Pin
             const x = rect.left + rect.width / 2 - containerRect.left;
-            const y = rect.top + 20 - containerRect.top; // +20 to hit the pin area roughly
+            const y = rect.top + 20 - containerRect.top;
             return { x, y };
         });
 
-        // Construct Polyline String
         let pathStr = `M ${points[0].x} ${points[0].y}`;
 
         for (let i = 1; i < points.length; i++) {
-            // Bezier curve for slack string look
             const p1 = points[i - 1];
             const p2 = points[i];
             const midX = (p1.x + p2.x) / 2;
-            const midY = (p1.y + p2.y) / 2 + 50; // Droop down 50px
+            const midY = (p1.y + p2.y) / 2 + 50;
             pathStr += ` Q ${midX} ${midY + (Math.random() * 20)} ${p2.x} ${p2.y}`;
         }
 
         pathRef.current.setAttribute('d', pathStr);
 
-        // Update ScrollTrigger for the new path length
         const length = pathRef.current.getTotalLength();
         gsap.set(pathRef.current, { strokeDasharray: length, strokeDashoffset: length });
 
-        // Kill old trigger if exists to avoid doubles (simple handle here)
         ScrollTrigger.getAll().forEach(t => {
             if (t.vars.trigger === '.evidence-board') t.kill();
         });
@@ -111,8 +104,6 @@ const Experience = () => {
 
     useEffect(() => {
         const ctx = gsap.context(() => {
-
-            // 1. Reveal Animations for Cards
             cardRefs.current.forEach((card, i) => {
                 if (!card) return;
                 gsap.fromTo(card,
@@ -120,7 +111,7 @@ const Experience = () => {
                     {
                         scale: 1,
                         opacity: 1,
-                        rotation: i % 2 === 0 ? -2 : 2, // Settle at the CSS rotation
+                        rotation: i % 2 === 0 ? -2 : 2,
                         duration: 0.8,
                         ease: 'back.out(1.7)',
                         scrollTrigger: {
@@ -131,7 +122,6 @@ const Experience = () => {
                 );
             });
 
-            // 2. Parallax Huge Years
             gsap.utils.toArray('.huge-year').forEach((year, i) => {
                 gsap.to(year, {
                     y: 100,
@@ -144,14 +134,11 @@ const Experience = () => {
                 });
             });
 
-            // 3. Update Path on Load & Resize
             updatePath();
             window.addEventListener('resize', updatePath);
 
         }, sectionRef);
 
-        // Resize observer might be safer for images loading etc, but window resize is okay for now
-        // A small delay to ensure layout is settled
         setTimeout(updatePath, 500);
 
         return () => {
@@ -170,7 +157,6 @@ const Experience = () => {
                 padding: '8rem 0'
             }}
         >
-            {/* Header */}
             <div style={{ textAlign: 'center', marginBottom: '4rem', position: 'relative', zIndex: 10 }}>
                 <h2 className="font-serif-italic" style={{ fontSize: 'clamp(3rem, 6vw, 5rem)', fontWeight: 400, color: 'var(--text-primary)' }}>
                     The <span style={{ color: 'var(--red-primary)' }}>Journey</span>
@@ -180,7 +166,6 @@ const Experience = () => {
 
             <div ref={containerRef} className="evidence-board">
 
-                {/* Connection String (Canvas/SVG) */}
                 <svg
                     style={{
                         position: 'absolute',
@@ -206,14 +191,12 @@ const Experience = () => {
 
                 {experiences.map((exp, i) => (
                     <div key={exp.id} className="evidence-item">
-                        {/* Ref attached to the GROUP now, so the whole bundle animates together */}
                         <div
                             className="evidence-group"
                             ref={el => cardRefs.current[i] = el}
                             data-cursor="view"
                             data-cursor-text="OPEN CASE"
                         >
-                            {/* Pin for String - Centered Top */}
                             <div className="string-pin" style={{
                                 position: 'absolute',
                                 top: '10px',
@@ -222,12 +205,11 @@ const Experience = () => {
                                 width: '12px',
                                 height: '12px',
                                 borderRadius: '50%',
-                                background: '#881337', // Dark red pin
+                                background: '#881337',
                                 boxShadow: '0 2px 5px rgba(0,0,0,0.5), inset 0 2px 2px rgba(255,255,255,0.3)',
-                                zIndex: 100 // Must be on top of paper
+                                zIndex: 100
                             }}></div>
 
-                            {/* Newspaper Clipping Layer */}
                             <div className="newspaper-clipping">
                                 <div className="news-header font-display">DAILY TECH CHRONICLE</div>
                                 <div className="news-content font-serif">
@@ -240,25 +222,20 @@ const Experience = () => {
                                 </div>
                             </div>
 
-                            {/* The Folder Card (Crumpled Note) */}
                             <div className="folder-card">
-                                {/* Tape Visual */}
                                 <div className="tape-corner"></div>
 
-                                {/* Inner Content */}
                                 <div style={{ position: 'relative', zIndex: 10 }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px dashed rgba(0,0,0,0.2)', paddingBottom: '1rem', marginBottom: '1rem' }}>
                                         <span className="font-mono" style={{ fontWeight: 700 }}>{exp.period}</span>
                                         <span className="font-mono" style={{ color: 'var(--red-primary)' }}>// {exp.id.toString().padStart(3, '0')}</span>
                                     </div>
 
-                                    {/* Company & Logo (Now Prominent) */}
                                     <h3 className="font-display" style={{ fontSize: '2.5rem', lineHeight: 1, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                                         {exp.logo && <img src={exp.logo} alt={exp.company} style={{ width: '50px', height: '50px', objectFit: 'contain' }} />}
                                         {exp.company}
                                     </h3>
 
-                                    {/* Role (Secondary) */}
                                     <h4 className="font-serif-italic" style={{ fontSize: '1.5rem', marginBottom: '1.5rem', opacity: 0.8 }}>
                                         {exp.title}
                                     </h4>
@@ -267,18 +244,17 @@ const Experience = () => {
                                         {exp.description}
                                     </p>
 
-                                    {/* Tech Stamps */}
                                     <div className="tech-stamps" style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', transform: 'rotate(-2deg)' }}>
                                         {exp.tech.map((tech) => (
                                             <span key={tech} className="tech-stamp-item" style={{
                                                 border: '2px solid var(--red-primary)',
                                                 color: 'var(--red-primary)',
                                                 padding: '0.25rem 0.75rem',
-                                                fontFamily: "'Permanent Marker', cursive", // or a rubber stamp font if available
+                                                fontFamily: "'Permanent Marker', cursive",
                                                 fontSize: '0.75rem',
                                                 textTransform: 'uppercase',
                                                 opacity: 0.8,
-                                                maskImage: 'url(https://grainy-gradients.vercel.app/noise.svg)', // subtle texture if possible, else css border
+                                                maskImage: 'url(https://grainy-gradients.vercel.app/noise.svg)',
                                                 transform: `rotate(${Math.random() * 10 - 5}deg)`
                                             }}>
                                                 {tech}
@@ -287,7 +263,6 @@ const Experience = () => {
                                     </div>
                                 </div>
 
-                                {/* Massive Year Background */}
                                 <div className="huge-year font-display">
                                     {exp.year}
                                 </div>

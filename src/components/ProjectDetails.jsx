@@ -6,8 +6,13 @@ import gsap from 'gsap';
 
 const ProjectDetails = () => {
     const { id } = useParams();
-    const project = projects.find(p => p.id === parseInt(id));
+    // Compare string IDs directly
+    const project = projects.find(p => p.id === id);
     const containerRef = useRef(null);
+
+    // Find next project logic
+    const currentIndex = projects.findIndex(p => p.id === id);
+    const nextProject = projects[(currentIndex + 1) % projects.length];
 
     useEffect(() => {
         // Scroll to top on load
@@ -147,8 +152,8 @@ const ProjectDetails = () => {
                 {/* Footer / Next Project */}
                 <div style={{ marginTop: '8rem', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '4rem' }}>
                     <p className="font-mono text-sm text-gray-500 mb-4">NEXT CASE FILE</p>
-                    <Link to={`/project/${project.id === projects.length ? 1 : project.id + 1}`} className="font-display text-4xl hover:text-red-500 transition-colors">
-                        {projects.find(p => p.id === (project.id === projects.length ? 1 : project.id + 1))?.title}
+                    <Link to={`/project/${nextProject.id}`} className="font-display text-4xl hover:text-red-500 transition-colors">
+                        {nextProject.title}
                     </Link>
                 </div>
             </div>

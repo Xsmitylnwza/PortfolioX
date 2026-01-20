@@ -148,7 +148,7 @@ const Hero = () => {
     };
 
     return (
-        <section className="hero-container" ref={heroRef} onMouseMove={handleMouseMove}>
+        <section id="home" className="hero-container" ref={heroRef} onMouseMove={handleMouseMove}>
             {/* Main Hero Content */}
             <div className="hero-main">
 
@@ -242,7 +242,7 @@ const Hero = () => {
                 {/* Intro / Role Text */}
                 <div className="intro-section">
                     <p className="intro-text font-serif">
-                        <span className="intro-highlight font-sans">Frontend Developer</span> & UI Designer based in the digital void.
+                        <span className="intro-highlight font-sans">Backend Developer</span>, DevOps & Fullstack Engineer based in the digital void.
                     </p>
                     <div className="hero-actions">
                         <a href="#projects" className="btn-projects">

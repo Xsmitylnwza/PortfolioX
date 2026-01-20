@@ -55,8 +55,8 @@ const About = () => {
     }, []);
 
     const stats = [
-        { value: '5+', label: 'Years of Craft' },
-        { value: '50+', label: 'Projects Shipped' },
+        { value: '4+', label: 'Years of Craft' },
+        { value: '10+', label: 'Projects Shipped' },
         { value: '∞', label: 'Late Night Sessions' },
         { value: '♪', label: 'Songs on Repeat' },
     ];
@@ -278,10 +278,9 @@ const About = () => {
                             lineHeight: 1.8,
                         }}
                     >
-                        Full-stack developer with over 5 years of experience building digital experiences
-                        that resonate. I specialize in React, Node.js, and cloud architectures, but my
-                        true passion is creating interfaces that feel like your favorite song — familiar,
-                        comforting, and unforgettable.
+                        Full-stack developer with over 5 years of experience architecting robust digital systems.
+                        I specialize in Backend Development, DevOps pipelines, and Scalable Cloud Infrastructures,
+                        while maintaining the ability to craft seamless Fullstack experiences.
                     </p>
 
                     {/* Qualities */}

@@ -1,9 +1,49 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Icon } from '@iconify/react';
+
+// Scramble Text Component for Nav
+const NavScramble = ({ text, isHovered, isActive }) => {
+  const elementRef = useRef(null);
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&";
+
+  useEffect(() => {
+    // Trigger scramble on hover start or when becoming active
+    if (!isHovered && !isActive) {
+      if (elementRef.current) elementRef.current.innerText = text;
+      return;
+    }
+
+    let iterations = 0;
+    const interval = setInterval(() => {
+      if (!elementRef.current) return;
+
+      elementRef.current.innerText = text
+        .split("")
+        .map((letter, index) => {
+          if (index < iterations) {
+            return text[index];
+          }
+          return chars[Math.floor(Math.random() * chars.length)];
+        })
+        .join("");
+
+      if (iterations >= text.length) {
+        clearInterval(interval);
+      }
+      iterations += 1 / 2; // Faster for nav
+    }, 30);
+
+    return () => clearInterval(interval);
+  }, [text, isHovered, isActive]);
+
+  return <span ref={elementRef} style={{ color: isActive ? 'var(--red-primary)' : 'inherit' }}>{text}</span>;
+};
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
+  const [hoveredLink, setHoveredLink] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -13,11 +53,33 @@ const Navigation = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Section Observer for Active State
+  useEffect(() => {
+    const sections = ['home', 'experience', 'projects', 'contact'];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { rootMargin: '-50% 0px -50% 0px' } // Trigger when element hits center of viewport
+    );
+
+    sections.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   const navLinks = [
-    { href: '#home', label: 'Home', id: 'nav-home' },
-    { href: '#experience', label: 'Experience', id: 'nav-exp' },
-    { href: '#projects', label: 'Projects', id: 'nav-proj' },
-    { href: '#contact', label: 'Contact', id: 'nav-contact' },
+    { href: '#home', label: 'Home', id: 'home' },
+    { href: '#experience', label: 'Experience', id: 'experience' },
+    { href: '#projects', label: 'Projects', id: 'projects' },
+    { href: '#contact', label: 'Contact', id: 'contact' },
   ];
 
   return (
@@ -63,7 +125,7 @@ const Navigation = () => {
             }}
           >
             <img
-              src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/uploads/be7bd51c-6dd7-4e04-a620-8108ef138948/1768838209454-e8f8239a/___________4_.jpg"
+              src="/profile-logo.jpg"
               alt="Logo"
               style={{
                 width: '100%',
@@ -104,7 +166,6 @@ const Navigation = () => {
           {navLinks.map((link) => (
             <a
               key={link.href}
-              id={link.id}
               href={link.href}
               data-cursor-text="NAVIGATE"
               style={{
@@ -112,20 +173,36 @@ const Navigation = () => {
                 fontWeight: 400,
                 letterSpacing: '0.15em',
                 textTransform: 'uppercase',
-                color: 'var(--text-muted)',
-                transition: 'all 0.3s ease',
+                color: activeSection === link.id ? 'var(--red-primary)' : 'var(--text-muted)',
+                transition: 'color 0.3s ease',
+                textDecoration: 'none', // Explicitly remove default
+                position: 'relative',
+                display: 'inline-block',
+                minWidth: '80px', // Prevent jitter during scramble
+                textAlign: 'center'
               }}
-              onMouseEnter={(e) => {
-                e.target.style.color = 'var(--text-primary)';
-                e.target.style.textDecoration = 'line-through';
-                e.target.style.textDecorationColor = 'var(--red-primary)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.color = 'var(--text-muted)';
-                e.target.style.textDecoration = 'none';
-              }}
+              onMouseEnter={() => setHoveredLink(link.id)}
+              onMouseLeave={() => setHoveredLink(null)}
             >
-              {link.label}
+              <NavScramble
+                text={link.label}
+                isHovered={hoveredLink === link.id}
+                isActive={activeSection === link.id}
+              />
+              {/* Active Dot */}
+              {activeSection === link.id && (
+                <span style={{
+                  position: 'absolute',
+                  bottom: '-5px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: '4px',
+                  height: '4px',
+                  borderRadius: '50%',
+                  backgroundColor: 'var(--red-primary)',
+                  boxShadow: '0 0 10px var(--red-primary)'
+                }} />
+              )}
             </a>
           ))}
         </div>
@@ -221,9 +298,8 @@ const Navigation = () => {
               textTransform: 'uppercase',
               letterSpacing: '-0.02em',
               transition: 'color 0.3s ease',
+              color: activeSection === link.id ? 'var(--red-primary)' : 'var(--text-primary)'
             }}
-            onMouseEnter={(e) => (e.target.style.color = 'var(--red-primary)')}
-            onMouseLeave={(e) => (e.target.style.color = 'var(--text-primary)')}
           >
             {link.label}
           </a>

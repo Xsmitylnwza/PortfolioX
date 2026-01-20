@@ -5,64 +5,12 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+import { Link } from 'react-router-dom';
+import { projects } from '../data/projects';
+
 const Projects = () => {
     const sectionRef = useRef(null);
     const wrapperRef = useRef(null);
-
-    const projects = [
-        {
-            id: 1,
-            category: 'E-COMMERCE • 2023',
-            title: 'Neon District',
-            description: 'A high-performance streetwear store built with Next.js and Shopify headless architecture.',
-            image: 'https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/uploads/be7bd51c-6dd7-4e04-a620-8108ef138948/1768838992467-a303f153/200__Couples_Posing_Prompts_for_Photographers.jpg',
-            tags: ['Next.js', 'Tailwind'],
-            link: '#',
-            code: `const Shop = () => {
-  const { products } = useShopify();
-  return (
-    <div className="grid">
-      {products.map(p => (
-        <ProductCard key={p.id} {...p} />
-      ))}
-    </div>
-  );
-};`
-        },
-        {
-            id: 2,
-            category: 'WEB APP • 2022',
-            title: 'Audio Scape',
-            description: 'Collaborative music visualization tool using WebAudio API and Canvas.',
-            image: 'https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/uploads/be7bd51c-6dd7-4e04-a620-8108ef138948/1768838927255-8dfc650a/f25d6e80f442ce4dc10c171831b1fc76.jpg',
-            tags: ['React', 'WebGL'],
-            link: '#',
-            code: `const Visualizer = ({ audio }) => {
-  useFrame(() => {
-    const data = audio.getFrequencyData();
-    mesh.current.scale.y = data[0] / 10;
-    mesh.current.material.color.setHSL(data[0]/255, 0.5, 0.5);
-  });
-  return <mesh ref={mesh} />
-};`
-        },
-        {
-            id: 3,
-            category: 'DASHBOARD • 2022',
-            title: 'Analytics Hub',
-            description: 'Real-time data visualization platform with interactive charts and custom reporting.',
-            image: '/analytics-hub.jpg',
-            tags: ['Vue.js', 'D3.js'],
-            link: '#',
-            code: `d3.select(svgRef.current)
-  .selectAll('rect')
-  .data(data)
-  .join('rect')
-  .attr('x', (d, i) => i * 40)
-  .attr('height', d => yScale(d.value))
-  .attr('fill', 'steelblue');`
-        },
-    ];
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -277,8 +225,8 @@ const Projects = () => {
                                 </div>
 
                                 {/* Link Button - Pointer events auto to allowing clicking */}
-                                <a
-                                    href={project.link}
+                                <Link
+                                    to={`/project/${project.id}`}
                                     style={{
                                         width: '4rem',
                                         height: '4rem',
@@ -303,7 +251,7 @@ const Projects = () => {
                                     }}
                                 >
                                     <Icon icon="lucide:arrow-up-right" style={{ fontSize: '1.5rem' }} />
-                                </a>
+                                </Link>
                             </div>
                         </div>
                     </article>

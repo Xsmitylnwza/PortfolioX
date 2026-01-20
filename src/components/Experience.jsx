@@ -18,31 +18,44 @@ const Experience = () => {
             id: 1,
             period: 'PRESENT',
             year: '2025',
-            title: 'Senior Frontend Dev',
-            company: 'TechStream Inc.',
-            description: 'Leading the frontend architecture migration. Building the future of digital interactions.',
-            tech: ['NEXT.JS', 'TYPESCRIPT', 'TAILWIND'],
+            title: 'Software Engineer',
+            company: 'SCB Siam Commercial Bank',
+            description: 'Building secure and scalable financial technologies.',
+            tech: ['REACT', 'JAVA', 'KAFKA'],
+            logo: '/scb-logo.png',
             glowColor: 'var(--bg-black)',
         },
         {
             id: 2,
-            period: 'MID-LEVEL',
-            year: '2023',
-            title: 'Creative Technologist',
-            company: 'Creative Pulse',
-            description: 'Bridging the gap between design and engineering. WebGL, GSAP, and chaos.',
-            tech: ['WEBGL', 'GSAP', 'GLSL'],
+            period: 'INTERNSHIP',
+            year: '2024',
+            title: 'Software Engineer Intern',
+            company: 'TMBThanachart Bank PCL',
+            description: 'Assisting in the development of digital banking features.',
+            tech: ['Go', 'React', 'PostgreSQL'],
+            logo: '/ttb-logo.png',
             glowColor: 'var(--red-primary)',
         },
         {
             id: 3,
-            period: 'JUNIOR',
-            year: '2021',
-            title: 'Frontend Developer',
-            company: 'StartUp Flow',
-            description: 'The beginning of the journey. React, state management, and sleepless nights.',
-            tech: ['REACT', 'REDUX', 'SASS'],
+            period: 'INTERNSHIP',
+            year: '2023',
+            title: 'Fullstack Developer Intern',
+            company: 'TOMATO ideas',
+            description: 'Building scalable web solutions and internal dashboards.',
+            tech: ['Next.js', 'Node.js', 'MongoDB'],
+            logo: '/tomato-logo.jpg',
             glowColor: '#3b82f6',
+        },
+        {
+            id: 4,
+            period: 'FREELANCE',
+            year: '2022-25',
+            title: 'Fullstack Developer',
+            company: 'Freelance',
+            description: 'Delivering custom web solutions for diverse clients globally.',
+            tech: ['React', 'WordPress', 'Shopify'],
+            glowColor: '#a855f7',
         },
     ];
 
@@ -239,11 +252,15 @@ const Experience = () => {
                                         <span className="font-mono" style={{ color: 'var(--red-primary)' }}>// {exp.id.toString().padStart(3, '0')}</span>
                                     </div>
 
-                                    <h3 className="font-display" style={{ fontSize: '2.5rem', lineHeight: 1, marginBottom: '0.5rem' }}>
-                                        {exp.title}
+                                    {/* Company & Logo (Now Prominent) */}
+                                    <h3 className="font-display" style={{ fontSize: '2.5rem', lineHeight: 1, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                        {exp.logo && <img src={exp.logo} alt={exp.company} style={{ width: '50px', height: '50px', objectFit: 'contain' }} />}
+                                        {exp.company}
                                     </h3>
-                                    <h4 className="font-serif-italic" style={{ fontSize: '1.25rem', marginBottom: '1.5rem', opacity: 0.8 }}>
-                                        @ {exp.company}
+
+                                    {/* Role (Secondary) */}
+                                    <h4 className="font-serif-italic" style={{ fontSize: '1.5rem', marginBottom: '1.5rem', opacity: 0.8 }}>
+                                        {exp.title}
                                     </h4>
 
                                     <p className="font-sans" style={{ fontSize: '1rem', lineHeight: 1.5, fontWeight: 500, marginBottom: '2rem' }}>

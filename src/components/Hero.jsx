@@ -123,13 +123,11 @@ const Hero = () => {
         const yPos = (clientY / window.innerHeight - 0.5) * 20;
 
         // Parallax specific elements
-        gsap.to('.ransom-container', {
+
+        // Target inner wrapper to avoid conflict with ScrollTrigger on container
+        gsap.to('.ransom-wrapper', {
             x: xPos * 2,
-            y: yPos * 2 - 300, // Maintain scroll offset logic roughly or just use separate tween? 
-            // Better to use quickTo or just simple transforms if not conflicting with ScrollTrigger.
-            // Since ScrollTrigger controls y/x heavily, this might conflict.
-            // Safer: Parallax specifically on the floating decos or a new wrapper.
-            // Let's parallax the NEW handwritten layer and the stars.
+            y: yPos * 2,
             duration: 0.5,
             ease: 'power2.out'
         });
@@ -141,8 +139,9 @@ const Hero = () => {
             ease: 'power2.out'
         });
 
-        gsap.to('.bg-deco-img', {
-            x: xPos * -1, // Reverse direction
+        // Target image inside to avoid conflict with container scroll
+        gsap.to('.bg-deco-img img', {
+            x: xPos * -1,
             y: yPos * -1,
             duration: 1
         });
@@ -260,10 +259,10 @@ const Hero = () => {
             {/* Scrolling Marquee Tape */}
             <div className="marquee-tape">
                 <div className="marquee-content">
-                    <span className="marquee-item">• React • TypeScript • Next.js • Tailwind • Node.js • Design •</span>
-                    <span className="marquee-item">• React • TypeScript • Next.js • Tailwind • Node.js • Design •</span>
-                    <span className="marquee-item">• React • TypeScript • Next.js • Tailwind • Node.js • Design •</span>
-                    <span className="marquee-item">• React • TypeScript • Next.js • Tailwind • Node.js • Design •</span>
+                    <span className="marquee-item">• drunk • beside you • like i need u • 2 soon • right here • less of you • Peaches • Stay • Ghost • Love Yourself • Sorry • Baby •</span>
+                    <span className="marquee-item">• drunk • beside you • like i need u • 2 soon • right here • less of you • Peaches • Stay • Ghost • Love Yourself • Sorry • Baby •</span>
+                    <span className="marquee-item">• drunk • beside you • like i need u • 2 soon • right here • less of you • Peaches • Stay • Ghost • Love Yourself • Sorry • Baby •</span>
+                    <span className="marquee-item">• drunk • beside you • like i need u • 2 soon • right here • less of you • Peaches • Stay • Ghost • Love Yourself • Sorry • Baby •</span>
                 </div>
             </div>
         </section>

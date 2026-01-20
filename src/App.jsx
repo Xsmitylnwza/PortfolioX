@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Hero from './components/Hero';
 import Experience from './components/Experience';
@@ -11,9 +12,26 @@ import Cursor from './components/Cursor';
 import Scribbles from './components/Scribbles';
 import MusicPlayer from './components/MusicPlayer';
 import Loader from './components/Loader';
+import ProjectDetails from './components/ProjectDetails';
 
 function App() {
   const [loadingComplete, setLoadingComplete] = useState(false);
+  const location = useLocation();
+
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
+  const HomePage = () => (
+    <>
+      <Hero />
+      <Experience />
+      <TechStack />
+      <Projects />
+      <Contact />
+    </>
+  );
 
   return (
     <div
@@ -58,21 +76,24 @@ function App() {
       <Cursor />
       <MusicPlayer />
 
-      {/* Navigation */}
-
-      {/* Navigation */}
-      <Navigation />
+      {/* Navigation - Only show on Home Page for now? Or always?
+          If on details page, nav links might break. Let's hide Nav on Details or make it smart.
+          Actually, ProjectDetails has its own "Back" button.
+          Let's conditionally render Navigation only on Home.
+       */}
+      {location.pathname === '/' && <Navigation />}
 
       {/* Main Content */}
       <main>
-        <Hero />
-        <Experience />
-        <TechStack />
-        <Projects />
-        <Contact />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/project/:id" element={<ProjectDetails />} />
+        </Routes>
       </main>
 
-      {/* Footer */}
+      {/* Footer - Maybe only on Home? Or both? Details page has next project link.
+          Let's keep Footer everywhere for consistency.
+      */}
       <Footer />
     </div>
   );

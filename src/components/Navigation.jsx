@@ -37,12 +37,14 @@ const Navigation = () => {
           transition: 'all 0.3s ease',
         }}
       >
-        {/* Glass Background */}
         <div
           className="glass-panel"
           style={{
             position: 'absolute',
             inset: 0,
+            backgroundColor: 'rgba(5, 5, 5, 0.7)',
+            backdropFilter: 'blur(12px)',
+            borderBottom: '1px solid var(--glass-border)',
             opacity: isScrolled ? 1 : 0,
             transition: 'opacity 0.3s ease',
             pointerEvents: 'none',

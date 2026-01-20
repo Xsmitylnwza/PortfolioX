@@ -117,8 +117,39 @@ const Hero = () => {
         return () => ctx.revert();
     }, []);
 
+    const handleMouseMove = (e) => {
+        const { clientX, clientY } = e;
+        const xPos = (clientX / window.innerWidth - 0.5) * 20; // -10 to 10
+        const yPos = (clientY / window.innerHeight - 0.5) * 20;
+
+        // Parallax specific elements
+        gsap.to('.ransom-container', {
+            x: xPos * 2,
+            y: yPos * 2 - 300, // Maintain scroll offset logic roughly or just use separate tween? 
+            // Better to use quickTo or just simple transforms if not conflicting with ScrollTrigger.
+            // Since ScrollTrigger controls y/x heavily, this might conflict.
+            // Safer: Parallax specifically on the floating decos or a new wrapper.
+            // Let's parallax the NEW handwritten layer and the stars.
+            duration: 0.5,
+            ease: 'power2.out'
+        });
+
+        gsap.to('.handwritten-layer', {
+            x: xPos * 1.5,
+            y: yPos * 1.5,
+            duration: 0.5,
+            ease: 'power2.out'
+        });
+
+        gsap.to('.bg-deco-img', {
+            x: xPos * -1, // Reverse direction
+            y: yPos * -1,
+            duration: 1
+        });
+    };
+
     return (
-        <section className="hero-container" ref={heroRef}>
+        <section className="hero-container" ref={heroRef} onMouseMove={handleMouseMove}>
             {/* Main Hero Content */}
             <div className="hero-main">
 
@@ -136,6 +167,21 @@ const Hero = () => {
                 {/* Center Collage */}
                 <div className="collage-center">
 
+                    {/* Handwritten Notes Layer (New) */}
+                    <div className="handwritten-layer" style={{ position: 'absolute', inset: -50, pointerEvents: 'none', zIndex: 25 }}>
+                        <svg viewBox="0 0 500 500" style={{ width: '100%', height: '100%', opacity: 0.8 }}>
+                            {/* "for you" scribbled near bottom right */}
+                            <path d="M 350 400 Q 360 390 370 400 T 390 410" stroke="white" strokeWidth="2" fill="none" opacity="0.6" />
+                            <text x="360" y="430" fontFamily="'Permanent Marker', cursive" fill="white" fontSize="14" transform="rotate(-5, 360, 430)">for you</text>
+
+                            {/* Heart scribble top left */}
+                            <path d="M 100 100 C 90 90, 80 100, 100 120 C 120 100, 110 90, 100 100" stroke="var(--red-primary)" strokeWidth="2" fill="none" transform="rotate(-15, 100, 110)" />
+
+                            {/* Arrows pointing to center */}
+                            <path d="M 120 350 Q 150 320 180 300" stroke="white" strokeWidth="1" strokeDasharray="5,5" fill="none" opacity="0.4" />
+                        </svg>
+                    </div>
+
                     {/* Main Image - Torn Paper Look */}
                     {/* CS STYLES applied here via fromTo, removed inanimate classes */}
                     <div className="main-torn-wrapper" data-cursor="view" data-cursor-text="PORTRAIT">
@@ -146,8 +192,6 @@ const Hero = () => {
                             {/* Tape Strip */}
                             <div className="tape-strip"></div>
                         </div>
-
-
                     </div>
 
                     {/* Secondary Image Fragment */}
@@ -184,13 +228,13 @@ const Hero = () => {
 
                     {/* Poetic Text Fragments */}
                     <div className="poetic-text">
-                        <div className="poetic-box">
+                        <div className="poetic-box font-serif-italic">
                             "I only show you the best of me."
                         </div>
                     </div>
 
                     <div className="version-tag">
-                        <div className="version-box">
+                        <div className="version-box font-mono">
                             always.v1.0
                         </div>
                     </div>
@@ -198,8 +242,8 @@ const Hero = () => {
 
                 {/* Intro / Role Text */}
                 <div className="intro-section">
-                    <p className="intro-text">
-                        <span className="intro-highlight">Frontend Developer</span> & UI Designer based in the digital void.
+                    <p className="intro-text font-serif">
+                        <span className="intro-highlight font-sans">Frontend Developer</span> & UI Designer based in the digital void.
                     </p>
                     <div className="hero-actions">
                         <a href="#projects" className="btn-projects">

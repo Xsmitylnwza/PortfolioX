@@ -18,6 +18,16 @@ const Projects = () => {
             image: 'https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/uploads/be7bd51c-6dd7-4e04-a620-8108ef138948/1768838992467-a303f153/200__Couples_Posing_Prompts_for_Photographers.jpg',
             tags: ['Next.js', 'Tailwind'],
             link: '#',
+            code: `const Shop = () => {
+  const { products } = useShopify();
+  return (
+    <div className="grid">
+      {products.map(p => (
+        <ProductCard key={p.id} {...p} />
+      ))}
+    </div>
+  );
+};`
         },
         {
             id: 2,
@@ -27,6 +37,14 @@ const Projects = () => {
             image: 'https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/uploads/be7bd51c-6dd7-4e04-a620-8108ef138948/1768838927255-8dfc650a/f25d6e80f442ce4dc10c171831b1fc76.jpg',
             tags: ['React', 'WebGL'],
             link: '#',
+            code: `const Visualizer = ({ audio }) => {
+  useFrame(() => {
+    const data = audio.getFrequencyData();
+    mesh.current.scale.y = data[0] / 10;
+    mesh.current.material.color.setHSL(data[0]/255, 0.5, 0.5);
+  });
+  return <mesh ref={mesh} />
+};`
         },
         {
             id: 3,
@@ -36,14 +54,18 @@ const Projects = () => {
             image: '/analytics-hub.jpg',
             tags: ['Vue.js', 'D3.js'],
             link: '#',
+            code: `d3.select(svgRef.current)
+  .selectAll('rect')
+  .data(data)
+  .join('rect')
+  .attr('x', (d, i) => i * 40)
+  .attr('height', d => yScale(d.value))
+  .attr('fill', 'steelblue');`
         },
     ];
 
     useEffect(() => {
         const ctx = gsap.context(() => {
-
-            // 1. Horizontal Marquee Text (Background)
-            // Moves left as we scroll down
             gsap.to('.marquee-text', {
                 xPercent: -50,
                 ease: 'none',
@@ -55,33 +77,25 @@ const Projects = () => {
                 }
             });
 
-            // 2. Pinning & Stacking Cards
             const cards = gsap.utils.toArray('.project-card');
-
-            // Initial setup: Cards positioned absolute, maybe off screen or stacked
-            // We want them to slide up one by one.
-            // Let's create a timeline that pins the section and animates cards
-
             const tl = gsap.timeline({
                 scrollTrigger: {
                     trigger: wrapperRef.current,
                     start: 'top top',
-                    end: `+=${projects.length * 100}%`, // Scroll distance proportional to # of cards
+                    end: `+=${projects.length * 100}%`,
                     pin: true,
                     scrub: 1,
-                    snap: 1 / (projects.length - 1), // Optional snapping
+                    snap: 1 / (projects.length - 1),
                 }
             });
 
-            // Animate cards 2 and 3 in (Card 1 is already there)
             cards.forEach((card, i) => {
                 if (i > 0) {
                     tl.fromTo(card,
                         { yPercent: 100, rotate: -5, opacity: 0 },
-                        { yPercent: 0, rotate: i % 2 === 0 ? 2 : -2, opacity: 1, ease: 'power2.out' } // slightly chaotic rotation
+                        { yPercent: 0, rotate: i % 2 === 0 ? 2 : -2, opacity: 1, ease: 'power2.out' }
                     );
                 } else {
-                    // First card just sits there or fades in slightly
                     tl.fromTo(card,
                         { opacity: 0, scale: 0.9 },
                         { opacity: 1, scale: 1, duration: 0.5 },
@@ -89,7 +103,6 @@ const Projects = () => {
                     );
                 }
             });
-
         }, sectionRef);
 
         return () => ctx.revert();
@@ -99,11 +112,7 @@ const Projects = () => {
         <section
             id="projects"
             ref={sectionRef}
-            style={{
-                position: 'relative',
-                overflow: 'hidden',
-                // Min-height is handled by the pinned content usually, but give it some breathing room if needed before pin
-            }}
+            style={{ position: 'relative', overflow: 'hidden' }}
         >
             {/* Background Marquee */}
             <div
@@ -111,7 +120,7 @@ const Projects = () => {
                     position: 'absolute',
                     top: '20%',
                     left: 0,
-                    width: '200%', // Wide for scrolling
+                    width: '200%',
                     zIndex: 0,
                     opacity: 0.05,
                     pointerEvents: 'none',
@@ -149,7 +158,7 @@ const Projects = () => {
                             boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)',
                         }}
                     >
-                        {/* Background Image */}
+                        {/* 1. Background Image (Artist Side) */}
                         <div
                             className="project-card-bg"
                             style={{
@@ -159,12 +168,49 @@ const Projects = () => {
                                 backgroundSize: 'cover',
                                 backgroundPosition: 'center',
                                 opacity: 0.6,
-                                transition: 'transform 0.5s ease',
+                                transition: 'all 0.5s ease',
                             }}
                         />
 
+                        {/* 2. Code Overlay (Developer Side) - Hidden by default, shown on hover */}
+                        <div
+                            className="project-code-overlay"
+                            style={{
+                                position: 'absolute',
+                                inset: 0,
+                                background: 'rgba(5, 5, 5, 0.9)',
+                                backdropFilter: 'blur(5px)',
+                                padding: '2rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                opacity: 0,
+                                transition: 'opacity 0.3s ease',
+                            }}
+                        >
+                            <pre className="font-mono" style={{
+                                color: 'var(--purple-accent)',
+                                fontSize: '0.9rem',
+                                width: '100%',
+                                overflow: 'hidden',
+                                textShadow: '0 0 5px rgba(168, 85, 247, 0.5)'
+                            }}>
+                                <code>{project.code}</code>
+                            </pre>
+                            {/* Overlay Decoration */}
+                            <div style={{ position: 'absolute', bottom: '1rem', right: '1rem', fontFamily: 'monospace', color: '#666', fontSize: '0.75rem' }}>
+                                // VIEW SOURCE
+                            </div>
+                        </div>
+
+                        {/* Hover Styles Injection */}
+                        <style>{`
+                            .project-card:hover .project-card-bg { opacity: 0.1; filter: blur(10px); }
+                            .project-card:hover .project-code-overlay { opacity: 1; }
+                        `}</style>
+
                         {/* Gradient Overlay */}
-                        <div className="project-card-gradient" style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.9), transparent)' }} />
+                        <div className="project-card-gradient" style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.9), transparent)', pointerEvents: 'none' }} />
 
                         {/* Content */}
                         <div
@@ -174,6 +220,7 @@ const Projects = () => {
                                 left: 0,
                                 padding: 'clamp(1.5rem, 5vw, 3rem)',
                                 width: '100%',
+                                pointerEvents: 'none', // Allow hover through to card
                             }}
                         >
                             <div
@@ -198,12 +245,13 @@ const Projects = () => {
                                         {project.category}
                                     </span>
                                     <h3
-                                        className="font-display"
+                                        className="font-serif-italic"
                                         style={{
                                             fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-                                            fontWeight: 700,
+                                            fontWeight: 400,
                                             marginBottom: '1rem',
                                             lineHeight: 1,
+                                            color: 'white'
                                         }}
                                     >
                                         {project.title}
@@ -228,7 +276,7 @@ const Projects = () => {
                                     </div>
                                 </div>
 
-                                {/* Link Button */}
+                                {/* Link Button - Pointer events auto to allowing clicking */}
                                 <a
                                     href={project.link}
                                     style={{
@@ -243,6 +291,7 @@ const Projects = () => {
                                         justifyContent: 'center',
                                         flexShrink: 0,
                                         transition: 'all 0.3s ease',
+                                        pointerEvents: 'auto'
                                     }}
                                     onMouseEnter={(e) => {
                                         e.currentTarget.style.background = 'var(--red-primary)';

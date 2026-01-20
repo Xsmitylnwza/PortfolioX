@@ -1,0 +1,222 @@
+/* Experience.css */
+
+.evidence-board {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 8rem;
+}
+
+.evidence-item {
+    display: flex;
+    position: relative;
+    z-index: 10;
+}
+
+.evidence-item:nth-child(odd) {
+    justify-content: flex-start;
+}
+
+.evidence-item:nth-child(even) {
+    justify-content: flex-end;
+}
+
+/* Group Wrapper for layering */
+.evidence-group {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    /* Ensure sizing matches up */
+}
+
+/* NEWSPAPER CLIPPING LAYER */
+.newspaper-clipping {
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    right: -20px;
+    bottom: -20px;
+    background-color: #e8e6e1;
+    /* Dull newsprint */
+    padding: 1.5rem;
+    color: #333;
+    font-family: 'Times New Roman', Times, serif;
+    z-index: 1;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transform: rotate(2deg);
+    /* Contrast rotation */
+    filter: sepia(0.2) contrast(0.9);
+
+    /* Jagged Edges for Newspaper too, but different pattern */
+    clip-path: polygon(2% 0%, 95% 0%, 100% 5%, 100% 95%, 95% 100%, 0% 100%, 0% 5%,
+            /* Add some random jags */
+            5% 2%, 10% 0%, 15% 2%, 20% 0%, 25% 1%, 50% 0%, 75% 2%, 90% 0%);
+}
+
+.news-header {
+    font-size: 1.5rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    border-bottom: 2px solid #333;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.02em;
+    opacity: 0.7;
+}
+
+.news-content {
+    column-count: 2;
+    column-gap: 1rem;
+    font-size: 0.6rem;
+    line-height: 1.4;
+    text-align: justify;
+    opacity: 0.6;
+    height: 100%;
+    overflow: hidden;
+}
+
+.news-col {
+    margin-bottom: 1rem;
+}
+
+/* THE NOTE (Crumpled Paper Filter) */
+.folder-card {
+    position: relative;
+    width: 100%;
+    /* Keep width responsive to parent */
+    top: 0;
+    left: 0;
+    z-index: 10;
+    /* Above newspaper */
+    background-color: #f4f1ea;
+    color: #111;
+    padding: 2.5rem 2rem;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+    border: none;
+
+    /* Base Crumpled Paper Gradient */
+    background-image:
+        /* Creases/Wrinkles (Highlight/Shadow pairs) */
+        linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, transparent 5%),
+        linear-gradient(to bottom right, rgba(0, 0, 0, 0.05) 0%, transparent 10%, rgba(0, 0, 0, 0.02) 40%, transparent 100%),
+        linear-gradient(-45deg, rgba(0, 0, 0, 0.03) 0%, transparent 20%, rgba(0, 0, 0, 0.04) 60%, transparent 100%),
+        /* Overall Texture */
+        radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.8), transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(0, 0, 0, 0.02), transparent 30%);
+
+    background-size: 100% 100%;
+
+    /* Jagged Edges */
+    clip-path: polygon(1% 0%, 5% 1%, 10% 0%, 15% 1.5%, 20% 0%, 25% 1%, 30% 0.5%, 35% 1.5%, 40% 0%, 45% 1%, 50% 0%, 55% 1.5%, 60% 0.5%, 65% 1%, 70% 0%, 75% 1.5%, 80% 0.5%, 85% 1%, 90% 0%, 95% 1%, 99% 0%,
+            100% 5%, 99% 10%, 100% 15%, 98.5% 20%, 100% 25%, 99% 30%, 100% 35%, 98.5% 40%, 100% 45%, 99% 50%, 100% 55%, 98.5% 60%, 100% 65%, 99% 70%, 100% 75%, 98.5% 80%, 100% 85%, 99% 90%, 100% 95%,
+            95% 100%, 90% 99%, 85% 100%, 80% 98.5%, 75% 100%, 70% 99%, 65% 100%, 60% 98.5%, 55% 100%, 50% 99%, 45% 100%, 40% 98.5%, 35% 100%, 30% 99%, 25% 100%, 20% 98.5%, 15% 100%, 10% 99%, 5% 100%, 1% 99%,
+            0% 95%, 1% 90%, 0% 85%, 1.5% 80%, 0% 75%, 1% 70%, 0% 65%, 1.5% 60%, 0% 55%, 1% 50%, 0% 45%, 1.5% 40%, 0% 35%, 1% 30%, 0% 25%, 1.5% 20%, 0% 15%, 1% 10%, 0% 5%);
+
+    /* Deep Shadow for lift off newspaper */
+    filter: drop-shadow(0px 5px 10px rgba(0, 0, 0, 0.3));
+}
+
+/* ROTATIONS */
+/* Card Rotation */
+.evidence-item:nth-child(odd) .folder-card {
+    transform: rotate(-3deg);
+}
+
+.evidence-item:nth-child(even) .folder-card {
+    transform: rotate(3deg);
+}
+
+/* Newspaper Rotation (Counter to card to look messy) */
+.evidence-item:nth-child(odd) .newspaper-clipping {
+    transform: rotate(4deg) scale(1.05);
+}
+
+.evidence-item:nth-child(even) .newspaper-clipping {
+    transform: rotate(-5deg) scale(1.05);
+}
+
+/* HOVER EFFECTS */
+.evidence-group:hover .folder-card {
+    transform: scale(1.02) rotate(0deg);
+    background-color: #fff;
+    /* Brighten up */
+    z-index: 20;
+    filter: drop-shadow(0px 15px 25px rgba(0, 0, 0, 0.4));
+}
+
+.evidence-group:hover .newspaper-clipping {
+    transform: scale(1.1) rotate(0deg);
+    filter: sepia(0) contrast(1);
+    /* Restore color */
+    z-index: 5;
+}
+
+/* Tape Effect */
+.tape-corner {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%) rotate(1deg);
+    width: 140px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.35);
+    backdrop-filter: blur(4px);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    z-index: 30;
+    opacity: 0.9;
+    clip-path: polygon(2% 0%, 98% 0%, 100% 10%, 98% 20%, 100% 30%, 98% 40%, 100% 50%, 98% 60%, 100% 70%, 98% 80%, 100% 90%, 98% 100%,
+            2% 100%, 0% 90%, 2% 80%, 0% 70%, 2% 60%, 0% 50%, 2% 40%, 0% 30%, 2% 20%, 0% 10%);
+}
+
+.evidence-item:nth-child(even) .tape-corner {
+    transform: translateX(-50%) rotate(-2deg);
+}
+
+/* Massive Year Background */
+.huge-year {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 15rem;
+    font-weight: 900;
+    color: rgba(0, 0, 0, 0.05);
+    /* Darker on paper */
+    z-index: -1;
+    pointer-events: none;
+    font-family: 'Space Grotesk', sans-serif;
+    line-height: 1;
+    white-space: nowrap;
+    mix-blend-mode: multiply;
+    /* Blend into paper */
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+    .evidence-item:nth-child(even) {
+        justify-content: flex-start;
+    }
+
+    .folder-card {
+        padding: 1.5rem;
+    }
+
+    .newspaper-clipping {
+        padding: 0.5rem;
+        top: -10px;
+        bottom: -10px;
+    }
+
+    .huge-year {
+        font-size: 8rem;
+        left: 50% !important;
+    }
+
+    .evidence-board {
+        gap: 6rem;
+    }
+}

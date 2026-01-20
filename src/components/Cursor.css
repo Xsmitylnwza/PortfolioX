@@ -1,0 +1,153 @@
+/* Cursor.css */
+body {
+    cursor: none !important;
+}
+
+a,
+button,
+input,
+textarea,
+[role="button"] {
+    cursor: none !important;
+}
+
+.custom-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: white;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: difference;
+    transition: all 0.2s ease-out;
+}
+
+.cursor-follower {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 30px;
+    height: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 9998;
+    mix-blend-mode: difference;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cursor-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--red-primary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.2s ease;
+}
+
+/* --- STATES --- */
+
+/* Pointer (Link/Button) */
+.state-pointer .custom-cursor {
+    width: 0px;
+    height: 0px;
+}
+
+.state-pointer .cursor-follower {
+    width: 60px;
+    height: 60px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--red-primary);
+    border-width: 2px;
+}
+
+/* View (Images/Cards) */
+.state-view .custom-cursor {
+    width: 0;
+    height: 0;
+}
+
+.state-view .cursor-follower {
+    width: 80px;
+    height: 80px;
+    background-color: white;
+    mix-blend-mode: normal;
+    /* Solid white for readabilty */
+    border: none;
+}
+
+.state-view .cursor-label {
+    opacity: 1;
+    transform: scale(1);
+    color: black;
+}
+
+/* Text (Inputs) */
+.state-text .custom-cursor {
+    width: 2px;
+    height: 20px;
+    border-radius: 1px;
+    background-color: var(--red-primary);
+}
+
+.state-text .cursor-follower {
+    width: 0;
+    height: 0;
+    opacity: 0;
+}
+
+/* Secret (Easter Eggs) */
+.state-secret .custom-cursor {
+    background-color: transparent;
+    border: 2px solid var(--red-primary);
+    width: 20px;
+    height: 20px;
+    animation: spin 2s linear infinite;
+}
+
+.state-secret .cursor-follower {
+    width: 50px;
+    height: 50px;
+    border-style: dashed;
+    animation: spin-reverse 4s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+@keyframes spin-reverse {
+    to {
+        transform: translate(-50%, -50%) rotate(-360deg);
+    }
+}
+
+/* Hide on mobile/touch */
+@media (hover: none) and (pointer: coarse) {
+
+    .custom-cursor,
+    .cursor-follower {
+        display: none !important;
+    }
+
+    body {
+        cursor: auto !important;
+    }
+
+    a,
+    button {
+        cursor: pointer !important;
+    }
+}

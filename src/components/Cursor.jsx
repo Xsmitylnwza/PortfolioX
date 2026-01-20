@@ -75,9 +75,13 @@ const Cursor = () => {
 
     return (
         <div className={`cursor-wrapper state-${cursorState}`}>
-            <div ref={cursorRef} className="custom-cursor"></div>
-            <div ref={followerRef} className="cursor-follower">
-                {cursorText && <span className="cursor-label">{cursorText}</span>}
+            <div ref={cursorRef} className="cursor-pos-wrapper custom-cursor-mover">
+                <div className="custom-cursor"></div>
+            </div>
+            <div ref={followerRef} className="cursor-pos-wrapper cursor-follower-mover">
+                <div className="cursor-follower">
+                    {cursorText && <span className="cursor-label">{cursorText}</span>}
+                </div>
             </div>
         </div>
     );

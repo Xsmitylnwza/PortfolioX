@@ -75,6 +75,19 @@ const Hero = () => {
                 }
             });
 
+            // Sync text movement with image but without rotation
+            gsap.to('.ransom-container', {
+                y: -300,
+                x: -50,
+                rotation: 0, // Stay upright
+                scrollTrigger: {
+                    trigger: '.hero-container',
+                    start: 'top top',
+                    end: 'bottom top',
+                    scrub: 1
+                }
+            });
+
             // Secondary Fragment Separate Exit
             gsap.to('.secondary-fragment-wrapper', {
                 y: -150,
@@ -133,6 +146,8 @@ const Hero = () => {
                             {/* Tape Strip */}
                             <div className="tape-strip"></div>
                         </div>
+
+
                     </div>
 
                     {/* Secondary Image Fragment */}
@@ -164,6 +179,8 @@ const Hero = () => {
                             <span className="ransom-letter" style={{ backgroundColor: '#f2efe9' }}>E</span>
                         </div>
                     </div>
+
+
 
                     {/* Poetic Text Fragments */}
                     <div className="poetic-text">

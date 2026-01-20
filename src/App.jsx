@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import Navigation from './components/Navigation';
 import Hero from './components/Hero';
 import Experience from './components/Experience';
@@ -7,9 +8,13 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import ScrollManager from './components/ScrollManager';
 import Cursor from './components/Cursor';
-import Squares from './components/Squares';
+import Scribbles from './components/Scribbles';
+import MusicPlayer from './components/MusicPlayer';
+import Loader from './components/Loader';
 
 function App() {
+  const [loadingComplete, setLoadingComplete] = useState(false);
+
   return (
     <div
       style={{
@@ -20,6 +25,10 @@ function App() {
         position: 'relative',
       }}
     >
+      {!loadingComplete && (
+        <Loader onLoadingComplete={() => setLoadingComplete(true)} />
+      )}
+
       {/* Background Squares Animation */}
       <div
         style={{
@@ -32,15 +41,9 @@ function App() {
           opacity: 1,
           pointerEvents: 'none',
         }}
-        className="squares-bg-wrapper"
+        className="scribbles-bg-wrapper"
       >
-        <Squares
-          speed={0.5}
-          squareSize={50}
-          direction="diagonal"
-          borderColor="rgba(255, 255, 255, 0.15)"
-          hoverFillColor="#ef4444"
-        />
+        <Scribbles />
       </div>
 
       {/* Noise Overlay - Higher z-index to texture the squares too */}
@@ -53,6 +56,9 @@ function App() {
       {/* Global Scroll Effects */}
       <ScrollManager />
       <Cursor />
+      <MusicPlayer />
+
+      {/* Navigation */}
 
       {/* Navigation */}
       <Navigation />

@@ -2,14 +2,16 @@
 
 :root {
   /* Gabriel Red Theme - Keshi Inspired */
-  --bg-black: #050505;
+  --bg-black: #030303;
+  /* Deeper Black */
   --bg-dark: #0f1419;
   --bg-card: #111111;
 
   /* Primary Red */
-  --red-primary: #ef4444;
-  --red-dark: #dc2626;
-  --red-glow: rgba(239, 68, 68, 0.4);
+  --red-primary: #dc2626;
+  /* Deeper Red for contrast */
+  --red-dark: #991b1b;
+  --red-glow: rgba(220, 38, 38, 0.4);
 
   /* Purple Accent */
   --purple-accent: #a855f7;
@@ -17,9 +19,13 @@
   --purple-glow: rgba(168, 85, 247, 0.3);
 
   /* Text Colors */
-  --text-primary: #ffffff;
-  --text-secondary: #9ca3af;
-  --text-muted: #6b7280;
+  --text-primary: #f2f2f2;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+
+  /* Fonts */
+  --font-serif: 'Instrument Serif', serif;
+  --font-display: 'Syne', sans-serif;
 
   /* Glass Effects */
   --glass-bg: rgba(255, 255, 255, 0.02);
@@ -74,7 +80,8 @@ body {
   position: fixed;
   inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  opacity: 0.03;
+  opacity: 0.05;
+  /* More visible */
   pointer-events: none;
   z-index: 1000;
   mix-blend-mode: overlay;

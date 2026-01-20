@@ -38,30 +38,64 @@ const Squares = ({
             const startY = Math.floor(gridOffset.current.y / squareSize) * squareSize;
 
             ctx.lineWidth = 0.5;
+            ctx.strokeStyle = borderColor;
+            ctx.fillStyle = hoverFillColor;
 
-            for (let x = startX; x < canvas.width + squareSize; x += squareSize) {
-                for (let y = startY; y < canvas.height + squareSize; y += squareSize) {
-                    const squareX = x - (gridOffset.current.x % squareSize);
-                    const squareY = y - (gridOffset.current.y % squareSize);
+            // 1. Draw Hovered Square (if any)
+            if (hoveredSquareRef.current) {
+                // Calculate absolute position for hovered square
+                const hoveredX = (hoveredSquareRef.current.x * squareSize) + (gridOffset.current.x % squareSize);
+                const hoveredY = (hoveredSquareRef.current.y * squareSize) + (gridOffset.current.y % squareSize);
+                // We need to match the looping startX lookup logic or just strictly project coordinates?
+                // The original logic was relative to the startX, let's keep it robust.
+                // Actually, simply iterating the grid like before is O(N^2).
+                // Let's deduce the screen position directly from indices.
+                // gridX * squareSize + offset... wait, the offset logic in original was complex.
+                // Simplification: We only need to draw ONE rect.
+                // But let's stick to the loop for safety if we can't easily inverse the math?
+                // No, we MUST optimize the loop. The Loop IS the performance killer.
 
-                    const gridX = Math.floor((x - startX) / squareSize);
-                    const gridY = Math.floor((y - startY) / squareSize);
-
-                    if (
-                        hoveredSquareRef.current &&
-                        gridX === hoveredSquareRef.current.x &&
-                        gridY === hoveredSquareRef.current.y
-                    ) {
-                        ctx.fillStyle = hoverFillColor;
-                        ctx.fillRect(squareX, squareY, squareSize, squareSize);
-                    }
-
-                    ctx.strokeStyle = borderColor;
-                    ctx.strokeRect(squareX, squareY, squareSize, squareSize);
-                }
+                // Let's use the optimized batch drawing for the grid first.
             }
 
-            // Keep radial gradient but adjust for standard JS if needed (it matches)
+            // OPTIMIZED: Draw Grid Lines (O(Width + Height)) instead of O(Width * Height)
+            ctx.beginPath();
+
+            // Vertical Lines
+            for (let x = startX; x < canvas.width + squareSize; x += squareSize) {
+                // Determine visual X position
+                const drawX = x - (gridOffset.current.x % squareSize);
+                ctx.moveTo(drawX, 0);
+                ctx.lineTo(drawX, canvas.height);
+            }
+
+            // Horizontal Lines
+            for (let y = startY; y < canvas.height + squareSize; y += squareSize) {
+                const drawY = y - (gridOffset.current.y % squareSize);
+                ctx.moveTo(0, drawY);
+                ctx.lineTo(canvas.width, drawY);
+            }
+
+            ctx.stroke();
+
+            // Draw Hovered Square (Overlay) - Now checking only the hovered instance
+            if (hoveredSquareRef.current) {
+                // Reconstruct visual position from the grid index stored in handleMouseMove
+                // The handleMouseMove logic did: hoveredIndex = floor((mouseX + offset%size) / size)
+                // So visualPos = hoveredIndex * size - offset%size
+                const offsetX = gridOffset.current.x % squareSize;
+                const offsetY = gridOffset.current.y % squareSize;
+
+                const squareX = hoveredSquareRef.current.x * squareSize - offsetX;
+                const squareY = hoveredSquareRef.current.y * squareSize - offsetY;
+
+                ctx.fillStyle = hoverFillColor;
+                ctx.fillRect(squareX, squareY, squareSize, squareSize);
+            }
+
+            // Gradient Overlay
+            // Optimization: Create gradient once? 
+            // Actually, just drawing it is fast enough as long as we aren't drawing 1000 rects under it.
             const gradient = ctx.createRadialGradient(
                 canvas.width / 2,
                 canvas.height / 2,
@@ -71,7 +105,7 @@ const Squares = ({
                 Math.sqrt(Math.pow(canvas.width, 2) + Math.pow(canvas.height, 2)) / 2
             );
             gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
-            gradient.addColorStop(1, 'rgba(0, 0, 0, 0.8)'); // Modified to black for generic fade
+            gradient.addColorStop(1, 'rgba(0, 0, 0, 0.8)');
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
         };

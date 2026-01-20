@@ -33,7 +33,7 @@ const Projects = () => {
             category: 'DASHBOARD • 2022',
             title: 'Analytics Hub',
             description: 'Real-time data visualization platform with interactive charts and custom reporting.',
-            image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800',
+            image: '/analytics-hub.jpg',
             tags: ['Vue.js', 'D3.js'],
             link: '#',
         },

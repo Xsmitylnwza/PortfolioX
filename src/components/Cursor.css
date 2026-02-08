@@ -148,6 +148,29 @@ textarea,
     }
 }
 
+/* Music (Song Reveal) - Lens Ring */
+.state-music .custom-cursor {
+    width: 0;
+    height: 0;
+}
+
+.state-music .cursor-follower {
+    width: 80px;
+    /* Matches the clip-path radius * 2 (40px * 2) */
+    height: 80px;
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    mix-blend-mode: normal;
+    z-index: 9998;
+    transition: width 0s, height 0s, background-color 0.2s, border-color 0.2s;
+    /* INSTANT SIZE CHANGE */
+}
+
+.state-music .cursor-label {
+    display: none;
+    /* Hide global text injection, handled locally by component */
+}
+
 /* Hide on mobile/touch */
 @media (hover: none) and (pointer: coarse) {
 

@@ -50,14 +50,7 @@ const TechStack = () => {
             }}
         >
             <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-                <p className="font-serif-italic" style={{
-                    textAlign: 'center',
-                    color: 'var(--text-muted)',
-                    marginBottom: '1rem',
-                    fontSize: '1.25rem'
-                }}>
-                    The tools of my expression
-                </p>
+
                 <h2 className="font-display" style={{
                     textAlign: 'center',
                     color: 'white',

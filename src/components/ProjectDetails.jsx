@@ -51,7 +51,7 @@ const ProjectDetails = () => {
         <section ref={containerRef} style={{ minHeight: '100vh', paddingTop: '8rem', paddingBottom: '4rem', paddingLeft: '1.5rem', paddingRight: '1.5rem', background: 'var(--bg-black)', position: 'relative' }}>
 
             {/* Back Button */}
-            <Link to="/" style={{
+            <Link to="/#projects" style={{
                 position: 'fixed',
                 top: '2rem',
                 left: '2rem',
@@ -73,28 +73,25 @@ const ProjectDetails = () => {
                     <div className="font-mono" style={{ color: 'var(--red-primary)', marginBottom: '1rem' }}>
                         <span className="project-header-text">{project.category}</span>
                     </div>
-                    <h1 className="font-serif-italic project-header-text" style={{ fontSize: 'clamp(3rem, 10vw, 8rem)', lineHeight: 0.9, marginBottom: '2rem', color: 'var(--text-primary)' }}>
-                        {project.title}
-                    </h1>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'end', marginBottom: '2rem' }}>
+                        <h1 className="font-serif-italic project-header-text" style={{ fontSize: 'clamp(3rem, 10vw, 8rem)', lineHeight: 0.9, marginBottom: 0, color: 'var(--text-primary)' }}>
+                            {project.title}
+                        </h1>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '2rem' }}>
-                        <div>
-                            <h4 className="font-mono text-sm text-gray-500 mb-2">ROLE</h4>
-                            <p className="font-display text-lg project-header-text">{project.role || 'Developer'}</p>
-                        </div>
-                        <div>
-                            <h4 className="font-mono text-sm text-gray-500 mb-2">YEAR</h4>
-                            <p className="font-display text-lg project-header-text">{project.year || '2023'}</p>
-                        </div>
-                        <div>
-                            <h4 className="font-mono text-sm text-gray-500 mb-2">STACK</h4>
-                            <div className="flex flex-wrap gap-2 project-header-text">
-                                {project.tags.map(tag => (
-                                    <span key={tag} className="tag text-sm" style={{ border: '1px solid rgba(255,255,255,0.2)', padding: '0.1rem 0.5rem', borderRadius: '50px' }}>{tag}</span>
-                                ))}
-                            </div>
-                        </div>
+                        {project.link && (
+                            <a
+                                href={project.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="btn-primary"
+                                style={{ textDecoration: 'none', marginBottom: '1rem', flexShrink: 0 }}
+                            >
+                                <span>VIEW LIVE</span>
+                                <Icon icon="ph:arrow-up-right-bold" />
+                            </a>
+                        )}
                     </div>
+
                 </header>
 
                 {/* Content Grid */}
@@ -156,10 +153,10 @@ const ProjectDetails = () => {
                         {nextProject.title}
                     </Link>
                 </div>
-            </div>
+            </div >
 
             {/* Responsiveness */}
-            <style>{`
+            < style > {`
                 @media (max-width: 768px) {
                     .project-description {
                         position: static !important;
@@ -168,8 +165,8 @@ const ProjectDetails = () => {
                         grid-template-columns: 1fr !important;
                     }
                 }
-            `}</style>
-        </section>
+            `}</style >
+        </section >
     );
 };
 

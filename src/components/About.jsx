@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Icon } from '@iconify/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import MusicalText from './MusicalText';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -246,7 +247,7 @@ const About = () => {
                                 marginBottom: '1.5rem',
                             }}
                         >
-                            BEHIND THE <span className="text-purple">SCREEN</span>
+                            BEHIND THE <MusicalText className="text-purple" song="LIMBO">SCREEN</MusicalText>
                         </h2>
                     </div>
 

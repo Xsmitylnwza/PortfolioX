@@ -75,8 +75,8 @@
     color: white;
     display: inline-block;
     animation: marquee-text 10s linear infinite;
-    padding-left: 100%;
-    /* Start off-screen */
+    padding-left: 0;
+    /* Changed from 100% to 0 to show title when not playing */
 }
 
 .artist-name {

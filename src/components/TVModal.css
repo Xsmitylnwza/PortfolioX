@@ -1,0 +1,197 @@
+/* TVModal.css */
+.tv-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    /* Let clicks pass through to tapes */
+    z-index: 1000;
+}
+
+.tv-modal-container {
+    position: fixed;
+    width: 320px;
+    height: 240px;
+    background: #111;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.8),
+        0 0 0 1px #333;
+    /* CRT Casing Style */
+    background-image: linear-gradient(to bottom, #222, #111);
+    transform: translate(20px, 20px);
+    /* Offset from cursor */
+    transition: opacity 0.2s ease;
+    /* Smooth follow delay */
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1001;
+}
+
+.tv-modal-container.visible {
+    opacity: 1;
+}
+
+/* Screen */
+.tv-screen {
+    width: 100%;
+    height: 100%;
+    background: #000;
+    border-radius: 4px;
+    /* Slight curve */
+    position: relative;
+    overflow: hidden;
+    border: 2px solid #000;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 1);
+}
+
+/* Image Content with Glitch */
+.tv-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: contrast(1.2) brightness(1.1) sepia(0.2) grayscale(0.2);
+    /* V-Hold Shake Animation */
+    animation: v-hold 4s infinite steps(1);
+}
+
+/* Effects Layer */
+.tv-effects {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+/* 1. Scanlines */
+.tv-scanlines {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%);
+    background-size: 100% 3px;
+    z-index: 10;
+}
+
+/* 2. Tracking Noise (Moving Bar) */
+.tv-tracking {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(2px) invert(0.1);
+    animation: tracking-scan 3s linear infinite;
+    z-index: 11;
+    opacity: 0.5;
+}
+
+/* 3. Static Snow */
+.tv-static {
+    position: absolute;
+    inset: 0;
+    opacity: 0.15;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    animation: noise-anim 0.2s steps(4) infinite;
+    z-index: 12;
+}
+
+/* 4. Vignette / Glow */
+.tv-overlay-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0) 60%, rgba(0, 0, 0, 0.6) 100%);
+    box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.8);
+    z-index: 13;
+}
+
+/* Text Overlay (Channel Num) */
+.tv-channel-text {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-family: 'VT323', monospace;
+    font-size: 1.5rem;
+    color: #0f0;
+    text-shadow: 0 0 5px #0f0;
+    z-index: 15;
+    opacity: 0.8;
+}
+
+/* Animations */
+@keyframes tracking-scan {
+    0% {
+        top: -10%;
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0.5;
+    }
+
+    90% {
+        opacity: 0.5;
+    }
+
+    100% {
+        top: 110%;
+        opacity: 0;
+    }
+}
+
+@keyframes v-hold {
+    0% {
+        transform: translateY(0);
+    }
+
+    95% {
+        transform: translateY(0);
+    }
+
+    96% {
+        transform: translateY(-5px);
+    }
+
+    /* Jump Up */
+    97% {
+        transform: translateY(5px);
+    }
+
+    /* Jump Down */
+    98% {
+        transform: translateY(0);
+    }
+
+    99% {
+        transform: skewX(2deg);
+    }
+
+    /* Skew */
+    100% {
+        transform: skewX(0);
+    }
+}
+
+@keyframes noise-anim {
+    0% {
+        transform: translate(0, 0);
+    }
+
+    25% {
+        transform: translate(-5px, 5px);
+    }
+
+    50% {
+        transform: translate(5px, -5px);
+    }
+
+    75% {
+        transform: translate(-5px, -5px);
+    }
+
+    100% {
+        transform: translate(0, 0);
+    }
+}

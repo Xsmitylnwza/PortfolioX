@@ -18,17 +18,26 @@ function App() {
   const [loadingComplete, setLoadingComplete] = useState(false);
   const location = useLocation();
 
-  // Scroll to top on route change
+  // Scroll to top or hash on route change
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [location.pathname]);
+    if (location.hash) {
+      const element = document.getElementById(location.hash.slice(1));
+      if (element) {
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [location.pathname, location.hash]);
 
   const HomePage = () => (
     <>
       <Hero />
       <Experience />
-      <TechStack />
       <Projects />
+      <TechStack />
       <Contact />
     </>
   );

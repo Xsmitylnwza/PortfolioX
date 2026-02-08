@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Icon } from '@iconify/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import MusicalText from './MusicalText';
 import './Experience.css';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -159,9 +160,9 @@ const Experience = () => {
         >
             <div style={{ textAlign: 'center', marginBottom: '4rem', position: 'relative', zIndex: 10 }}>
                 <h2 className="font-serif-italic" style={{ fontSize: 'clamp(3rem, 6vw, 5rem)', fontWeight: 400, color: 'var(--text-primary)' }}>
-                    The <span style={{ color: 'var(--red-primary)' }}>Journey</span>
+                    The <span style={{ color: 'var(--red-primary)' }}><MusicalText song="GHOST">Journey</MusicalText></span>
                 </h2>
-                <p className="font-mono text-sm text-gray-500">// CASE FILE: CAREER HISTORY</p>
+
             </div>
 
             <div ref={containerRef} className="evidence-board">

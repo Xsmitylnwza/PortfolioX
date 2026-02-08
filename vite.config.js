@@ -9,8 +9,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'gsap-vendor': ['gsap'],
-          'three-vendor': ['three', '@react-three/fiber', '@react-three/drei']
+          'gsap-vendor': ['gsap']
         }
       }
     },

@@ -78,18 +78,32 @@ const ProjectDetails = () => {
                             {project.title}
                         </h1>
 
-                        {project.link && (
-                            <a
-                                href={project.link}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="btn-primary"
-                                style={{ textDecoration: 'none', marginBottom: '1rem', flexShrink: 0 }}
-                            >
-                                <span>VIEW LIVE</span>
-                                <Icon icon="ph:arrow-up-right-bold" />
-                            </a>
-                        )}
+                        <div style={{ display: 'flex', gap: '1rem', flexShrink: 0, marginBottom: '1rem' }}>
+                            {project.repo && (
+                                <a
+                                    href={project.repo}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn-primary"
+                                    style={{ textDecoration: 'none', background: 'transparent', border: '1px solid var(--text-primary)', color: 'var(--text-primary)' }}
+                                >
+                                    <span>GITHUB</span>
+                                    <Icon icon="mdi:github" width="20" />
+                                </a>
+                            )}
+                            {project.link && project.link !== '#' && (
+                                <a
+                                    href={project.link}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="btn-primary"
+                                    style={{ textDecoration: 'none' }}
+                                >
+                                    <span>VIEW LIVE</span>
+                                    <Icon icon="ph:arrow-up-right-bold" />
+                                </a>
+                            )}
+                        </div>
                     </div>
 
                 </header>
@@ -111,20 +125,26 @@ const ProjectDetails = () => {
                             Performance was paramount, so we utilized aggressive code-splitting and asset optimization.
                         </p>
 
-                        {/* Code Snippet */}
-                        {project.code && (
-                            <div style={{ marginTop: '3rem', background: '#0a0a0a', padding: '1.5rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '0.5rem' }}>
-                                    <span className="font-mono text-xs text-gray-500">source_code.tsx</span>
-                                    <div style={{ display: 'flex', gap: '0.25rem' }}>
-                                        <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#ff5f56' }} />
-                                        <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#ffbd2e' }} />
-                                        <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#27c93f' }} />
-                                    </div>
+                        {/* Tech Stack */}
+                        {project.tags && (
+                            <div style={{ marginTop: '3rem' }}>
+                                <h3 className="font-display text-2xl mb-4">Technologies</h3>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
+                                    {project.tags.map((tag, i) => (
+                                        <span key={i} style={{
+                                            padding: '0.5rem 1rem',
+                                            background: 'rgba(255,255,255,0.05)',
+                                            border: '1px solid rgba(255,255,255,0.1)',
+                                            borderRadius: '4px',
+                                            fontFamily: 'var(--font-mono)',
+                                            fontSize: '0.875rem',
+                                            color: 'var(--text-primary)',
+                                            display: 'inline-block'
+                                        }}>
+                                            {tag}
+                                        </span>
+                                    ))}
                                 </div>
-                                <pre className="font-mono w-full overflow-x-auto" style={{ fontSize: '0.8rem', color: '#a855f7' }}>
-                                    <code>{project.code}</code>
-                                </pre>
                             </div>
                         )}
                     </div>

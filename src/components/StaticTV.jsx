@@ -1,7 +1,10 @@
 import React from 'react';
 import './TVModal.css'; // Reuse existing styles
 
-const StaticTV = ({ project }) => {
+const StaticTV = ({ project, index }) => {
+    // Format index to always be 2 digits (e.g., 01, 02)
+    const channelId = `PJ-${String(index + 1).padStart(2, '0')}`;
+
     return (
         <div
             className="tv-modal-container static-tv"
@@ -19,7 +22,7 @@ const StaticTV = ({ project }) => {
         >
             <div className="tv-screen">
                 {/* Channel / Input Overlay */}
-                <div className="tv-channel-text">AV-1</div>
+                <div className="tv-channel-text">{channelId}</div>
 
                 {/* Glitch Effects */}
                 <div className="tv-effects">

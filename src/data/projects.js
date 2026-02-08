@@ -78,6 +78,57 @@ public Task moveTask(Long taskId, Long newColumnId) {
     role: 'Full Stack Developer'
   },
   {
+    id: 'zucchini-review',
+    title: 'Zucchini Review',
+    category: 'ENTERTAINMENT • OCT 2024',
+    year: '2024',
+    description: 'A film review aggregation platform inspired by Rotten Tomatoes.',
+    fullDescription: 'Zucchini Review is a comprehensive movie review platform where users can browse categories, search for films, and read or write reviews. Features include a weighted scoring system (Zucchinitor), user authentication with profile management, and a dynamic comment section for community engagement.',
+    tags: ['React', 'Node.js', 'MongoDB', 'Authentication'],
+    image: '/assets/zuchini-review/homepage.gif',
+    link: 'https://www.youtube.com/watch?v=TIypQWv4l-k', // Using demo video as link for now based on context, or null if no live demo
+    repo: 'https://github.com/Xsmitylnwza/PROJECT2-SEC-2-WeLoveReact',
+    code: `// Review Calculation Logic
+const calculateScore = (reviews) => {
+  if (!reviews.length) return 0;
+  const total = reviews.reduce((acc, curr) => acc + curr.rating, 0);
+  return (total / reviews.length).toFixed(1);
+};`,
+    gallery: [
+      '/assets/zuchini-review/review.gif',
+      '/assets/zuchini-review/commented.gif',
+      '/assets/zuchini-review/register.gif'
+    ],
+    role: 'Frontend Developer'
+  },
+  {
+    id: 'decrypt-password',
+    title: 'Decrypt The Secret Password',
+    category: 'GAME • FEB 2024',
+    year: '2024',
+    description: 'A web-based puzzle game challenging players to decrypt passwords under time pressure.',
+    fullDescription: 'Inspired by "The Password Game", this project challenges users to create a password that satisfies increasingly complex and creative rules within a time limit. Features include difficulty levels (Hard to Hardest), dynamic rule validation, a countdown timer, and game-state animations.',
+    tags: ['React', 'JavaScript', 'CSS Animation'],
+    image: '/assets/decrypt-secret-pwd/gameplay.gif',
+    link: 'https://xsmitylnwza.github.io/PROJECT1-SEC-2-WeLoveReact/', // Assuming GitHub Pages or similar if repo exists, otherwise null
+    repo: 'https://github.com/Xsmitylnwza/PROJECT1-SEC-2-WeLoveReact',
+    code: `// Rule Validation Logic
+const validateRule = (password, rule) => {
+  if (rule.type === 'regex') {
+    return rule.regex.test(password);
+  }
+  if (rule.type === 'function') {
+    return rule.validate(password);
+  }
+  return false;
+};`,
+    gallery: [
+      '/assets/decrypt-secret-pwd/manual.gif',
+      '/assets/decrypt-secret-pwd/select-mode.gif'
+    ],
+    role: 'Frontend Developer'
+  },
+  {
     id: 'wild-oasis',
     title: 'The Wild Oasis',
     category: 'HOSPITALITY • 2024',

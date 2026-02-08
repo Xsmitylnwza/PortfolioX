@@ -29,7 +29,7 @@ const Projects = () => {
                         onClick={() => window.scrollTo(0, 0)}
                     >
                         {/* Static TV showing thumbnail */}
-                        <StaticTV project={project} />
+                        <StaticTV project={project} index={index} />
 
                         <div style={{ width: '280px', height: '180px', margin: '0 auto' }}>
                             <VHSTape
@@ -83,6 +83,28 @@ const Projects = () => {
                 .tape-link-wrapper:hover {
                     transform: scale(1.05) translateY(-10px);
                     z-index: 10;
+                }
+                
+                /* TV Glow on Hover */
+                .tape-link-wrapper:hover .tv-modal-container {
+                    box-shadow: 0 0 20px rgba(220, 38, 38, 0.5), 0 0 0 1px var(--red-primary);
+                    border-color: var(--red-primary);
+                }
+
+                /* Screen Brightness on Hover */
+                .tape-link-wrapper:hover .tv-image {
+                    filter: contrast(1.3) brightness(1.2) sepia(0) grayscale(0);
+                }
+
+                /* Static Noise Increase */
+                .tape-link-wrapper:hover .tv-static {
+                    opacity: 0.3;
+                }
+
+                /* Channel Text Glow */
+                .tape-link-wrapper:hover .tv-channel-text {
+                    text-shadow: 0 0 8px #0f0, 0 0 15px #0f0;
+                    opacity: 1;
                 }
             `}</style>
         </section>

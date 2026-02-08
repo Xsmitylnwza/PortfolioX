@@ -1,9 +1,38 @@
 export const projects = [
   {
+    id: 'keshi-pomodoro',
+    title: 'Keshi Pomodoro',
+    category: 'PRODUCTIVITY • JAN 2026',
+    year: '2026',
+    description: 'A lo-fi aesthetic focus timer inspired by Keshi\'s musical vibe.',
+    fullDescription: 'An immersive Pomodoro timer that blends productivity with atmosphere. Features include customizable timer settings, a curated lo-fi playlist, and a visual design heavily inspired by Keshi\'s \'Gabriel\' album era. Built to help users stay focused while enjoying a chill, artistic environment.',
+    tags: ['React', 'Vite', 'Tailwind', 'Framer Motion'],
+    image: '/assets/keshi-pomodoro/demo.webp',
+    link: 'https://keshi-pomodoro.vercel.app/',
+    code: `// Timer Loop Logic
+useEffect(() => {
+  let interval = null;
+  if (isActive && time > 0) {
+    interval = setInterval(() => {
+      setTime((time) => time - 1);
+    }, 1000);
+  } else if (time === 0) {
+    clearInterval(interval);
+    playAlarm();
+  }
+  return () => clearInterval(interval);
+}, [isActive, time]);`,
+    gallery: [
+      '/assets/keshi-pomodoro/focus_mode.png',
+      '/assets/keshi-pomodoro/relax_mode.png'
+    ],
+    role: 'Frontend Developer'
+  },
+  {
     id: 'nurse-nest',
     title: 'Nurse-nest',
-    category: 'HEALTHCARE • 2024',
-    year: '2024',
+    category: 'HEALTHCARE • APR 2025',
+    year: '2025',
     description: 'A comprehensive healthcare booking platform connecting patients with nurses.',
     fullDescription: 'Nurse-nest streamlines the process of finding and booking nursing care. It features real-time scheduling, secure payments via Omise, and a robust admin dashboard for managing appointments and nurse profiles. The system is built for reliability and scale.',
     tags: ['Next.js', 'Spring Boot', 'Omise', 'Jenkins', 'Docker'],
@@ -28,7 +57,7 @@ public class PaymentService {
   {
     id: 'kanban-board',
     title: 'Kanban Task Manager',
-    category: 'PRODUCTIVITY • 2024',
+    category: 'PRODUCTIVITY • DEC 2024',
     year: '2024',
     description: 'A drag-and-drop task management system inspired by Trello.',
     fullDescription: 'A highly interactive task management tool featuring drag-and-drop capabilities, task categorization, and file attachments. The backend leverages Spring Boot and AWS S3 for secure file storage, deployed via Docker for consistency.',
@@ -70,34 +99,5 @@ supabase
       'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&q=80&w=2000'
     ],
     role: 'Full Stack Developer'
-  },
-  {
-    id: 'keshi-pomodoro',
-    title: 'Keshi Pomodoro',
-    category: 'PRODUCTIVITY • 2024',
-    year: '2024',
-    description: 'A lo-fi aesthetic focus timer inspired by Keshi\'s musical vibe.',
-    fullDescription: 'An immersive Pomodoro timer that blends productivity with atmosphere. Features include customizable timer settings, a curated lo-fi playlist, and a visual design heavily inspired by Keshi\'s \'Gabriel\' album era. Built to help users stay focused while enjoying a chill, artistic environment.',
-    tags: ['React', 'Vite', 'Tailwind', 'Framer Motion'],
-    image: '/assets/keshi-pomodoro/demo.webp',
-    link: 'https://keshi-pomodoro.vercel.app/',
-    code: `// Timer Loop Logic
-useEffect(() => {
-  let interval = null;
-  if (isActive && time > 0) {
-    interval = setInterval(() => {
-      setTime((time) => time - 1);
-    }, 1000);
-  } else if (time === 0) {
-    clearInterval(interval);
-    playAlarm();
-  }
-  return () => clearInterval(interval);
-}, [isActive, time]);`,
-    gallery: [
-      '/assets/keshi-pomodoro/focus_mode.png',
-      '/assets/keshi-pomodoro/relax_mode.png'
-    ],
-    role: 'Frontend Developer'
   }
 ];

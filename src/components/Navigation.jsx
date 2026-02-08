@@ -181,6 +181,7 @@ const Navigation = () => {
                 minWidth: '80px', // Prevent jitter during scramble
                 textAlign: 'center'
               }}
+              onClick={() => setActiveSection(link.id)}
               onMouseEnter={() => setHoveredLink(link.id)}
               onMouseLeave={() => setHoveredLink(null)}
             >
@@ -207,45 +208,7 @@ const Navigation = () => {
           ))}
         </div>
 
-        {/* CTA Button */}
-        <div style={{ position: 'relative', zIndex: 10, display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <a
-            href="#contact"
-            id="nav-cta"
-            data-cursor-text="SAY HELLO"
-            className="btn-primary md-show"
-            style={{
-              display: 'none',
-              padding: '0.75rem 1.5rem',
-              fontSize: '0.875rem',
-            }}
-          >
-            <span>Let's Talk</span>
-            <Icon
-              icon="lucide:arrow-up-right"
-              style={{ fontSize: '1rem', transition: 'transform 0.3s ease' }}
-              className="nav-cta-icon"
-            />
-          </a>
 
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMobileMenuOpen(true)}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '0.5rem',
-              background: 'transparent',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              cursor: 'pointer',
-              color: 'var(--text-primary)',
-            }}
-            className="md-hidden"
-          >
-            <Icon icon="lucide:menu" style={{ fontSize: '1.25rem' }} />
-          </button>
-        </div>
       </nav>
 
       {/* Mobile Menu */}

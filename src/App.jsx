@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense, lazy } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Hero from './components/Hero';
@@ -12,7 +12,9 @@ import Cursor from './components/Cursor';
 import Scribbles from './components/Scribbles';
 import MusicPlayer from './components/MusicPlayer';
 import Loader from './components/Loader';
-import ProjectDetails from './components/ProjectDetails';
+
+// Lazy load ProjectDetails to reduce initial bundle size
+const ProjectDetails = lazy(() => import('./components/ProjectDetails'));
 
 function App() {
   const [loadingComplete, setLoadingComplete] = useState(false);
@@ -96,7 +98,14 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/project/:id" element={<ProjectDetails />} />
+          <Route
+            path="/project/:id"
+            element={
+              <Suspense fallback={<div className="loading-fallback" style={{ height: '100vh', background: '#000' }}></div>}>
+                <ProjectDetails />
+              </Suspense>
+            }
+          />
         </Routes>
       </main>
 

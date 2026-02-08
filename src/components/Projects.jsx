@@ -4,41 +4,19 @@ import gsap from 'gsap';
 import { projects } from '../data/projects';
 import VHSTape from './VHSTape';
 import MusicalText from './MusicalText';
-import TVModal from './TVModal';
+import StaticTV from './StaticTV';
 import './Projects.css';
 
 const Projects = () => {
     const sectionRef = useRef(null);
     const tapeRefs = useRef([]);
 
-    // Hover State
-    const [hoveredProject, setHoveredProject] = useState(null);
-    const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
-
-    // Track mouse globally for the section
-    useEffect(() => {
-        const handleMouseMove = (e) => {
-            setCursorPos({ x: e.clientX, y: e.clientY });
-        };
-
-        window.addEventListener('mousemove', handleMouseMove);
-        return () => window.removeEventListener('mousemove', handleMouseMove);
-    }, []);
-
     return (
         <section id="projects" ref={sectionRef} className="vhs-layout">
-            <TVModal
-                project={hoveredProject}
-                visible={!!hoveredProject}
-                x={cursorPos.x}
-                y={cursorPos.y}
-            />
-
             <div style={{ textAlign: 'center', marginBottom: '6rem', position: 'relative', zIndex: 10 }}>
                 <h2 className="font-serif-italic" style={{ fontSize: 'clamp(3rem, 6vw, 5rem)', fontWeight: 400, color: 'var(--text-primary)' }}>
-                    Selected <span style={{ color: 'var(--red-primary)' }}><MusicalText song="Projects">Projects</MusicalText></span>
+                    The <span style={{ color: 'var(--red-primary)' }}><MusicalText song="Projects">Projects</MusicalText></span>
                 </h2>
-
             </div>
 
             <div className="tape-grid">
@@ -49,10 +27,11 @@ const Projects = () => {
                         className="tape-link-wrapper"
                         style={{ display: 'block', textDecoration: 'none' }}
                         onClick={() => window.scrollTo(0, 0)}
-                        onMouseEnter={() => setHoveredProject(project)}
-                        onMouseLeave={() => setHoveredProject(null)}
                     >
-                        <div style={{ width: '280px', height: '180px', margin: '20px auto' }}>
+                        {/* Static TV showing thumbnail */}
+                        <StaticTV project={project} />
+
+                        <div style={{ width: '280px', height: '180px', margin: '0 auto' }}>
                             <VHSTape
                                 ref={el => tapeRefs.current[index] = el}
                                 project={project}

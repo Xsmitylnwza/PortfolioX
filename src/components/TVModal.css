@@ -52,7 +52,8 @@
 .tv-image {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
+    background: #000;
     filter: contrast(1.2) brightness(1.1) sepia(0.2) grayscale(0.2);
     /* V-Hold Shake Animation */
     animation: v-hold 4s infinite steps(1);

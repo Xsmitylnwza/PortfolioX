@@ -13,12 +13,24 @@ import Scribbles from './components/Scribbles';
 import MusicPlayer from './components/MusicPlayer';
 import Loader from './components/Loader';
 
+const HomePage = () => (
+  <>
+    <Hero />
+    <Experience />
+    <Projects />
+    <TechStack />
+    <Contact />
+  </>
+);
+
 // Lazy load ProjectDetails to reduce initial bundle size
 const ProjectDetails = lazy(() => import('./components/ProjectDetails'));
+const PersonaReloadView = lazy(() => import('./components/PersonaReloadView'));
 
 function App() {
   const [loadingComplete, setLoadingComplete] = useState(false);
   const location = useLocation();
+  const isPersonaRoute = location.pathname === '/persona';
 
   // Scroll to top or hash on route change
   useEffect(() => {
@@ -34,58 +46,54 @@ function App() {
     }
   }, [location.pathname, location.hash]);
 
-  const HomePage = () => (
-    <>
-      <Hero />
-      <Experience />
-      <Projects />
-      <TechStack />
-      <Contact />
-    </>
-  );
-
   return (
     <div
       style={{
         minHeight: '100vh',
-        backgroundColor: 'var(--bg-black)',
+        backgroundColor: isPersonaRoute ? '#020817' : 'var(--bg-black)',
         color: 'var(--text-primary)',
         overflowX: 'hidden',
         position: 'relative',
       }}
     >
-      {!loadingComplete && (
+      {!isPersonaRoute && !loadingComplete && (
         <Loader onLoadingComplete={() => setLoadingComplete(true)} />
       )}
 
       {/* Background Squares Animation */}
-      <div
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          zIndex: 0,
-          opacity: 1,
-          pointerEvents: 'none',
-        }}
-        className="scribbles-bg-wrapper"
-      >
-        <Scribbles />
-      </div>
+      {!isPersonaRoute && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            zIndex: 0,
+            opacity: 1,
+            pointerEvents: 'none',
+          }}
+          className="scribbles-bg-wrapper"
+        >
+          <Scribbles />
+        </div>
+      )}
 
       {/* Noise Overlay - Higher z-index to texture the squares too */}
-      <div className="noise-overlay" style={{ zIndex: 1 }} />
+      {!isPersonaRoute && <div className="noise-overlay" style={{ zIndex: 1 }} />}
 
       {/* Gradient Ambience */}
-      <div className="gradient-red" style={{ zIndex: 1 }} />
-      <div className="gradient-purple" style={{ zIndex: 1 }} />
+      {!isPersonaRoute && (
+        <>
+          <div className="gradient-red" style={{ zIndex: 1 }} />
+          <div className="gradient-purple" style={{ zIndex: 1 }} />
+        </>
+      )}
 
       {/* Global Scroll Effects */}
-      <ScrollManager />
-      <Cursor />
-      <MusicPlayer />
+      {!isPersonaRoute && <ScrollManager />}
+      {!isPersonaRoute && <Cursor />}
+      {!isPersonaRoute && <MusicPlayer />}
 
       {/* Navigation - Only show on Home Page for now? Or always?
           If on details page, nav links might break. Let's hide Nav on Details or make it smart.
@@ -98,6 +106,14 @@ function App() {
       <main>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route
+            path="/persona"
+            element={
+              <Suspense fallback={<div className="loading-fallback" style={{ minHeight: '100vh', background: '#020817' }}></div>}>
+                <PersonaReloadView />
+              </Suspense>
+            }
+          />
           <Route
             path="/project/:id"
             element={
@@ -112,7 +128,7 @@ function App() {
       {/* Footer - Maybe only on Home? Or both? Details page has next project link.
           Let's keep Footer everywhere for consistency.
       */}
-      <Footer />
+      {!isPersonaRoute && <Footer />}
     </div>
   );
 }

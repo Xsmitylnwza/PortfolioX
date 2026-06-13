@@ -11,6 +11,10 @@ node_modules
 dist
 dist-ssr
 *.local
+output/**
+!output/
+!output/performance/
+!output/performance/*.md
 
 # Editor directories and files
 .vscode/*

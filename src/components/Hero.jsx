@@ -4,10 +4,16 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './Hero.css';
 
+gsap.registerPlugin(ScrollTrigger);
+
 const Hero = () => {
     const heroRef = useRef(null);
+    const parallaxRef = useRef(null);
+    const pointerRef = useRef({ x: 0, y: 0, raf: null });
 
     useEffect(() => {
+        const pointer = pointerRef.current;
+        const heroElement = heroRef.current;
         const ctx = gsap.context(() => {
             const tl = gsap.timeline();
 
@@ -38,13 +44,21 @@ const Hero = () => {
                 );
 
             // --- Scroll Parallax Effects ---
+            parallaxRef.current = {
+                ransomX: gsap.quickTo('.ransom-wrapper', 'x', { duration: 0.35, ease: 'power2.out' }),
+                ransomY: gsap.quickTo('.ransom-wrapper', 'y', { duration: 0.35, ease: 'power2.out' }),
+                handwritingX: gsap.quickTo('.handwritten-layer', 'x', { duration: 0.35, ease: 'power2.out' }),
+                handwritingY: gsap.quickTo('.handwritten-layer', 'y', { duration: 0.35, ease: 'power2.out' }),
+                decoX: gsap.quickTo('.bg-deco-img img', 'x', { duration: 0.6, ease: 'power2.out' }),
+                decoY: gsap.quickTo('.bg-deco-img img', 'y', { duration: 0.6, ease: 'power2.out' }),
+            };
 
             // Background Deco Parallax
             gsap.to('.bg-deco-1', {
                 y: 150,
                 rotation: 25,
                 scrollTrigger: {
-                    trigger: '.hero-container',
+                    trigger: heroElement,
                     start: 'top top',
                     end: 'bottom top',
                     scrub: 1
@@ -55,7 +69,7 @@ const Hero = () => {
                 y: -100,
                 rotation: -25,
                 scrollTrigger: {
-                    trigger: '.hero-container',
+                    trigger: heroElement,
                     start: 'top top',
                     end: 'bottom top',
                     scrub: 1.5
@@ -68,7 +82,7 @@ const Hero = () => {
                 x: -50,
                 rotation: -15, // Rotate away
                 scrollTrigger: {
-                    trigger: '.hero-container',
+                    trigger: heroElement,
                     start: 'top top',
                     end: 'bottom top',
                     scrub: 1
@@ -81,7 +95,7 @@ const Hero = () => {
                 x: -50,
                 rotation: 0, // Stay upright
                 scrollTrigger: {
-                    trigger: '.hero-container',
+                    trigger: heroElement,
                     start: 'top top',
                     end: 'bottom top',
                     scrub: 1
@@ -94,56 +108,46 @@ const Hero = () => {
                 x: 100, // Move right
                 rotation: 45, // Spin out
                 scrollTrigger: {
-                    trigger: '.hero-container',
+                    trigger: heroElement,
                     start: 'top top',
                     end: 'bottom top',
                     scrub: 1.2
                 }
             });
 
-            // Marquee Acceleration on Scroll
-            ScrollTrigger.create({
-                trigger: '.hero-container',
-                start: 'top top',
-                end: 'bottom top',
-                onUpdate: (self) => {
-                    const velocity = self.getVelocity();
-                    // Optional: could adjust marquee speed here if we had a ref to it
-                }
-            });
-
         }, heroRef);
 
-        return () => ctx.revert();
+        return () => {
+            if (pointer.raf) {
+                cancelAnimationFrame(pointer.raf);
+            }
+            parallaxRef.current = null;
+            ctx.revert();
+        };
     }, []);
 
     const handleMouseMove = (e) => {
         const { clientX, clientY } = e;
-        const xPos = (clientX / window.innerWidth - 0.5) * 20; // -10 to 10
-        const yPos = (clientY / window.innerHeight - 0.5) * 20;
+        pointerRef.current.x = (clientX / window.innerWidth - 0.5) * 20; // -10 to 10
+        pointerRef.current.y = (clientY / window.innerHeight - 0.5) * 20;
 
-        // Parallax specific elements
+        if (pointerRef.current.raf) return;
 
-        // Target inner wrapper to avoid conflict with ScrollTrigger on container
-        gsap.to('.ransom-wrapper', {
-            x: xPos * 2,
-            y: yPos * 2,
-            duration: 0.5,
-            ease: 'power2.out'
-        });
+        pointerRef.current.raf = requestAnimationFrame(() => {
+            const setters = parallaxRef.current;
+            if (!setters) {
+                pointerRef.current.raf = null;
+                return;
+            }
 
-        gsap.to('.handwritten-layer', {
-            x: xPos * 1.5,
-            y: yPos * 1.5,
-            duration: 0.5,
-            ease: 'power2.out'
-        });
-
-        // Target image inside to avoid conflict with container scroll
-        gsap.to('.bg-deco-img img', {
-            x: xPos * -1,
-            y: yPos * -1,
-            duration: 1
+            const { x, y } = pointerRef.current;
+            setters.ransomX(x * 2);
+            setters.ransomY(y * 2);
+            setters.handwritingX(x * 1.5);
+            setters.handwritingY(y * 1.5);
+            setters.decoX(x * -1);
+            setters.decoY(y * -1);
+            pointerRef.current.raf = null;
         });
     };
 
@@ -155,12 +159,16 @@ const Hero = () => {
                 {/* Decorative Background Elements */}
                 <div className="bg-deco-img bg-deco-1">
                     <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/uploads/be7bd51c-6dd7-4e04-a620-8108ef138948/1768838242918-60798e6e/Justin_and_Hailey_Bieber___.jpg"
-                        alt="Deco" />
+                        alt="Deco"
+                        decoding="async"
+                        fetchPriority="low" />
                 </div>
 
                 <div className="bg-deco-img bg-deco-2">
                     <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/uploads/be7bd51c-6dd7-4e04-a620-8108ef138948/1768838242918-60798e6e/Justin_and_Hailey_Bieber___.jpg"
-                        alt="Deco" />
+                        alt="Deco"
+                        decoding="async"
+                        fetchPriority="low" />
                 </div>
 
                 {/* Center Collage */}
@@ -186,7 +194,9 @@ const Hero = () => {
                     <div className="main-torn-wrapper" data-cursor="view" data-cursor-text="PORTRAIT">
                         <div className="torn-paper-box">
                             <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/uploads/be7bd51c-6dd7-4e04-a620-8108ef138948/1768838242918-60798e6e/Justin_and_Hailey_Bieber___.jpg"
-                                alt="Artist Portrait" />
+                                alt="Artist Portrait"
+                                decoding="async"
+                                fetchPriority="high" />
 
                             {/* Tape Strip */}
                             <div className="tape-strip"></div>
@@ -197,7 +207,9 @@ const Hero = () => {
                     <div className="secondary-fragment-wrapper" data-cursor="view" data-cursor-text="DETAIL">
                         <div className="fragment-box">
                             <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/uploads/be7bd51c-6dd7-4e04-a620-8108ef138948/1768838242918-60798e6e/Justin_and_Hailey_Bieber___.jpg"
-                                alt="Detail" />
+                                alt="Detail"
+                                decoding="async"
+                                fetchPriority="low" />
                         </div>
                     </div>
 

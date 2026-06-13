@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import './Loader.css';
 
 const Loader = ({ onLoadingComplete }) => {
-    const [progress, setProgress] = useState(0);
     const counterRef = useRef(null);
+    const progressFillRef = useRef(null);
     const containerRef = useRef(null);
 
     useEffect(() => {
@@ -19,9 +19,9 @@ const Loader = ({ onLoadingComplete }) => {
                         skewY: 20, // Tearing effect
                         scaleY: 1.5, // Stretch while moving
                         opacity: 0,
-                        duration: 1.2,
+                        duration: 0.7,
                         ease: 'power4.inOut',
-                        delay: 0.2,
+                        delay: 0.1,
                         onComplete: onLoadingComplete
                     });
 
@@ -41,10 +41,12 @@ const Loader = ({ onLoadingComplete }) => {
 
             tl.to(progressObj, {
                 value: 100,
-                duration: 2.5, // 2.5s simulated load time
+                duration: 1,
                 ease: 'expo.inOut',
                 onUpdate: () => {
-                    setProgress(Math.round(progressObj.value));
+                    const value = Math.round(progressObj.value);
+                    if (counterRef.current) counterRef.current.textContent = value;
+                    if (progressFillRef.current) progressFillRef.current.style.width = `${value}%`;
                 }
             });
 
@@ -67,7 +69,7 @@ const Loader = ({ onLoadingComplete }) => {
                 {/* Big Counter */}
                 <div className="loader-counter-wrapper">
                     <span ref={counterRef} className="loader-counter">
-                        {progress}
+                        0
                     </span>
                     <span className="loader-percent">%</span>
                 </div>
@@ -81,8 +83,9 @@ const Loader = ({ onLoadingComplete }) => {
                 {/* Progress Tape/Bar */}
                 <div className="loader-progress-bar">
                     <div
+                        ref={progressFillRef}
                         className="loader-progress-fill"
-                        style={{ width: `${progress}%` }}
+                        style={{ width: '0%' }}
                     ></div>
                 </div>
             </div>

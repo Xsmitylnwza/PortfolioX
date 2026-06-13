@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { Icon } from '@iconify/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -22,7 +22,7 @@ const Experience = () => {
             company: 'SCB Siam Commercial Bank',
             description: 'Re-architected AMLX rule engine into a database-driven system. Enhanced modules in React and Spring Boot.',
             tech: ['React', 'Spring Boot', 'SQL'],
-            logo: '/scb-logo.png',
+            logo: '/assets/optimized/scb-logo-128.png',
             glowColor: 'var(--bg-black)',
         },
         {
@@ -33,7 +33,7 @@ const Experience = () => {
             company: 'TTB (TMBThanachart Bank)',
             description: 'Built an internal productivity dashboard adopted by 7 team leads and used by 100+ developers.',
             tech: ['React', 'Data Viz', 'Tools'],
-            logo: '/ttb-logo.png',
+            logo: '/assets/optimized/ttb-logo-128.png',
             glowColor: 'var(--red-primary)',
         },
         {
@@ -55,7 +55,7 @@ const Experience = () => {
             company: 'TOMATO ideas',
             description: 'Developed POC features and middleware APIs using Node.js and Elysia.js.',
             tech: ['Node.js', 'Elysia.js', 'Bun'],
-            logo: '/tomato-logo.jpg',
+            logo: '/assets/optimized/tomato-logo-128.jpg',
             glowColor: '#3b82f6',
         },
     ];
@@ -123,7 +123,7 @@ const Experience = () => {
                 );
             });
 
-            gsap.utils.toArray('.huge-year').forEach((year, i) => {
+            gsap.utils.toArray('.huge-year').forEach((year) => {
                 gsap.to(year, {
                     y: 100,
                     scrollTrigger: {
@@ -233,7 +233,15 @@ const Experience = () => {
                                     </div>
 
                                     <h3 className="font-display" style={{ fontSize: '2.5rem', lineHeight: 1, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                        {exp.logo && <img src={exp.logo} alt={exp.company} style={{ width: '50px', height: '50px', objectFit: 'contain' }} />}
+                                        {exp.logo && (
+                                            <img
+                                                src={exp.logo}
+                                                alt={exp.company}
+                                                loading="lazy"
+                                                decoding="async"
+                                                style={{ width: '50px', height: '50px', objectFit: 'contain' }}
+                                            />
+                                        )}
                                         {exp.company}
                                     </h3>
 
@@ -255,7 +263,6 @@ const Experience = () => {
                                                 fontSize: '0.75rem',
                                                 textTransform: 'uppercase',
                                                 opacity: 0.8,
-                                                maskImage: 'url(https://grainy-gradients.vercel.app/noise.svg)',
                                                 transform: `rotate(${Math.random() * 10 - 5}deg)`
                                             }}>
                                                 {tech}

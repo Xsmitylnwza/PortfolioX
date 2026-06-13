@@ -7,7 +7,7 @@ export const projects = [
     description: 'A lo-fi aesthetic focus timer inspired by Keshi\'s musical vibe.',
     fullDescription: 'An immersive Pomodoro timer that blends productivity with atmosphere. Features include customizable timer settings, a curated lo-fi playlist, and a visual design heavily inspired by Keshi\'s \'Gabriel\' album era. Built to help users stay focused while enjoying a chill, artistic environment.',
     tags: ['React', 'Vite', 'Tailwind', 'Framer Motion'],
-    image: '/assets/keshi-pomodoro/demo.webp',
+    image: '/assets/previews/keshi-pomodoro-demo.jpg',
     link: 'https://keshi-pomodoro.vercel.app/',
     code: `// Timer Loop Logic
 useEffect(() => {
@@ -85,7 +85,8 @@ public Task moveTask(Long taskId, Long newColumnId) {
     description: 'A film review aggregation platform inspired by Rotten Tomatoes.',
     fullDescription: 'Zucchini Review is a comprehensive movie review platform where users can browse categories, search for films, and read or write reviews. Features include a weighted scoring system (Zucchinitor), user authentication with profile management, and a dynamic comment section for community engagement.',
     tags: ['React', 'Node.js', 'MongoDB', 'Authentication'],
-    image: '/assets/zuchini-review/homepage.gif',
+    image: '/assets/previews/zucchini-homepage.jpg',
+    video: '/assets/previews/zucchini-homepage.mp4',
     link: 'https://www.youtube.com/watch?v=TIypQWv4l-k', // Using demo video as link for now based on context, or null if no live demo
     repo: 'https://github.com/Xsmitylnwza/PROJECT2-SEC-2-WeLoveReact',
     code: `// Review Calculation Logic
@@ -95,9 +96,9 @@ const calculateScore = (reviews) => {
   return (total / reviews.length).toFixed(1);
 };`,
     gallery: [
-      '/assets/zuchini-review/review.gif',
-      '/assets/zuchini-review/commented.gif',
-      '/assets/zuchini-review/register.gif'
+      { image: '/assets/previews/zucchini-review.jpg', video: '/assets/previews/zucchini-review.mp4' },
+      { image: '/assets/previews/zucchini-commented.jpg', video: '/assets/previews/zucchini-commented.mp4' },
+      { image: '/assets/previews/zucchini-register.jpg', video: '/assets/previews/zucchini-register.mp4' }
     ],
     role: 'Frontend Developer'
   },
@@ -109,7 +110,8 @@ const calculateScore = (reviews) => {
     description: 'A web-based puzzle game challenging players to decrypt passwords under time pressure.',
     fullDescription: 'Inspired by "The Password Game", this project challenges users to create a password that satisfies increasingly complex and creative rules within a time limit. Features include difficulty levels (Hard to Hardest), dynamic rule validation, a countdown timer, and game-state animations.',
     tags: ['React', 'JavaScript', 'CSS Animation'],
-    image: '/assets/decrypt-secret-pwd/gameplay.gif',
+    image: '/assets/previews/decrypt-gameplay.jpg',
+    video: '/assets/previews/decrypt-gameplay.mp4',
     link: 'https://xsmitylnwza.github.io/PROJECT1-SEC-2-WeLoveReact/', // Assuming GitHub Pages or similar if repo exists, otherwise null
     repo: 'https://github.com/Xsmitylnwza/PROJECT1-SEC-2-WeLoveReact',
     code: `// Rule Validation Logic
@@ -123,8 +125,8 @@ const validateRule = (password, rule) => {
   return false;
 };`,
     gallery: [
-      '/assets/decrypt-secret-pwd/manual.gif',
-      '/assets/decrypt-secret-pwd/select-mode.gif'
+      { image: '/assets/previews/decrypt-manual.jpg', video: '/assets/previews/decrypt-manual.mp4' },
+      { image: '/assets/previews/decrypt-select-mode.jpg', video: '/assets/previews/decrypt-select-mode.mp4' }
     ],
     role: 'Frontend Developer'
   },

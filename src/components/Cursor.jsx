@@ -5,46 +5,61 @@ import './Cursor.css';
 const Cursor = () => {
     const cursorRef = useRef(null);
     const followerRef = useRef(null);
+    const stateRef = useRef('default');
+    const textRef = useRef('');
     const [cursorState, setCursorState] = useState('default'); // default, pointer, text, view, secret
     const [cursorText, setCursorText] = useState('');
 
     useEffect(() => {
-        // Use gsap.quickTo for performance
-        const moveCursor = gsap.quickTo(cursorRef.current, 'set', { duration: 0, x: 'x', y: 'y' });
-        const moveFollower = gsap.quickTo(followerRef.current, 'set', { duration: 0.15, x: 'x', y: 'y' });
+        if (window.matchMedia('(hover: none), (pointer: coarse)').matches) {
+            return;
+        }
+
+        const cursor = cursorRef.current;
+        const follower = followerRef.current;
+        if (!cursor || !follower) return;
+
+        const setCursorX = gsap.quickSetter(cursor, 'x', 'px');
+        const setCursorY = gsap.quickSetter(cursor, 'y', 'px');
+        const moveFollowerX = gsap.quickTo(follower, 'x', { duration: 0.28, ease: 'power3.out' });
+        const moveFollowerY = gsap.quickTo(follower, 'y', { duration: 0.28, ease: 'power3.out' });
+
+        const updateCursorState = (nextState, nextText = '') => {
+            if (stateRef.current === nextState && textRef.current === nextText) return;
+            stateRef.current = nextState;
+            textRef.current = nextText;
+            setCursorState(nextState);
+            setCursorText(nextText);
+        };
 
         const onMouseMove = (e) => {
             const { clientX, clientY } = e;
 
             // Main dot stays sharp
-            gsap.set(cursorRef.current, { x: clientX, y: clientY });
+            setCursorX(clientX);
+            setCursorY(clientY);
 
             // Follower has physics
-            gsap.to(followerRef.current, {
-                x: clientX,
-                y: clientY,
-                duration: 0.6,
-                ease: 'power3.out'
-            });
+            moveFollowerX(clientX);
+            moveFollowerY(clientY);
         };
 
         const onMouseOver = (e) => {
             const target = e.target;
+            if (!(target instanceof Element)) return;
 
             // 1. Check for explicit data-cursor override
             const cursorType = target.getAttribute('data-cursor') || target.closest('[data-cursor]')?.getAttribute('data-cursor');
             const hoverText = target.getAttribute('data-cursor-text') || target.closest('[data-cursor-text]')?.getAttribute('data-cursor-text');
 
             if (cursorType) {
-                setCursorState(cursorType);
-                if (hoverText) setCursorText(hoverText);
+                updateCursorState(cursorType, hoverText || '');
                 return;
             }
 
             // 2. Check for interactive elements
             if (target.matches('a, button, [role="button"], input[type="submit"], input[type="button"]') || target.closest('a, button, [role="button"], input[type="submit"], input[type="button"]')) {
-                setCursorState('pointer');
-                setCursorText('');
+                updateCursorState('pointer');
                 return;
             }
 
@@ -54,14 +69,13 @@ const Cursor = () => {
                 // Simplify: just inputs/textareas for now, or maybe specific text classes?
                 // Let's stick to true inputs for specific 'text' state, paragraphs usually just default or text-select
                 if (target.matches('input, textarea')) {
-                    setCursorState('text');
+                    updateCursorState('text');
                     return;
                 }
             }
 
             // Default
-            setCursorState('default');
-            setCursorText('');
+            updateCursorState('default');
         };
 
         window.addEventListener('mousemove', onMouseMove);
@@ -70,6 +84,7 @@ const Cursor = () => {
         return () => {
             window.removeEventListener('mousemove', onMouseMove);
             window.removeEventListener('mouseover', onMouseOver);
+            gsap.killTweensOf([cursor, follower]);
         };
     }, []);
 

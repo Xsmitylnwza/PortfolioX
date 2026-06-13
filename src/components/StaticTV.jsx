@@ -1,4 +1,5 @@
 import React from 'react';
+import ProjectMedia from './ProjectMedia';
 import './TVModal.css'; // Reuse existing styles
 
 const StaticTV = ({ project, index }) => {
@@ -34,10 +35,12 @@ const StaticTV = ({ project, index }) => {
 
                 {/* Content */}
                 {project && project.image && (
-                    <img
-                        src={project.image}
+                    <ProjectMedia
+                        image={project.image}
+                        video={project.video}
                         alt={project.title}
                         className="tv-image"
+                        sizes="320px"
                     />
                 )}
             </div>

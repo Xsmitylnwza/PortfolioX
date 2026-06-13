@@ -39,6 +39,7 @@
     pointer-events: none;
     z-index: 0;
     opacity: 0.2;
+    will-change: transform;
 }
 
 .bg-deco-1 {
@@ -91,6 +92,7 @@
     align-items: center;
     justify-content: center;
     --r: -3deg;
+    will-change: transform;
 }
 
 .torn-paper-box {
@@ -144,6 +146,7 @@
     z-index: 20;
     --r: 5deg;
     animation-delay: 1s;
+    will-change: transform;
 }
 
 .fragment-box {
@@ -215,6 +218,7 @@
     pointer-events: auto;
     user-select: none;
     transform: scale(1.25);
+    will-change: transform;
 }
 
 @media (min-width: 768px) {

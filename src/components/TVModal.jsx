@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import gsap from 'gsap';
+import ProjectMedia from './ProjectMedia';
 import './TVModal.css';
 
 const TVModal = ({ project, x, y, visible }) => {
@@ -38,8 +39,9 @@ const TVModal = ({ project, x, y, visible }) => {
 
                 {/* Content */}
                 {project && (
-                    <img
-                        src={project.image}
+                    <ProjectMedia
+                        image={project.image}
+                        video={project.video}
                         alt={project.title}
                         className="tv-image"
                     />

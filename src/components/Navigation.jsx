@@ -44,12 +44,17 @@ const Navigation = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
   const [hoveredLink, setHoveredLink] = useState(null);
+  const isScrolledRef = useRef(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      const nextIsScrolled = window.scrollY > 50;
+      if (isScrolledRef.current === nextIsScrolled) return;
+      isScrolledRef.current = nextIsScrolled;
+      setIsScrolled(nextIsScrolled);
     };
-    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -125,8 +130,9 @@ const Navigation = () => {
             }}
           >
             <img
-              src="/profile-logo.jpg"
+              src="/assets/optimized/profile-logo-128.jpg"
               alt="Logo"
+              decoding="async"
               style={{
                 width: '100%',
                 height: '100%',

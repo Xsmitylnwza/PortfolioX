@@ -416,6 +416,7 @@ a {
   filter: blur(120px);
   border-radius: 50%;
   pointer-events: none;
+  transform: translateZ(0);
 }
 
 .gradient-purple {
@@ -429,6 +430,7 @@ a {
   filter: blur(100px);
   border-radius: 50%;
   pointer-events: none;
+  transform: translateZ(0);
 }
 
 /* Arrow Button */
@@ -460,4 +462,23 @@ a {
 
 .social-link:hover {
   color: var(--text-primary);
+}
+
+body.is-scrolling .tv-static,
+body.is-scrolling .tv-tracking,
+body.is-scrolling .tv-image,
+body.is-scrolling .marquee-content,
+body.is-scrolling .animate-pulse,
+body.is-scrolling .animate-pulse-glow {
+  animation-play-state: paused !important;
+}
+
+body.is-scrolling .noise-overlay {
+  visibility: hidden;
+}
+
+body.is-scrolling .scribbles-bg,
+body.is-scrolling .gradient-red,
+body.is-scrolling .gradient-purple {
+  visibility: hidden;
 }

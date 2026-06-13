@@ -41,23 +41,6 @@ const Squares = ({
             ctx.strokeStyle = borderColor;
             ctx.fillStyle = hoverFillColor;
 
-            // 1. Draw Hovered Square (if any)
-            if (hoveredSquareRef.current) {
-                // Calculate absolute position for hovered square
-                const hoveredX = (hoveredSquareRef.current.x * squareSize) + (gridOffset.current.x % squareSize);
-                const hoveredY = (hoveredSquareRef.current.y * squareSize) + (gridOffset.current.y % squareSize);
-                // We need to match the looping startX lookup logic or just strictly project coordinates?
-                // The original logic was relative to the startX, let's keep it robust.
-                // Actually, simply iterating the grid like before is O(N^2).
-                // Let's deduce the screen position directly from indices.
-                // gridX * squareSize + offset... wait, the offset logic in original was complex.
-                // Simplification: We only need to draw ONE rect.
-                // But let's stick to the loop for safety if we can't easily inverse the math?
-                // No, we MUST optimize the loop. The Loop IS the performance killer.
-
-                // Let's use the optimized batch drawing for the grid first.
-            }
-
             // OPTIMIZED: Draw Grid Lines (O(Width + Height)) instead of O(Width * Height)
             ctx.beginPath();
 
@@ -151,16 +134,19 @@ const Squares = ({
             hoveredSquareRef.current = null;
         };
 
-        window.addEventListener('mousemove', handleMouseMove);
-        window.addEventListener('mouseout', (e) => {
+        const handleMouseOut = (e) => {
             if (!e.relatedTarget && !e.toElement) handleMouseLeave();
-        });
+        };
+
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('mouseout', handleMouseOut);
         requestRef.current = requestAnimationFrame(updateAnimation);
 
         return () => {
             window.removeEventListener('resize', resizeCanvas);
             if (requestRef.current) cancelAnimationFrame(requestRef.current);
             window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('mouseout', handleMouseOut);
         };
     }, [direction, speed, borderColor, hoverFillColor, squareSize]);
 

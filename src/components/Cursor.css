@@ -18,6 +18,7 @@ textarea,
     pointer-events: none;
     width: 0;
     height: 0;
+    will-change: transform;
 }
 
 .custom-cursor-mover {

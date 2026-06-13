@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Icon } from '@iconify/react';
+import ProjectMedia from './ProjectMedia';
 import './VCRPlayer.css';
 
 const VCRPlayer = ({ currentProject, isPlaying, onEject }) => {
@@ -41,8 +42,9 @@ const VCRPlayer = ({ currentProject, isPlaying, onEject }) => {
                 <div className="tracking-line"></div>
 
                 {currentProject ? (
-                    <img
-                        src={currentProject.image}
+                    <ProjectMedia
+                        image={currentProject.image}
+                        video={currentProject.video}
                         alt="Project Preview"
                         className={`monitor-content ${isPlaying ? 'visible' : ''}`}
                     />

@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { projects } from '../data/projects';
 import { Icon } from '@iconify/react';
 import gsap from 'gsap';
+import ProjectMedia from './ProjectMedia';
 
 const ProjectDetails = () => {
     const { id } = useParams();
@@ -153,13 +154,25 @@ const ProjectDetails = () => {
                     <div className="flex flex-col gap-8">
                         {/* Main Cover */}
                         <div className="project-gallery-image" style={{ width: '100%', aspectRatio: '16/9', overflow: 'hidden', borderRadius: '4px' }}>
-                            <img src={project.image} alt={project.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            <ProjectMedia
+                                image={project.image}
+                                video={project.video}
+                                alt={project.title}
+                                eager
+                                sizes="(max-width: 768px) 100vw, 720px"
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            />
                         </div>
 
                         {/* Additional Gallery Images */}
-                        {project.gallery && project.gallery.map((img, i) => (
+                        {project.gallery && project.gallery.map((media, i) => (
                             <div key={i} className="project-gallery-image" style={{ width: '100%', aspectRatio: '4/3', overflow: 'hidden', borderRadius: '4px' }}>
-                                <img src={img} alt={`${project.title} detail ${i}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                <ProjectMedia
+                                    media={media}
+                                    alt={`${project.title} detail ${i}`}
+                                    sizes="(max-width: 768px) 100vw, 720px"
+                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                />
                             </div>
                         ))}
                     </div>

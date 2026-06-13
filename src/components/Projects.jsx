@@ -1,6 +1,5 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import gsap from 'gsap';
 import { projects } from '../data/projects';
 import VHSTape from './VHSTape';
 import MusicalText from './MusicalText';

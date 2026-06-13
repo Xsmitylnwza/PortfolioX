@@ -12,13 +12,13 @@ const Scribbles = () => {
     useEffect(() => {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
-        let animationFrameId;
         let scribbles = [];
 
         const resize = () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             initScribbles();
+            drawFrame();
         };
 
         const initScribbles = () => {
@@ -182,7 +182,7 @@ const Scribbles = () => {
             ctx.stroke();
         };
 
-        const animate = () => {
+        const drawFrame = () => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             scribbles.forEach(s => {
@@ -212,17 +212,13 @@ const Scribbles = () => {
 
                 ctx.restore();
             });
-
-            animationFrameId = requestAnimationFrame(animate);
         };
 
         window.addEventListener('resize', resize);
         resize();
-        animate();
 
         return () => {
             window.removeEventListener('resize', resize);
-            cancelAnimationFrame(animationFrameId);
         };
     }, []);
 

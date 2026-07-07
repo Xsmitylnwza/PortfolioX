@@ -254,7 +254,7 @@ const Hero = () => {
                 {/* Intro / Role Text */}
                 <div className="intro-section">
                     <p className="intro-text font-serif">
-                        <span className="intro-highlight font-sans">Backend Developer</span>, DevOps & Fullstack Engineer based in the digital void.
+                        <span className="intro-highlight font-sans">Full-Stack Developer</span>, Backend & DevOps Engineer for banking and fintech systems.
                     </p>
                     <div className="hero-actions">
                         <a href="#projects" className="btn-projects">

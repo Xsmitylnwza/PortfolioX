@@ -16,12 +16,16 @@ const Experience = () => {
     const experiences = [
         {
             id: 1,
-            period: 'PRESENT',
-            year: 'Oct 2025',
-            title: 'Software Engineer (Contract)',
-            company: 'SCB Siam Commercial Bank',
-            description: 'Re-architected AMLX rule engine into a database-driven system. Enhanced modules in React and Spring Boot.',
-            tech: ['React', 'Spring Boot', 'SQL'],
+            period: 'BANKING',
+            year: 'Oct 2025 - May 2026',
+            title: 'Software Engineer (Part-time)',
+            company: 'SCB - Siam Commercial Bank',
+            description: 'Re-architected the AMLX rule engine into a dynamic, database-driven system so compliance teams could update rules without code deployment.',
+            notes: [
+                'Modernized legacy AML workflow components across React and Spring Boot.',
+                'Worked with senior engineers and system analysts to refine complex banking requirements.'
+            ],
+            tech: ['React', 'Spring Boot', 'AMLX', 'SQL'],
             logo: '/assets/optimized/scb-logo-128.png',
             glowColor: 'var(--bg-black)',
         },
@@ -30,20 +34,28 @@ const Experience = () => {
             period: 'INTERNSHIP',
             year: 'May-Sep 2025',
             title: 'Software Engineer (Intern)',
-            company: 'TTB (TMBThanachart Bank)',
-            description: 'Built an internal productivity dashboard adopted by 7 team leads and used by 100+ developers.',
-            tech: ['React', 'Data Viz', 'Tools'],
+            company: 'TTB - TMBThanachart Bank',
+            description: 'Built an internal productivity dashboard adopted by 7 team leads and 100+ developers, later recognized at the TTB Townhall.',
+            notes: [
+                'Validated technical feasibility and optimized backend workflows with senior engineers.',
+                'Designed user flows and backend features around engineering leads pain points.'
+            ],
+            tech: ['Spring Boot', 'React', 'Dashboard'],
             logo: '/assets/optimized/ttb-logo-128.png',
             glowColor: 'var(--red-primary)',
         },
         {
             id: 3,
             period: 'FREELANCE',
-            year: 'Feb 2025',
-            title: 'Fullstack Developer',
+            year: 'Feb-Dec 2025',
+            title: 'Full-Stack Developer (Part-time)',
             company: 'Freelance',
-            description: 'Delivering end-to-end web applications using React, Spring Boot, and PostgreSQL for global clients.',
-            tech: ['React', 'Spring Boot', 'PostgreSQL'],
+            description: 'Delivered production-ready web applications while studying, owning architecture, implementation, testing, and deployment end-to-end.',
+            notes: [
+                'Managed the full SDLC from requirement gathering to final delivery.',
+                'Built scalable, maintainable client systems with React, Spring Boot, and MySQL.'
+            ],
+            tech: ['React', 'Spring Boot', 'MySQL'],
             logo: '/icon.png', // Fallback to icon for freelance
             glowColor: '#a855f7',
         },
@@ -51,10 +63,14 @@ const Experience = () => {
             id: 4,
             period: 'INTERNSHIP',
             year: 'Jan-May 2025',
-            title: 'Fullstack Developer (Intern)',
-            company: 'TOMATO ideas',
-            description: 'Developed POC features and middleware APIs using Node.js and Elysia.js.',
-            tech: ['Node.js', 'Elysia.js', 'Bun'],
+            title: 'Full-Stack Developer (Intern)',
+            company: 'Tomato Ideas Co., Ltd.',
+            description: 'Designed and implemented a scalable middleware API with Node.js and Elysia.js, standardizing third-party integrations.',
+            notes: [
+                'Prototyped key Proof-of-Concept features that shaped the product roadmap.',
+                'Collaborated cross-functionally to move validated POCs into production.'
+            ],
+            tech: ['Node.js', 'Elysia.js', 'API'],
             logo: '/assets/optimized/tomato-logo-128.jpg',
             glowColor: '#3b82f6',
         },
@@ -212,13 +228,13 @@ const Experience = () => {
                             }}></div>
 
                             <div className="newspaper-clipping">
-                                <div className="news-header font-display">DAILY TECH CHRONICLE</div>
+                                <div className="news-header font-display">{exp.company}</div>
                                 <div className="news-content font-serif">
                                     <div className="news-col">
-                                        LOREM IPSUM DOLOR SIT AMET, CONSECTETUR ADIPISCING ELIT. NULLAM AUCTOR, NISI EGET ULTRICES TINCIDUNT, NUNC NIBH TINCIDUNT NUNC.
+                                        {exp.notes?.[0] || exp.description}
                                     </div>
                                     <div className="news-col">
-                                        VIVAMUS ORNARE MAGNA QUIS TELLUS PRETIUM, AC TINCIDUNT IPSUM SOLLICITUDIN. CRAS VITAE IPSUM VELIT.
+                                        {exp.notes?.[1] || exp.title}
                                     </div>
                                 </div>
                             </div>

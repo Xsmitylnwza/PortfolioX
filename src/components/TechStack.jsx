@@ -9,14 +9,22 @@ const TechStack = () => {
     const sectionRef = useRef(null);
 
     const technologies = [
+        { name: 'Java', icon: 'logos:java' },
         { name: 'Spring Boot', icon: 'logos:spring-icon' },
-        { name: 'Docker', icon: 'logos:docker-icon' },
-        { name: 'AWS', icon: 'logos:aws' },
-        { name: 'Go', icon: 'logos:go' },
-        { name: 'Next.js', icon: 'logos:nextjs-icon' },
         { name: 'React', icon: 'logos:react' },
+        { name: 'Next.js', icon: 'logos:nextjs-icon' },
+        { name: 'Node.js', icon: 'logos:nodejs-icon' },
+        { name: 'Elysia.js', icon: 'skill-icons:elysia-light' },
+        { name: 'Go', icon: 'logos:go' },
+        { name: 'WebSocket', icon: 'lucide:radio-tower' },
         { name: 'MySQL', icon: 'logos:mysql' },
-        { name: 'Jenkins', icon: 'logos:jenkins' },
+        { name: 'PostgreSQL', icon: 'logos:postgresql' },
+        { name: 'Docker', icon: 'logos:docker-icon' },
+        { name: 'Nginx', icon: 'logos:nginx' },
+        { name: 'GitLab CI', icon: 'logos:gitlab-icon' },
+        { name: 'Kaniko', icon: 'logos:google-cloud' },
+        { name: 'AWS EC2/S3', icon: 'logos:aws' },
+        { name: 'AI Coding', icon: 'lucide:sparkles' },
     ];
 
     useEffect(() => {
@@ -49,7 +57,7 @@ const TechStack = () => {
                 background: 'linear-gradient(to bottom, rgba(5, 5, 5, 0), rgba(5, 5, 5, 0.3))'
             }}
         >
-            <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+            <div style={{ maxWidth: '1120px', margin: '0 auto' }}>
 
                 <h2 className="font-display" style={{
                     textAlign: 'center',
@@ -93,6 +101,7 @@ const TechStack = () => {
                     cursor: pointer;
                     transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
                     backdrop-filter: blur(4px);
+                    min-height: 160px;
                 }
 
                 .palette-card:hover {
@@ -106,7 +115,7 @@ const TechStack = () => {
                     font-size: 2.5rem;
                     color: var(--text-secondary);
                     transition: all 0.5s ease;
-                    filter: grayscale(100%) opacity(0.7);
+                    filter: grayscale(30%) opacity(0.9);
                 }
 
                 .palette-card:hover .icon-wrapper {
@@ -125,10 +134,11 @@ const TechStack = () => {
 
                 .tech-name {
                     font-size: 0.875rem;
-                    color: var(--text-muted);
+                    color: rgba(242, 242, 242, 0.68);
                     font-weight: 500;
                     letter-spacing: 0.05em;
                     transition: color 0.3s ease;
+                    text-align: center;
                 }
 
                 .palette-card:hover .tech-name {

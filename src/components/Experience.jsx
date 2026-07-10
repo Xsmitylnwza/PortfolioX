@@ -1,301 +1,277 @@
-import { useEffect, useRef } from 'react';
-import { Icon } from '@iconify/react';
+import { useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import MusicalText from './MusicalText';
 import './Experience.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const experiences = [
+    {
+        id: '01',
+        signal: 'CURRENT SYSTEM',
+        company: 'SCB — Siam Commercial Bank',
+        role: 'Software Engineer (Contract)',
+        startDate: '2025-10-01',
+        startLabel: '01 Oct 2025',
+        endLabel: 'Present',
+        logo: '/assets/optimized/scb-logo-128.png',
+        before: 'Deployment-bound rules',
+        after: 'Database-driven configuration',
+        proofValue: 'RULES → DATA',
+        proofLabel: 'Dynamic AMLX configuration',
+        summary: 'Re-architecting compliance workflows so complex rule changes become visible, configurable, and easier to operate.',
+        evidence: [
+            'Re-architected the AMLX rule engine into a dynamic, database-driven configuration with a visual rule-management UI.',
+            'Enhanced React, Spring Boot, Spring Batch, SAS, and SQL modules to improve reliability and reduce AML processing failures.',
+        ],
+        tech: ['React', 'Spring Boot', 'Spring Batch', 'SAS', 'SQL'],
+    },
+    {
+        id: '02',
+        signal: 'ADOPTED TOOL',
+        company: 'TTB — TMBThanachart Bank',
+        role: 'Software Engineer (Intern)',
+        startDate: '2025-05-19',
+        startLabel: '19 May 2025',
+        endDate: '2025-09-01',
+        endLabel: '01 Sep 2025',
+        logo: '/assets/optimized/ttb-logo-128.png',
+        before: 'Team-lead pain points',
+        after: 'Shared productivity workflow',
+        proofValue: '100+',
+        proofLabel: 'Developers across 7 team leads',
+        summary: 'Turned operational friction into an internal dashboard with measurable reach across engineering teams.',
+        evidence: [
+            'Translated a senior-led product vision into user flows and Spring Boot backend features, then validated feasibility with senior engineers.',
+            'Delivered a tool adopted by 7 team leads supporting 100+ developers and showcased at the TTB Townhall.',
+        ],
+        tech: ['Spring Boot', 'User flows', 'Workflow design'],
+    },
+    {
+        id: '03',
+        signal: 'CLIENT DELIVERY',
+        company: 'Freelance',
+        role: 'Full Stack Developer',
+        startDate: '2025-02-17',
+        startLabel: '17 Feb 2025',
+        endLabel: 'Present',
+        logo: '/icon.png',
+        before: 'Client requirements',
+        after: 'Production-ready products',
+        proofValue: 'END → END',
+        proofLabel: 'Architecture through deployment',
+        summary: 'Owned the whole delivery loop: understand the problem, choose the architecture, build, test, and ship.',
+        evidence: [
+            'Owned architecture, implementation, testing, and deployment for React, Spring Boot, and MySQL web applications.',
+            'Worked directly with clients to clarify requirements, propose solutions, and iterate toward production readiness.',
+        ],
+        tech: ['React', 'Spring Boot', 'MySQL'],
+    },
+    {
+        id: '04',
+        signal: 'PRODUCT R&D',
+        company: 'Tomato Ideas Co., Ltd.',
+        role: 'Full Stack Developer (Intern)',
+        startDate: '2025-01-05',
+        startLabel: '05 Jan 2025',
+        endDate: '2025-05-15',
+        endLabel: '15 May 2025',
+        logo: '/assets/optimized/tomato-logo-128.jpg',
+        before: 'Uncertain product direction',
+        after: 'Validated technical paths',
+        proofValue: 'POC → PROD',
+        proofLabel: 'Research translated into delivery',
+        summary: 'Used prototypes to reduce uncertainty, then converted validated ideas into reliable integration architecture.',
+        evidence: [
+            'Researched and validated POC features that informed product direction and accelerated decision-making.',
+            'Built a scalable Node.js and Elysia.js middleware API for more reliable third-party service integrations.',
+        ],
+        tech: ['Node.js', 'Elysia.js', 'API integrations'],
+    },
+];
+
 const Experience = () => {
     const sectionRef = useRef(null);
-    const containerRef = useRef(null);
-    const pathRef = useRef(null);
-    const cardRefs = useRef([]);
+    const storyRef = useRef(null);
 
-    const experiences = [
-        {
-            id: 1,
-            period: 'BANKING',
-            year: 'Oct 2025 - May 2026',
-            title: 'Software Engineer (Part-time)',
-            company: 'SCB - Siam Commercial Bank',
-            description: 'Re-architected the AMLX rule engine into a dynamic, database-driven system so compliance teams could update rules without code deployment.',
-            notes: [
-                'Modernized legacy AML workflow components across React and Spring Boot.',
-                'Worked with senior engineers and system analysts to refine complex banking requirements.'
-            ],
-            tech: ['React', 'Spring Boot', 'AMLX', 'SQL'],
-            logo: '/assets/optimized/scb-logo-128.png',
-            glowColor: 'var(--bg-black)',
-        },
-        {
-            id: 2,
-            period: 'INTERNSHIP',
-            year: 'May-Sep 2025',
-            title: 'Software Engineer (Intern)',
-            company: 'TTB - TMBThanachart Bank',
-            description: 'Built an internal productivity dashboard adopted by 7 team leads and 100+ developers, later recognized at the TTB Townhall.',
-            notes: [
-                'Validated technical feasibility and optimized backend workflows with senior engineers.',
-                'Designed user flows and backend features around engineering leads pain points.'
-            ],
-            tech: ['Spring Boot', 'React', 'Dashboard'],
-            logo: '/assets/optimized/ttb-logo-128.png',
-            glowColor: 'var(--red-primary)',
-        },
-        {
-            id: 3,
-            period: 'FREELANCE',
-            year: 'Feb-Dec 2025',
-            title: 'Full-Stack Developer (Part-time)',
-            company: 'Freelance',
-            description: 'Delivered production-ready web applications while studying, owning architecture, implementation, testing, and deployment end-to-end.',
-            notes: [
-                'Managed the full SDLC from requirement gathering to final delivery.',
-                'Built scalable, maintainable client systems with React, Spring Boot, and MySQL.'
-            ],
-            tech: ['React', 'Spring Boot', 'MySQL'],
-            logo: '/icon.png', // Fallback to icon for freelance
-            glowColor: '#a855f7',
-        },
-        {
-            id: 4,
-            period: 'INTERNSHIP',
-            year: 'Jan-May 2025',
-            title: 'Full-Stack Developer (Intern)',
-            company: 'Tomato Ideas Co., Ltd.',
-            description: 'Designed and implemented a scalable middleware API with Node.js and Elysia.js, standardizing third-party integrations.',
-            notes: [
-                'Prototyped key Proof-of-Concept features that shaped the product roadmap.',
-                'Collaborated cross-functionally to move validated POCs into production.'
-            ],
-            tech: ['Node.js', 'Elysia.js', 'API'],
-            logo: '/assets/optimized/tomato-logo-128.jpg',
-            glowColor: '#3b82f6',
-        },
-    ];
+    useLayoutEffect(() => {
+        const section = sectionRef.current;
+        const story = storyRef.current;
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const updatePath = () => {
-        if (!containerRef.current || !pathRef.current || cardRefs.current.length === 0) return;
+        if (!section || !story || reducedMotion) return undefined;
 
-        const containerRect = containerRef.current.getBoundingClientRect();
-        const points = cardRefs.current.map(card => {
-            if (!card) return [0, 0];
-            const rect = card.getBoundingClientRect();
-            const x = rect.left + rect.width / 2 - containerRect.left;
-            const y = rect.top + 20 - containerRect.top;
-            return { x, y };
-        });
-
-        let pathStr = `M ${points[0].x} ${points[0].y}`;
-
-        for (let i = 1; i < points.length; i++) {
-            const p1 = points[i - 1];
-            const p2 = points[i];
-            const midX = (p1.x + p2.x) / 2;
-            const midY = (p1.y + p2.y) / 2 + 50;
-            pathStr += ` Q ${midX} ${midY + (Math.random() * 20)} ${p2.x} ${p2.y}`;
-        }
-
-        pathRef.current.setAttribute('d', pathStr);
-
-        const length = pathRef.current.getTotalLength();
-        gsap.set(pathRef.current, { strokeDasharray: length, strokeDashoffset: length });
-
-        ScrollTrigger.getAll().forEach(t => {
-            if (t.vars.trigger === '.evidence-board') t.kill();
-        });
-
-        gsap.to(pathRef.current, {
-            strokeDashoffset: 0,
-            ease: 'none',
-            scrollTrigger: {
-                trigger: '.evidence-board',
-                start: 'top center',
-                end: 'bottom center',
-                scrub: 1
-            }
-        });
-    };
-
-    useEffect(() => {
         const ctx = gsap.context(() => {
-            cardRefs.current.forEach((card, i) => {
-                if (!card) return;
-                gsap.fromTo(card,
-                    { scale: 0.8, opacity: 0, rotation: i % 2 === 0 ? -10 : 10 },
-                    {
-                        scale: 1,
-                        opacity: 1,
-                        rotation: i % 2 === 0 ? -2 : 2,
-                        duration: 0.8,
-                        ease: 'back.out(1.7)',
-                        scrollTrigger: {
-                            trigger: card,
-                            start: 'top 80%',
-                        }
-                    }
-                );
+            const intro = section.querySelector('.evidence-chapter__intro-inner');
+            const cards = gsap.utils.toArray('.evidence-scene__content');
+            const markers = gsap.utils.toArray('.evidence-scene__marker');
+            const cableFill = section.querySelector('.evidence-cable__fill');
+            const outro = section.querySelector('.evidence-chapter__outro');
+
+            gsap.set(intro, { opacity: 0, y: 56 });
+            gsap.set(cards, { opacity: 0, y: 72, scale: 0.965 });
+            gsap.set(markers, { opacity: 0.2, scale: 0.65 });
+            gsap.set(cableFill, { scaleY: 0, transformOrigin: 'top center' });
+            gsap.set(outro, { opacity: 0, y: 48 });
+
+            const timeline = gsap.timeline({
+                defaults: { ease: 'power2.out' },
+                scrollTrigger: {
+                    trigger: section,
+                    start: 'top 82%',
+                    end: 'bottom 76%',
+                    scrub: 0.55,
+                    invalidateOnRefresh: true,
+                },
             });
 
-            gsap.utils.toArray('.huge-year').forEach((year) => {
-                gsap.to(year, {
-                    y: 100,
-                    scrollTrigger: {
-                        trigger: year.parentElement,
-                        start: 'top bottom',
-                        end: 'bottom top',
-                        scrub: 1
-                    }
-                });
+            timeline
+                .to(intro, { opacity: 1, y: 0, duration: 0.65 }, 0)
+                .to(cableFill, { scaleY: 1, duration: experiences.length + 0.9, ease: 'none' }, 0.35);
+
+            cards.forEach((card, index) => {
+                const revealAt = 0.8 + index;
+
+                timeline
+                    .to(markers[index], { opacity: 1, scale: 1, duration: 0.32 }, revealAt)
+                    .to(card, { opacity: 1, y: 0, scale: 1, duration: 0.58 }, revealAt + 0.06);
             });
 
-            updatePath();
-            window.addEventListener('resize', updatePath);
+            timeline.to(outro, { opacity: 1, y: 0, duration: 0.55 }, experiences.length + 0.45);
+        }, section);
 
-        }, sectionRef);
-
-        setTimeout(updatePath, 500);
-
-        return () => {
-            window.removeEventListener('resize', updatePath);
-            ctx.revert();
-        };
+        return () => ctx.revert();
     }, []);
 
     return (
         <section
             id="experience"
             ref={sectionRef}
-            style={{
-                position: 'relative',
-                overflow: 'hidden',
-                padding: '8rem 0'
-            }}
+            className="evidence-chapter"
+            aria-labelledby="evidence-title"
         >
-            <div style={{ textAlign: 'center', marginBottom: '4rem', position: 'relative', zIndex: 10 }}>
-                <h2 className="font-serif-italic" style={{ fontSize: 'clamp(3rem, 6vw, 5rem)', fontWeight: 400, color: 'var(--text-primary)' }}>
-                    The <span style={{ color: 'var(--red-primary)' }}><MusicalText song="GHOST">Journey</MusicalText></span>
-                </h2>
+            <header className="evidence-chapter__intro">
+                <div className="evidence-chapter__intro-inner">
+                    <div className="evidence-chapter__index" aria-hidden="true">
+                        <span>CHAPTER</span>
+                        <strong>02</strong>
+                        <span>OF 04</span>
+                    </div>
 
-            </div>
+                    <div className="evidence-chapter__heading">
+                        <p className="evidence-chapter__eyebrow">
+                            <span aria-hidden="true" /> Evidence / work history
+                        </p>
+                        <h2 id="evidence-title">
+                            THE WORK
+                            <span>HOLDS.</span>
+                        </h2>
+                    </div>
 
-            <div ref={containerRef} className="evidence-board">
+                    <div className="evidence-chapter__brief">
+                        <p>
+                            A rewind through four environments where ideas met real constraints:
+                            regulated banking, team operations, client delivery, and product R&amp;D.
+                        </p>
+                        <div className="evidence-chapter__thesis" aria-label="From chaos to systems">
+                            <span>CHAOS</span>
+                            <i aria-hidden="true"><b /></i>
+                            <span>SYSTEMS</span>
+                        </div>
+                        <span className="evidence-chapter__instruction">SCROLL TO REWIND / 04 FILES</span>
+                    </div>
+                </div>
+            </header>
 
-                <svg
-                    style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        zIndex: 0,
-                        pointerEvents: 'none',
-                        overflow: 'visible'
-                    }}
-                >
-                    <path
-                        ref={pathRef}
-                        stroke="var(--red-primary)"
-                        strokeWidth="2"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))' }}
-                    />
-                </svg>
+            <div ref={storyRef} className="evidence-story">
+                <div className="evidence-cable" aria-hidden="true">
+                    <span className="evidence-cable__track" />
+                    <span className="evidence-cable__fill" />
+                </div>
 
-                {experiences.map((exp, i) => (
-                    <div key={exp.id} className="evidence-item">
-                        <div
-                            className="evidence-group"
-                            ref={el => cardRefs.current[i] = el}
-                            data-cursor="view"
-                            data-cursor-text="OPEN CASE"
-                        >
-                            <div className="string-pin" style={{
-                                position: 'absolute',
-                                top: '10px',
-                                left: '50%',
-                                transform: 'translateX(-50%)',
-                                width: '12px',
-                                height: '12px',
-                                borderRadius: '50%',
-                                background: '#881337',
-                                boxShadow: '0 2px 5px rgba(0,0,0,0.5), inset 0 2px 2px rgba(255,255,255,0.3)',
-                                zIndex: 100
-                            }}></div>
+                <ol className="evidence-sequence" aria-label="Work experience, newest first">
+                    {experiences.map((experience) => (
+                        <li className="evidence-scene" key={experience.id}>
+                            <span className="evidence-scene__marker" aria-hidden="true">
+                                <i />
+                                {experience.id}
+                            </span>
 
-                            <div className="newspaper-clipping">
-                                <div className="news-header font-display">{exp.company}</div>
-                                <div className="news-content font-serif">
-                                    <div className="news-col">
-                                        {exp.notes?.[0] || exp.description}
-                                    </div>
-                                    <div className="news-col">
-                                        {exp.notes?.[1] || exp.title}
-                                    </div>
-                                </div>
-                            </div>
+                            <div className="evidence-scene__content">
+                                <article className="evidence-card" aria-labelledby={`experience-${experience.id}`}>
+                                    <div className="evidence-card__tape" aria-hidden="true" />
 
-                            <div className="folder-card">
-                                <div className="tape-corner"></div>
+                                    <header className="evidence-card__header">
+                                        <div className="evidence-card__case-meta">
+                                            <span>CASE / E-{experience.id}</span>
+                                            <span>{experience.signal}</span>
+                                        </div>
 
-                                <div style={{ position: 'relative', zIndex: 10 }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px dashed rgba(0,0,0,0.2)', paddingBottom: '1rem', marginBottom: '1rem' }}>
-                                        <span className="font-mono" style={{ fontWeight: 700 }}>{exp.period}</span>
-                                        <span className="font-mono" style={{ color: 'var(--red-primary)' }}>// {exp.id.toString().padStart(3, '0')}</span>
-                                    </div>
-
-                                    <h3 className="font-display" style={{ fontSize: '2.5rem', lineHeight: 1, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                        {exp.logo && (
+                                        <div className="evidence-card__identity">
                                             <img
-                                                src={exp.logo}
-                                                alt={exp.company}
+                                                src={experience.logo}
+                                                alt=""
+                                                width="64"
+                                                height="64"
                                                 loading="lazy"
                                                 decoding="async"
-                                                style={{ width: '50px', height: '50px', objectFit: 'contain' }}
                                             />
-                                        )}
-                                        {exp.company}
-                                    </h3>
+                                            <div>
+                                                <h3 id={`experience-${experience.id}`}>{experience.company}</h3>
+                                                <p>{experience.role}</p>
+                                            </div>
+                                        </div>
 
-                                    <h4 className="font-serif-italic" style={{ fontSize: '1.5rem', marginBottom: '1.5rem', opacity: 0.8 }}>
-                                        {exp.title}
-                                    </h4>
+                                        <p className="evidence-card__period">
+                                            <time dateTime={experience.startDate}>{experience.startLabel}</time>
+                                            <span aria-hidden="true">—</span>
+                                            {experience.endDate ? (
+                                                <time dateTime={experience.endDate}>{experience.endLabel}</time>
+                                            ) : (
+                                                <span>{experience.endLabel}</span>
+                                            )}
+                                        </p>
+                                    </header>
 
-                                    <p className="font-sans" style={{ fontSize: '1rem', lineHeight: 1.5, fontWeight: 500, marginBottom: '2rem' }}>
-                                        {exp.description}
-                                    </p>
-
-                                    <div className="tech-stamps" style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', transform: 'rotate(-2deg)' }}>
-                                        {exp.tech.map((tech) => (
-                                            <span key={tech} className="tech-stamp-item" style={{
-                                                border: '2px solid var(--red-primary)',
-                                                color: 'var(--red-primary)',
-                                                padding: '0.25rem 0.75rem',
-                                                fontFamily: "'Permanent Marker', cursive",
-                                                fontSize: '0.75rem',
-                                                textTransform: 'uppercase',
-                                                opacity: 0.8,
-                                                transform: `rotate(${Math.random() * 10 - 5}deg)`
-                                            }}>
-                                                {tech}
-                                            </span>
-                                        ))}
+                                    <div className="evidence-card__transformation" aria-label="System transformation">
+                                        <span>{experience.before}</span>
+                                        <i aria-hidden="true">→</i>
+                                        <strong>{experience.after}</strong>
                                     </div>
-                                </div>
 
-                                <div className="huge-year font-display">
-                                    {exp.year}
-                                </div>
+                                    <div className="evidence-card__body">
+                                        <div className="evidence-card__proof">
+                                            <span>PROOF POINT</span>
+                                            <strong>{experience.proofValue}</strong>
+                                            <p>{experience.proofLabel}</p>
+                                        </div>
+
+                                        <div className="evidence-card__copy">
+                                            <p className="evidence-card__summary">{experience.summary}</p>
+                                            <ul>
+                                                {experience.evidence.map((item) => <li key={item}>{item}</li>)}
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <footer className="evidence-card__footer">
+                                        <span>STACK / METHODS</span>
+                                        <ul aria-label={`Technologies and methods used at ${experience.company}`}>
+                                            {experience.tech.map((item) => <li key={item}>{item}</li>)}
+                                        </ul>
+                                    </footer>
+                                </article>
                             </div>
-                        </div>
-                    </div>
-                ))}
-
+                        </li>
+                    ))}
+                </ol>
             </div>
+
+            <footer className="evidence-chapter__outro">
+                <span className="evidence-chapter__outro-index">02 / COMPLETE</span>
+                <p>Signals became decisions.<br />Decisions became <em>systems.</em></p>
+                <span className="evidence-chapter__next">NEXT — THE ENGINE BEHIND THE WORK</span>
+            </footer>
         </section>
     );
 };

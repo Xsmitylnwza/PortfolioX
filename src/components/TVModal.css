@@ -35,6 +35,18 @@
     opacity: 1;
 }
 
+.tv-modal-container.static-tv {
+    position: relative;
+    width: 100%;
+    max-width: 320px;
+    height: 240px;
+    margin: 0 auto 2rem;
+    transform: none;
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 1;
+}
+
 /* Screen */
 .tv-screen {
     width: 100%;
@@ -46,6 +58,8 @@
     overflow: hidden;
     border: 2px solid #000;
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 1);
+    contain: paint;
+    isolation: isolate;
 }
 
 /* Image Content with Glitch */
@@ -57,7 +71,7 @@
     background: #000;
     filter: contrast(1.2) brightness(1.1) sepia(0.2) grayscale(0.2);
     /* V-Hold Shake Animation */
-    animation: v-hold 4s infinite steps(1);
+    animation: none;
 }
 
 /* Effects Layer */
@@ -80,13 +94,14 @@
 /* 2. Tracking Noise (Moving Bar) */
 .tv-tracking {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 20px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(2px) invert(0.1);
-    animation: tracking-scan 3s linear infinite;
+    inset: 0;
+    background: linear-gradient(to bottom,
+            transparent 43%,
+            rgba(255, 255, 255, 0.04) 47%,
+            rgba(255, 255, 255, 0.14) 50%,
+            rgba(255, 255, 255, 0.04) 53%,
+            transparent 57%);
+    animation: none;
     z-index: 11;
     opacity: 0.5;
 }
@@ -97,7 +112,7 @@
     inset: 0;
     opacity: 0.15;
     background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
-    animation: noise-anim 0.2s steps(4) infinite;
+    animation: none;
     z-index: 12;
 }
 
@@ -123,10 +138,50 @@
     opacity: 0.8;
 }
 
+.tv-power-led {
+    position: absolute;
+    right: 20px;
+    bottom: 5px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #f22;
+    box-shadow: 0 0 5px #f22;
+}
+
+.tv-modal-container.visible .tv-effects,
+.static-tv[data-crt-active="true"] .tv-effects {
+    transform: translateZ(0);
+}
+
+.tv-modal-container.visible .tv-image,
+.static-tv[data-crt-active="true"] .tv-image {
+    animation: v-hold 4s infinite steps(1);
+    will-change: transform;
+}
+
+.tv-modal-container.visible .tv-tracking,
+.static-tv[data-crt-active="true"] .tv-tracking {
+    animation: tracking-scan 3s linear infinite;
+    will-change: transform, opacity;
+}
+
+.tv-modal-container.visible .tv-static,
+.static-tv[data-crt-active="true"] .tv-static {
+    animation: noise-anim 0.45s steps(4) infinite;
+    will-change: transform;
+}
+
+body.is-scrolling .static-tv[data-crt-active="true"] .tv-image,
+body.is-scrolling .static-tv[data-crt-active="true"] .tv-tracking,
+body.is-scrolling .static-tv[data-crt-active="true"] .tv-static {
+    animation-play-state: running !important;
+}
+
 /* Animations */
 @keyframes tracking-scan {
     0% {
-        top: -10%;
+        transform: translate3d(0, -62%, 0);
         opacity: 0;
     }
 
@@ -139,7 +194,7 @@
     }
 
     100% {
-        top: 110%;
+        transform: translate3d(0, 62%, 0);
         opacity: 0;
     }
 }
@@ -196,5 +251,32 @@
 
     100% {
         transform: translate(0, 0);
+    }
+}
+
+@media (hover: none), (pointer: coarse) {
+    .static-tv[data-crt-active="true"] .tv-static {
+        opacity: 0.1;
+        animation-duration: 0.75s;
+        animation-timing-function: steps(3);
+    }
+
+    .static-tv[data-crt-active="true"] .tv-tracking {
+        animation-duration: 4.8s;
+    }
+
+    .static-tv[data-crt-active="true"] .tv-image {
+        animation-duration: 6s;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .tv-modal-container .tv-image,
+    .tv-modal-container .tv-tracking,
+    .tv-modal-container .tv-static,
+    body.is-scrolling .static-tv[data-crt-active="true"] .tv-image,
+    body.is-scrolling .static-tv[data-crt-active="true"] .tv-tracking,
+    body.is-scrolling .static-tv[data-crt-active="true"] .tv-static {
+        animation: none !important;
     }
 }

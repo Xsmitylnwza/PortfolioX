@@ -1,0 +1,405 @@
+.channel-section {
+    --channel-red: #e3262e;
+    --channel-dark-red: #7f1118;
+    --channel-paper: #e8e0d1;
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    padding: clamp(6rem, 10vw, 10rem) clamp(1rem, 4vw, 4rem) 3rem;
+    color: #f2f2f2;
+    background:
+        radial-gradient(circle at 50% 0%, rgba(227, 38, 46, 0.22), transparent 35%),
+        linear-gradient(180deg, #050505 0%, #090303 100%);
+}
+
+.channel-section::before {
+    content: "04";
+    position: absolute;
+    right: -0.02em;
+    bottom: -0.2em;
+    z-index: -1;
+    color: rgba(227, 38, 46, 0.055);
+    font-family: var(--font-display);
+    font-size: clamp(16rem, 50vw, 45rem);
+    font-weight: 800;
+    letter-spacing: -0.12em;
+    line-height: 0.7;
+    pointer-events: none;
+}
+
+.channel-transmission {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    gap: 2rem;
+    width: min(100%, 1440px);
+    margin: 0 auto 1rem;
+    padding: 0.7rem 1rem;
+    color: rgba(242, 242, 242, 0.55);
+    background: #050505;
+    border: 1px solid rgba(242, 242, 242, 0.12);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+}
+
+.channel-transmission span:last-child {
+    text-align: right;
+}
+
+.channel-stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(20rem, 0.6fr);
+    width: min(100%, 1440px);
+    min-height: min(760px, 78vh);
+    margin: 0 auto;
+    overflow: hidden;
+    color: #f2f2f2;
+    background:
+        linear-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+        var(--channel-red);
+    background-size: 44px 44px, 44px 44px, auto;
+    border: 1px solid rgba(242, 242, 242, 0.22);
+    box-shadow: 1.2rem 1.2rem 0 rgba(127, 17, 24, 0.42);
+}
+
+.channel-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(2rem, 6vw, 6rem);
+}
+
+.channel-chapter {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: clamp(2rem, 5vw, 4rem);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+}
+
+.channel-chapter span {
+    display: grid;
+    width: 2.2rem;
+    aspect-ratio: 1;
+    place-items: center;
+    color: var(--channel-red);
+    background: #050505;
+}
+
+.channel-kicker {
+    margin-bottom: 1rem;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+}
+
+.channel-copy h2 {
+    max-width: 10ch;
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(3.7rem, 8vw, 8.5rem);
+    font-weight: 800;
+    letter-spacing: -0.078em;
+    line-height: 0.84;
+    text-transform: uppercase;
+}
+
+.channel-copy h2 em {
+    color: var(--channel-paper);
+    font-family: var(--font-serif);
+    font-weight: 400;
+    text-transform: none;
+}
+
+.channel-lede {
+    max-width: 39rem;
+    margin-top: 2rem;
+    color: rgba(242, 242, 242, 0.8);
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    line-height: 1.7;
+}
+
+.channel-email {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    width: min(100%, 42rem);
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+    padding: 1.1rem 1.2rem;
+    color: #050505;
+    background: var(--channel-paper);
+    border: 2px solid #050505;
+    box-shadow: 0.45rem 0.45rem 0 #050505;
+    font-family: var(--font-display);
+    font-size: clamp(0.82rem, 1.4vw, 1rem);
+    font-weight: 700;
+    overflow-wrap: anywhere;
+    transition: color 180ms ease, background-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.channel-email small {
+    display: block;
+    margin-bottom: 0.28rem;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.56rem;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+}
+
+.channel-email b {
+    flex: 0 0 auto;
+    font-size: 1.5rem;
+}
+
+.channel-email:hover,
+.channel-email:focus-visible {
+    color: #f2f2f2;
+    background: #050505;
+    box-shadow: 0.2rem 0.2rem 0 var(--channel-paper);
+    transform: translate(0.25rem, 0.25rem);
+}
+
+.channel-email:focus-visible,
+.channel-links a:focus-visible {
+    outline: 3px solid var(--channel-paper);
+    outline-offset: 4px;
+}
+
+.channel-directory {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2rem;
+    padding: clamp(2rem, 5vw, 5rem);
+    color: #f2f2f2;
+    background:
+        linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        #050505;
+    background-size: 100% 7px, auto;
+    border-left: 1px solid rgba(242, 242, 242, 0.16);
+}
+
+.channel-note {
+    position: relative;
+    padding: clamp(1.6rem, 4vw, 2.7rem);
+    color: #050505;
+    background:
+        linear-gradient(115deg, rgba(0, 0, 0, 0.045), transparent 26%),
+        var(--channel-paper);
+    box-shadow: 0.7rem 0.8rem 0 rgba(127, 17, 24, 0.7);
+    transform: rotate(-2deg);
+}
+
+.channel-note::before {
+    content: "";
+    position: absolute;
+    top: -0.8rem;
+    left: 50%;
+    width: 7rem;
+    height: 1.8rem;
+    background: rgba(255, 255, 255, 0.46);
+    transform: translateX(-50%) rotate(1deg);
+}
+
+.channel-note > p {
+    margin-bottom: 1.7rem;
+    color: var(--channel-red);
+    font-family: 'Permanent Marker', cursive;
+    font-size: 1.25rem;
+    transform: rotate(-2deg);
+}
+
+.channel-note dl,
+.channel-note dl div {
+    margin: 0;
+}
+
+.channel-note dl div {
+    display: grid;
+    grid-template-columns: 5rem 1fr;
+    gap: 0.75rem;
+    padding: 0.7rem 0;
+    border-top: 1px solid rgba(5, 5, 5, 0.2);
+}
+
+.channel-note dt,
+.channel-note dd {
+    margin: 0;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+}
+
+.channel-note dt {
+    color: rgba(5, 5, 5, 0.52);
+}
+
+.channel-note dd {
+    font-weight: 700;
+}
+
+.channel-links {
+    border-top: 1px solid rgba(242, 242, 242, 0.18);
+}
+
+.channel-links a {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1rem;
+    align-items: center;
+    padding: 1.1rem 0.2rem;
+    border-bottom: 1px solid rgba(242, 242, 242, 0.18);
+    transition: color 180ms ease, padding 180ms ease, border-color 180ms ease;
+}
+
+.channel-links a > span:first-child {
+    color: var(--channel-red);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.62rem;
+}
+
+.channel-links small,
+.channel-links strong {
+    display: block;
+}
+
+.channel-links small {
+    margin-bottom: 0.2rem;
+    color: rgba(242, 242, 242, 0.45);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.56rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.channel-links strong {
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.channel-links b {
+    font-size: 1.25rem;
+    font-weight: 400;
+}
+
+.channel-links a:hover,
+.channel-links a:focus-visible {
+    color: var(--channel-paper);
+    padding-right: 0.7rem;
+    padding-left: 0.7rem;
+    border-color: var(--channel-red);
+}
+
+.channel-signoff {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 1rem;
+    align-items: center;
+    width: min(100%, 1440px);
+    margin: clamp(3rem, 6vw, 6rem) auto 0;
+    color: rgba(242, 242, 242, 0.54);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.64rem;
+    letter-spacing: 0.17em;
+}
+
+.channel-signoff i {
+    height: 1px;
+    background: linear-gradient(90deg, rgba(242, 242, 242, 0.1), var(--channel-red), rgba(242, 242, 242, 0.1));
+}
+
+.channel-reveal {
+    opacity: 0;
+    transform: translateY(2.5rem);
+    transition: opacity 760ms ease, transform 760ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.channel-directory.channel-reveal {
+    transition-delay: 100ms;
+}
+
+.channel-signoff.channel-reveal {
+    transition-delay: 180ms;
+}
+
+.channel-section.is-visible .channel-reveal {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@media (max-width: 960px) {
+    .channel-stage {
+        grid-template-columns: 1fr;
+        min-height: 0;
+    }
+
+    .channel-copy {
+        min-height: 70vh;
+    }
+
+    .channel-directory {
+        border-top: 1px solid rgba(242, 242, 242, 0.16);
+        border-left: 0;
+    }
+
+    .channel-note {
+        width: min(100%, 34rem);
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 620px) {
+    .channel-section {
+        padding-right: 1rem;
+        padding-left: 1rem;
+    }
+
+    .channel-transmission {
+        grid-template-columns: auto 1fr;
+        gap: 1rem;
+    }
+
+    .channel-transmission span:nth-child(2) {
+        display: none;
+    }
+
+    .channel-copy {
+        min-height: 0;
+        padding: 3rem 1.25rem;
+    }
+
+    .channel-copy h2 {
+        font-size: clamp(3.25rem, 16vw, 5rem);
+    }
+
+    .channel-email {
+        align-items: flex-start;
+        padding: 1rem;
+    }
+
+    .channel-directory {
+        padding: 3rem 1.25rem;
+    }
+
+    .channel-signoff {
+        font-size: 0.56rem;
+        letter-spacing: 0.1em;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .channel-reveal,
+    .channel-section.is-visible .channel-reveal,
+    .channel-email,
+    .channel-links a {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}

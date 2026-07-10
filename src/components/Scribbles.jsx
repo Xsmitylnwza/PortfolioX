@@ -1,5 +1,4 @@
-import React, { useEffect, useRef } from 'react';
-import { RoughNotation, RoughNotationGroup } from 'react-rough-notation';
+import { useEffect, useRef } from 'react';
 
 /**
  * Scribbles Background Component
@@ -226,7 +225,7 @@ const Scribbles = () => {
         <canvas
             ref={canvasRef}
             style={{
-                position: 'fixed',
+                position: 'absolute',
                 top: 0,
                 left: 0,
                 width: '100%',

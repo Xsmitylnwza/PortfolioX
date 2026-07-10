@@ -12,12 +12,13 @@ import Cursor from './components/Cursor';
 import Scribbles from './components/Scribbles';
 import MusicPlayer from './components/MusicPlayer';
 import Loader from './components/Loader';
+import StoryProgress from './components/StoryProgress';
 
 const HomePage = () => (
   <>
     <Hero />
-    <Experience />
     <Projects />
+    <Experience />
     <TechStack />
     <Contact />
   </>
@@ -28,9 +29,12 @@ const ProjectDetails = lazy(() => import('./components/ProjectDetails'));
 const PersonaReloadView = lazy(() => import('./components/PersonaReloadView'));
 
 function App() {
-  const [loadingComplete, setLoadingComplete] = useState(false);
+  const [loadingComplete, setLoadingComplete] = useState(
+    () => window.sessionStorage.getItem('portfolio-intro-seen') === 'true'
+  );
   const location = useLocation();
   const isPersonaRoute = location.pathname === '/persona';
+  const isHomeRoute = location.pathname === '/';
 
   // Scroll to top or hash on route change
   useEffect(() => {
@@ -47,60 +51,34 @@ function App() {
   }, [location.pathname, location.hash]);
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        backgroundColor: isPersonaRoute ? '#020817' : 'var(--bg-black)',
-        color: 'var(--text-primary)',
-        overflowX: 'hidden',
-        position: 'relative',
-      }}
-    >
-      {!isPersonaRoute && !loadingComplete && (
-        <Loader onLoadingComplete={() => setLoadingComplete(true)} />
+    <div className={isPersonaRoute ? 'app-shell persona-shell' : 'app-shell'}>
+      {isHomeRoute && !loadingComplete && (
+        <Loader onLoadingComplete={() => {
+          window.sessionStorage.setItem('portfolio-intro-seen', 'true');
+          setLoadingComplete(true);
+        }} />
       )}
 
-      {/* Background Squares Animation */}
-      {!isPersonaRoute && (
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            zIndex: 0,
-            opacity: 1,
-            pointerEvents: 'none',
-          }}
-          className="scribbles-bg-wrapper"
-        >
+      {isHomeRoute && (
+        <div className="scribbles-bg-wrapper" aria-hidden="true">
           <Scribbles />
         </div>
       )}
 
-      {/* Noise Overlay - Higher z-index to texture the squares too */}
-      {!isPersonaRoute && <div className="noise-overlay" style={{ zIndex: 1 }} />}
-
-      {/* Gradient Ambience */}
-      {!isPersonaRoute && (
-        <>
-          <div className="gradient-red" style={{ zIndex: 1 }} />
-          <div className="gradient-purple" style={{ zIndex: 1 }} />
-        </>
-      )}
+      {isHomeRoute && <div className="noise-overlay" aria-hidden="true" />}
 
       {/* Global Scroll Effects */}
       {!isPersonaRoute && <ScrollManager />}
       {!isPersonaRoute && <Cursor />}
-      {!isPersonaRoute && <MusicPlayer />}
+      {isHomeRoute && <MusicPlayer />}
+      {isHomeRoute && <StoryProgress />}
 
       {/* Navigation - Only show on Home Page for now? Or always?
           If on details page, nav links might break. Let's hide Nav on Details or make it smart.
           Actually, ProjectDetails has its own "Back" button.
           Let's conditionally render Navigation only on Home.
        */}
-      {location.pathname === '/' && <Navigation />}
+      {isHomeRoute && <Navigation />}
 
       {/* Main Content */}
       <main>

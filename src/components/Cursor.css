@@ -1,16 +1,4 @@
 /* Cursor.css */
-body {
-    cursor: none !important;
-}
-
-a,
-button,
-input,
-textarea,
-[role="button"] {
-    cursor: none !important;
-}
-
 .cursor-pos-wrapper {
     position: fixed;
     top: 0;
@@ -19,6 +7,7 @@ textarea,
     width: 0;
     height: 0;
     will-change: transform;
+    contain: layout paint;
 }
 
 .custom-cursor-mover {
@@ -67,7 +56,18 @@ textarea,
     letter-spacing: 1px;
     opacity: 0;
     transform: scale(0);
-    transition: all 0.2s ease;
+    transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    body,
+    a,
+    button,
+    input,
+    textarea,
+    [role="button"] {
+        cursor: none !important;
+    }
 }
 
 /* --- STATES --- */
@@ -173,10 +173,9 @@ textarea,
 }
 
 /* Hide on mobile/touch */
-@media (hover: none) and (pointer: coarse) {
+@media (hover: none), (pointer: coarse) {
 
-    .custom-cursor,
-    .cursor-follower {
+    .cursor-wrapper {
         display: none !important;
     }
 

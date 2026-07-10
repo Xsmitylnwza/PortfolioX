@@ -1,0 +1,454 @@
+.engine-section {
+    --engine-paper: #e8e0d1;
+    --engine-red: #e3262e;
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    padding: clamp(6.5rem, 11vw, 11rem) clamp(1rem, 4vw, 4rem);
+    color: #f2f2f2;
+    background:
+        linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+        radial-gradient(circle at 86% 18%, rgba(227, 38, 46, 0.2), transparent 28%),
+        #050505;
+    background-size: 48px 48px, 48px 48px, auto, auto;
+}
+
+.engine-section::before {
+    content: "ENGINE";
+    position: absolute;
+    top: 0.08em;
+    right: -0.04em;
+    z-index: -1;
+    color: rgba(242, 242, 242, 0.022);
+    font-family: var(--font-display);
+    font-size: clamp(7rem, 22vw, 22rem);
+    font-weight: 800;
+    letter-spacing: -0.08em;
+    line-height: 0.75;
+    pointer-events: none;
+}
+
+.engine-section::after {
+    content: "";
+    position: absolute;
+    top: 22%;
+    left: -16rem;
+    z-index: -1;
+    width: 28rem;
+    aspect-ratio: 1;
+    border: 1px solid rgba(227, 38, 46, 0.18);
+    border-radius: 50%;
+    box-shadow: 0 0 0 5rem rgba(227, 38, 46, 0.02), 0 0 0 10rem rgba(227, 38, 46, 0.015);
+}
+
+.engine-shell {
+    width: min(100%, 1440px);
+    margin: 0 auto;
+}
+
+.engine-chapter {
+    display: grid;
+    grid-template-columns: auto auto minmax(3rem, 1fr) auto;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: clamp(3.5rem, 7vw, 7rem);
+    color: rgba(242, 242, 242, 0.52);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+}
+
+.engine-chapter span:first-child {
+    display: grid;
+    width: 2rem;
+    aspect-ratio: 1;
+    place-items: center;
+    color: #f2f2f2;
+    border: 1px solid var(--engine-red);
+}
+
+.engine-chapter i {
+    height: 1px;
+    background: linear-gradient(90deg, var(--engine-red), rgba(255, 255, 255, 0.08));
+}
+
+.engine-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(17rem, 0.55fr);
+    gap: clamp(3rem, 9vw, 10rem);
+    align-items: end;
+    margin-bottom: clamp(4rem, 8vw, 7rem);
+}
+
+.engine-kicker {
+    margin-bottom: 1rem;
+    color: var(--engine-red);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+}
+
+.engine-title-block h2 {
+    max-width: 11ch;
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(3.6rem, 8vw, 8.5rem);
+    font-weight: 800;
+    letter-spacing: -0.075em;
+    line-height: 0.86;
+    text-transform: uppercase;
+}
+
+.engine-title-block h2 em {
+    display: inline-block;
+    color: var(--engine-paper);
+    font-family: var(--font-serif);
+    font-weight: 400;
+    text-transform: none;
+}
+
+.engine-intro {
+    position: relative;
+    padding: 1.4rem 0 0 1.5rem;
+    border-top: 1px solid var(--engine-red);
+    border-left: 1px solid rgba(242, 242, 242, 0.18);
+}
+
+.engine-intro p {
+    color: rgba(242, 242, 242, 0.68);
+    font-size: clamp(0.98rem, 1.4vw, 1.12rem);
+    line-height: 1.75;
+}
+
+.engine-handnote {
+    display: inline-block;
+    margin-top: 1.5rem;
+    color: var(--engine-red);
+    font-family: 'Permanent Marker', cursive;
+    font-size: 0.86rem;
+    transform: rotate(-2deg);
+}
+
+.engine-blueprint {
+    position: relative;
+    border: 1px solid rgba(242, 242, 242, 0.14);
+    background: rgba(5, 5, 5, 0.94);
+    box-shadow: 1rem 1rem 0 rgba(127, 17, 24, 0.24);
+}
+
+.engine-blueprint::before {
+    content: "SYSTEM MAP / REV. 04";
+    position: absolute;
+    top: -1.25rem;
+    left: clamp(1rem, 5vw, 5rem);
+    z-index: 2;
+    padding: 0.45rem 1.1rem;
+    color: #050505;
+    background: var(--engine-paper);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+    transform: rotate(-1deg);
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.35);
+}
+
+.engine-flow {
+    display: grid;
+    grid-template-columns: auto minmax(2rem, 1fr) auto;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem clamp(1rem, 3vw, 3rem) 1.4rem;
+    color: rgba(242, 242, 242, 0.42);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.16em;
+}
+
+.engine-flow i {
+    position: relative;
+    height: 1px;
+    background: rgba(242, 242, 242, 0.14);
+}
+
+.engine-flow i::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 0;
+    width: 0.55rem;
+    height: 0.55rem;
+    border-top: 1px solid var(--engine-red);
+    border-right: 1px solid var(--engine-red);
+    transform: translateY(-50%) rotate(45deg);
+}
+
+.engine-layers {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid rgba(242, 242, 242, 0.12);
+}
+
+.engine-layer {
+    position: relative;
+    display: grid;
+    grid-template-columns: clamp(4rem, 8vw, 8rem) minmax(15rem, 0.75fr) minmax(0, 1fr);
+    gap: clamp(1.25rem, 4vw, 4rem);
+    align-items: center;
+    min-height: 14rem;
+    padding: clamp(1.5rem, 3vw, 3rem);
+    overflow: hidden;
+    border-bottom: 1px solid rgba(242, 242, 242, 0.12);
+    transition: background-color 240ms ease, transform 240ms ease;
+}
+
+.engine-layer::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 3px;
+    background: var(--engine-red);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 240ms ease;
+}
+
+.engine-layer:hover {
+    background: rgba(227, 38, 46, 0.065);
+    transform: translateX(0.35rem);
+}
+
+.engine-layer:hover::before {
+    transform: scaleY(1);
+}
+
+.engine-layer-number {
+    color: transparent;
+    font-family: var(--font-display);
+    font-size: clamp(3.6rem, 7vw, 7rem);
+    font-weight: 800;
+    letter-spacing: -0.08em;
+    line-height: 1;
+    -webkit-text-stroke: 1px rgba(227, 38, 46, 0.72);
+}
+
+.engine-layer-copy > p {
+    margin-bottom: 0.65rem;
+    color: var(--engine-red);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.12em;
+}
+
+.engine-layer-copy h3 {
+    margin: 0 0 0.75rem;
+    color: var(--engine-paper);
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 3vw, 3rem);
+    letter-spacing: -0.045em;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.engine-layer-copy > span {
+    display: block;
+    max-width: 36rem;
+    color: rgba(242, 242, 242, 0.68);
+    font-size: 0.94rem;
+    line-height: 1.65;
+}
+
+.engine-layer-copy small {
+    display: block;
+    margin-top: 1rem;
+    color: rgba(232, 224, 209, 0.44);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.engine-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.engine-tools li {
+    padding: 0.48rem 0.7rem;
+    color: rgba(242, 242, 242, 0.76);
+    border: 1px solid rgba(242, 242, 242, 0.14);
+    background: #0c0c0c;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.68rem;
+    line-height: 1;
+    white-space: nowrap;
+    transition: color 180ms ease, border-color 180ms ease, background-color 180ms ease;
+}
+
+.engine-layer:hover .engine-tools li {
+    color: #050505;
+    border-color: var(--engine-paper);
+    background: var(--engine-paper);
+}
+
+.engine-loop {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: clamp(2rem, 7vw, 8rem);
+    align-items: center;
+    margin-top: clamp(3rem, 7vw, 6rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(242, 242, 242, 0.14);
+}
+
+.engine-loop > p {
+    color: var(--engine-red);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+}
+
+.engine-loop ol {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1px;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    list-style: none;
+    background: rgba(242, 242, 242, 0.14);
+    border: 1px solid rgba(242, 242, 242, 0.14);
+}
+
+.engine-loop li {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    min-height: 3.8rem;
+    padding: 0.8rem 1rem;
+    color: rgba(242, 242, 242, 0.72);
+    background: #080808;
+    font-size: 0.78rem;
+}
+
+.engine-loop li span {
+    color: var(--engine-red);
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+    font-size: 0.62rem;
+}
+
+.engine-reveal,
+.engine-layer {
+    opacity: 0;
+    transform: translateY(2rem);
+}
+
+.engine-reveal {
+    transition: opacity 700ms ease, transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.engine-header .engine-intro {
+    transition-delay: 100ms;
+}
+
+.engine-section.is-visible .engine-reveal,
+.engine-section.is-visible .engine-layer {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.engine-layer {
+    transition:
+        opacity 620ms ease calc(var(--layer-index) * 75ms),
+        transform 620ms cubic-bezier(0.16, 1, 0.3, 1) calc(var(--layer-index) * 75ms),
+        background-color 240ms ease;
+}
+
+.engine-section.is-visible .engine-layer:hover {
+    transform: translateX(0.35rem);
+}
+
+@media (max-width: 900px) {
+    .engine-header {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+
+    .engine-intro {
+        max-width: 34rem;
+    }
+
+    .engine-layer {
+        grid-template-columns: 4.5rem minmax(0, 1fr);
+        min-height: auto;
+    }
+
+    .engine-tools {
+        grid-column: 2;
+    }
+
+    .engine-loop {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 620px) {
+    .engine-section {
+        padding-right: 1rem;
+        padding-left: 1rem;
+    }
+
+    .engine-chapter {
+        grid-template-columns: auto auto 1fr;
+    }
+
+    .engine-chapter span:last-child {
+        display: none;
+    }
+
+    .engine-title-block h2 {
+        font-size: clamp(3rem, 15vw, 5rem);
+    }
+
+    .engine-flow {
+        padding-top: 2.2rem;
+        font-size: 0.53rem;
+        letter-spacing: 0.08em;
+    }
+
+    .engine-layer {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 2rem 1.2rem;
+    }
+
+    .engine-layer-number {
+        font-size: 3.25rem;
+    }
+
+    .engine-tools {
+        grid-column: 1;
+    }
+
+    .engine-loop ol {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .engine-reveal,
+    .engine-layer,
+    .engine-section.is-visible .engine-reveal,
+    .engine-section.is-visible .engine-layer,
+    .engine-section.is-visible .engine-layer:hover {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+}

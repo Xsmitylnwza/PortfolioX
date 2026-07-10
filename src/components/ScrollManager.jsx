@@ -1,9 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
 
 const ScrollManager = () => {
     const location = useLocation();
@@ -26,20 +23,12 @@ const ScrollManager = () => {
         };
 
         window.addEventListener('scroll', markScrolling, { passive: true });
-        window.addEventListener('wheel', markScrolling, { passive: true });
-
-        const ctx = gsap.context(() => {
-            // Keep global texture layers static; scroll-linked paint on fixed
-            // blend/blur layers is a major source of wheel jank.
-        });
 
         return () => {
             window.removeEventListener('scroll', markScrolling);
-            window.removeEventListener('wheel', markScrolling);
             window.clearTimeout(scrollTimer);
             isScrollingRef.current = false;
             document.body.classList.remove('is-scrolling');
-            ctx.revert();
         };
     }, []);
 

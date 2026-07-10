@@ -42,6 +42,7 @@ const MusicalText = ({ children, className, style, song = "LOVE" }) => {
 
             {/* Layer 2: Portal Text (Hidden by default, revealed by clip-path) */}
             <span
+                aria-hidden="true"
                 style={{
                     position: 'absolute',
                     top: 0,

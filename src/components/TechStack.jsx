@@ -1,150 +1,149 @@
 import { useEffect, useRef } from 'react';
-import { Icon } from '@iconify/react';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import './TechStack.css';
 
-gsap.registerPlugin(ScrollTrigger);
+const architectureLayers = [
+    {
+        number: '01',
+        title: 'Interface',
+        signal: 'PRODUCT -> INTERACTION',
+        description: 'Translate product journeys and engineering needs into clear, maintainable web interfaces.',
+        evidence: 'Booking flows / internal dashboards / interactive products',
+        tools: ['React', 'Next.js', 'Vue.js', 'React Query', 'MUI'],
+    },
+    {
+        number: '02',
+        title: 'Services',
+        signal: 'LOGIC -> RELIABLE APIs',
+        description: 'Turn complex workflows into focused services, from configurable banking rules to third-party middleware.',
+        evidence: 'AML rule engine / middleware APIs / payment workflows',
+        tools: ['Java', 'Spring Boot', 'Spring Batch', 'Node.js', 'Elysia.js', 'Go', 'Fiber', 'WebSocket'],
+    },
+    {
+        number: '03',
+        title: 'Data',
+        signal: 'STATE -> SOURCE OF TRUTH',
+        description: 'Keep business state explicit across relational data, operational storage, and synchronized clients.',
+        evidence: 'SQL-driven configuration / realtime booking state / file storage',
+        tools: ['SQL', 'MySQL', 'PostgreSQL', 'MongoDB', 'Supabase', 'AWS S3'],
+    },
+    {
+        number: '04',
+        title: 'Delivery',
+        signal: 'COMMIT -> RELEASE',
+        description: 'Make builds repeatable across environments with containers, CI/CD pipelines, and cloud infrastructure.',
+        evidence: 'Automated builds / container delivery / production deployment',
+        tools: ['Docker', 'Jenkins', 'GitLab CI', 'Kaniko', 'Nginx', 'AWS EC2'],
+    },
+];
+
+const workingLoop = ['Requirements', 'Architecture', 'Build + test', 'Deploy + refine'];
 
 const TechStack = () => {
     const sectionRef = useRef(null);
 
-    const technologies = [
-        { name: 'Java', icon: 'logos:java' },
-        { name: 'Spring Boot', icon: 'logos:spring-icon' },
-        { name: 'React', icon: 'logos:react' },
-        { name: 'Next.js', icon: 'logos:nextjs-icon' },
-        { name: 'Node.js', icon: 'logos:nodejs-icon' },
-        { name: 'Elysia.js', icon: 'skill-icons:elysia-light' },
-        { name: 'Go', icon: 'logos:go' },
-        { name: 'WebSocket', icon: 'lucide:radio-tower' },
-        { name: 'MySQL', icon: 'logos:mysql' },
-        { name: 'PostgreSQL', icon: 'logos:postgresql' },
-        { name: 'Docker', icon: 'logos:docker-icon' },
-        { name: 'Nginx', icon: 'logos:nginx' },
-        { name: 'GitLab CI', icon: 'logos:gitlab-icon' },
-        { name: 'Kaniko', icon: 'logos:google-cloud' },
-        { name: 'AWS EC2/S3', icon: 'logos:aws' },
-        { name: 'AI Coding', icon: 'lucide:sparkles' },
-    ];
-
     useEffect(() => {
-        const ctx = gsap.context(() => {
-            gsap.fromTo('.palette-card',
-                { y: 30, opacity: 0 },
-                {
-                    scrollTrigger: {
-                        trigger: sectionRef.current,
-                        start: 'top 80%',
-                    },
-                    y: 0,
-                    opacity: 1,
-                    stagger: 0.1,
-                    duration: 1.2,
-                    ease: 'power2.out'
-                }
-            );
-        }, sectionRef);
+        const section = sectionRef.current;
+        if (!section) return undefined;
 
-        return () => ctx.revert();
+        if (!('IntersectionObserver' in window)) {
+            section.classList.add('is-visible');
+            return undefined;
+        }
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (!entry.isIntersecting) return;
+                section.classList.add('is-visible');
+                observer.disconnect();
+            },
+            { threshold: 0.12, rootMargin: '0px 0px -8% 0px' },
+        );
+
+        observer.observe(section);
+        return () => observer.disconnect();
     }, []);
 
     return (
         <section
+            id="capabilities"
             ref={sectionRef}
-            style={{
-                padding: '10rem 1.5rem',
-                position: 'relative',
-                background: 'linear-gradient(to bottom, rgba(5, 5, 5, 0), rgba(5, 5, 5, 0.3))'
-            }}
+            className="engine-section"
+            aria-labelledby="engine-title"
         >
-            <div style={{ maxWidth: '1120px', margin: '0 auto' }}>
+            <div className="engine-shell">
+                <div className="engine-chapter engine-reveal">
+                    <span>03</span>
+                    <span>ENGINE</span>
+                    <i aria-hidden="true" />
+                    <span>CAPABILITY BLUEPRINT</span>
+                </div>
 
-                <h2 className="font-display" style={{
-                    textAlign: 'center',
-                    color: 'white',
-                    marginBottom: '5rem',
-                    fontSize: '3rem',
-                    letterSpacing: '-0.02em'
-                }}>
-                    THE <span style={{ color: 'var(--red-primary)' }}>PALETTE</span>
-                </h2>
+                <header className="engine-header">
+                    <div className="engine-title-block engine-reveal">
+                        <p className="engine-kicker">FULL-STACK SYSTEMS / CURRENT TOOLSET</p>
+                        <h2 id="engine-title">
+                            One system.
+                            <br />
+                            <em>Four connected layers.</em>
+                        </h2>
+                    </div>
 
-                <div className="palette-grid">
-                    {technologies.map((tech, index) => (
-                        <div key={index} className="palette-card">
-                            <div className="icon-wrapper">
-                                <Icon icon={tech.icon} className="tech-icon" />
-                            </div>
-                            <span className="tech-name font-sans">{tech.name}</span>
-                        </div>
-                    ))}
+                    <div className="engine-intro engine-reveal">
+                        <p>
+                            I work through the whole path: clarify the requirement, shape the
+                            architecture, build the product, then make delivery repeatable.
+                        </p>
+                        <span className="engine-handnote">systems, not icon clouds -&gt;</span>
+                    </div>
+                </header>
+
+                <div className="engine-blueprint engine-reveal">
+                    <div className="engine-flow" aria-hidden="true">
+                        <span>USER SIGNAL</span>
+                        <i />
+                        <span>RELIABLE RELEASE</span>
+                    </div>
+
+                    <ol className="engine-layers" aria-label="Software architecture capabilities">
+                        {architectureLayers.map((layer, index) => (
+                            <li
+                                key={layer.number}
+                                className="engine-layer"
+                                style={{ '--layer-index': index }}
+                            >
+                                <div className="engine-layer-number" aria-hidden="true">
+                                    {layer.number}
+                                </div>
+
+                                <div className="engine-layer-copy">
+                                    <p>{layer.signal}</p>
+                                    <h3>{layer.title}</h3>
+                                    <span>{layer.description}</span>
+                                    <small>{layer.evidence}</small>
+                                </div>
+
+                                <ul className="engine-tools" aria-label={`${layer.title} technologies`}>
+                                    {layer.tools.map((tool) => (
+                                        <li key={tool}>{tool}</li>
+                                    ))}
+                                </ul>
+                            </li>
+                        ))}
+                    </ol>
+                </div>
+
+                <div className="engine-loop engine-reveal" aria-label="Engineering working loop">
+                    <p>WORKING LOOP</p>
+                    <ol>
+                        {workingLoop.map((step, index) => (
+                            <li key={step}>
+                                <span>{String(index + 1).padStart(2, '0')}</span>
+                                {step}
+                            </li>
+                        ))}
+                    </ol>
                 </div>
             </div>
-
-            <style>{`
-                .palette-grid {
-                    display: grid;
-                    grid-template-columns: repeat(2, 1fr);
-                    gap: 1.5rem;
-                }
-                @media (min-width: 640px) { .palette-grid { grid-template-columns: repeat(4, 1fr); gap: 2rem; } }
-
-                .palette-card {
-                    background: rgba(255, 255, 255, 0.03);
-                    border: 1px solid rgba(255, 255, 255, 0.05);
-                    border-radius: 1rem;
-                    padding: 2.5rem 1.5rem;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    gap: 1.5rem;
-                    cursor: pointer;
-                    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-                    backdrop-filter: blur(4px);
-                    min-height: 160px;
-                }
-
-                .palette-card:hover {
-                    background: rgba(255, 255, 255, 0.06);
-                    border-color: rgba(255, 255, 255, 0.1);
-                    transform: translateY(-5px);
-                    box-shadow: 0 10px 40px -10px rgba(0,0,0,0.5);
-                }
-
-                .icon-wrapper {
-                    font-size: 2.5rem;
-                    color: var(--text-secondary);
-                    transition: all 0.5s ease;
-                    filter: grayscale(30%) opacity(0.9);
-                }
-
-                .palette-card:hover .icon-wrapper {
-                    filter: grayscale(0%) opacity(1);
-                    transform: scale(1.1);
-                    animation: heartbeat 1.5s ease-in-out infinite;
-                }
-
-                @keyframes heartbeat {
-                    0% { transform: scale(1.1); }
-                    14% { transform: scale(1.2); }
-                    28% { transform: scale(1.1); }
-                    42% { transform: scale(1.2); }
-                    70% { transform: scale(1.1); }
-                }
-
-                .tech-name {
-                    font-size: 0.875rem;
-                    color: rgba(242, 242, 242, 0.68);
-                    font-weight: 500;
-                    letter-spacing: 0.05em;
-                    transition: color 0.3s ease;
-                    text-align: center;
-                }
-
-                .palette-card:hover .tech-name {
-                    color: white;
-                }
-            `}</style>
         </section>
     );
 };

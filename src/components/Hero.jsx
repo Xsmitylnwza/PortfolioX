@@ -1,280 +1,234 @@
-import React, { useEffect, useRef } from 'react';
-import { Icon } from '@iconify/react';
+import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import './Hero.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
+const chaosLetters = [
+    { letter: 'C', tilt: '-8deg', lift: '-0.08em', shift: '-0.03em' },
+    { letter: 'H', tilt: '5deg', lift: '0.08em', shift: '0.01em' },
+    { letter: 'A', tilt: '-3deg', lift: '-0.02em', shift: '-0.01em' },
+    { letter: 'O', tilt: '8deg', lift: '0.06em', shift: '0.02em' },
+    { letter: 'S', tilt: '-6deg', lift: '-0.06em', shift: '0.03em' },
+];
+
 const Hero = () => {
     const heroRef = useRef(null);
-    const parallaxRef = useRef(null);
-    const pointerRef = useRef({ x: 0, y: 0, raf: null });
+    const collageRef = useRef(null);
+    const pointerSettersRef = useRef(null);
+    const pointerRef = useRef({ x: 0, y: 0, frame: null });
 
     useEffect(() => {
+        const hero = heroRef.current;
         const pointer = pointerRef.current;
-        const heroElement = heroRef.current;
+        if (!hero) return undefined;
+
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const ctx = gsap.context(() => {
-            const tl = gsap.timeline();
+            if (reduceMotion) {
+                gsap.set('[data-hero-reveal]', { opacity: 1, y: 0 });
+                gsap.set('.signal-readout, .signal-transition', { opacity: 1, y: 0 });
+                return;
+            }
 
-            // Initial Load Animations
-            tl.fromTo('.bg-deco-img',
-                { opacity: 0, scale: 0.8, rotation: 0 },
-                { opacity: 0.2, scale: 1, rotation: (i) => i === 0 ? 12 : -12, duration: 1.5, stagger: 0.2, ease: 'power3.out' }
-            )
-                .fromTo('.main-torn-wrapper',
-                    { opacity: 0, y: 100, rotation: 10 },
-                    { opacity: 1, y: 0, rotation: -3, duration: 1.2, ease: 'back.out(1.2)' },
-                    '-=1'
-                )
-                .fromTo('.secondary-fragment-wrapper',
-                    { opacity: 0, x: 50, rotation: 10 },
-                    { opacity: 1, x: 0, rotation: 5, duration: 1, ease: 'power3.out' },
-                    '-=0.8'
-                )
-                .fromTo('.ransom-letter',
-                    { opacity: 0, scale: 0, rotation: () => Math.random() * 30 - 15 },
-                    { opacity: 1, scale: 1, rotation: 0, duration: 0.5, stagger: 0.05, ease: 'back.out(2)' },
-                    '-=0.5'
-                )
-                .fromTo('.intro-section',
-                    { opacity: 0, y: 30 },
-                    { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' },
-                    '-=0.5'
-                );
+            gsap.timeline({ defaults: { ease: 'power3.out' } })
+                .fromTo('.signal-index', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.45 })
+                .fromTo('.hero-line', { opacity: 0, yPercent: 75 }, { opacity: 1, yPercent: 0, duration: 0.78, stagger: 0.09 }, '-=0.18')
+                .fromTo('.signal-collage', { opacity: 0, scale: 0.92, rotate: 3 }, { opacity: 1, scale: 1, rotate: 0, duration: 0.9 }, '-=0.72')
+                .fromTo('[data-hero-reveal]', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.62, stagger: 0.08 }, '-=0.52');
 
-            // --- Scroll Parallax Effects ---
-            parallaxRef.current = {
-                ransomX: gsap.quickTo('.ransom-wrapper', 'x', { duration: 0.35, ease: 'power2.out' }),
-                ransomY: gsap.quickTo('.ransom-wrapper', 'y', { duration: 0.35, ease: 'power2.out' }),
-                handwritingX: gsap.quickTo('.handwritten-layer', 'x', { duration: 0.35, ease: 'power2.out' }),
-                handwritingY: gsap.quickTo('.handwritten-layer', 'y', { duration: 0.35, ease: 'power2.out' }),
-                decoX: gsap.quickTo('.bg-deco-img img', 'x', { duration: 0.6, ease: 'power2.out' }),
-                decoY: gsap.quickTo('.bg-deco-img img', 'y', { duration: 0.6, ease: 'power2.out' }),
-            };
+            const mm = gsap.matchMedia();
 
-            // Background Deco Parallax
-            gsap.to('.bg-deco-1', {
-                y: 150,
-                rotation: 25,
-                scrollTrigger: {
-                    trigger: heroElement,
-                    start: 'top top',
-                    end: 'bottom top',
-                    scrub: 1
-                }
+            mm.add('(min-width: 821px)', () => {
+                pointerSettersRef.current = {
+                    x: gsap.quickTo(collageRef.current, 'x', { duration: 0.55, ease: 'power3.out' }),
+                    y: gsap.quickTo(collageRef.current, 'y', { duration: 0.55, ease: 'power3.out' }),
+                };
+
+                const story = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: hero,
+                        start: 'top top',
+                        end: 'bottom bottom',
+                        scrub: 0.65,
+                        invalidateOnRefresh: true,
+                    },
+                });
+
+                story
+                    .to('.chaos-letter', { x: 0, y: 0, rotation: 0, stagger: 0.025, ease: 'power2.inOut' }, 0)
+                    .to('.signal-portrait', { xPercent: -8, yPercent: -3, rotation: -1.5, ease: 'none' }, 0)
+                    .to('.signal-artifact', { xPercent: 13, yPercent: 8, rotation: 1.5, ease: 'none' }, 0)
+                    .to('.signal-wire-progress', { scaleX: 1, ease: 'none' }, 0)
+                    .to('.signal-readout', { opacity: 1, y: 0, duration: 0.35 }, 0.34)
+                    .to('.signal-chaos-note', { opacity: 0.16, xPercent: -12, duration: 0.3 }, 0.42)
+                    .to('.signal-transition', { opacity: 1, y: 0, duration: 0.32 }, 0.62)
+                    .to('.hero-scroll-cue', { opacity: 0, y: 14, duration: 0.2 }, 0.72);
+
+                return () => {
+                    pointerSettersRef.current = null;
+                };
             });
 
-            gsap.to('.bg-deco-2', {
-                y: -100,
-                rotation: -25,
-                scrollTrigger: {
-                    trigger: heroElement,
-                    start: 'top top',
-                    end: 'bottom top',
-                    scrub: 1.5
-                }
+            mm.add('(max-width: 820px)', () => {
+                const story = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: hero,
+                        start: 'top top',
+                        end: 'bottom bottom',
+                        scrub: 0.45,
+                    },
+                });
+
+                story
+                    .to('.chaos-letter', { x: 0, y: 0, rotation: 0, stagger: 0.02, ease: 'power2.inOut' }, 0)
+                    .to('.signal-wire-progress', { scaleX: 1, ease: 'none' }, 0)
+                    .to('.signal-readout', { opacity: 1, y: 0, duration: 0.35 }, 0.34)
+                    .to('.signal-transition', { opacity: 1, y: 0, duration: 0.3 }, 0.64);
             });
 
-            // "The Tear" Exit Animation
-            gsap.to('.main-torn-wrapper', {
-                y: -300, // Move up faster than scroll
-                x: -50,
-                rotation: -15, // Rotate away
-                scrollTrigger: {
-                    trigger: heroElement,
-                    start: 'top top',
-                    end: 'bottom top',
-                    scrub: 1
-                }
-            });
-
-            // Sync text movement with image but without rotation
-            gsap.to('.ransom-container', {
-                y: -300,
-                x: -50,
-                rotation: 0, // Stay upright
-                scrollTrigger: {
-                    trigger: heroElement,
-                    start: 'top top',
-                    end: 'bottom top',
-                    scrub: 1
-                }
-            });
-
-            // Secondary Fragment Separate Exit
-            gsap.to('.secondary-fragment-wrapper', {
-                y: -150,
-                x: 100, // Move right
-                rotation: 45, // Spin out
-                scrollTrigger: {
-                    trigger: heroElement,
-                    start: 'top top',
-                    end: 'bottom top',
-                    scrub: 1.2
-                }
-            });
-
-        }, heroRef);
+            return () => mm.revert();
+        }, hero);
 
         return () => {
-            if (pointer.raf) {
-                cancelAnimationFrame(pointer.raf);
-            }
-            parallaxRef.current = null;
+            if (pointer.frame) cancelAnimationFrame(pointer.frame);
+            pointerSettersRef.current = null;
             ctx.revert();
         };
     }, []);
 
-    const handleMouseMove = (e) => {
-        const { clientX, clientY } = e;
-        pointerRef.current.x = (clientX / window.innerWidth - 0.5) * 20; // -10 to 10
-        pointerRef.current.y = (clientY / window.innerHeight - 0.5) * 20;
+    const handlePointerMove = (event) => {
+        if (!pointerSettersRef.current) return;
 
-        if (pointerRef.current.raf) return;
+        const rect = heroRef.current.getBoundingClientRect();
+        pointerRef.current.x = ((event.clientX - rect.left) / rect.width - 0.5) * 18;
+        pointerRef.current.y = ((event.clientY - rect.top) / window.innerHeight - 0.5) * 14;
+        if (pointerRef.current.frame) return;
 
-        pointerRef.current.raf = requestAnimationFrame(() => {
-            const setters = parallaxRef.current;
-            if (!setters) {
-                pointerRef.current.raf = null;
-                return;
-            }
-
-            const { x, y } = pointerRef.current;
-            setters.ransomX(x * 2);
-            setters.ransomY(y * 2);
-            setters.handwritingX(x * 1.5);
-            setters.handwritingY(y * 1.5);
-            setters.decoX(x * -1);
-            setters.decoY(y * -1);
-            pointerRef.current.raf = null;
+        pointerRef.current.frame = requestAnimationFrame(() => {
+            pointerSettersRef.current?.x(pointerRef.current.x);
+            pointerSettersRef.current?.y(pointerRef.current.y);
+            pointerRef.current.frame = null;
         });
     };
 
+    const resetPointer = () => {
+        pointerSettersRef.current?.x(0);
+        pointerSettersRef.current?.y(0);
+    };
+
     return (
-        <section id="home" className="hero-container" ref={heroRef} onMouseMove={handleMouseMove}>
-            {/* Main Hero Content */}
-            <div className="hero-main">
-
-                {/* Decorative Background Elements */}
-                <div className="bg-deco-img bg-deco-1">
-                    <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/uploads/be7bd51c-6dd7-4e04-a620-8108ef138948/1768838242918-60798e6e/Justin_and_Hailey_Bieber___.jpg"
-                        alt="Deco"
-                        decoding="async"
-                        fetchPriority="low" />
+        <section
+            id="home"
+            ref={heroRef}
+            className="story-hero"
+            aria-labelledby="hero-title"
+            onPointerMove={handlePointerMove}
+            onPointerLeave={resetPointer}
+        >
+            <div className="hero-stage">
+                <div className="signal-grid" aria-hidden="true" />
+                <div className="signal-wire" aria-hidden="true">
+                    <span className="signal-wire-progress" />
                 </div>
 
-                <div className="bg-deco-img bg-deco-2">
-                    <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/uploads/be7bd51c-6dd7-4e04-a620-8108ef138948/1768838242918-60798e6e/Justin_and_Hailey_Bieber___.jpg"
-                        alt="Deco"
-                        decoding="async"
-                        fetchPriority="low" />
-                </div>
+                <header className="signal-topline signal-index">
+                    <span><strong>00</strong> / SIGNAL</span>
+                    <span>CHAIMONGKON SOKGAMPANG</span>
+                    <span className="signal-availability"><i /> BANGKOK · OPEN TO BUILD</span>
+                </header>
 
-                {/* Center Collage */}
-                <div className="collage-center">
+                <div className="hero-layout">
+                    <div className="hero-copy-block">
+                        <p className="signal-kicker signal-index">FULL-STACK · BACKEND · DEVOPS</p>
+                        <h1 id="hero-title" className="hero-title" aria-label="I turn chaos into systems">
+                            <span className="hero-line hero-line-small">I TURN</span>
+                            <span className="hero-line chaos-word" aria-hidden="true">
+                                {chaosLetters.map(({ letter, tilt, lift, shift }, index) => (
+                                    <span
+                                        key={`${letter}-${index}`}
+                                        className="chaos-letter"
+                                        style={{ '--tilt': tilt, '--lift': lift, '--shift': shift }}
+                                    >
+                                        {letter}
+                                    </span>
+                                ))}
+                            </span>
+                            <span className="hero-line systems-word">
+                                <span className="systems-prefix">INTO</span>{' '}
+                                <span className="systems-core">SYSTEMS<span className="systems-dot">.</span></span>
+                            </span>
+                        </h1>
 
-                    {/* Handwritten Notes Layer (New) */}
-                    <div className="handwritten-layer" style={{ position: 'absolute', inset: -50, pointerEvents: 'none', zIndex: 25 }}>
-                        <svg viewBox="0 0 500 500" style={{ width: '100%', height: '100%', opacity: 0.8 }}>
-                            {/* "for you" scribbled near bottom right */}
-                            <path d="M 350 400 Q 360 390 370 400 T 390 410" stroke="white" strokeWidth="2" fill="none" opacity="0.6" />
-                            <text x="360" y="430" fontFamily="'Permanent Marker', cursive" fill="white" fontSize="14" transform="rotate(-5, 360, 430)">for you</text>
+                        <p className="hero-thesis" data-hero-reveal>
+                            Software engineer building dependable banking and fintech products—from first constraint to production pipeline.
+                        </p>
 
-                            {/* Heart scribble top left */}
-                            <path d="M 100 100 C 90 90, 80 100, 100 120 C 120 100, 110 90, 100 100" stroke="var(--red-primary)" strokeWidth="2" fill="none" transform="rotate(-15, 100, 110)" />
+                        <div className="hero-actions" data-hero-reveal>
+                            <a className="hero-primary-action" href="#projects">
+                                Enter selected work <span aria-hidden="true">↘</span>
+                            </a>
+                            <a className="hero-text-action" href="/assets/Chaimongkon-Sokgampang_Resume.pdf" target="_blank" rel="noreferrer">
+                                Read résumé <span aria-hidden="true">↗</span>
+                            </a>
+                        </div>
 
-                            {/* Arrows pointing to center */}
-                            <path d="M 120 350 Q 150 320 180 300" stroke="white" strokeWidth="1" strokeDasharray="5,5" fill="none" opacity="0.4" />
+                        <ul className="hero-disciplines" data-hero-reveal aria-label="Core disciplines">
+                            <li><span>01</span> Product systems</li>
+                            <li><span>02</span> Reliable APIs</li>
+                            <li><span>03</span> Delivery pipelines</li>
+                        </ul>
+                    </div>
+
+                    <div ref={collageRef} className="signal-collage" aria-label="Portrait and engineering work artifacts">
+                        <p className="signal-chaos-note" aria-hidden="true">messy inputs / clear outcomes</p>
+
+                        <figure className="signal-frame signal-portrait" data-cursor="view" data-cursor-text="HELLO">
+                            <span className="paper-tape" aria-hidden="true" />
+                            <img src="/assets/story/portrait.jpg" alt="Chaimongkon Sokgampang" fetchPriority="high" />
+                            <figcaption>
+                                <span>DEV.GABRIEL</span>
+                                <span>PORTRAIT / 001</span>
+                            </figcaption>
+                        </figure>
+
+                        <figure className="signal-frame signal-artifact" aria-hidden="true">
+                            <img src="/assets/story/workstation.jpg" alt="" decoding="async" />
+                            <figcaption>FIELD NOTE / BUILDING BETWEEN MEETINGS</figcaption>
+                        </figure>
+
+                        <div className="signal-code-card" aria-hidden="true">
+                            <span>PRODUCTION_NOTE.md</span>
+                            <code>
+                                constraint → model<br />
+                                model → interface<br />
+                                interface → shipped
+                            </code>
+                        </div>
+
+                        <div className="signal-readout" aria-hidden="true">
+                            <span>SIGNAL LOCKED</span>
+                            <strong>ENGINEER / STORYTELLER</strong>
+                            <i>Chaos mapped. System ready.</i>
+                        </div>
+
+                        <svg className="signal-scribble" viewBox="0 0 220 120" aria-hidden="true">
+                            <path d="M8 91c42-54 87 35 126-18 18-24 35-29 74-24" />
+                            <path d="m191 35 17 14-21 10" />
                         </svg>
                     </div>
-
-                    {/* Main Image - Torn Paper Look */}
-                    {/* CS STYLES applied here via fromTo, removed inanimate classes */}
-                    <div className="main-torn-wrapper" data-cursor="view" data-cursor-text="PORTRAIT">
-                        <div className="torn-paper-box">
-                            <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/uploads/be7bd51c-6dd7-4e04-a620-8108ef138948/1768838242918-60798e6e/Justin_and_Hailey_Bieber___.jpg"
-                                alt="Artist Portrait"
-                                decoding="async"
-                                fetchPriority="high" />
-
-                            {/* Tape Strip */}
-                            <div className="tape-strip"></div>
-                        </div>
-                    </div>
-
-                    {/* Secondary Image Fragment */}
-                    <div className="secondary-fragment-wrapper" data-cursor="view" data-cursor-text="DETAIL">
-                        <div className="fragment-box">
-                            <img src="https://vgbujcuwptvheqijyjbe.supabase.co/storage/v1/object/public/hmac-uploads/uploads/be7bd51c-6dd7-4e04-a620-8108ef138948/1768838242918-60798e6e/Justin_and_Hailey_Bieber___.jpg"
-                                alt="Detail"
-                                decoding="async"
-                                fetchPriority="low" />
-                        </div>
-                    </div>
-
-                    {/* Sticker Elements */}
-                    {/* Keeping CSS animations for stars as they are loop/pulse and don't conflict with main scroll transform much, 
-                        or we could GSAP them. Let's keep CSS for now for simple pulse. */}
-                    <div className="star-1 animate-pulse-glow">
-                        <Icon icon="ph:star-four-fill" />
-                    </div>
-                    <div className="star-2">
-                        <Icon icon="ph:star-four-fill" />
-                    </div>
-
-                    {/* Typography Overlay: Ransom Note Style */}
-                    <div className="ransom-container" data-cursor="secret" data-cursor-text="CHAOS">
-                        <div className="ransom-wrapper">
-                            <span className="ransom-letter" style={{ backgroundColor: '#f2efe9' }}>C</span>
-                            <span className="ransom-letter" style={{ backgroundColor: '#000', color: 'white' }}>R</span>
-                            <span className="ransom-letter" style={{ backgroundColor: 'var(--red-primary)', color: 'white' }}>E</span>
-                            <span className="ransom-letter" style={{ backgroundColor: '#f2efe9' }}>A</span>
-                            <span className="ransom-letter" style={{ backgroundColor: 'var(--red-dark)', color: 'white' }}>T</span>
-                            <span className="ransom-letter" style={{ backgroundColor: '#f2efe9' }}>E</span>
-                        </div>
-                    </div>
-
-
-
-                    {/* Poetic Text Fragments */}
-                    <div className="poetic-text">
-                        <div className="poetic-box font-serif-italic">
-                            "I only show you the best of me."
-                        </div>
-                    </div>
-
-                    <div className="version-tag">
-                        <div className="version-box font-mono">
-                            always.v1.0
-                        </div>
-                    </div>
                 </div>
 
-                {/* Intro / Role Text */}
-                <div className="intro-section">
-                    <p className="intro-text font-serif">
-                        <span className="intro-highlight font-sans">Full-Stack Developer</span>, Backend & DevOps Engineer for banking and fintech systems.
-                    </p>
-                    <div className="hero-actions">
-                        <a href="#projects" className="btn-projects">
-                            <span>Projects</span>
-                            <div className="slide-bg"></div>
-                        </a>
-                        <a href="#about" className="btn-about">
-                            <span>About</span>
-                        </a>
-                    </div>
+                <div className="signal-transition" aria-hidden="true">
+                    <span>Signal acquired</span>
+                    <strong>NEXT / SELECTED WORK</strong>
+                    <span>01</span>
                 </div>
-            </div>
 
-            {/* Scrolling Marquee Tape */}
-            <div className="marquee-tape">
-                <div className="marquee-content">
-                    <span className="marquee-item">• drunk • beside you • like i need u • 2 soon • right here • less of you • Peaches • Stay • Ghost • Love Yourself • Sorry • Baby •</span>
-                    <span className="marquee-item">• drunk • beside you • like i need u • 2 soon • right here • less of you • Peaches • Stay • Ghost • Love Yourself • Sorry • Baby •</span>
-                    <span className="marquee-item">• drunk • beside you • like i need u • 2 soon • right here • less of you • Peaches • Stay • Ghost • Love Yourself • Sorry • Baby •</span>
-                    <span className="marquee-item">• drunk • beside you • like i need u • 2 soon • right here • less of you • Peaches • Stay • Ghost • Love Yourself • Sorry • Baby •</span>
+                <div className="hero-scroll-cue" data-hero-reveal aria-hidden="true">
+                    <span>SCROLL TO RESOLVE</span>
+                    <i />
                 </div>
             </div>
         </section>

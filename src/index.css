@@ -1,31 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600;700;900&family=Syne:wght@400;500;600;700;800&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=Permanent+Marker&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Permanent+Marker&family=Space+Grotesk:wght@400;500;600&family=Syne:wght@500;600;700;800&display=swap');
 
 :root {
-  /* Gabriel Red Theme - Keshi Inspired */
-  --bg-black: #030303;
-  /* Deeper Black */
-  --bg-dark: #0f1419;
+  --bg-black: #050505;
+  --bg-dark: #0b0b0b;
   --bg-card: #111111;
-
-  /* Primary Red */
-  --red-primary: #dc2626;
-  /* Deeper Red for contrast */
-  --red-dark: #991b1b;
-  --red-glow: rgba(220, 38, 38, 0.4);
-
-  /* Purple Accent */
-  --purple-accent: #a855f7;
-  --purple-light: #c084fc;
-  --purple-glow: rgba(168, 85, 247, 0.3);
-
-  /* Text Colors */
+  --red-primary: #e3262e;
+  --red-dark: #7f1118;
+  --red-glow: rgba(227, 38, 46, 0.4);
+  --paper: #e8e0d1;
   --text-primary: #f2f2f2;
-  --text-secondary: #a1a1aa;
-  --text-muted: #71717a;
-
-  /* Fonts */
+  --text-secondary: #aaa6a0;
+  --text-muted: #77736e;
   --font-serif: 'Instrument Serif', serif;
+  --font-editorial: 'Instrument Serif', serif;
   --font-display: 'Syne', sans-serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --font-hand: 'Permanent Marker', cursive;
+  --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
 
   /* Glass Effects */
   --glass-bg: rgba(255, 255, 255, 0.02);
@@ -41,32 +32,73 @@
 
 html {
   scroll-behavior: smooth;
+  background: var(--bg-black);
 }
 
 body {
-  font-family: 'Inter', sans-serif;
+  min-width: 320px;
+  min-height: 100vh;
+  font-family: var(--font-body);
   background-color: var(--bg-black);
   color: var(--text-primary);
   line-height: 1.6;
   overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
+}
+
+.app-shell {
+  position: relative;
+  min-height: 100vh;
+  overflow: clip;
+  color: var(--text-primary);
+  background: var(--bg-black);
+}
+
+.persona-shell { background: #020817; }
+
+section[id] { scroll-margin-top: 5.5rem; }
+
+.scribbles-bg-wrapper {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 0;
+  width: 100%;
+  height: 100svh;
+  overflow: hidden;
+  pointer-events: none;
 }
 
 /* Typography Classes */
 .font-display {
-  font-family: 'Syne', sans-serif;
+  font-family: var(--font-display);
 }
 
 .font-serif {
-  font-family: 'Instrument Serif', serif;
+  font-family: var(--font-serif);
 }
 
 .font-serif-italic {
-  font-family: 'Instrument Serif', serif;
+  font-family: var(--font-serif);
   font-style: italic;
 }
 
 .font-mono {
-  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  font-family: var(--font-mono);
 }
 
 /* Text Stroke Effect */
@@ -79,12 +111,11 @@ body {
 .noise-overlay {
   position: fixed;
   inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  opacity: 0.05;
-  /* More visible */
+  z-index: 80;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 96 96' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.88' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.62'/%3E%3C/svg%3E");
+  background-size: 96px 96px;
+  opacity: 0.032;
   pointer-events: none;
-  z-index: 1000;
-  mix-blend-mode: overlay;
 }
 
 /* Glass Panel */
@@ -218,7 +249,7 @@ body {
   right: 0;
   width: 200px;
   height: 200px;
-  background: var(--purple-accent);
+  background: var(--red-primary);
   filter: blur(100px);
   opacity: 0;
   transition: opacity 0.5s ease;
@@ -335,7 +366,7 @@ body {
   padding: 0.25rem 0.75rem;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 9999px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.75rem;
   color: var(--text-primary);
 }
@@ -384,7 +415,12 @@ body {
 a {
   text-decoration: none;
   color: inherit;
-  transition: all 0.3s ease;
+  transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+:where(a, button, input, textarea, select):focus-visible {
+  outline: 2px solid var(--paper);
+  outline-offset: 4px;
 }
 
 /* Responsive hiding */
@@ -404,34 +440,8 @@ a {
   }
 }
 
-/* Gradient Ambience */
-.gradient-red {
-  position: fixed;
-  top: -20%;
-  left: -10%;
-  width: 50vw;
-  height: 50vw;
-  background: var(--red-primary);
-  opacity: 0.15;
-  filter: blur(120px);
-  border-radius: 50%;
-  pointer-events: none;
-  transform: translateZ(0);
-}
-
-.gradient-purple {
-  position: fixed;
-  bottom: -10%;
-  right: -10%;
-  width: 40vw;
-  height: 40vw;
-  background: var(--purple-accent);
-  opacity: 0.1;
-  filter: blur(100px);
-  border-radius: 50%;
-  pointer-events: none;
-  transform: translateZ(0);
-}
+.gradient-red,
+.gradient-purple { display: none; }
 
 /* Arrow Button */
 .arrow-btn {
@@ -473,12 +483,15 @@ body.is-scrolling .animate-pulse-glow {
   animation-play-state: paused !important;
 }
 
-body.is-scrolling .noise-overlay {
-  visibility: hidden;
-}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
 
-body.is-scrolling .scribbles-bg,
-body.is-scrolling .gradient-red,
-body.is-scrolling .gradient-purple {
-  visibility: hidden;
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }

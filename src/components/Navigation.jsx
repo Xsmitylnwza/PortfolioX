@@ -1,302 +1,175 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Icon } from '@iconify/react';
+import './Navigation.css';
 
-// Scramble Text Component for Nav
-const NavScramble = ({ text, isHovered, isActive }) => {
-  const elementRef = useRef(null);
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&";
+const navLinks = [
+    { href: '#home', label: 'Home', id: 'home' },
+    { href: '#projects', label: 'Work', id: 'projects' },
+    { href: '#experience', label: 'Evidence', id: 'experience' },
+    { href: '#capabilities', label: 'Engine', id: 'capabilities' },
+    { href: '#contact', label: 'Contact', id: 'contact' },
+];
 
-  useEffect(() => {
-    // Trigger scramble on hover start or when becoming active
-    if (!isHovered && !isActive) {
-      if (elementRef.current) elementRef.current.innerText = text;
-      return;
-    }
+const NavScramble = ({ text, active }) => {
+    const elementRef = useRef(null);
+    const intervalRef = useRef(null);
 
-    let iterations = 0;
-    const interval = setInterval(() => {
-      if (!elementRef.current) return;
+    const start = () => {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&';
+        let iteration = 0;
+        window.clearInterval(intervalRef.current);
+        intervalRef.current = window.setInterval(() => {
+            if (!elementRef.current) return;
+            elementRef.current.textContent = text
+                .split('')
+                .map((letter, index) => index < iteration ? text[index] : chars[Math.floor(Math.random() * chars.length)])
+                .join('');
+            iteration += 0.55;
+            if (iteration >= text.length) {
+                window.clearInterval(intervalRef.current);
+                elementRef.current.textContent = text;
+            }
+        }, 28);
+    };
 
-      elementRef.current.innerText = text
-        .split("")
-        .map((letter, index) => {
-          if (index < iterations) {
-            return text[index];
-          }
-          return chars[Math.floor(Math.random() * chars.length)];
-        })
-        .join("");
+    useEffect(() => () => window.clearInterval(intervalRef.current), []);
 
-      if (iterations >= text.length) {
-        clearInterval(interval);
-      }
-      iterations += 1 / 2; // Faster for nav
-    }, 30);
-
-    return () => clearInterval(interval);
-  }, [text, isHovered, isActive]);
-
-  return <span ref={elementRef} style={{ color: isActive ? 'var(--red-primary)' : 'inherit' }}>{text}</span>;
+    return <span ref={elementRef} className={active ? 'is-active' : ''} onMouseEnter={start}>{text}</span>;
 };
 
 const Navigation = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('home');
-  const [hoveredLink, setHoveredLink] = useState(null);
-  const isScrolledRef = useRef(false);
+    const [isScrolled, setIsScrolled] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [activeSection, setActiveSection] = useState('home');
+    const menuButtonRef = useRef(null);
+    const menuRef = useRef(null);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const nextIsScrolled = window.scrollY > 50;
-      if (isScrolledRef.current === nextIsScrolled) return;
-      isScrolledRef.current = nextIsScrolled;
-      setIsScrolled(nextIsScrolled);
-    };
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    useEffect(() => {
+        let frame = null;
+        const handleScroll = () => {
+            if (frame) return;
+            frame = requestAnimationFrame(() => {
+                setIsScrolled(window.scrollY > 40);
+                frame = null;
+            });
+        };
+        handleScroll();
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            if (frame) cancelAnimationFrame(frame);
+        };
+    }, []);
 
-  // Section Observer for Active State
-  useEffect(() => {
-    const sections = ['home', 'experience', 'projects', 'contact'];
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            (entries) => {
+                const visible = entries.find((entry) => entry.isIntersecting);
+                if (visible) setActiveSection(visible.target.id);
+            },
+            { rootMargin: '-45% 0px -45% 0px', threshold: 0 }
+        );
+        navLinks.forEach(({ id }) => {
+            const node = document.getElementById(id);
+            if (node) observer.observe(node);
         });
-      },
-      { rootMargin: '-50% 0px -50% 0px' } // Trigger when element hits center of viewport
+        return () => observer.disconnect();
+    }, []);
+
+    useEffect(() => {
+        if (!isMobileMenuOpen) return undefined;
+
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = 'hidden';
+        const menuTrigger = menuButtonRef.current;
+        const menu = menuRef.current;
+        const focusable = menu?.querySelectorAll('a, button');
+        focusable?.[0]?.focus();
+
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape') {
+                setIsMobileMenuOpen(false);
+                return;
+            }
+            if (event.key !== 'Tab' || !focusable?.length) return;
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+            if (event.shiftKey && document.activeElement === first) {
+                event.preventDefault();
+                last.focus();
+            } else if (!event.shiftKey && document.activeElement === last) {
+                event.preventDefault();
+                first.focus();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.body.style.overflow = previousOverflow;
+            window.removeEventListener('keydown', handleKeyDown);
+            menuTrigger?.focus();
+        };
+    }, [isMobileMenuOpen]);
+
+    const closeMenu = () => setIsMobileMenuOpen(false);
+
+    return (
+        <>
+            <nav id="main-nav" className={isScrolled ? 'main-nav is-scrolled' : 'main-nav'} aria-label="Primary navigation">
+                <a className="nav-brand" href="#home" aria-label="Chaimongkon portfolio home">
+                    <img src="/assets/optimized/profile-logo-128.jpg" alt="" decoding="async" />
+                    <span>DEV<span>.</span>GABRIEL</span>
+                </a>
+
+                <div className="nav-desktop-links">
+                    {navLinks.map((link) => (
+                        <a key={link.id} href={link.href} aria-current={activeSection === link.id ? 'location' : undefined}>
+                            <NavScramble text={link.label} active={activeSection === link.id} />
+                        </a>
+                    ))}
+                    <a className="nav-resume" href="/assets/Chaimongkon-Sokgampang_Resume.pdf" target="_blank" rel="noreferrer">
+                        Resume <Icon icon="lucide:arrow-up-right" />
+                    </a>
+                </div>
+
+                <button
+                    ref={menuButtonRef}
+                    type="button"
+                    className="nav-menu-button"
+                    aria-label="Open navigation menu"
+                    aria-expanded={isMobileMenuOpen}
+                    aria-controls="mobile-menu"
+                    onClick={() => setIsMobileMenuOpen(true)}
+                >
+                    <span />
+                    <span />
+                </button>
+            </nav>
+
+            {isMobileMenuOpen && (
+                <div ref={menuRef} id="mobile-menu" className="mobile-menu" role="dialog" aria-modal="true" aria-label="Navigation menu">
+                    <div className="mobile-menu-head">
+                        <span className="font-mono">CHAPTER SELECT</span>
+                        <button type="button" onClick={closeMenu} aria-label="Close navigation menu">
+                            <Icon icon="lucide:x" />
+                        </button>
+                    </div>
+                    <div className="mobile-menu-links">
+                        {navLinks.map((link, index) => (
+                            <a key={link.id} href={link.href} onClick={closeMenu}>
+                                <span>{String(index).padStart(2, '0')}</span>
+                                {link.label}
+                            </a>
+                        ))}
+                    </div>
+                    <div className="mobile-menu-actions">
+                        <a href="/assets/Chaimongkon-Sokgampang_Resume.pdf" target="_blank" rel="noreferrer">Resume ↗</a>
+                        <a href="mailto:chaimongkon.sokgampang@gmail.com">Email ↗</a>
+                    </div>
+                </div>
+            )}
+        </>
     );
-
-    sections.forEach(id => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  const navLinks = [
-    { href: '#home', label: 'Home', id: 'home' },
-    { href: '#experience', label: 'Experience', id: 'experience' },
-    { href: '#projects', label: 'Projects', id: 'projects' },
-    { href: '#contact', label: 'Contact', id: 'contact' },
-  ];
-
-  return (
-    <>
-      <nav
-        id="main-nav"
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 100,
-          padding: '1.5rem',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          transition: 'all 0.3s ease',
-        }}
-      >
-        <div
-          className="glass-panel"
-          style={{
-            position: 'absolute',
-            inset: 0,
-            backgroundColor: 'rgba(5, 5, 5, 0.7)',
-            backdropFilter: 'blur(12px)',
-            borderBottom: '1px solid var(--glass-border)',
-            opacity: isScrolled ? 1 : 0,
-            transition: 'opacity 0.3s ease',
-            pointerEvents: 'none',
-          }}
-        />
-
-        {/* Logo */}
-        <div style={{ position: 'relative', zIndex: 10, display: 'flex', alignItems: 'center', gap: '1rem' }} data-cursor-text="HOME">
-          <div
-            style={{
-              width: '2.5rem',
-              height: '2.5rem',
-              overflow: 'hidden',
-              borderRadius: '50%',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-            }}
-          >
-            <img
-              src="/assets/optimized/profile-logo-128.jpg"
-              alt="Logo"
-              decoding="async"
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                filter: 'grayscale(1)',
-                transition: 'filter 0.3s ease',
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.filter = 'grayscale(0)')}
-              onMouseLeave={(e) => (e.currentTarget.style.filter = 'grayscale(1)')}
-            />
-          </div>
-          <span
-            className="font-display"
-            style={{
-              fontWeight: 700,
-              fontSize: '1.25rem',
-              letterSpacing: '-0.02em',
-              display: 'none',
-            }}
-            id="nav-logo-text"
-          >
-            DEV<span style={{ color: 'var(--red-primary)' }}>.</span>GABRIEL
-          </span>
-        </div>
-
-        {/* Desktop Nav Links */}
-        <div
-          style={{
-            position: 'relative',
-            zIndex: 10,
-            display: 'none',
-            alignItems: 'center',
-            gap: '2rem',
-          }}
-          className="md-flex"
-        >
-          {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              data-cursor-text="NAVIGATE"
-              style={{
-                fontSize: '0.75rem',
-                fontWeight: 400,
-                letterSpacing: '0.15em',
-                textTransform: 'uppercase',
-                color: activeSection === link.id ? 'var(--red-primary)' : 'var(--text-muted)',
-                transition: 'color 0.3s ease',
-                textDecoration: 'none', // Explicitly remove default
-                position: 'relative',
-                display: 'inline-block',
-                minWidth: '80px', // Prevent jitter during scramble
-                textAlign: 'center'
-              }}
-              onClick={() => setActiveSection(link.id)}
-              onMouseEnter={() => setHoveredLink(link.id)}
-              onMouseLeave={() => setHoveredLink(null)}
-            >
-              <NavScramble
-                text={link.label}
-                isHovered={hoveredLink === link.id}
-                isActive={activeSection === link.id}
-              />
-              {/* Active Dot */}
-              {activeSection === link.id && (
-                <span style={{
-                  position: 'absolute',
-                  bottom: '-5px',
-                  left: '50%',
-                  transform: 'translateX(-50%)',
-                  width: '4px',
-                  height: '4px',
-                  borderRadius: '50%',
-                  backgroundColor: 'var(--red-primary)',
-                  boxShadow: '0 0 10px var(--red-primary)'
-                }} />
-              )}
-            </a>
-          ))}
-        </div>
-
-
-      </nav>
-
-      {/* Mobile Menu */}
-      <div
-        id="mobile-menu"
-        style={{
-          position: 'fixed',
-          inset: 0,
-          background: 'rgba(5, 5, 5, 0.98)',
-          backdropFilter: 'blur(20px)',
-          zIndex: 110,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '2rem',
-          transform: isMobileMenuOpen ? 'translateY(0)' : 'translateY(-100%)',
-          opacity: isMobileMenuOpen ? 1 : 0,
-          transition: 'all 0.5s cubic-bezier(0.23, 1, 0.32, 1)',
-          pointerEvents: isMobileMenuOpen ? 'auto' : 'none',
-        }}
-      >
-        {/* Close Button */}
-        <button
-          onClick={() => setIsMobileMenuOpen(false)}
-          style={{
-            position: 'absolute',
-            top: '1.5rem',
-            right: '1.5rem',
-            background: 'transparent',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            padding: '0.75rem',
-            cursor: 'pointer',
-            color: 'var(--text-primary)',
-          }}
-        >
-          <Icon icon="lucide:x" style={{ fontSize: '1.5rem' }} />
-        </button>
-
-        {/* Nav Links */}
-        {navLinks.map((link) => (
-          <a
-            key={link.href}
-            href={link.href}
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="font-display"
-            style={{
-              fontSize: '2.5rem',
-              fontWeight: 700,
-              textTransform: 'uppercase',
-              letterSpacing: '-0.02em',
-              transition: 'color 0.3s ease',
-              color: activeSection === link.id ? 'var(--red-primary)' : 'var(--text-primary)'
-            }}
-          >
-            {link.label}
-          </a>
-        ))}
-
-        {/* CTA */}
-        <a
-          href="#contact"
-          onClick={() => setIsMobileMenuOpen(false)}
-          className="btn-primary"
-          style={{ marginTop: '1.5rem' }}
-        >
-          <span>Let's Talk</span>
-        </a>
-      </div>
-
-      <style>{`
-                @media (min-width: 640px) {
-                    #nav-logo-text {
-                        display: block !important;
-                    }
-                }
-                #nav-cta:hover .nav-cta-icon {
-                    transform: rotate(45deg);
-                }
-            `}</style>
-    </>
-  );
 };
 
 export default Navigation;

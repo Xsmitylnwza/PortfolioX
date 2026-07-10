@@ -1,5 +1,63 @@
 import { useEffect, useRef, useState } from 'react';
 
+const nearViewportCallbacks = new WeakMap();
+const visibleCallbacks = new WeakMap();
+let nearViewportObserver;
+let visibleObserver;
+
+const getObserver = (type) => {
+    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
+        return null;
+    }
+
+    if (type === 'near') {
+        if (!nearViewportObserver) {
+            nearViewportObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    nearViewportCallbacks.get(entry.target)?.(entry.isIntersecting);
+                });
+            }, {
+                rootMargin: '240px 0px',
+                threshold: 0.01
+            });
+        }
+
+        return nearViewportObserver;
+    }
+
+    if (!visibleObserver) {
+        visibleObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                visibleCallbacks.get(entry.target)?.(
+                    entry.isIntersecting && entry.intersectionRatio >= 0.08
+                );
+            });
+        }, {
+            threshold: [0, 0.08]
+        });
+    }
+
+    return visibleObserver;
+};
+
+const observeMedia = (node, type, callback) => {
+    const observer = getObserver(type);
+    const callbacks = type === 'near' ? nearViewportCallbacks : visibleCallbacks;
+
+    if (!observer) {
+        callback(true);
+        return () => {};
+    }
+
+    callbacks.set(node, callback);
+    observer.observe(node);
+
+    return () => {
+        observer.unobserve(node);
+        callbacks.delete(node);
+    };
+};
+
 const normalizeMedia = ({ media, image, video }) => {
     if (media && typeof media === 'object') return media;
     return {
@@ -33,6 +91,36 @@ const getResponsiveImageProps = (image, sizes) => {
     }
 };
 
+const shouldAvoidMotionMedia = () => {
+    if (typeof window === 'undefined') return false;
+
+    const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    const saveData = navigator.connection?.saveData;
+    return Boolean(reducedMotion || saveData);
+};
+
+const useMotionMediaAllowed = () => {
+    const [isAllowed, setIsAllowed] = useState(() => !shouldAvoidMotionMedia());
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return undefined;
+
+        const motionQuery = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+        const connection = navigator.connection;
+        const updatePreference = () => setIsAllowed(!shouldAvoidMotionMedia());
+
+        motionQuery?.addEventListener?.('change', updatePreference);
+        connection?.addEventListener?.('change', updatePreference);
+
+        return () => {
+            motionQuery?.removeEventListener?.('change', updatePreference);
+            connection?.removeEventListener?.('change', updatePreference);
+        };
+    }, []);
+
+    return isAllowed;
+};
+
 const ProjectMedia = ({
     media,
     image,
@@ -43,87 +131,81 @@ const ProjectMedia = ({
     eager = false,
     sizes
 }) => {
-    const wrapperRef = useRef(null);
-    const loadTimerRef = useRef(null);
-    const [shouldLoadVideo, setShouldLoadVideo] = useState(eager);
+    const mediaRef = useRef(null);
     const source = normalizeMedia({ media, image, video });
+    const [loadedVideo, setLoadedVideo] = useState(() => eager ? source.video : null);
+    const [isVisible, setIsVisible] = useState(false);
+    const motionMediaAllowed = useMotionMediaAllowed();
+    const hasActiveVideo = Boolean(
+        source.video
+        && loadedVideo === source.video
+        && motionMediaAllowed
+    );
     const responsiveImageProps = getResponsiveImageProps(source.image, sizes);
 
     useEffect(() => {
-        if (!source.video || shouldLoadVideo) return;
-
-        const node = wrapperRef.current;
-        if (!node) return;
-
-        let removeScrollListener = null;
-        const scheduleVideoLoad = () => {
-            if (loadTimerRef.current) window.clearTimeout(loadTimerRef.current);
-            loadTimerRef.current = window.setTimeout(() => {
-                setShouldLoadVideo(true);
-                if (removeScrollListener) removeScrollListener();
-            }, 700);
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            if (entries.some((entry) => entry.isIntersecting)) {
-                const onScroll = () => scheduleVideoLoad();
-                window.addEventListener('scroll', onScroll, { passive: true });
-                window.addEventListener('wheel', onScroll, { passive: true });
-                removeScrollListener = () => {
-                    window.removeEventListener('scroll', onScroll);
-                    window.removeEventListener('wheel', onScroll);
-                };
-                scheduleVideoLoad();
-                observer.disconnect();
-            }
-        }, { rootMargin: '300px 0px' });
-
-        observer.observe(node);
-        return () => {
-            observer.disconnect();
-            if (removeScrollListener) removeScrollListener();
-            if (loadTimerRef.current) window.clearTimeout(loadTimerRef.current);
-        };
-    }, [source.video, shouldLoadVideo]);
-
-    if (source.video) {
-        if (!shouldLoadVideo) {
-            return (
-                <img
-                    ref={wrapperRef}
-                    src={source.image}
-                    alt={alt}
-                    className={className}
-                    style={style}
-                    loading="lazy"
-                    decoding="async"
-                    fetchPriority="low"
-                    onMouseEnter={() => setShouldLoadVideo(true)}
-                    {...responsiveImageProps}
-                />
-            );
+        const node = mediaRef.current;
+        if (!node || !source.video || loadedVideo === source.video || !motionMediaAllowed) {
+            return undefined;
         }
 
+        return observeMedia(node, 'near', (isNearViewport) => {
+            if (isNearViewport) setLoadedVideo(source.video);
+        });
+    }, [loadedVideo, motionMediaAllowed, source.video]);
+
+    useEffect(() => {
+        const node = mediaRef.current;
+        if (!node || !source.video || !motionMediaAllowed) return undefined;
+
+        return observeMedia(node, 'visible', setIsVisible);
+    }, [motionMediaAllowed, source.video]);
+
+    useEffect(() => {
+        const node = mediaRef.current;
+        if (!(node instanceof HTMLVideoElement)) return undefined;
+
+        if (!hasActiveVideo || !isVisible) {
+            node.pause();
+            return undefined;
+        }
+
+        const playRequest = node.play();
+        playRequest?.catch(() => {
+            // Poster stays visible when autoplay is blocked.
+        });
+
+        return () => node.pause();
+    }, [hasActiveVideo, isVisible]);
+
+    if (source.video) {
         return (
             <video
-                ref={wrapperRef}
-                src={source.video}
+                ref={mediaRef}
+                src={hasActiveVideo ? source.video : undefined}
                 poster={source.image}
-                aria-label={alt}
+                role={alt ? 'img' : undefined}
+                aria-label={alt || undefined}
+                aria-hidden={alt ? undefined : true}
                 className={className}
                 style={style}
-                autoPlay
+                data-media-state={hasActiveVideo && isVisible ? 'playing' : 'poster'}
                 muted
                 loop
                 playsInline
-                preload={eager ? 'auto' : 'metadata'}
+                preload={eager ? 'metadata' : 'none'}
                 disablePictureInPicture
+                tabIndex={-1}
+                onPointerEnter={() => {
+                    if (motionMediaAllowed) setLoadedVideo(source.video);
+                }}
             />
         );
     }
 
     return (
         <img
+            ref={mediaRef}
             src={source.image}
             alt={alt}
             className={className}

@@ -1,61 +1,74 @@
-import React from 'react';
+import { useEffect, useRef } from 'react';
 import ProjectMedia from './ProjectMedia';
-import './TVModal.css'; // Reuse existing styles
+import './TVModal.css';
+
+let crtObserver;
+
+const getCrtObserver = () => {
+    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
+        return null;
+    }
+
+    if (!crtObserver) {
+        crtObserver = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                entry.target.dataset.crtActive = String(entry.isIntersecting);
+            });
+        }, {
+            rootMargin: '180px 0px',
+            threshold: 0.01
+        });
+    }
+
+    return crtObserver;
+};
 
 const StaticTV = ({ project, index }) => {
-    // Format index to always be 2 digits (e.g., 01, 02)
+    const containerRef = useRef(null);
     const channelId = `PJ-${String(index + 1).padStart(2, '0')}`;
+
+    useEffect(() => {
+        const node = containerRef.current;
+        if (!node) return undefined;
+
+        const observer = getCrtObserver();
+        if (!observer) {
+            node.dataset.crtActive = 'true';
+            return undefined;
+        }
+
+        observer.observe(node);
+        return () => observer.unobserve(node);
+    }, []);
 
     return (
         <div
+            ref={containerRef}
             className="tv-modal-container static-tv"
-            style={{
-                position: 'relative',
-                transform: 'none',
-                opacity: 1,
-                pointerEvents: 'auto',
-                width: '100%',
-                maxWidth: '320px',
-                height: '240px',
-                margin: '0 auto 2rem auto', // Add spacing below TV
-                zIndex: 1
-            }}
+            data-crt-active="false"
         >
             <div className="tv-screen">
-                {/* Channel / Input Overlay */}
-                <div className="tv-channel-text">{channelId}</div>
+                <div className="tv-channel-text" aria-hidden="true">{channelId}</div>
 
-                {/* Glitch Effects */}
-                <div className="tv-effects">
-                    <div className="tv-scanlines"></div>
-                    <div className="tv-tracking"></div>
-                    <div className="tv-static"></div>
-                    <div className="tv-overlay-glow"></div>
+                <div className="tv-effects" aria-hidden="true">
+                    <div className="tv-scanlines" />
+                    <div className="tv-tracking" />
+                    <div className="tv-static" />
+                    <div className="tv-overlay-glow" />
                 </div>
 
-                {/* Content */}
-                {project && project.image && (
+                {project?.image && (
                     <ProjectMedia
                         image={project.image}
                         video={project.video}
-                        alt={project.title}
+                        alt={`${project.title} project preview`}
                         className="tv-image"
                         sizes="320px"
                     />
                 )}
             </div>
 
-            {/* Simple decoration: Power LED */}
-            <div style={{
-                position: 'absolute',
-                bottom: '5px',
-                right: '20px',
-                width: '6px',
-                height: '6px',
-                background: 'red',
-                borderRadius: '50%',
-                boxShadow: '0 0 5px red'
-            }}></div>
+            <span className="tv-power-led" aria-hidden="true" />
         </div>
     );
 };

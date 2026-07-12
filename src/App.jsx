@@ -16,60 +16,79 @@ const PersonaReloadView = lazy(() => import('./components/PersonaReloadView'));
 
 const STAGE_PATHS = new Set(['/', '/experience']);
 const ROOM_EXIT_MS = 500;
-const ROOM_ENTER_MS = 420;
+const ROOM_ENTER_MS = 820;
 
 function isStagePath(path) {
   return STAGE_PATHS.has(path);
+}
+
+function isHomePath(path) {
+  return path === '/';
 }
 
 function App() {
   const location = useLocation();
   const navigate = useNavigate();
   const isPersonaRoute = location.pathname === '/persona';
-  const isHomeRoute = location.pathname === '/';
+  const isHomeRoute = isHomePath(location.pathname);
 
   // roomContent = currently visible room
   // pendingRoom = destination pre-mounted during exit so React commit is hidden
   const [roomContent, setRoomContent] = useState(() => location.pathname);
   const [pendingRoom, setPendingRoom] = useState(null);
   const [isRoomExiting, setIsRoomExiting] = useState(false);
+  // Room content enter starts after the shared poster-loader, not before it.
   const [isRoomEntering, setIsRoomEntering] = useState(false);
-  const [scrollReady, setScrollReady] = useState(() => location.pathname !== '/');
+  const [scrollReady, setScrollReady] = useState(false);
   const transitionTimerRef = useRef(0);
   const enterTimerRef = useRef(0);
   const premountTimerRef = useRef(0);
   const swapRafRef = useRef(0);
+  // Session-level intro: poster flash + red wipe runs once on first entry to any route.
+  const bootLoaderDoneRef = useRef(false);
 
-  // Custom cursor is desktop/fine-pointer only — avoid mounting pointer shell on touch devices.
+  // Custom cursor is desktop/fine-pointer only ? avoid mounting pointer shell on touch devices.
   const finePointer = useMemo(() => {
     if (typeof window === 'undefined') return false;
     return window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   }, []);
 
-  const [isLoading, setIsLoading] = useState(() => location.pathname === '/');
-  const [isHeroReady, setIsHeroReady] = useState(() => location.pathname !== '/');
-  const prepareHero = useCallback(() => setIsHeroReady(true), []);
-  const finishLoading = useCallback(() => setIsLoading(false), []);
+  // Loader is shared across ALL entry paths (/, /experience, /project/*, /persona).
+  const [isLoading, setIsLoading] = useState(true);
+  const [isHeroReady, setIsHeroReady] = useState(false);
 
   const destinationRoom = pendingRoom || roomContent;
-  const showGalleryChrome = (roomContent === '/' || (isRoomExiting && roomContent === '/')) && isHeroReady;
-  // Pre-mount Experience during gallery->experience exit so first paint isn't on the swap frame.
+  const showGalleryChrome = (roomContent === '/' || (isRoomExiting && roomContent === '/')) && isHeroReady && !isLoading;
+  // Pre-mount Experience once the loader has prepared the stage (still under the wipe).
   const experienceMounted =
-    roomContent === '/experience' ||
-    pendingRoom === '/experience' ||
-    (isRoomExiting && roomContent === '/experience');
-  const experiencePhase =
-    roomContent === '/experience' && isRoomExiting
-      ? 'exiting'
-      : roomContent !== '/experience' && pendingRoom === '/experience'
-        ? 'preparing'
-        : roomContent === '/experience' && isRoomEntering
-          ? 'entering'
-          : roomContent === '/experience'
-            ? 'active'
-            : 'hidden';
+    isHeroReady && (
+      roomContent === '/experience' ||
+      pendingRoom === '/experience' ||
+      (isRoomExiting && roomContent === '/experience')
+    );
 
-  const galleryShowContent = roomContent === '/' && !isRoomExiting;
+  // Shared phase model for Experience.
+  // During boot loader, destination content stays "preparing" under the black/red wipe.
+  const experiencePhase = (() => {
+    if (!experienceMounted) return 'hidden';
+    if (roomContent === '/experience' && isRoomExiting) return 'exiting';
+    if (roomContent !== '/experience' && pendingRoom === '/experience') return 'preparing';
+    if (isLoading) return 'preparing';
+    if (roomContent === '/experience' && isRoomEntering) return 'entering';
+    if (roomContent === '/experience') return 'active';
+    return 'hidden';
+  })();
+
+  // Non-stage routes use the same enter/exit shell language, gated by the shared loader.
+  const pageShellPhase = (() => {
+    if (isStagePath(roomContent) || isStagePath(destinationRoom)) return 'hidden';
+    if (isLoading) return 'preparing';
+    if (isRoomExiting) return 'exiting';
+    if (isRoomEntering) return 'entering';
+    return 'active';
+  })();
+
+  const galleryShowContent = roomContent === '/' && !isRoomExiting && !isLoading;
   const stageInteractive = galleryShowContent;
 
   const clearTransitionTimers = useCallback(() => {
@@ -87,30 +106,72 @@ function App() {
     document.documentElement.classList.remove('room-content-entering');
   }, []);
 
-  const runRoomSwap = useCallback((from, to) => {
-    // Double-rAF: wait until the exit paint has committed before mounting the next room visibly.
-    swapRafRef.current = window.requestAnimationFrame(() => {
-      swapRafRef.current = window.requestAnimationFrame(() => {
-        navigate(to);
-        setRoomContent(to);
-        setPendingRoom(null);
-        setIsRoomExiting(false);
-        setIsRoomEntering(true);
+  const beginEnter = useCallback((from, to, { navigateTo = false } = {}) => {
+    setIsRoomExiting(false);
+    setIsRoomEntering(true);
+    setPendingRoom(null);
+    setRoomContent(to);
 
-        document.documentElement.classList.remove('room-content-exiting');
-        document.documentElement.classList.remove('room-is-exiting');
+    document.documentElement.classList.remove('room-content-exiting');
+    document.documentElement.classList.remove('room-is-exiting');
+    document.documentElement.classList.add('room-content-entering');
+
+    document.dispatchEvent(new CustomEvent('portfolio:room-content-enter', {
+      detail: { from, to, durationMs: ROOM_ENTER_MS, reason: navigateTo ? 'navigate' : 'mount' },
+    }));
+
+    if (navigateTo) navigate(to);
+
+    window.clearTimeout(enterTimerRef.current);
+    enterTimerRef.current = window.setTimeout(finishEnter, ROOM_ENTER_MS);
+  }, [finishEnter, navigate]);
+
+  // Loader: mid-sequence ? mount stage/WebGL under the wipe so grid can reveal with the red expand.
+  const prepareHero = useCallback(() => {
+    setIsHeroReady(true);
+  }, []);
+
+  // Loader: end sequence ? unlock destination room enter for the current path.
+  const finishLoading = useCallback(() => {
+    if (bootLoaderDoneRef.current) {
+      setIsLoading(false);
+      return;
+    }
+    bootLoaderDoneRef.current = true;
+
+    const path = location.pathname;
+
+    // Drop the loader first while destination stays in preparing (opacity 0).
+    // Double-rAF guarantees that frame commits before the enter fade starts ?
+    // same seamlessness idea as gallery chrome after the red wipe.
+    setIsLoading(false);
+
+    if (isHomePath(path)) return;
+
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        setIsRoomEntering(true);
         document.documentElement.classList.add('room-content-entering');
         document.dispatchEvent(new CustomEvent('portfolio:room-content-enter', {
-          detail: { from, to, durationMs: ROOM_ENTER_MS },
+          detail: { from: null, to: path, durationMs: ROOM_ENTER_MS, reason: 'boot' },
         }));
-
         window.clearTimeout(enterTimerRef.current);
         enterTimerRef.current = window.setTimeout(finishEnter, ROOM_ENTER_MS);
       });
     });
-  }, [finishEnter, navigate]);
+  }, [finishEnter, location.pathname]);
+
+  const runRoomSwap = useCallback((from, to) => {
+    // Double-rAF: wait until the exit paint has committed before mounting the next room visibly.
+    swapRafRef.current = window.requestAnimationFrame(() => {
+      swapRafRef.current = window.requestAnimationFrame(() => {
+        beginEnter(from, to, { navigateTo: true });
+      });
+    });
+  }, [beginEnter]);
 
   const navigateToRoom = useCallback((to) => {
+    if (isLoading) return;
     if (to === location.pathname || to === roomContent || to === pendingRoom) {
       if (!isRoomExiting) window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
@@ -120,37 +181,36 @@ function App() {
     const fromStage = isStagePath(roomContent);
     const toStage = isStagePath(to);
 
-    if (!fromStage || !toStage) {
-      setRoomContent(to);
-      setPendingRoom(null);
-      navigate(to);
+    // Stage -> stage keeps the shared gallery stage and content exit/enter choreography.
+    if (fromStage && toStage) {
+      clearTransitionTimers();
+      setIsRoomExiting(true);
+      setIsRoomEntering(false);
+      setPendingRoom(to);
+      document.documentElement.classList.add('room-content-exiting');
+      document.documentElement.classList.add('room-is-exiting');
+      document.documentElement.classList.remove('room-content-entering');
+      document.dispatchEvent(new CustomEvent('portfolio:room-content-exit', {
+        detail: { from: roomContent, to, durationMs: ROOM_EXIT_MS },
+      }));
+
+      window.clearTimeout(transitionTimerRef.current);
+      transitionTimerRef.current = window.setTimeout(() => {
+        runRoomSwap(roomContent, to);
+      }, ROOM_EXIT_MS);
       return;
     }
 
-    // Stage -> stage: fade current content, pre-mount destination mid-exit, then reveal.
+    // Any other path (project/persona/off-stage): hard cut + mount enter on destination.
     clearTransitionTimers();
-    setIsRoomExiting(true);
-    setIsRoomEntering(false);
-    setPendingRoom(to);
-    document.documentElement.classList.add('room-content-exiting');
-    document.documentElement.classList.add('room-is-exiting');
-    document.documentElement.classList.remove('room-content-entering');
-    document.dispatchEvent(new CustomEvent('portfolio:room-content-exit', {
-      detail: { from: roomContent, to, durationMs: ROOM_EXIT_MS },
-    }));
-
-    // Destination content is pre-mounted via pendingRoom. Keep Lenis off during the
-    // WebGL card exit so the main thread is free for the unmount animation.
-    window.clearTimeout(transitionTimerRef.current);
-    transitionTimerRef.current = window.setTimeout(() => {
-      runRoomSwap(roomContent, to);
-    }, ROOM_EXIT_MS);
+    beginEnter(roomContent, to, { navigateTo: true });
   }, [
+    beginEnter,
     clearTransitionTimers,
+    isLoading,
     isRoomEntering,
     isRoomExiting,
     location.pathname,
-    navigate,
     pendingRoom,
     roomContent,
     runRoomSwap,
@@ -158,6 +218,7 @@ function App() {
 
   // Browser back/forward and non-nav route changes.
   useEffect(() => {
+    if (isLoading) return undefined;
     if (isRoomExiting || isRoomEntering) return undefined;
     if (location.pathname === roomContent) return undefined;
 
@@ -176,44 +237,40 @@ function App() {
       return undefined;
     }
 
-    setRoomContent(location.pathname);
-    setPendingRoom(null);
+    clearTransitionTimers();
+    beginEnter(roomContent, location.pathname, { navigateTo: false });
     return undefined;
-  }, [clearTransitionTimers, isRoomEntering, isRoomExiting, location.pathname, roomContent, runRoomSwap]);
+  }, [beginEnter, clearTransitionTimers, isLoading, isRoomEntering, isRoomExiting, location.pathname, roomContent, runRoomSwap]);
 
   useEffect(() => () => clearTransitionTimers(), [clearTransitionTimers]);
 
   // Layout classes must update before paint to avoid a one-frame body overflow hitch.
   useLayoutEffect(() => {
-    const homeLock = roomContent === '/' || (isRoomExiting && roomContent === '/');
+    const homeLock = (roomContent === '/' || (isRoomExiting && roomContent === '/')) && !isLoading;
     const stageActive = isStagePath(roomContent) || isStagePath(destinationRoom);
     document.documentElement.classList.toggle('home-room-active', homeLock);
     document.documentElement.classList.toggle('stage-room-active', stageActive && !isPersonaRoute);
     document.documentElement.classList.toggle('room-is-exiting', isRoomExiting);
     document.documentElement.classList.toggle('room-is-entering', isRoomEntering);
+    document.documentElement.classList.toggle('boot-loader-active', isLoading);
     return () => {
       document.documentElement.classList.remove('home-room-active');
       document.documentElement.classList.remove('stage-room-active');
       document.documentElement.classList.remove('room-is-exiting');
       document.documentElement.classList.remove('room-is-entering');
+      document.documentElement.classList.remove('boot-loader-active');
     };
-  }, [destinationRoom, isPersonaRoute, isRoomEntering, isRoomExiting, roomContent]);
-
-  useLayoutEffect(() => {
-    if (!isStagePath(roomContent) || roomContent === '/') return undefined;
-    document.documentElement.classList.add('portfolio-ready');
-    return undefined;
-  }, [roomContent]);
+  }, [destinationRoom, isLoading, isPersonaRoute, isRoomEntering, isRoomExiting, roomContent]);
 
   useEffect(() => {
-    if (roomContent === '/' || isRoomExiting) return undefined;
+    if (isLoading || roomContent === '/' || isRoomExiting) return undefined;
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
     return undefined;
-  }, [roomContent, isRoomExiting]);
+  }, [isLoading, roomContent, isRoomExiting]);
 
-  // Lenis should arm for non-home rooms only; returning home must clear the true-only latch.
+  // Lenis only after boot loader finishes and we are not on locked home gallery.
   useEffect(() => {
-    const wantsPageScroll = !isPersonaRoute && roomContent !== '/' && !isRoomExiting;
+    const wantsPageScroll = !isLoading && !isPersonaRoute && roomContent !== '/' && !isRoomExiting;
 
     window.clearTimeout(premountTimerRef.current);
     if (wantsPageScroll) {
@@ -223,11 +280,13 @@ function App() {
 
     setScrollReady(false);
     return undefined;
-  }, [isPersonaRoute, isRoomExiting, roomContent]);
+  }, [isLoading, isPersonaRoute, isRoomExiting, roomContent]);
 
-  // Warm Experience chunk once we know it will mount, so Suspense rarely blanks the overlay.
+  // Warm Experience chunk during loader so Suspense rarely blanks after the wipe.
   useEffect(() => {
-    if (!experienceMounted) return undefined;
+    if (!(roomContent === '/experience' || pendingRoom === '/experience' || location.pathname === '/experience')) {
+      return undefined;
+    }
     let cancelled = false;
     import('./components/Experience').catch(() => {
       if (cancelled) return;
@@ -235,9 +294,9 @@ function App() {
     return () => {
       cancelled = true;
     };
-  }, [experienceMounted]);
+  }, [location.pathname, pendingRoom, roomContent]);
 
-  // Preload experience logo assets once so first reveal doesn't hitch on image decode.
+  // Preload experience logo assets once the stage is allowed to mount under the wipe.
   useEffect(() => {
     if (!isHeroReady) return undefined;
     const sources = [
@@ -259,10 +318,13 @@ function App() {
     };
   }, [isHeroReady]);
 
+  const showStageRoom = isStagePath(roomContent) || isStagePath(destinationRoom);
+  const showPageRoutes = !isStagePath(roomContent) && !isStagePath(destinationRoom);
+
   return (
     <div
       className={isPersonaRoute ? 'app-shell persona-shell' : 'app-shell'}
-      aria-busy={(isHomeRoute && isLoading) || isRoomExiting}
+      aria-busy={isLoading || isRoomExiting}
     >
       {!isPersonaRoute && (
         <div className="gallery-stage" aria-hidden="true">
@@ -270,24 +332,40 @@ function App() {
         </div>
       )}
 
-      {isHomeRoute && isLoading && (
+      {/* Shared boot intro for every entry path ? posters on black, then red wipe into stage. */}
+      {isLoading && (
         <Loader onRevealReady={prepareHero} onLoadingComplete={finishLoading} />
       )}
-      {(roomContent === '/' || isHomeRoute) && <div className="noise-overlay" aria-hidden="true" />}
+      {(roomContent === '/' || isHomeRoute || isLoading) && <div className="noise-overlay" aria-hidden="true" />}
 
       {/* Keep Lenis warm after first non-home stage visit; never boot it on the reveal frame. */}
       {!isPersonaRoute && scrollReady && <ScrollManager />}
-      {!isPersonaRoute && finePointer && <Cursor />}
-      {(isStagePath(roomContent) || isStagePath(destinationRoom)) && isHeroReady && (
+      {!isPersonaRoute && finePointer && !isLoading && <Cursor />}
+      {showStageRoom && isHeroReady && (
         <Navigation
           currentPath={isRoomExiting ? roomContent : location.pathname}
           onRoomNavigate={navigateToRoom}
-          routeReady={roomContent !== '/' || !isLoading}
+          routeReady={!isLoading && (roomContent !== '/' || !isLoading)}
         />
       )}
 
       <main className="site-main">
-        {(isStagePath(roomContent) || isStagePath(destinationRoom)) && (
+        {/* Persistent WebGL host: stays mounted across / , /experience, and /project/* once boot is ready. */}
+        {isHeroReady && !isPersonaRoute && (
+          <div
+            className={`gallery-stage-layer${stageInteractive ? ' is-interactive' : ' is-stage-only'}`}
+            aria-hidden={!stageInteractive}
+          >
+            <GalleryScene
+              mode={galleryShowContent ? 'gallery' : 'stage'}
+              showContent={galleryShowContent}
+              contentExitMs={ROOM_EXIT_MS}
+              active={showStageRoom}
+            />
+          </div>
+        )}
+
+        {showStageRoom && (
           <div
             className={[
               'gallery-room',
@@ -295,21 +373,9 @@ function App() {
               roomContent === '/experience' || pendingRoom === '/experience' ? 'is-experience' : '',
               isRoomExiting ? 'is-exiting' : '',
               isRoomEntering ? 'is-entering' : '',
+              isLoading ? 'is-booting' : '',
             ].filter(Boolean).join(' ')}
           >
-            {isHeroReady && (
-              <div
-                className={`gallery-stage-layer${stageInteractive ? ' is-interactive' : ' is-stage-only'}`}
-                aria-hidden={!stageInteractive}
-              >
-                <GalleryScene
-                  mode={galleryShowContent ? 'gallery' : 'stage'}
-                  showContent={galleryShowContent}
-                  contentExitMs={ROOM_EXIT_MS}
-                />
-              </div>
-            )}
-
             {showGalleryChrome && (
               <section
                 id="home"
@@ -332,12 +398,14 @@ function App() {
               <div
                 className={[
                   'room-overlay',
+                  'route-enter-layer',
                   experiencePhase === 'preparing' ? 'is-preparing' : '',
                   experiencePhase === 'entering' ? 'is-entering' : '',
                   experiencePhase === 'exiting' ? 'is-exiting' : '',
                   experiencePhase === 'active' ? 'is-active' : '',
                 ].filter(Boolean).join(' ')}
                 aria-hidden={experiencePhase === 'preparing' || experiencePhase === 'hidden'}
+                data-route-phase={experiencePhase}
               >
                 <Suspense fallback={null}>
                   <Experience />
@@ -347,29 +415,46 @@ function App() {
           </div>
         )}
 
-        <Routes>
-          <Route path="/" element={null} />
-          <Route path="/experience" element={null} />
-          <Route
-            path="/persona"
-            element={
-              <Suspense fallback={<div className="loading-fallback loading-fallback--persona" />}>
-                <PersonaReloadView />
-              </Suspense>
-            }
-          />
-          <Route
-            path="/project/:id"
-            element={
-              <Suspense fallback={<div className="loading-fallback" />}>
-                <ProjectDetails />
-              </Suspense>
-            }
-          />
-        </Routes>
+        {/* Stage rooms render via gallery-room; non-stage routes share the mount/enter shell. */}
+        <div
+          className={[
+            'route-shell',
+            'route-enter-layer',
+            showPageRoutes ? '' : 'is-hidden-stage',
+            showPageRoutes && pageShellPhase === 'preparing' ? 'is-preparing' : '',
+            showPageRoutes && pageShellPhase === 'entering' ? 'is-entering' : '',
+            showPageRoutes && pageShellPhase === 'exiting' ? 'is-exiting' : '',
+            showPageRoutes && pageShellPhase === 'active' ? 'is-active' : '',
+            isPersonaRoute ? 'route-shell--persona' : 'route-shell--page',
+          ].filter(Boolean).join(' ')}
+          data-route-phase={showPageRoutes ? pageShellPhase : 'stage'}
+          aria-hidden={!showPageRoutes || pageShellPhase === 'preparing'}
+          hidden={!showPageRoutes}
+        >
+          <Routes>
+            <Route path="/" element={null} />
+            <Route path="/experience" element={null} />
+            <Route
+              path="/persona"
+              element={
+                <Suspense fallback={<div className="loading-fallback loading-fallback--persona" />}>
+                  <PersonaReloadView />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/project/:id"
+              element={
+                <Suspense fallback={<div className="loading-fallback" />}>
+                  <ProjectDetails />
+                </Suspense>
+              }
+            />
+          </Routes>
+        </div>
       </main>
 
-      {!isPersonaRoute && !isStagePath(roomContent) && !isStagePath(destinationRoom) && <Footer />}
+      {!isPersonaRoute && !isLoading && !isStagePath(roomContent) && !isStagePath(destinationRoom) && <Footer />}
     </div>
   );
 }

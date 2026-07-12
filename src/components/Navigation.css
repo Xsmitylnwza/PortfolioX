@@ -18,12 +18,19 @@
     mix-blend-mode: normal;
 }
 
-html.portfolio-ready .corner-menu {
-    animation: corner-menu-reveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.28s both;
+html.portfolio-ready:not(.loader-active):not(.boot-loader-active) .corner-menu {
+    animation: corner-menu-reveal 0.78s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
 }
 
 .corner-menu.is-route-ready {
     opacity: 1;
+}
+
+html.loader-active .corner-menu,
+html.boot-loader-active .corner-menu {
+    opacity: 0 !important;
+    animation: none !important;
+    pointer-events: none !important;
 }
 
 @keyframes corner-menu-reveal {

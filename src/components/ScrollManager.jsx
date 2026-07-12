@@ -42,9 +42,10 @@ const ScrollManager = () => {
         const lenis = new Lenis({
             autoRaf: false,
             anchors: true,
-            lerp: 0.1,
+            lerp: 0.055,
             smoothWheel: true,
-            wheelMultiplier: 0.9,
+            wheelMultiplier: 0.72,
+            touchMultiplier: 1.05,
         });
         lenisRef.current = lenis;
 

@@ -133,12 +133,14 @@ void main(){
  gl_FragColor=vec4(0.,0.,0.,uOpacity*clamp(shade,.56,1.));
 }`;
 
-const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 500 }) => {
+const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 500, active = true }) => {
     const hostRef = useRef(null);
     const navigate = useNavigate();
     const modeRef = useRef(mode);
     const showContentRef = useRef(showContent);
     const contentExitMsRef = useRef(contentExitMs);
+    const activeRef = useRef(active);
+    const syncLoopRef = useRef(null);
     const labelRef = useRef(null);
 
     const setLabelText = (text) => {
@@ -161,6 +163,11 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
         showContentRef.current = showContent;
         contentExitMsRef.current = contentExitMs;
     }, [showContent, contentExitMs]);
+
+    useEffect(() => {
+        activeRef.current = active;
+        syncLoopRef.current?.();
+    }, [active]);
 
     useEffect(() => {
         const host = hostRef.current;
@@ -432,12 +439,18 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
             };
             let hovered = null;
             let raf = 0;
-            let visible = true;
+            // Loop gate: document visibility + explicit active prop (not host.isConnected).
             let previousTime = performance.now();
-            let revealStart = document.documentElement.classList.contains('portfolio-ready') || modeRef.current === 'stage'
-                ? performance.now()
-                : null;
+            // Every entry path waits for the shared Loader's portfolio:reveal-start.
+            // Only snap if the loader already finished before this host mounted.
+            let revealStart = null;
             let revealComplete = false;
+            let snapRevealAtMount = false;
+            if (document.documentElement.classList.contains('portfolio-ready')) {
+                revealStart = performance.now();
+                snapRevealAtMount = true;
+                revealComplete = true;
+            }
             const clearHover = () => {
                 hovered = null;
                 pointer.active = false;
@@ -447,6 +460,20 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
             };
             // Content interactivity is driven by showContent, not only route mode.
             const isInteractive = () => showContentRef.current && modeRef.current === 'gallery';
+            const canRunLoop = () => !disposed && !document.hidden && Boolean(activeRef.current);
+            const syncLoop = () => {
+                if (canRunLoop()) {
+                    if (!raf) {
+                        previousTime = performance.now();
+                        raf = requestAnimationFrame(render);
+                    }
+                    return;
+                }
+                if (raf) {
+                    cancelAnimationFrame(raf);
+                    raf = 0;
+                }
+            };
             const onRevealStart = () => { revealStart = performance.now(); };
             const beginContentExit = (durationMs) => {
                 contentExitMsRef.current = durationMs || contentExitMsRef.current || 500;
@@ -684,7 +711,10 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
             };
 
             const render = (time) => {
-                if (!visible || disposed) return;
+                if (!canRunLoop()) {
+                    raf = 0;
+                    return;
+                }
                 const dt = Math.min((time - previousTime) / 1000, 0.05);
                 previousTime = time;
                 // Track showContent edge so unmount always runs a 0.5s fade, not a hard cut.
@@ -763,10 +793,9 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                     const clamped = Math.max(0, Math.min(1, value));
                     return clamped * clamped * (3 - 2 * clamped);
                 };
-                // When already portfolio-ready (direct stage entry), show grid immediately.
-                const readyAtMount = revealStart !== null && document.documentElement.classList.contains('portfolio-ready');
-                const gridReveal = readyAtMount && revealElapsed < 0.05 ? 1 : smooth(revealElapsed / 1.15);
-                const sceneReveal = readyAtMount && revealElapsed < 0.05 ? 1 : smooth((revealElapsed - 1.45) / 1.05);
+                // Snap only when the host mounted after boot loader finished.
+                const gridReveal = snapRevealAtMount ? 1 : smooth(revealElapsed / 1.15);
+                const sceneReveal = snapRevealAtMount ? 1 : smooth((revealElapsed - 1.45) / 1.05);
                 // Grid is permanent stage architecture. Never fade with room content swaps.
                 if (gridReveal >= 0.999) revealComplete = true;
                 gridProgram.uniforms.uOpacity.value = (revealComplete ? 1 : gridReveal) * 0.74;
@@ -792,7 +821,7 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                     const { userData } = mesh;
                     userData.hover += ((mesh === hovered ? 1 : 0) - userData.hover) * (1 - Math.exp(-8 * dt));
                     userData.reveal = smooth((revealElapsed - 1.45 - userData.revealDelay) / 0.55);
-                    if (readyAtMount && revealElapsed < 0.05) userData.reveal = 1;
+                    if (snapRevealAtMount) userData.reveal = 1;
                     // Staggered content unmount: cards peel away over the shared exit window.
                     if (contentExitStart !== null) {
                         const exitElapsed = Math.max(0, (time - contentExitStart) / 1000);
@@ -835,27 +864,22 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                     labelPos.y += (labelPos.targetY - labelPos.y) * follow;
                     labelEl.style.transform = `translate3d(${labelPos.x}px, ${labelPos.y}px, 0)`;
                 }
-                raf = requestAnimationFrame(render);
+                if (canRunLoop()) {
+                    raf = requestAnimationFrame(render);
+                } else {
+                    raf = 0;
+                }
             };
 
-            // Force stage rooms to always render even if host height collapses briefly.
-            // Keep the stage loop alive across room swaps; only pause when the tab is hidden.
-            const observer = new IntersectionObserver(([entry]) => {
-                const nextVisible = !document.hidden && (entry.isIntersecting || host.isConnected);
-                if (nextVisible === visible) return;
-                visible = nextVisible;
-                if (visible && !raf) { previousTime = performance.now(); raf = requestAnimationFrame(render); }
-                if (!visible && raf) { cancelAnimationFrame(raf); raf = 0; }
-            }, { threshold: 0 });
+            // Always-mounted fixed hosts stay isConnected; pause via active + tab visibility.
+            // Do not use IntersectionObserver host.isConnected as "visible" - that never pauses.
             const onVisibility = () => {
-                visible = !document.hidden && host.isConnected;
-                if (visible && !raf) { previousTime = performance.now(); raf = requestAnimationFrame(render); }
-                if (!visible && raf) { cancelAnimationFrame(raf); raf = 0; }
+                syncLoop();
             };
             document.addEventListener('visibilitychange', onVisibility);
             const resizeObserver = new ResizeObserver(resize);
-            observer.observe(host);
             resizeObserver.observe(host);
+            syncLoopRef.current = syncLoop;
             // Capture on host: reliable for trackpad even when child hit-testing is flaky.
             // stopPropagation in handler prevents double-application if canvas also receives it.
             host.addEventListener('wheel', onWheel, { passive: false, capture: true });
@@ -875,10 +899,11 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
             window.visualViewport?.addEventListener('resize', onViewportResize);
             window.visualViewport?.addEventListener('scroll', onViewportResize);
             resize();
-            raf = requestAnimationFrame(render);
+            syncLoop();
 
             cleanup = () => {
-                observer.disconnect(); resizeObserver.disconnect();
+                syncLoopRef.current = null;
+                resizeObserver.disconnect();
                 document.removeEventListener('visibilitychange', onVisibility);
                 host.removeEventListener('wheel', onWheel, true);
                 gl.canvas.removeEventListener('wheel', onWheel);

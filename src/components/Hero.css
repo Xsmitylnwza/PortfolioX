@@ -8,7 +8,7 @@ html.room-content-exiting .orbit-hero {
 .orbit-hero::before { display:none; }
 .orbit-hero__grid { display:none; }
 
-/* Shared WebGL stage host: stays mounted across gallery + experience rooms. */
+/* Shared WebGL stage host: shell-level fixed layer across gallery/experience/project. */
 .gallery-stage-layer {
     position: fixed;
     inset: 0;

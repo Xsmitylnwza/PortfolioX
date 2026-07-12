@@ -130,7 +130,7 @@ void main(){
  float heightShade=smoothstep(.35,1.,abs(vGridPosition.y)/10.);
  float centerLight=exp(-pow((vGridPosition.x/13.+.12)*2.8,2.));
  float shade=.74+side*.24+distanceShade*.08+heightShade*.05-centerLight*.1;
- gl_FragColor=vec4(0.,0.,0.,uOpacity*clamp(shade,.56,1.));
+ gl_FragColor=vec4(0.,0.,0.,uOpacity*clamp(shade,.62,1.));
 }`;
 
 const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 500, active = true }) => {
@@ -798,7 +798,7 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                 const sceneReveal = snapRevealAtMount ? 1 : smooth((revealElapsed - 1.45) / 1.05);
                 // Grid is permanent stage architecture. Never fade with room content swaps.
                 if (gridReveal >= 0.999) revealComplete = true;
-                gridProgram.uniforms.uOpacity.value = (revealComplete ? 1 : gridReveal) * 0.74;
+                gridProgram.uniforms.uOpacity.value = (revealComplete ? 1 : gridReveal) * 0.814;
                 // sceneOpacity only gates card textures; keep it at 1 after first full reveal.
                 frameUniforms.sceneOpacity = revealComplete ? 1 : sceneReveal;
                 sculptureProgram.uniforms.uTime.value = time * 0.001;

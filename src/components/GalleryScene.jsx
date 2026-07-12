@@ -439,9 +439,9 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
 
             const sculpture = new Transform();
             sculpture.position.z = 1.45;
-            sculpture.scale.set(0.62);
+            sculpture.scale.set(0.82);
             sculpture.setParent(scene);
-            // Compact Doctor Strange-style mandala: smaller nested silver rings.
+            // Doctor Strange-style mandala: nested silver rings (medium size).
             const torusGeometries = [
                 new Torus(gl, { radius: 0.52, tube: 0.042, radialSegments: 7, tubularSegments: 48 }),
                 new Torus(gl, { radius: 0.62, tube: 0.050, radialSegments: 8, tubularSegments: 52 }),

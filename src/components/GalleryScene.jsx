@@ -120,17 +120,19 @@ void main(){
 }`;
 
 const gridFragment = /* glsl */ `
+precision highp float;
 uniform float uOpacity;
 varying vec3 vGridPosition;
-
+varying float vViewDepth;
 void main(){
- // Use cylindrical radius for falloff so shading follows the round cage, not a flat x-plane.
- float radius = length(vGridPosition.xz);
- float side = smoothstep(10.4, 14.6, radius);
- float heightShade = smoothstep(.3, 1., abs(vGridPosition.y)/10.);
- float centerLight = exp(-pow((vGridPosition.x / 14.2 + .1) * 2.35, 2.));
- float shade = mix(.74, .98, centerLight) * (1. - side * .14) * (1. - heightShade * .1);
- gl_FragColor = vec4(0., 0., 0., uOpacity * clamp(shade, .62, 1.));
+  // Radial falloff follows the cylindrical cage so sides feel rounder than flat x-plane shading.
+  float radius = length(vGridPosition.xz);
+  float side = smoothstep(9.2, 15.0, radius);
+  float distanceShade = smoothstep(4.0, 26.0, vViewDepth);
+  float heightShade = smoothstep(0.3, 1.0, abs(vGridPosition.y) / 10.0);
+  float centerLight = exp(-pow((vGridPosition.x / 14.2 + 0.1) * 2.35, 2.0));
+  float shade = 0.78 + side * 0.18 + distanceShade * 0.08 + heightShade * 0.05 - centerLight * 0.08;
+  gl_FragColor = vec4(0.0, 0.0, 0.0, uOpacity * clamp(shade, 0.62, 1.0));
 }
 `;
 
@@ -191,7 +193,7 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
             gl.canvas.className = 'gallery-webgl';
             host.appendChild(gl.canvas);
 
-            const camera = new Camera(gl, { fov: 38, near: 0.1, far: 70 });
+            const camera = new Camera(gl, { fov: 40, near: 0.1, far: 70 });
             camera.position.set(0, 0, 9.6);
             camera.lookAt([0, 0, 0]);
             const scene = new Transform();
@@ -327,14 +329,14 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
             }
 
             // Triangle ribbons keep the grid thinner than the 1px minimum supported by WebGL lines.
-            // Higher segment density + wider radius reads as a rounder cylindrical cage.
+            // Slightly wider radius + denser rings for a rounder cylindrical cage.
             const gridVertices = [];
-            const gridRadius = 14.2;
+            const gridRadius = 13.6;
             const gridHalfHeight = 10;
-            const gridLineWidth = 0.011;
-            const verticalLines = 96;
+            const gridLineWidth = 0.012;
+            const verticalLines = 88;
             const horizontalRings = 20;
-            const ringSegments = 280;
+            const ringSegments = 240;
             const addQuad = (a, b, c, d) => {
                 gridVertices.push(...a, ...b, ...c, ...a, ...c, ...d);
             };
@@ -800,7 +802,7 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                 const sceneReveal = snapRevealAtMount ? 1 : smooth((revealElapsed - 1.45) / 1.05);
                 // Grid is permanent stage architecture. Never fade with room content swaps.
                 if (gridReveal >= 0.999) revealComplete = true;
-                gridProgram.uniforms.uOpacity.value = (revealComplete ? 1 : gridReveal) * 0.814;
+                gridProgram.uniforms.uOpacity.value = (revealComplete ? 1 : gridReveal) * 0.86;
                 // sceneOpacity only gates card textures; keep it at 1 after first full reveal.
                 frameUniforms.sceneOpacity = revealComplete ? 1 : sceneReveal;
                 sculptureProgram.uniforms.uTime.value = time * 0.001;

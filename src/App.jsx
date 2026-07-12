@@ -1,8 +1,6 @@
 ﻿import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, Suspense, lazy } from 'react';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
-import Navigation from './components/Navigation';
 import GalleryScene from './components/GalleryScene';
-import Footer from './components/Footer';
 import ScrollManager from './components/ScrollManager';
 import Cursor from './components/Cursor';
 import Loader from './components/Loader';
@@ -348,12 +346,7 @@ function App() {
   const documentRoomActive = isDocumentPath(roomContent) || isDocumentPath(destinationRoom);
   // Keep WebGL grid alive under glass document rooms (upper content only; stage never unmounts).
   const stageLoopActive = showStageRoom || documentRoomActive;
-  const showPrimaryNav = !isPersonaRoute && isHeroReady && (
-    showStageRoom || documentRoomActive || showPageRoutes
-  );
-  const navPath = isRoomExiting ? roomContent : location.pathname;
-
-  return (
+return (
     <div
       className={isPersonaRoute ? 'app-shell persona-shell' : 'app-shell'}
       aria-busy={isLoading || isRoomExiting}
@@ -373,15 +366,7 @@ function App() {
       {/* Keep Lenis warm after first non-home stage visit; never boot it on the reveal frame. */}
       {!isPersonaRoute && scrollReady && <ScrollManager />}
       {!isPersonaRoute && finePointer && !isLoading && <Cursor />}
-      {showPrimaryNav && (
-        <Navigation
-          currentPath={navPath}
-          onRoomNavigate={navigateToRoom}
-          routeReady={!isLoading && (roomContent !== '/' || !isLoading)}
-        />
-      )}
-
-      <main className="site-main">
+<main className="site-main">
         {/* Persistent WebGL host: stays mounted across non-persona routes once boot is ready.
             active=false on document/project rooms pauses RAF but keeps the GL context + red stage identity. */}
         {isHeroReady && !isPersonaRoute && (
@@ -505,9 +490,7 @@ function App() {
           </Routes>
         </div>
       </main>
-
-      {!isPersonaRoute && !isLoading && !isStagePath(roomContent) && !isStagePath(destinationRoom) && <Footer />}
-    </div>
+</div>
   );
 }
 

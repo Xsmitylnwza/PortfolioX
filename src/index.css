@@ -88,8 +88,20 @@ svg {
   inset: -8%;
   background:
     radial-gradient(ellipse 58% 84% at 50% 46%, rgba(255, 170, 150, 0.18), transparent 52%),
-    radial-gradient(ellipse 108% 92% at 50% 50%, transparent 42%, rgba(84, 0, 7, 0.14) 74%, rgba(24, 0, 4, 0.26) 100%),
-    linear-gradient(90deg, rgba(42, 0, 4, 0.12), transparent 23%, transparent 77%, rgba(42, 0, 4, 0.12));
+    /* Soft overall vignette keeps depth without killing the red field */
+    radial-gradient(ellipse 108% 92% at 50% 50%, transparent 42%, rgba(84, 0, 7, 0.1) 74%, rgba(24, 0, 4, 0.18) 100%),
+    /* Side-only dark edges: left/right denser, center stays open */
+    linear-gradient(
+      90deg,
+      rgba(10, 0, 2, 0.42) 0%,
+      rgba(24, 0, 4, 0.22) 10%,
+      rgba(42, 0, 4, 0.08) 20%,
+      transparent 32%,
+      transparent 68%,
+      rgba(42, 0, 4, 0.08) 80%,
+      rgba(24, 0, 4, 0.22) 90%,
+      rgba(10, 0, 2, 0.42) 100%
+    );
   animation: gallery-stage-drift 13s ease-in-out infinite alternate;
   will-change: transform;
 }

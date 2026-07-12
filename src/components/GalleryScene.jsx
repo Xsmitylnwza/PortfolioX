@@ -66,44 +66,98 @@ attribute vec3 normal;
 uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
 uniform mat3 normalMatrix;
+uniform float uTime;
+uniform float uLayer;
 varying vec3 vPosition;
 varying vec3 vNormal;
+varying float vFacet;
 void main(){
- vec3 pos=position;
- float angle=atan(pos.y,pos.x);
- float c=cos(angle);
- float s=sin(angle);
- float squircle=pow(pow(abs(c),4.0)+pow(abs(s),4.0),-.25);
- float radius=length(pos.xy)*mix(1.0,squircle,.34);
- pos.xy=normalize(pos.xy)*radius;
- vec4 view=modelViewMatrix*vec4(pos,1.);
- vPosition=view.xyz;
- vNormal=normalize(normalMatrix*normal);
- gl_Position=projectionMatrix*view;
+  vec3 pos = position;
+  float angle = atan(pos.y, pos.x);
+  float ring = length(pos.xy) + 1e-5;
+
+  // Hard faceting: quantize ring angle so the torus reads as broken metal plates.
+  float facets = mix(7.0, 13.0, fract(uLayer * 0.37));
+  float stepped = floor(angle / 6.2831853 * facets + 0.5) / facets * 6.2831853;
+  float mixFacet = 0.62 + uLayer * 0.05;
+  float facetedAngle = mix(angle, stepped, mixFacet);
+  float c = cos(facetedAngle);
+  float s = sin(facetedAngle);
+
+  // Squircle + jagged crush so rings feel angular / half-collapsed.
+  float squircle = pow(pow(abs(c), 6.0) + pow(abs(s), 6.0), -0.1667);
+  float crush = 0.82 + 0.18 * sin(facetedAngle * facets * 0.5 + uLayer * 1.7);
+  float dent = 0.07 * sin(facetedAngle * 5.0 + uLayer * 2.1 + uTime * 0.15)
+             + 0.04 * sin(pos.z * 18.0 + uLayer);
+  float radius = ring * mix(1.0, squircle, 0.55) * crush * (1.0 + dent);
+  pos.xy = vec2(c, s) * radius;
+
+  // Axial plate offsets: overlapping broken layers.
+  pos.z += 0.035 * sin(facetedAngle * 3.0 + uLayer) + uLayer * 0.012;
+  pos *= 1.0 + 0.02 * sin(facetedAngle * 2.0 - uTime * 0.1 + uLayer);
+
+  // Faceted normals: less smooth shading, more hard metal panels.
+  vec3 n = normalize(normal);
+  n.xy = mix(n.xy, vec2(c, s), 0.55);
+  n = normalize(n + 0.18 * vec3(sin(facetedAngle * facets), cos(facetedAngle * facets), 0.2));
+
+  vec4 view = modelViewMatrix * vec4(pos, 1.0);
+  vPosition = view.xyz;
+  vNormal = normalize(normalMatrix * n);
+  vFacet = facetedAngle * facets;
+  gl_Position = projectionMatrix * view;
 }`;
 
 const sculptureFragment = /* glsl */ `
 precision highp float;
 varying vec3 vNormal;
 varying vec3 vPosition;
+varying float vFacet;
 uniform float uTime;
 uniform float uOpacity;
+uniform float uLayer;
 void main(){
- vec3 n=normalize(vNormal);
- vec3 viewDir=normalize(-vPosition);
- vec3 lightDir=normalize(vec3(-.45,.72,.9));
- float diffuse=.24+.76*max(dot(n,lightDir),0.);
- float fresnel=pow(1.-max(dot(n,viewDir),0.),2.6);
- float specular=pow(max(dot(reflect(-lightDir,n),viewDir),0.),34.);
- float movingBand=.5+.5*sin((n.x*3.8+n.y*7.2+n.z*2.4)+uTime*.72);
- vec3 graphite=vec3(.07,.075,.075);
- vec3 silver=vec3(.72,.74,.73);
- vec3 pearl=vec3(.96,.93,.86);
- vec3 color=mix(graphite,silver,diffuse);
- color=mix(color,pearl,movingBand*.2+specular*.72);
- color+=fresnel*vec3(.25,.21,.18);
- color+=pow(max(-n.y,0.),2.)*vec3(.18,.018,.014);
- gl_FragColor=vec4(color,uOpacity);
+  vec3 n = normalize(vNormal);
+  vec3 viewDir = normalize(-vPosition);
+
+  // Multi-light chrome / brushed silver steel.
+  vec3 key = normalize(vec3(-0.55, 0.85, 0.95));
+  vec3 fill = normalize(vec3(0.75, 0.15, 0.55));
+  vec3 rimL = normalize(vec3(-0.2, -0.35, 1.0));
+
+  float ndotv = max(dot(n, viewDir), 0.0);
+  float fresnel = pow(1.0 - ndotv, 3.2);
+
+  float diffKey = max(dot(n, key), 0.0);
+  float diffFill = max(dot(n, fill), 0.0) * 0.35;
+  float diff = 0.12 + 0.72 * diffKey + diffFill;
+
+  vec3 halfKey = normalize(key + viewDir);
+  float specKey = pow(max(dot(n, halfKey), 0.0), 96.0);
+  float specSoft = pow(max(dot(n, halfKey), 0.0), 18.0);
+  float rim = pow(max(dot(n, rimL), 0.0), 2.0) * fresnel;
+
+  // Micro plate seams + brushed grain on silver metal.
+  float seam = smoothstep(0.42, 0.5, abs(fract(vFacet) - 0.5));
+  float brush = 0.5 + 0.5 * sin((vPosition.x * 38.0 + vPosition.y * 11.0) + uTime * 0.4);
+  float flake = 0.5 + 0.5 * sin(vFacet * 2.7 + uLayer * 4.0);
+
+  vec3 steelDark = vec3(0.10, 0.11, 0.12);
+  vec3 steelMid = vec3(0.58, 0.60, 0.63);
+  vec3 chrome = vec3(0.92, 0.94, 0.97);
+  vec3 highlight = vec3(1.0, 0.99, 0.97);
+
+  vec3 color = mix(steelDark, steelMid, diff);
+  color = mix(color, chrome, fresnel * 0.78 + specSoft * 0.35);
+  color += highlight * (specKey * 0.95 + rim * 0.45);
+  color *= 0.90 + brush * 0.10;
+  color *= 0.88 + seam * 0.18;
+  color += chrome * flake * 0.04;
+
+  // Cool silver, almost no warm tint.
+  color = mix(color, vec3(color.b, color.g, color.r) * vec3(0.96, 0.98, 1.02), 0.18);
+
+  gl_FragColor = vec4(color, uOpacity);
 }`;
 
 const gridVertex = /* glsl */ `
@@ -380,21 +434,54 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
             cylinderGrid.setParent(scene);
 
             const sculpture = new Transform();
-            sculpture.position.z = 1.35;
+            sculpture.position.z = 1.28;
             sculpture.setParent(scene);
-            const torusGeometry = new Torus(gl, { radius: 1.02, tube: 0.105, radialSegments: 10, tubularSegments: 48 });
-            const sculptureProgram = new Program(gl, {
-                vertex: sculptureVertex,
-                fragment: sculptureFragment,
-                cullFace: null,
-                transparent: true,
-                uniforms: { uTime: { value: 0 }, uOpacity: { value: 0 } },
-            });
-            const torusMeshes = [0, 1, 2].map((index) => {
-                const mesh = new Mesh(gl, { geometry: torusGeometry, program: sculptureProgram });
-                mesh.scale.set(1 + index * 0.22);
-                mesh.rotation.x = index * 0.82;
-                mesh.rotation.y = index * 0.54;
+            // Low radial segments = harder plates; multiple geometries = broken layered rings.
+            const torusGeometries = [
+                new Torus(gl, { radius: 0.92, tube: 0.078, radialSegments: 7, tubularSegments: 56 }),
+                new Torus(gl, { radius: 1.04, tube: 0.096, radialSegments: 8, tubularSegments: 64 }),
+                new Torus(gl, { radius: 1.16, tube: 0.072, radialSegments: 6, tubularSegments: 52 }),
+                new Torus(gl, { radius: 1.28, tube: 0.088, radialSegments: 9, tubularSegments: 60 }),
+                new Torus(gl, { radius: 1.40, tube: 0.064, radialSegments: 7, tubularSegments: 48 }),
+                new Torus(gl, { radius: 1.52, tube: 0.082, radialSegments: 8, tubularSegments: 58 }),
+            ];
+            const torusLayerConfig = [
+                { scale: 0.86, rx: 0.18, ry: 0.42, rz: 0.05, speed: 0.11, z: -0.08 },
+                { scale: 0.98, rx: 0.74, ry: -0.28, rz: 0.22, speed: 0.16, z: -0.02 },
+                { scale: 1.10, rx: -0.52, ry: 0.88, rz: -0.18, speed: 0.13, z: 0.04 },
+                { scale: 1.24, rx: 1.12, ry: 0.36, rz: 0.48, speed: 0.19, z: 0.01 },
+                { scale: 1.38, rx: -0.28, ry: -0.96, rz: 0.66, speed: 0.14, z: -0.05 },
+                { scale: 1.54, rx: 0.92, ry: 0.18, rz: -0.42, speed: 0.21, z: 0.07 },
+            ];
+            const torusMeshes = torusLayerConfig.map((config, index) => {
+                // Unique program per layer so uLayer can differ while sharing shader source.
+                const program = new Program(gl, {
+                    vertex: sculptureVertex,
+                    fragment: sculptureFragment,
+                    cullFace: null,
+                    transparent: true,
+                    depthTest: true,
+                    depthWrite: true,
+                    uniforms: {
+                        uTime: { value: 0 },
+                        uOpacity: { value: 0 },
+                        uLayer: { value: index },
+                    },
+                });
+                const mesh = new Mesh(gl, {
+                    geometry: torusGeometries[index],
+                    program,
+                });
+                mesh.scale.set(config.scale);
+                mesh.rotation.x = config.rx;
+                mesh.rotation.y = config.ry;
+                mesh.rotation.z = config.rz;
+                mesh.position.z = config.z;
+                mesh.userData = {
+                    speed: config.speed,
+                    wobble: 0.08 + index * 0.015,
+                    program,
+                };
                 mesh.setParent(sculpture);
                 return mesh;
             });
@@ -792,8 +879,9 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                     row.userData.opacity = Math.max(0, Math.min(1, edgeDistance / 1.05));
                     row.rotation.y = motion.spin;
                 });
-                sculpture.rotation.y = -motion.spin * 2;
-                sculpture.rotation.x = Math.sin(time * 0.00024) * 0.16;
+                sculpture.rotation.y = -motion.spin * 1.65;
+                sculpture.rotation.x = Math.sin(time * 0.00022) * 0.22;
+                sculpture.rotation.z = Math.sin(time * 0.00017) * 0.08;
                 cylinderGrid.rotation.y = motion.spin * 0.11 + Math.sin(time * 0.00008) * 0.016;
                 const revealElapsed = revealStart === null ? 0 : Math.max(0, (time - revealStart) / 1000);
                 const smooth = (value) => {
@@ -808,11 +896,24 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                 gridProgram.uniforms.uOpacity.value = (revealComplete ? 1 : gridReveal) * 0.86;
                 // sceneOpacity only gates card textures; keep it at 1 after first full reveal.
                 frameUniforms.sceneOpacity = revealComplete ? 1 : sceneReveal;
-                sculptureProgram.uniforms.uTime.value = time * 0.001;
                 // Sculpture softens with content fade so Experience stays readable.
-                const sculpturePresence = 0.14 + frameUniforms.contentOpacity * 0.86;
-                sculptureProgram.uniforms.uOpacity.value = sceneReveal * sculpturePresence;
-                torusMeshes.forEach((mesh, index) => { mesh.rotation.z += dt * (0.16 + index * 0.06); });
+                const sculpturePresence = 0.18 + frameUniforms.contentOpacity * 0.82;
+                const sculptureOpacity = sceneReveal * sculpturePresence;
+                const tSec = time * 0.001;
+                torusMeshes.forEach((mesh, index) => {
+                    const program = mesh.userData.program;
+                    if (program) {
+                        program.uniforms.uTime.value = tSec;
+                        program.uniforms.uOpacity.value = sculptureOpacity * (0.78 + (index % 3) * 0.08);
+                        program.uniforms.uLayer.value = index;
+                    }
+                    const speed = mesh.userData.speed || (0.12 + index * 0.03);
+                    const wobble = mesh.userData.wobble || 0.1;
+                    mesh.rotation.z += dt * speed;
+                    mesh.rotation.x += dt * speed * 0.22 * Math.sin(tSec * 0.35 + index);
+                    mesh.rotation.y += dt * speed * 0.18 * Math.cos(tSec * 0.28 + index * 0.7);
+                    mesh.position.y = Math.sin(tSec * 0.45 + index * 0.9) * wobble * 0.08;
+                });
                 frameUniforms.time = time * 0.001;
                 frameUniforms.bendH = motion.bendH;
                 frameUniforms.bendV = motion.bendV;
@@ -932,7 +1033,7 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                 textureCache.forEach(({ texture }) => gl.deleteTexture(texture.texture));
                 imageBitmaps.forEach((bitmap) => bitmap.close?.());
                 gl.deleteTexture(placeholder.texture);
-                geometry.remove(); gridGeometry.remove(); gridProgram.remove(); torusGeometry.remove(); sculptureProgram.remove();
+                geometry.remove(); gridGeometry.remove(); gridProgram.remove(); torusGeometries.forEach((geo) => geo.remove()); torusMeshes.forEach((mesh) => mesh.userData.program?.remove());
                 gl.canvas.remove(); gl.getExtension('WEBGL_lose_context')?.loseContext();
             };
         };

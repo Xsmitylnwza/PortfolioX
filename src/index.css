@@ -4,10 +4,10 @@
   --bg-black: #050505;
   --bg-dark: #0b0b0b;
   --bg-card: #111111;
-  --stage-red: #bc2c2c;
+  --stage-red: #ce3030;
   --stage-grid: rgba(8, 8, 8, 0.24);
   --stage-grid-strong: rgba(8, 8, 8, 0.79);
-  --stage-glow: rgba(255, 160, 140, 0.16);
+  --stage-glow: rgba(255, 170, 150, 0.18);
   --red-primary: #e3262e;
   --red-dark: #7f1118;
   --red-glow: rgba(227, 38, 46, 0.4);
@@ -87,9 +87,9 @@ svg {
   position: absolute;
   inset: -8%;
   background:
-    radial-gradient(ellipse 58% 84% at 50% 46%, rgba(255, 160, 140, 0.16), transparent 52%),
-    radial-gradient(ellipse 108% 92% at 50% 50%, transparent 42%, rgba(78, 0, 6, 0.15) 74%, rgba(22, 0, 3, 0.28) 100%),
-    linear-gradient(90deg, rgba(40, 0, 3, 0.13), transparent 23%, transparent 77%, rgba(40, 0, 3, 0.13));
+    radial-gradient(ellipse 58% 84% at 50% 46%, rgba(255, 170, 150, 0.18), transparent 52%),
+    radial-gradient(ellipse 108% 92% at 50% 50%, transparent 42%, rgba(84, 0, 7, 0.14) 74%, rgba(24, 0, 4, 0.26) 100%),
+    linear-gradient(90deg, rgba(42, 0, 4, 0.12), transparent 23%, transparent 77%, rgba(42, 0, 4, 0.12));
   animation: gallery-stage-drift 13s ease-in-out infinite alternate;
   will-change: transform;
 }

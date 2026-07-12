@@ -120,18 +120,19 @@ void main(){
 }`;
 
 const gridFragment = /* glsl */ `
-precision highp float;
 uniform float uOpacity;
 varying vec3 vGridPosition;
-varying float vViewDepth;
+
 void main(){
- float side=smoothstep(.08,.96,abs(vGridPosition.x)/13.);
- float distanceShade=smoothstep(4.,24.,vViewDepth);
- float heightShade=smoothstep(.35,1.,abs(vGridPosition.y)/10.);
- float centerLight=exp(-pow((vGridPosition.x/13.+.12)*2.8,2.));
- float shade=.74+side*.24+distanceShade*.08+heightShade*.05-centerLight*.1;
- gl_FragColor=vec4(0.,0.,0.,uOpacity*clamp(shade,.62,1.));
-}`;
+ // Use cylindrical radius for falloff so shading follows the round cage, not a flat x-plane.
+ float radius = length(vGridPosition.xz);
+ float side = smoothstep(10.4, 14.6, radius);
+ float heightShade = smoothstep(.3, 1., abs(vGridPosition.y)/10.);
+ float centerLight = exp(-pow((vGridPosition.x / 14.2 + .1) * 2.35, 2.));
+ float shade = mix(.74, .98, centerLight) * (1. - side * .14) * (1. - heightShade * .1);
+ gl_FragColor = vec4(0., 0., 0., uOpacity * clamp(shade, .62, 1.));
+}
+`;
 
 const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 500, active = true }) => {
     const hostRef = useRef(null);
@@ -190,7 +191,7 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
             gl.canvas.className = 'gallery-webgl';
             host.appendChild(gl.canvas);
 
-            const camera = new Camera(gl, { fov: 40, near: 0.1, far: 60 });
+            const camera = new Camera(gl, { fov: 38, near: 0.1, far: 70 });
             camera.position.set(0, 0, 9.6);
             camera.lookAt([0, 0, 0]);
             const scene = new Transform();
@@ -326,13 +327,14 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
             }
 
             // Triangle ribbons keep the grid thinner than the 1px minimum supported by WebGL lines.
+            // Higher segment density + wider radius reads as a rounder cylindrical cage.
             const gridVertices = [];
-            const gridRadius = 13;
+            const gridRadius = 14.2;
             const gridHalfHeight = 10;
-            const gridLineWidth = 0.012;
-            const verticalLines = 80;
-            const horizontalRings = 18;
-            const ringSegments = 200;
+            const gridLineWidth = 0.011;
+            const verticalLines = 96;
+            const horizontalRings = 20;
+            const ringSegments = 280;
             const addQuad = (a, b, c, d) => {
                 gridVertices.push(...a, ...b, ...c, ...a, ...c, ...d);
             };
@@ -787,7 +789,7 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                 });
                 sculpture.rotation.y = -motion.spin * 2;
                 sculpture.rotation.x = Math.sin(time * 0.00024) * 0.16;
-                cylinderGrid.rotation.y = motion.spin * 0.09 + Math.sin(time * 0.00008) * 0.012;
+                cylinderGrid.rotation.y = motion.spin * 0.11 + Math.sin(time * 0.00008) * 0.016;
                 const revealElapsed = revealStart === null ? 0 : Math.max(0, (time - revealStart) / 1000);
                 const smooth = (value) => {
                     const clamped = Math.max(0, Math.min(1, value));

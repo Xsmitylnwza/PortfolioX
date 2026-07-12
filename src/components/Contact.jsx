@@ -1,7 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { PROFILE, RESUME_PROOFS, RESUME_ROLES, RESUME_SKILLS } from '../data/site';
+import { useDocumentRoomReveal } from '../hooks/useDocumentRoomReveal';
 import './Contact.css';
 
 const channels = [
@@ -24,39 +25,22 @@ const channels = [
 const Contact = () => {
   const sectionRef = useRef(null);
 
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section) return undefined;
-
-    if (!('IntersectionObserver' in window)) {
-      section.classList.add('is-visible');
-      return undefined;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        section.classList.add('is-visible');
-        observer.disconnect();
-      },
-      { threshold: 0.08, rootMargin: '0px 0px -4% 0px' },
-    );
-
-    observer.observe(section);
-    return () => observer.disconnect();
-  }, []);
+  useDocumentRoomReveal(sectionRef, {
+    paths: ['/contact', '/resume', '/cv'],
+    mountDelayMs: 90,
+  });
 
   return (
     <section id="contact" ref={sectionRef} className="channel-section" aria-labelledby="channel-title">
       <div className="channel-shell">
-        <div className="channel-transmission channel-reveal" aria-hidden="true">
+        <div className="channel-transmission channel-reveal" data-reveal="mount" style={{"--reveal-index": 0}} aria-hidden="true">
           <span>04 / CONTACT</span>
           <span>RESUME + CHANNEL</span>
           <span>{PROFILE.name.toUpperCase()}</span>
         </div>
 
         <header className="channel-hero">
-          <div className="channel-reveal">
+          <div className="channel-reveal" data-reveal="mount" style={{"--reveal-index": 1}}>
             <div className="channel-chapter">
               <span>04</span>
               <p>CONTACT</p>
@@ -70,7 +54,7 @@ const Contact = () => {
             <p className="channel-lede">{PROFILE.positioning}</p>
           </div>
 
-          <aside className="channel-packet channel-reveal" aria-label="Hire packet">
+          <aside className="channel-packet channel-reveal" data-reveal="mount" style={{"--reveal-index": 2}} aria-label="Hire packet">
             <p className="channel-packet__label">RECRUITER STRIP</p>
             <strong>{PROFILE.name}</strong>
             <span>{PROFILE.title}</span>
@@ -99,7 +83,7 @@ const Contact = () => {
           </aside>
         </header>
 
-        <div className="channel-section-label channel-reveal">
+        <div className="channel-section-label channel-reveal" data-reveal="scroll" style={{"--reveal-index": 0}}>
           <span>PROOF</span>
           <i aria-hidden="true" />
           <span>3 SIGNALS</span>
@@ -109,7 +93,8 @@ const Contact = () => {
             <article
               key={proof.id}
               className="channel-proof channel-reveal"
-              style={{ '--proof-index': index }}
+              data-reveal="scroll"
+              style={{ '--proof-index': index, '--reveal-index': index }}
             >
               <span className="channel-proof__id">{proof.id}</span>
               <div>
@@ -121,7 +106,7 @@ const Contact = () => {
           ))}
         </section>
 
-        <section className="channel-roles channel-reveal" aria-label="Role rails">
+        <section className="channel-roles channel-reveal" data-reveal="scroll" style={{"--reveal-index": 1}} aria-label="Role rails">
           <div className="channel-section-label">
             <span>ROLES</span>
             <i aria-hidden="true" />
@@ -140,7 +125,7 @@ const Contact = () => {
           </ol>
         </section>
 
-        <section className="channel-skills channel-reveal" aria-label="Skills strip">
+        <section className="channel-skills channel-reveal" data-reveal="scroll" style={{"--reveal-index": 2}} aria-label="Skills strip">
           <div className="channel-section-label">
             <span>STACK STRIP</span>
             <i aria-hidden="true" />
@@ -153,12 +138,12 @@ const Contact = () => {
           </ul>
         </section>
 
-        <div className="channel-section-label channel-reveal">
+        <div className="channel-section-label channel-reveal" data-reveal="scroll" style={{"--reveal-index": 3}}>
           <span>CHANNEL</span>
           <i aria-hidden="true" />
           <span>OPEN</span>
         </div>
-        <div className="channel-reach channel-reveal">
+        <div className="channel-reach channel-reveal" data-reveal="scroll" style={{"--reveal-index": 4}}>
           <a
             id="footer-email-btn"
             className="channel-email"
@@ -210,7 +195,7 @@ const Contact = () => {
           </nav>
         </div>
 
-        <footer className="channel-foot channel-reveal">
+        <footer className="channel-foot channel-reveal" data-reveal="scroll" style={{"--reveal-index": 5}}>
           <span>FROM CHAOS -&gt; SYSTEMS</span>
           <Link to="/experience" data-cursor="view" data-cursor-text="OPEN EXPERIENCE">
             Full experience stories -&gt;

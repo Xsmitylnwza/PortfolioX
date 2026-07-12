@@ -342,32 +342,40 @@
 .engine-reveal,
 .engine-layer {
     opacity: 0;
-    transform: translateY(2rem);
+    transform: translate3d(0, 2rem, 0);
 }
 
 .engine-reveal {
-    transition: opacity 700ms ease, transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition:
+        opacity 760ms cubic-bezier(0.16, 1, 0.3, 1),
+        transform 860ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition-delay: calc(var(--reveal-index, 0) * 80ms);
+    will-change: opacity, transform;
 }
 
 .engine-header .engine-intro {
-    transition-delay: 100ms;
+    transition-delay: calc(var(--reveal-index, 2) * 80ms);
 }
 
-.engine-section.is-visible .engine-reveal,
-.engine-section.is-visible .engine-layer {
+.engine-section.is-visible .engine-reveal.is-visible,
+.engine-section.is-revealed .engine-reveal.is-visible,
+.engine-section.is-visible .engine-layer.is-visible,
+.engine-section.is-revealed .engine-layer.is-visible {
     opacity: 1;
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
 }
 
 .engine-layer {
     transition:
-        opacity 620ms ease calc(var(--layer-index) * 75ms),
-        transform 620ms cubic-bezier(0.16, 1, 0.3, 1) calc(var(--layer-index) * 75ms),
+        opacity 680ms cubic-bezier(0.16, 1, 0.3, 1) calc(var(--layer-index, var(--reveal-index, 0)) * 90ms),
+        transform 780ms cubic-bezier(0.16, 1, 0.3, 1) calc(var(--layer-index, var(--reveal-index, 0)) * 90ms),
         background-color 240ms ease;
+    will-change: opacity, transform;
 }
 
-.engine-section.is-visible .engine-layer:hover {
-    transform: translateX(0.35rem);
+.engine-section.is-visible .engine-layer.is-visible:hover,
+.engine-section.is-revealed .engine-layer.is-visible:hover {
+    transform: translate3d(0.35rem, 0, 0);
 }
 
 @media (max-width: 900px) {
@@ -443,7 +451,9 @@
     .engine-layer,
     .engine-section.is-visible .engine-reveal,
     .engine-section.is-visible .engine-layer,
-    .engine-section.is-visible .engine-layer:hover {
+    .engine-section.is-visible .engine-layer.is-visible,
+    .engine-section.is-revealed .engine-layer.is-visible,
+    .engine-section.is-visible .engine-layer.is-visible:hover {
         opacity: 1;
         transform: none;
         transition: none;

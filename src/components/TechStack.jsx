@@ -1,5 +1,6 @@
-﻿import { useEffect, useRef } from 'react';
+﻿import { useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { useDocumentRoomReveal } from '../hooks/useDocumentRoomReveal';
 import './TechStack.css';
 
 const architectureLayers = [
@@ -42,27 +43,10 @@ const workingLoop = ['Requirements', 'Architecture', 'Build + test', 'Deploy + r
 const TechStack = () => {
     const sectionRef = useRef(null);
 
-    useEffect(() => {
-        const section = sectionRef.current;
-        if (!section) return undefined;
-
-        if (!('IntersectionObserver' in window)) {
-            section.classList.add('is-visible');
-            return undefined;
-        }
-
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (!entry.isIntersecting) return;
-                section.classList.add('is-visible');
-                observer.disconnect();
-            },
-            { threshold: 0.12, rootMargin: '0px 0px -8% 0px' },
-        );
-
-        observer.observe(section);
-        return () => observer.disconnect();
-    }, []);
+    useDocumentRoomReveal(sectionRef, {
+        paths: ['/stack', '/tech'],
+        mountDelayMs: 90,
+    });
 
     return (
         <section
@@ -72,7 +56,7 @@ const TechStack = () => {
             aria-labelledby="engine-title"
         >
             <div className="engine-shell">
-                <div className="engine-chapter engine-reveal">
+                <div className="engine-chapter engine-reveal" data-reveal="mount" style={{ "--reveal-index": 0 }}>
                     <span>03</span>
                     <span>ENGINE</span>
                     <i aria-hidden="true" />
@@ -80,7 +64,7 @@ const TechStack = () => {
                 </div>
 
                 <header className="engine-header">
-                    <div className="engine-title-block engine-reveal">
+                    <div className="engine-title-block engine-reveal" data-reveal="mount" style={{ "--reveal-index": 1 }}>
                         <p className="engine-kicker">FULL-STACK SYSTEMS / CURRENT TOOLSET</p>
                         <h2 id="engine-title">
                             One system.
@@ -89,7 +73,7 @@ const TechStack = () => {
                         </h2>
                     </div>
 
-                    <div className="engine-intro engine-reveal">
+                    <div className="engine-intro engine-reveal" data-reveal="mount" style={{ "--reveal-index": 2 }}>
                         <p>
                             I work through the whole path: clarify the requirement, shape the
                             architecture, build the product, then make delivery repeatable.
@@ -106,7 +90,7 @@ const TechStack = () => {
                     </div>
                 </header>
 
-                <div className="engine-blueprint engine-reveal">
+                <div className="engine-blueprint engine-reveal" data-reveal="scroll" style={{ "--reveal-index": 0 }}>
                     <div className="engine-flow" aria-hidden="true">
                         <span>USER SIGNAL</span>
                         <i />
@@ -118,7 +102,8 @@ const TechStack = () => {
                             <li
                                 key={layer.number}
                                 className="engine-layer"
-                                style={{ '--layer-index': index }}
+                                data-reveal="scroll"
+                                style={{ '--layer-index': index, '--reveal-index': index }}
                                 data-cursor="view"
                                 data-cursor-text="INSPECT"
                             >
@@ -143,7 +128,7 @@ const TechStack = () => {
                     </ol>
                 </div>
 
-                <div className="engine-loop engine-reveal" aria-label="Engineering working loop">
+                <div className="engine-loop engine-reveal" data-reveal="scroll" style={{ "--reveal-index": 1 }} aria-label="Engineering working loop">
                     <p>WORKING LOOP</p>
                     <ol>
                         {workingLoop.map((step, index) => (

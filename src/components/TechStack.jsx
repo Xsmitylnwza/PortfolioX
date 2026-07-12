@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react';
+﻿import { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import './TechStack.css';
 
 const architectureLayers = [
@@ -94,6 +95,14 @@ const TechStack = () => {
                             architecture, build the product, then make delivery repeatable.
                         </p>
                         <span className="engine-handnote">systems, not icon clouds -&gt;</span>
+                        <div className="engine-cta-row">
+                            <Link to="/experience" data-cursor="view" data-cursor-text="SEE PROOF">
+                                See it in Experience
+                            </Link>
+                            <Link to="/resume" data-cursor="view" data-cursor-text="OPEN DOSSIER">
+                                Resume packet
+                            </Link>
+                        </div>
                     </div>
                 </header>
 
@@ -110,6 +119,8 @@ const TechStack = () => {
                                 key={layer.number}
                                 className="engine-layer"
                                 style={{ '--layer-index': index }}
+                                data-cursor="view"
+                                data-cursor-text="INSPECT"
                             >
                                 <div className="engine-layer-number" aria-hidden="true">
                                     {layer.number}

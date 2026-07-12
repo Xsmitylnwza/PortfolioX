@@ -1,0 +1,36 @@
+﻿/* Document rooms sit above the persistent red/WebGL stage.
+   Do not paint an opaque full-page background here — keep the stage identity. */
+.document-room {
+  position: relative;
+  z-index: 3;
+  min-height: 100svh;
+  pointer-events: auto;
+}
+
+/* Soft veil so paper content stays readable while the stage grid remains the signature. */
+.document-room--stack .engine-section,
+.document-room--contact .channel-section,
+.document-room--resume .dossier-section {
+  background-color: transparent;
+}
+
+.document-room--stack .engine-section {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    radial-gradient(circle at 86% 18%, rgba(227, 38, 46, 0.14), transparent 28%),
+    linear-gradient(180deg, rgba(5, 5, 5, 0.72) 0%, rgba(5, 5, 5, 0.86) 100%);
+  background-size: 48px 48px, 48px 48px, auto, auto;
+}
+
+.document-room--contact .channel-section {
+  background-image:
+    radial-gradient(circle at 50% 0%, rgba(227, 38, 46, 0.16), transparent 35%),
+    linear-gradient(180deg, rgba(5, 5, 5, 0.7) 0%, rgba(9, 3, 3, 0.86) 100%);
+}
+
+.document-room--resume .dossier-section {
+  background-image:
+    radial-gradient(circle at 12% 0%, rgba(227, 38, 46, 0.14), transparent 32%),
+    linear-gradient(180deg, rgba(5, 5, 5, 0.7) 0%, rgba(8, 3, 3, 0.88) 100%);
+}

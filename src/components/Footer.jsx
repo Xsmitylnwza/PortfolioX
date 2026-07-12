@@ -1,4 +1,5 @@
 ﻿import './Footer.css';
+import { PROFILE } from '../data/site';
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
@@ -7,29 +8,32 @@ const Footer = () => {
         <footer className="portfolio-footer">
             <div className="portfolio-footer-main">
                 <div className="portfolio-footer-brand">
-                    <span className="portfolio-footer-monogram" aria-hidden="true">CS</span>
+                    <span className="portfolio-footer-monogram" aria-hidden="true">{PROFILE.monogram}</span>
                     <span>
-                        <strong>Chaimongkon Sokgampang</strong>
-                        <small>Software Engineer</small>
+                        <strong>{PROFILE.name}</strong>
+                        <small>{PROFILE.title}</small>
                     </span>
                 </div>
 
                 <p>
-                    (c) {currentYear} Chaimongkon Sokgampang.
+                    (c) {currentYear} {PROFILE.name}.
                     <br />
                     Portfolio built with React.
                 </p>
 
                 <nav aria-label="Footer links">
-                    <a href="mailto:chaimongkon.sokgampang@gmail.com">Email</a>
-                    <a href="https://github.com/Xsmitylnwza" target="_blank" rel="noreferrer">GitHub {'->'}</a>
+                    <a href={PROFILE.mailto}>Email</a>
+                    <a href={PROFILE.github.href} target="_blank" rel="noreferrer">GitHub {'->'}</a>
+                    <a href="/resume">Resume {'->'}</a>
                     <a
-                        href="/assets/Chaimongkon-Sokgampang_Resume.pdf"
+                        href={PROFILE.resumePdf.href}
                         target="_blank"
                         rel="noreferrer"
                     >
-                        Resume {'->'}
+                        PDF {'->'}
                     </a>
+                    <a href="/stack">Stack {'->'}</a>
+                    <a href="/contact">Contact {'->'}</a>
                 </nav>
             </div>
 

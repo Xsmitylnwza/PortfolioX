@@ -452,3 +452,28 @@
         transition: none;
     }
 }
+
+.engine-cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+    margin-top: 1.4rem;
+}
+
+.engine-cta-row a {
+    color: #f2f2f2;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(227, 38, 46, 0.7);
+    padding-bottom: 0.15rem;
+    transition: color 180ms ease, border-color 180ms ease;
+}
+
+.engine-cta-row a:hover,
+.engine-cta-row a:focus-visible {
+    color: var(--engine-paper);
+    border-color: var(--engine-paper);
+}

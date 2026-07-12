@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+﻿import { useEffect, useRef, useState } from 'react';
 import { Icon } from '@iconify/react';
+import { ROOM_HINTS } from '../data/site';
 import './Navigation.css';
 
 const navLinks = [
@@ -8,28 +9,35 @@ const navLinks = [
         label: 'GALLERY',
         roomCode: '01',
         icon: 'lucide:orbit',
-        hint: 'Selected systems',
+        hint: ROOM_HINTS.gallery,
     },
     {
         href: '/experience',
         label: 'EXPERIENCE',
         roomCode: '02',
         icon: 'lucide:briefcase-business',
-        hint: 'Work in context',
+        hint: ROOM_HINTS.experience,
     },
     {
-        href: '#',
+        href: '/stack',
         label: 'STACK',
-        disabled: true,
+        roomCode: '03',
         icon: 'lucide:layers-2',
-        hint: 'Coming online',
+        hint: ROOM_HINTS.stack,
     },
     {
-        href: '#',
+        href: '/resume',
+        label: 'RESUME',
+        roomCode: '04',
+        icon: 'lucide:file-badge',
+        hint: ROOM_HINTS.resume,
+    },
+    {
+        href: '/contact',
         label: 'CONTACT',
-        disabled: true,
+        roomCode: '05',
         icon: 'lucide:send',
-        hint: 'Coming online',
+        hint: ROOM_HINTS.contact,
     },
 ];
 
@@ -95,7 +103,11 @@ const Navigation = ({ currentPath, onRoomNavigate, routeReady = false }) => {
 
             <div className="corner-menu__panel">
                 {navLinks.map((link) => {
-                    const isCurrent = !link.disabled && link.href === currentPath;
+                    const isCurrent = !link.disabled && (
+                        link.href === currentPath
+                        || (link.href === '/stack' && currentPath === '/tech')
+                        || (link.href === '/resume' && currentPath === '/cv')
+                    );
                     const isActive = activeLabel === link.label;
 
                     return (
@@ -129,7 +141,7 @@ const Navigation = ({ currentPath, onRoomNavigate, routeReady = false }) => {
                             </span>
 
                             <span className="corner-menu__meta">
-                                <span className="corner-menu__code">{link.roomCode || '••'}</span>
+                                <span className="corner-menu__code">{link.roomCode || '··'}</span>
                                 <span className="corner-menu__hint">{link.hint}</span>
                             </span>
                         </a>

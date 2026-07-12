@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, Suspense, lazy } from 'react';
-import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+﻿import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, Suspense, lazy } from 'react';
+import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import GalleryScene from './components/GalleryScene';
 import Footer from './components/Footer';
@@ -13,13 +13,21 @@ const Experience = lazy(() => import('./components/Experience'));
 // Lazy load ProjectDetails to reduce initial bundle size
 const ProjectDetails = lazy(() => import('./components/ProjectDetails'));
 const PersonaReloadView = lazy(() => import('./components/PersonaReloadView'));
+const StackPage = lazy(() => import('./components/StackPage'));
+const ResumePage = lazy(() => import('./components/ResumePage'));
+const ContactPage = lazy(() => import('./components/ContactPage'));
 
 const STAGE_PATHS = new Set(['/', '/experience']);
+const DOCUMENT_PATHS = new Set(['/stack', '/tech', '/resume', '/cv', '/contact']);
 const ROOM_EXIT_MS = 500;
 const ROOM_ENTER_MS = 820;
 
 function isStagePath(path) {
   return STAGE_PATHS.has(path);
+}
+
+function isDocumentPath(path) {
+  return DOCUMENT_PATHS.has(path);
 }
 
 function isHomePath(path) {
@@ -47,13 +55,13 @@ function App() {
   // Session-level intro: poster flash + red wipe runs once on first entry to any route.
   const bootLoaderDoneRef = useRef(false);
 
-  // Custom cursor is desktop/fine-pointer only ? avoid mounting pointer shell on touch devices.
+  // Custom cursor is desktop/fine-pointer only — avoid mounting pointer shell on touch devices.
   const finePointer = useMemo(() => {
     if (typeof window === 'undefined') return false;
     return window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   }, []);
 
-  // Loader is shared across ALL entry paths (/, /experience, /project/*, /persona).
+  // Loader is shared across ALL entry paths (/, /experience, /project/*, /persona, document rooms).
   const [isLoading, setIsLoading] = useState(true);
   const [isHeroReady, setIsHeroReady] = useState(false);
 
@@ -126,12 +134,12 @@ function App() {
     enterTimerRef.current = window.setTimeout(finishEnter, ROOM_ENTER_MS);
   }, [finishEnter, navigate]);
 
-  // Loader: mid-sequence ? mount stage/WebGL under the wipe so grid can reveal with the red expand.
+  // Loader: mid-sequence — mount stage/WebGL under the wipe so grid can reveal with the red expand.
   const prepareHero = useCallback(() => {
     setIsHeroReady(true);
   }, []);
 
-  // Loader: end sequence ? unlock destination room enter for the current path.
+  // Loader: end sequence — unlock destination room enter for the current path.
   const finishLoading = useCallback(() => {
     if (bootLoaderDoneRef.current) {
       setIsLoading(false);
@@ -142,7 +150,7 @@ function App() {
     const path = location.pathname;
 
     // Drop the loader first while destination stays in preparing (opacity 0).
-    // Double-rAF guarantees that frame commits before the enter fade starts ?
+    // Double-rAF guarantees that frame commits before the enter fade starts —
     // same seamlessness idea as gallery chrome after the red wipe.
     setIsLoading(false);
 
@@ -201,7 +209,7 @@ function App() {
       return;
     }
 
-    // Any other path (project/persona/off-stage): hard cut + mount enter on destination.
+    // Any other path (project/persona/document rooms): hard cut + mount enter on destination.
     clearTransitionTimers();
     beginEnter(roomContent, to, { navigateTo: true });
   }, [
@@ -248,14 +256,17 @@ function App() {
   useLayoutEffect(() => {
     const homeLock = (roomContent === '/' || (isRoomExiting && roomContent === '/')) && !isLoading;
     const stageActive = isStagePath(roomContent) || isStagePath(destinationRoom);
+    const documentRoomActive = isDocumentPath(roomContent) || isDocumentPath(destinationRoom);
     document.documentElement.classList.toggle('home-room-active', homeLock);
     document.documentElement.classList.toggle('stage-room-active', stageActive && !isPersonaRoute);
+    document.documentElement.classList.toggle('document-room-active', documentRoomActive && !isPersonaRoute);
     document.documentElement.classList.toggle('room-is-exiting', isRoomExiting);
     document.documentElement.classList.toggle('room-is-entering', isRoomEntering);
     document.documentElement.classList.toggle('boot-loader-active', isLoading);
     return () => {
       document.documentElement.classList.remove('home-room-active');
       document.documentElement.classList.remove('stage-room-active');
+      document.documentElement.classList.remove('document-room-active');
       document.documentElement.classList.remove('room-is-exiting');
       document.documentElement.classList.remove('room-is-entering');
       document.documentElement.classList.remove('boot-loader-active');
@@ -296,6 +307,22 @@ function App() {
     };
   }, [location.pathname, pendingRoom, roomContent]);
 
+  // Warm document room chunks once stage prep starts.
+  useEffect(() => {
+    if (!isHeroReady) return undefined;
+    let cancelled = false;
+    Promise.all([
+      import('./components/StackPage'),
+      import('./components/ResumePage'),
+      import('./components/ContactPage'),
+    ]).catch(() => {
+      if (cancelled) return;
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [isHeroReady]);
+
   // Preload experience logo assets once the stage is allowed to mount under the wipe.
   useEffect(() => {
     if (!isHeroReady) return undefined;
@@ -320,6 +347,10 @@ function App() {
 
   const showStageRoom = isStagePath(roomContent) || isStagePath(destinationRoom);
   const showPageRoutes = !isStagePath(roomContent) && !isStagePath(destinationRoom);
+  const showPrimaryNav = !isPersonaRoute && isHeroReady && (
+    showStageRoom || isDocumentPath(roomContent) || isDocumentPath(destinationRoom) || showPageRoutes
+  );
+  const navPath = isRoomExiting ? roomContent : location.pathname;
 
   return (
     <div
@@ -332,7 +363,7 @@ function App() {
         </div>
       )}
 
-      {/* Shared boot intro for every entry path ? posters on black, then red wipe into stage. */}
+      {/* Shared boot intro for every entry path — posters on black, then red wipe into stage. */}
       {isLoading && (
         <Loader onRevealReady={prepareHero} onLoadingComplete={finishLoading} />
       )}
@@ -341,16 +372,17 @@ function App() {
       {/* Keep Lenis warm after first non-home stage visit; never boot it on the reveal frame. */}
       {!isPersonaRoute && scrollReady && <ScrollManager />}
       {!isPersonaRoute && finePointer && !isLoading && <Cursor />}
-      {showStageRoom && isHeroReady && (
+      {showPrimaryNav && (
         <Navigation
-          currentPath={isRoomExiting ? roomContent : location.pathname}
+          currentPath={navPath}
           onRoomNavigate={navigateToRoom}
           routeReady={!isLoading && (roomContent !== '/' || !isLoading)}
         />
       )}
 
       <main className="site-main">
-        {/* Persistent WebGL host: stays mounted across / , /experience, and /project/* once boot is ready. */}
+        {/* Persistent WebGL host: stays mounted across non-persona routes once boot is ready.
+            active=false on document/project rooms pauses RAF but keeps the GL context + red stage identity. */}
         {isHeroReady && !isPersonaRoute && (
           <div
             className={`gallery-stage-layer${stageInteractive ? ' is-interactive' : ' is-stage-only'}`}
@@ -447,6 +479,32 @@ function App() {
               element={
                 <Suspense fallback={<div className="loading-fallback" />}>
                   <ProjectDetails />
+                </Suspense>
+              }
+            />
+            <Route
+              path="/stack"
+              element={
+                <Suspense fallback={<div className="loading-fallback" />}>
+                  <StackPage />
+                </Suspense>
+              }
+            />
+            <Route path="/tech" element={<Navigate to="/stack" replace />} />
+            <Route
+              path="/resume"
+              element={
+                <Suspense fallback={<div className="loading-fallback" />}>
+                  <ResumePage />
+                </Suspense>
+              }
+            />
+            <Route path="/cv" element={<Navigate to="/resume" replace />} />
+            <Route
+              path="/contact"
+              element={
+                <Suspense fallback={<div className="loading-fallback" />}>
+                  <ContactPage />
                 </Suspense>
               }
             />

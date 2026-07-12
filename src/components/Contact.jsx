@@ -1,20 +1,32 @@
-import { useEffect, useRef } from 'react';
+﻿import { useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { PROFILE } from '../data/site';
 import './Contact.css';
 
 const channels = [
     {
         index: '02',
         label: 'GitHub',
-        value: '@Xsmitylnwza',
-        href: 'https://github.com/Xsmitylnwza',
-        ariaLabel: 'Open Chaimongkon Sokgampang on GitHub in a new tab',
+        value: PROFILE.github.label,
+        href: PROFILE.github.href,
+        ariaLabel: `Open ${PROFILE.name} on GitHub in a new tab`,
+        external: true,
     },
     {
         index: '03',
         label: 'Resume',
-        value: 'Experience + toolkit',
-        href: '/assets/Chaimongkon-Sokgampang_Resume.pdf',
-        ariaLabel: 'Open Chaimongkon Sokgampang resume PDF in a new tab',
+        value: 'Path and proof',
+        href: '/resume',
+        ariaLabel: 'Open resume dossier',
+        external: false,
+    },
+    {
+        index: '04',
+        label: 'PDF',
+        value: 'Attachable packet',
+        href: PROFILE.resumePdf.href,
+        ariaLabel: `Open ${PROFILE.name} resume PDF in a new tab`,
+        external: true,
     },
 ];
 
@@ -46,15 +58,15 @@ const Contact = () => {
     return (
         <section id="contact" ref={sectionRef} className="channel-section" aria-labelledby="channel-title">
             <div className="channel-transmission" aria-hidden="true">
-                <span>04 / CHANNEL</span>
+                <span>05 / CHANNEL</span>
                 <span>DIRECT CONTACT</span>
-                <span>CHAIMONGKON SOKGAMPANG</span>
+                <span>{PROFILE.name.toUpperCase()}</span>
             </div>
 
             <div className="channel-stage">
                 <div className="channel-copy channel-reveal">
                     <div className="channel-chapter">
-                        <span>04</span>
+                        <span>05</span>
                         <p>CHANNEL</p>
                     </div>
 
@@ -72,13 +84,13 @@ const Contact = () => {
                     <a
                         id="footer-email-btn"
                         className="channel-email"
-                        href="mailto:chaimongkon.sokgampang@gmail.com"
+                        href={PROFILE.mailto}
                         data-cursor="view"
                         data-cursor-text="SAY HELLO"
                     >
                         <span>
                             <small>01 / EMAIL</small>
-                            chaimongkon.sokgampang@gmail.com
+                            {PROFILE.email}
                         </span>
                         <b aria-hidden="true">-&gt;</b>
                     </a>
@@ -104,22 +116,47 @@ const Contact = () => {
                     </div>
 
                     <nav className="channel-links" aria-label="External contact links">
-                        {channels.map((channel) => (
-                            <a
-                                key={channel.label}
-                                href={channel.href}
-                                target="_blank"
-                                rel="noreferrer"
-                                aria-label={channel.ariaLabel}
-                            >
-                                <span>{channel.index}</span>
-                                <span>
-                                    <small>{channel.label}</small>
-                                    <strong>{channel.value}</strong>
-                                </span>
-                                <b aria-hidden="true">↗</b>
-                            </a>
-                        ))}
+                        {channels.map((channel) => {
+                            const className = undefined;
+                            if (channel.external) {
+                                return (
+                                    <a
+                                        key={channel.label}
+                                        href={channel.href}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        aria-label={channel.ariaLabel}
+                                        data-cursor="view"
+                                        data-cursor-text={channel.label.toUpperCase()}
+                                    >
+                                        <span>{channel.index}</span>
+                                        <span>
+                                            <small>{channel.label}</small>
+                                            <strong>{channel.value}</strong>
+                                        </span>
+                                        <b aria-hidden="true">↗</b>
+                                    </a>
+                                );
+                            }
+
+                            return (
+                                <Link
+                                    key={channel.label}
+                                    to={channel.href}
+                                    aria-label={channel.ariaLabel}
+                                    data-cursor="view"
+                                    data-cursor-text={channel.label.toUpperCase()}
+                                    className={className}
+                                >
+                                    <span>{channel.index}</span>
+                                    <span>
+                                        <small>{channel.label}</small>
+                                        <strong>{channel.value}</strong>
+                                    </span>
+                                    <b aria-hidden="true">↗</b>
+                                </Link>
+                            );
+                        })}
                     </nav>
                 </aside>
             </div>

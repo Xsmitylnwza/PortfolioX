@@ -755,3 +755,14 @@ body.is-scrolling .animate-pulse-glow {
   }
 }
 
+
+/* Document rooms keep the red/WebGL stage identity under translucent content. */
+html.document-room-active .gallery-stage,
+html.document-room-active .gallery-stage-layer {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+html.document-room-active .route-shell--page {
+  background: transparent;
+}

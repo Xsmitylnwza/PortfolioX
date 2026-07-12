@@ -132,3 +132,9 @@
         flex-direction: column;
     }
 }
+
+html.document-room-active .portfolio-footer {
+  position: relative;
+  z-index: 4;
+  background: rgba(5, 5, 5, 0.92);
+}

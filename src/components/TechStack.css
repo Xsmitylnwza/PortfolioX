@@ -93,7 +93,7 @@
     max-width: 11ch;
     margin: 0;
     font-family: var(--font-display);
-    font-size: clamp(3.6rem, 8vw, 8.5rem);
+    font-size: clamp(3.2rem, 5.7vw, 6.2rem);
     font-weight: 800;
     letter-spacing: -0.075em;
     line-height: 0.86;
@@ -413,7 +413,7 @@
     }
 
     .engine-title-block h2 {
-        font-size: clamp(3rem, 15vw, 5rem);
+        font-size: clamp(2.8rem, 12vw, 4.7rem);
     }
 
     .engine-flow {

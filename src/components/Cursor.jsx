@@ -2,27 +2,74 @@ import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import './Cursor.css';
 
+const STATE_LABELS = {
+    explore: 'EXPLORE',
+    drag: 'DRAG',
+    view: 'VIEW',
+};
+
+const PROJECT_LINK_SELECTOR = [
+    '.project-story__cta',
+    '.projects-archive__row',
+    '.project-constellation__index a',
+].join(', ');
+
+const INTERACTIVE_SELECTOR = [
+    'a',
+    'button',
+    '[role="button"]',
+    'input[type="submit"]',
+    'input[type="button"]',
+].join(', ');
+
 const Cursor = () => {
-    const cursorRef = useRef(null);
+    const wrapperRef = useRef(null);
+    const dotRef = useRef(null);
     const followerRef = useRef(null);
     const stateRef = useRef('default');
     const textRef = useRef('');
-    const [cursorState, setCursorState] = useState('default'); // default, pointer, text, view, secret
+    const isReadyRef = useRef(false);
+    const [cursorState, setCursorState] = useState('default');
     const [cursorText, setCursorText] = useState('');
+    const [isReady, setIsReady] = useState(false);
+    const [isPressed, setIsPressed] = useState(false);
 
     useEffect(() => {
-        if (window.matchMedia('(hover: none), (pointer: coarse)').matches) {
-            return;
-        }
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+        if (reducedMotion.matches) return undefined;
 
-        const cursor = cursorRef.current;
+        const wrapper = wrapperRef.current;
+        const dot = dotRef.current;
         const follower = followerRef.current;
-        if (!cursor || !follower) return;
+        if (!wrapper || !dot || !follower) return undefined;
 
-        const setCursorX = gsap.quickSetter(cursor, 'x', 'px');
-        const setCursorY = gsap.quickSetter(cursor, 'y', 'px');
-        const moveFollowerX = gsap.quickTo(follower, 'x', { duration: 0.28, ease: 'power3.out' });
-        const moveFollowerY = gsap.quickTo(follower, 'y', { duration: 0.28, ease: 'power3.out' });
+        const target = { x: 0, y: 0 };
+        const current = { x: 0, y: 0 };
+        let hasPosition = false;
+        let lastHoverTarget = null;
+        let rafId = 0;
+
+        // Keep readiness in React state so re-renders never strip `is-ready`
+        // from className after pointer/hover state changes.
+        isReadyRef.current = false;
+        setIsReady(false);
+        setIsPressed(false);
+        document.documentElement.classList.remove('custom-cursor-ready');
+
+        const setDotX = gsap.quickSetter(dot, 'x', 'px');
+        const setDotY = gsap.quickSetter(dot, 'y', 'px');
+        const setFollowerX = gsap.quickSetter(follower, 'x', 'px');
+        const setFollowerY = gsap.quickSetter(follower, 'y', 'px');
+
+        const showCursor = () => {
+            if (isReadyRef.current) {
+                document.documentElement.classList.add('custom-cursor-ready');
+                return;
+            }
+            isReadyRef.current = true;
+            document.documentElement.classList.add('custom-cursor-ready');
+            setIsReady(true);
+        };
 
         const updateCursorState = (nextState, nextText = '') => {
             if (stateRef.current === nextState && textRef.current === nextText) return;
@@ -32,71 +79,136 @@ const Cursor = () => {
             setCursorText(nextText);
         };
 
-        const onMouseMove = (e) => {
-            const { clientX, clientY } = e;
-
-            // Main dot stays sharp
-            setCursorX(clientX);
-            setCursorY(clientY);
-
-            // Follower has physics
-            moveFollowerX(clientX);
-            moveFollowerY(clientY);
-        };
-
-        const onMouseOver = (e) => {
-            const target = e.target;
-            if (!(target instanceof Element)) return;
-
-            // 1. Check for explicit data-cursor override
-            const cursorType = target.getAttribute('data-cursor') || target.closest('[data-cursor]')?.getAttribute('data-cursor');
-            const hoverText = target.getAttribute('data-cursor-text') || target.closest('[data-cursor-text]')?.getAttribute('data-cursor-text');
-
-            if (cursorType) {
-                updateCursorState(cursorType, hoverText || '');
+        const resolveCursorState = (eventTarget) => {
+            if (!(eventTarget instanceof Element)) {
+                updateCursorState('default');
                 return;
             }
 
-            // 2. Check for interactive elements
-            if (target.matches('a, button, [role="button"], input[type="submit"], input[type="button"]') || target.closest('a, button, [role="button"], input[type="submit"], input[type="button"]')) {
+            const explicitTarget = eventTarget.closest('[data-cursor]');
+            if (explicitTarget) {
+                const nextState = (explicitTarget.dataset.cursor || 'default').toLowerCase();
+                const nextText = explicitTarget.dataset.cursorText || STATE_LABELS[nextState] || '';
+                updateCursorState(nextState, nextText);
+                return;
+            }
+
+            if (eventTarget.closest('.project-constellation__canvas')) {
+                updateCursorState('drag', STATE_LABELS.drag);
+                return;
+            }
+
+            if (eventTarget.closest(PROJECT_LINK_SELECTOR)) {
+                updateCursorState('explore', STATE_LABELS.explore);
+                return;
+            }
+
+            if (eventTarget.closest('img, video')) {
+                updateCursorState('view', STATE_LABELS.view);
+                return;
+            }
+
+            if (eventTarget.closest('input, textarea, [contenteditable="true"]')) {
+                updateCursorState('text');
+                return;
+            }
+
+            if (eventTarget.closest(INTERACTIVE_SELECTOR)) {
                 updateCursorState('pointer');
                 return;
             }
 
-            // 3. Check for text inputs
-            if (target.matches('input[type="text"], textarea, p, span, h1, h2, h3, h4, h5, h6') || target.closest('input[type="text"], textarea')) {
-                // Only treat as text cursor if it's actually text content, not a container
-                // Simplify: just inputs/textareas for now, or maybe specific text classes?
-                // Let's stick to true inputs for specific 'text' state, paragraphs usually just default or text-select
-                if (target.matches('input, textarea')) {
-                    updateCursorState('text');
-                    return;
-                }
-            }
-
-            // Default
             updateCursorState('default');
         };
 
-        window.addEventListener('mousemove', onMouseMove);
-        window.addEventListener('mouseover', onMouseOver);
+        const onPointerMove = (event) => {
+            if (event.pointerType && event.pointerType !== 'mouse' && event.pointerType !== 'pen') return;
+
+            target.x = event.clientX;
+            target.y = event.clientY;
+            setDotX(target.x);
+            setDotY(target.y);
+
+            if (!rafId) {
+                rafId = window.requestAnimationFrame(() => {
+                    rafId = 0;
+                    const hoverTarget = document.elementFromPoint(target.x, target.y);
+                    if (hoverTarget !== lastHoverTarget) {
+                        lastHoverTarget = hoverTarget;
+                        resolveCursorState(hoverTarget);
+                    }
+                });
+            }
+
+            if (!hasPosition) {
+                current.x = target.x;
+                current.y = target.y;
+                setFollowerX(current.x);
+                setFollowerY(current.y);
+                hasPosition = true;
+            }
+
+            // Re-assert readiness every move so a React re-render, HMR, or class wipe
+            // can never leave the system cursor hidden while the custom cursor is invisible.
+            showCursor();
+        };
+
+        const onPointerDown = (event) => {
+            if (event.pointerType && event.pointerType !== 'mouse' && event.pointerType !== 'pen') return;
+            setIsPressed(true);
+        };
+        const onPointerUp = () => setIsPressed(false);
+        const onWindowBlur = () => {
+            lastHoverTarget = null;
+            updateCursorState('default');
+            setIsPressed(false);
+        };
+
+        const renderFollower = () => {
+            if (!hasPosition) return;
+            const alpha = 1 - Math.pow(0.76, Math.min(gsap.ticker.deltaRatio(), 2));
+            current.x += (target.x - current.x) * alpha;
+            current.y += (target.y - current.y) * alpha;
+            setFollowerX(current.x);
+            setFollowerY(current.y);
+        };
+
+        window.addEventListener('pointermove', onPointerMove, { passive: true });
+        window.addEventListener('pointerdown', onPointerDown, { passive: true });
+        window.addEventListener('pointerup', onPointerUp, { passive: true });
+        window.addEventListener('blur', onWindowBlur);
+        gsap.ticker.add(renderFollower);
 
         return () => {
-            window.removeEventListener('mousemove', onMouseMove);
-            window.removeEventListener('mouseover', onMouseOver);
-            gsap.killTweensOf([cursor, follower]);
+            if (rafId) window.cancelAnimationFrame(rafId);
+            window.removeEventListener('pointermove', onPointerMove);
+            window.removeEventListener('pointerdown', onPointerDown);
+            window.removeEventListener('pointerup', onPointerUp);
+            window.removeEventListener('blur', onWindowBlur);
+            gsap.ticker.remove(renderFollower);
+            isReadyRef.current = false;
+            document.documentElement.classList.remove('custom-cursor-ready');
         };
     }, []);
 
     return (
-        <div className={`cursor-wrapper state-${cursorState}`}>
-            <div ref={cursorRef} className="cursor-pos-wrapper custom-cursor-mover">
-                <div className="custom-cursor"></div>
+        <div
+            ref={wrapperRef}
+            className={[
+                'cursor-wrapper',
+                `state-${cursorState}`,
+                isReady ? 'is-ready' : '',
+                isPressed ? 'is-pressed' : '',
+            ].filter(Boolean).join(' ')}
+            aria-hidden="true"
+        >
+            <div ref={dotRef} className="cursor-pos-wrapper custom-cursor-mover">
+                <span className="custom-cursor" />
             </div>
             <div ref={followerRef} className="cursor-pos-wrapper cursor-follower-mover">
-                <div className="cursor-follower">
-                    {cursorText && <span className="cursor-label">{cursorText}</span>}
-                </div>
+                <span className="cursor-follower">
+                    <span className="cursor-label">{cursorText}</span>
+                </span>
             </div>
         </div>
     );

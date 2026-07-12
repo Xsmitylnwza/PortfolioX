@@ -5,6 +5,15 @@ import { Icon } from '@iconify/react';
 import gsap from 'gsap';
 import ProjectMedia from './ProjectMedia';
 
+const PROJECT_DECISIONS = {
+    'keshi-pomodoro': 'The timer is split into focus and recovery states with configurable intervals. Audio, progress feedback, and restrained motion reinforce the current state without interrupting the countdown.',
+    'nurse-nest': 'Scheduling, nurse profiles, appointment administration, and Omise payment handling are separated across a Next.js interface and Spring Boot services so each workflow has a clear owner.',
+    'kanban-board': 'Drag-and-drop updates task position while Spring Boot persists board state. Attachments move through AWS S3, and Docker keeps the application environment consistent.',
+    'zucchini-review': 'Search, categories, authentication, profiles, comments, and the weighted review score share one product flow. Each screen exposes the next community action instead of becoming an isolated catalogue page.',
+    'decrypt-password': 'Each rule is evaluated live against the current password. Difficulty, countdown, and game-state transitions layer pressure progressively while keeping validation feedback immediate.',
+    'wild-oasis': 'Cabins, guests, check-ins, and bookings share a Supabase-backed data model. Realtime updates keep staff views current, while Google OAuth controls account access.'
+};
+
 const ProjectDetails = () => {
     const { id } = useParams();
     // Compare string IDs directly
@@ -119,11 +128,9 @@ const ProjectDetails = () => {
                             {project.fullDescription || project.description}
                         </p>
 
-                        <h3 className="font-display text-2xl mb-4">The Solution</h3>
+                        <h3 className="font-display text-2xl mb-4">Engineering decisions</h3>
                         <p style={{ color: 'var(--text-secondary)', lineHeight: 1.8, marginBottom: '2rem' }} className="font-sans">
-                            We approached this by breaking down the complex requirements into modular components.
-                            Using a component-driven architecture allowed us to iterate quickly while maintaining visual consistency.
-                            Performance was paramount, so we utilized aggressive code-splitting and asset optimization.
+                            {PROJECT_DECISIONS[project.id]}
                         </p>
 
                         {/* Tech Stack */}
@@ -169,7 +176,7 @@ const ProjectDetails = () => {
                             <div key={i} className="project-gallery-image" style={{ width: '100%', aspectRatio: '4/3', overflow: 'hidden', borderRadius: '4px' }}>
                                 <ProjectMedia
                                     media={media}
-                                    alt={`${project.title} detail ${i}`}
+                                    alt={`${project.title} detail ${i + 1}`}
                                     sizes="(max-width: 768px) 100vw, 720px"
                                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                 />

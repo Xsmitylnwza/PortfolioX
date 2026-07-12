@@ -4,6 +4,10 @@
   --bg-black: #050505;
   --bg-dark: #0b0b0b;
   --bg-card: #111111;
+  --stage-red: #dc2626;
+  --stage-grid: rgba(8, 8, 8, 0.22);
+  --stage-grid-strong: rgba(8, 8, 8, 0.72);
+  --stage-glow: rgba(255, 174, 148, 0.17);
   --red-primary: #e3262e;
   --red-dark: #7f1118;
   --red-glow: rgba(227, 38, 46, 0.4);
@@ -31,15 +35,15 @@
 }
 
 html {
-  scroll-behavior: smooth;
-  background: var(--bg-black);
+  scroll-behavior: auto;
+  background: var(--stage-red);
 }
 
 body {
   min-width: 320px;
   min-height: 100vh;
   font-family: var(--font-body);
-  background-color: var(--bg-black);
+  background-color: var(--stage-red);
   color: var(--text-primary);
   line-height: 1.6;
   overflow-x: hidden;
@@ -66,8 +70,187 @@ svg {
   min-height: 100vh;
   overflow: clip;
   color: var(--text-primary);
-  background: var(--bg-black);
+  background: transparent;
 }
+
+/* Persistent red stage underlay. Real gallery grid comes from WebGL GalleryScene. */
+.gallery-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background: #dc2626;
+}
+
+.gallery-stage__glow {
+  position: absolute;
+  inset: -8%;
+  background:
+    radial-gradient(ellipse 58% 84% at 50% 46%, rgba(255, 174, 148, 0.17), transparent 52%),
+    radial-gradient(ellipse 108% 92% at 50% 50%, transparent 42%, rgba(90, 0, 7, 0.16) 74%, rgba(28, 0, 4, 0.34) 100%),
+    linear-gradient(90deg, rgba(46, 0, 4, 0.14), transparent 23%, transparent 77%, rgba(46, 0, 4, 0.14));
+  animation: gallery-stage-drift 13s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.site-main {
+  position: relative;
+  z-index: 1;
+}
+
+.gallery-room {
+  position: relative;
+  z-index: 2;
+  min-height: 100svh;
+}
+
+.gallery-room.is-gallery {
+  height: 100svh;
+  height: 100dvh;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
+}
+
+.gallery-room.is-experience {
+  position: relative;
+  z-index: 2;
+}
+
+/* Room content only. The red/WebGL stage never participates in these fades. */
+.room-overlay {
+  position: relative;
+  z-index: 3;
+  min-height: 100svh;
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  transition: opacity 420ms cubic-bezier(0.22, 1, 0.36, 1), transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+  contain: layout paint;
+}
+
+/* Hidden pre-mount: fully laid out while gallery still exits. */
+.room-overlay.is-preparing {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  opacity: 0;
+  transform: none;
+  pointer-events: none;
+  visibility: hidden;
+  transition: none;
+  animation: none;
+}
+
+.room-overlay.is-entering {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  animation: room-overlay-enter 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.room-overlay.is-active {
+  opacity: 1;
+  transform: none;
+  animation: none;
+}
+
+.room-overlay.is-exiting {
+  opacity: 0;
+  transform: translate3d(0, 10px, 0);
+  pointer-events: none;
+  animation: none;
+}
+
+@keyframes room-overlay-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+html.room-content-exiting,
+html.room-content-exiting body {
+  cursor: progress;
+}
+
+/* Keep the shared stage fully painted while content unmounts. */
+html.room-content-exiting .gallery-stage,
+html.room-content-exiting .gallery-stage-layer,
+html.room-is-exiting .gallery-stage,
+html.room-is-exiting .gallery-stage-layer,
+html.room-is-entering .gallery-stage,
+html.room-is-entering .gallery-stage-layer {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Pause non-essential CSS motion during room swaps to reduce paint contention. */
+html.room-content-exiting .gallery-stage__glow,
+html.room-is-exiting .gallery-stage__glow,
+html.room-is-entering .gallery-stage__glow {
+  animation-play-state: paused !important;
+}
+
+.loading-fallback {
+  min-height: 100svh;
+  background: transparent;
+}
+
+.loading-fallback--persona {
+  background: #020817;
+}
+
+@keyframes gallery-stage-drift {
+  from { transform: translate3d(-1.2%, -0.7%, 0) scale(1); }
+  to { transform: translate3d(1.5%, 1%, 0) scale(1.035); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery-stage__glow {
+    animation: none;
+  }
+}
+
+
+
+html.home-room-active,
+html.home-room-active body {
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
+}
+
+html.home-room-active .app-shell,
+html.home-room-active main,
+html.home-room-active .site-main {
+  height: 100svh;
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
+}
+
+html.home-room-active .gallery-room.is-gallery,
+html.home-room-active .gallery-stage-layer {
+  height: 100svh;
+  height: 100dvh;
+  max-height: 100svh;
+  max-height: 100dvh;
+}
+
+/* Experience remains scrollable; only pure gallery home locks page scroll. */
+html.stage-room-active:not(.home-room-active) {
+  overscroll-behavior-y: contain;
+}
+
 
 .persona-shell { background: #020817; }
 
@@ -495,3 +678,4 @@ body.is-scrolling .animate-pulse-glow {
     transition-duration: 0.001ms !important;
   }
 }
+

@@ -3,172 +3,140 @@ import { Icon } from '@iconify/react';
 import './Navigation.css';
 
 const navLinks = [
-    { href: '#home', label: 'Home', id: 'home' },
-    { href: '#projects', label: 'Work', id: 'projects' },
-    { href: '#experience', label: 'Evidence', id: 'experience' },
-    { href: '#capabilities', label: 'Engine', id: 'capabilities' },
-    { href: '#contact', label: 'Contact', id: 'contact' },
+    {
+        href: '/',
+        label: 'GALLERY',
+        roomCode: '01',
+        icon: 'lucide:orbit',
+        hint: 'Selected systems',
+    },
+    {
+        href: '/experience',
+        label: 'EXPERIENCE',
+        roomCode: '02',
+        icon: 'lucide:briefcase-business',
+        hint: 'Work in context',
+    },
+    {
+        href: '#',
+        label: 'STACK',
+        disabled: true,
+        icon: 'lucide:layers-2',
+        hint: 'Coming online',
+    },
+    {
+        href: '#',
+        label: 'CONTACT',
+        disabled: true,
+        icon: 'lucide:send',
+        hint: 'Coming online',
+    },
 ];
 
-const NavScramble = ({ text, active }) => {
-    const elementRef = useRef(null);
-    const intervalRef = useRef(null);
-
-    const start = () => {
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&';
-        let iteration = 0;
-        window.clearInterval(intervalRef.current);
-        intervalRef.current = window.setInterval(() => {
-            if (!elementRef.current) return;
-            elementRef.current.textContent = text
-                .split('')
-                .map((letter, index) => index < iteration ? text[index] : chars[Math.floor(Math.random() * chars.length)])
-                .join('');
-            iteration += 0.55;
-            if (iteration >= text.length) {
-                window.clearInterval(intervalRef.current);
-                elementRef.current.textContent = text;
-            }
-        }, 28);
-    };
-
-    useEffect(() => () => window.clearInterval(intervalRef.current), []);
-
-    return <span ref={elementRef} className={active ? 'is-active' : ''} onMouseEnter={start}>{text}</span>;
-};
-
-const Navigation = () => {
-    const [isScrolled, setIsScrolled] = useState(false);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const [activeSection, setActiveSection] = useState('home');
-    const menuButtonRef = useRef(null);
+const Navigation = ({ currentPath, onRoomNavigate, routeReady = false }) => {
+    const [open, setOpen] = useState(false);
+    const [activeLabel, setActiveLabel] = useState(null);
     const menuRef = useRef(null);
 
     useEffect(() => {
-        let frame = null;
-        const handleScroll = () => {
-            if (frame) return;
-            frame = requestAnimationFrame(() => {
-                setIsScrolled(window.scrollY > 40);
-                frame = null;
-            });
+        if (!open) return undefined;
+        const close = (event) => {
+            if (event.key === 'Escape') setOpen(false);
         };
-        handleScroll();
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-            if (frame) cancelAnimationFrame(frame);
-        };
-    }, []);
+        window.addEventListener('keydown', close);
+        return () => window.removeEventListener('keydown', close);
+    }, [open]);
 
     useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                const visible = entries.find((entry) => entry.isIntersecting);
-                if (visible) setActiveSection(visible.target.id);
-            },
-            { rootMargin: '-45% 0px -45% 0px', threshold: 0 }
-        );
-        navLinks.forEach(({ id }) => {
-            const node = document.getElementById(id);
-            if (node) observer.observe(node);
-        });
-        return () => observer.disconnect();
-    }, []);
+        setActiveLabel(null);
+    }, [currentPath]);
 
-    useEffect(() => {
-        if (!isMobileMenuOpen) return undefined;
+    const handleLinkClick = (event, link) => {
+        setOpen(false);
+        setActiveLabel(null);
+        if (link.disabled) {
+            event.preventDefault();
+            return;
+        }
+        if (!link.roomCode) return;
 
-        const previousOverflow = document.body.style.overflow;
-        document.body.style.overflow = 'hidden';
-        const menuTrigger = menuButtonRef.current;
-        const menu = menuRef.current;
-        const focusable = menu?.querySelectorAll('a, button');
-        focusable?.[0]?.focus();
+        event.preventDefault();
+        if (link.href === currentPath) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
 
-        const handleKeyDown = (event) => {
-            if (event.key === 'Escape') {
-                setIsMobileMenuOpen(false);
-                return;
-            }
-            if (event.key !== 'Tab' || !focusable?.length) return;
-            const first = focusable[0];
-            const last = focusable[focusable.length - 1];
-            if (event.shiftKey && document.activeElement === first) {
-                event.preventDefault();
-                last.focus();
-            } else if (!event.shiftKey && document.activeElement === last) {
-                event.preventDefault();
-                first.focus();
-            }
-        };
-
-        window.addEventListener('keydown', handleKeyDown);
-        return () => {
-            document.body.style.overflow = previousOverflow;
-            window.removeEventListener('keydown', handleKeyDown);
-            menuTrigger?.focus();
-        };
-    }, [isMobileMenuOpen]);
-
-    const closeMenu = () => setIsMobileMenuOpen(false);
+        onRoomNavigate(link.href, link.label, link.roomCode);
+    };
 
     return (
-        <>
-            <nav id="main-nav" className={isScrolled ? 'main-nav is-scrolled' : 'main-nav'} aria-label="Primary navigation">
-                <a className="nav-brand" href="#home" aria-label="Chaimongkon portfolio home">
-                    <img src="/assets/optimized/profile-logo-128.jpg" alt="" decoding="async" />
-                    <span>DEV<span>.</span>GABRIEL</span>
-                </a>
+        <nav
+            ref={menuRef}
+            className={[
+                'corner-menu',
+                open ? 'is-open' : '',
+                routeReady ? 'is-route-ready' : '',
+                activeLabel ? 'has-active' : '',
+            ].filter(Boolean).join(' ')}
+            aria-label="Primary navigation"
+            onMouseLeave={() => setActiveLabel(null)}
+        >
+            <button
+                type="button"
+                className="corner-menu__trigger"
+                aria-expanded={open}
+                onClick={() => setOpen((value) => !value)}
+            >
+                MENU
+                <span className="corner-menu__trigger-mark" aria-hidden="true">
+                    <Icon icon="lucide:command" width="14" height="14" />
+                </span>
+            </button>
 
-                <div className="nav-desktop-links">
-                    {navLinks.map((link) => (
-                        <a key={link.id} href={link.href} aria-current={activeSection === link.id ? 'location' : undefined}>
-                            <NavScramble text={link.label} active={activeSection === link.id} />
+            <div className="corner-menu__panel">
+                {navLinks.map((link) => {
+                    const isCurrent = !link.disabled && link.href === currentPath;
+                    const isActive = activeLabel === link.label;
+
+                    return (
+                        <a
+                            key={link.label}
+                            href={link.href}
+                            className={[
+                                'corner-menu__link',
+                                link.disabled ? 'is-disabled' : '',
+                                isCurrent ? 'is-current' : '',
+                                isActive ? 'is-active' : '',
+                            ].filter(Boolean).join(' ')}
+                            aria-disabled={link.disabled || undefined}
+                            aria-current={isCurrent ? 'page' : undefined}
+                            onClick={(event) => handleLinkClick(event, link)}
+                            onMouseEnter={() => setActiveLabel(link.label)}
+                            onFocus={() => setActiveLabel(link.label)}
+                            onMouseLeave={() => setActiveLabel((value) => (value === link.label ? null : value))}
+                            onBlur={() => setActiveLabel((value) => (value === link.label ? null : value))}
+                        >
+                            <span className="corner-menu__row">
+                                <span className="corner-menu__glyph" aria-hidden="true">
+                                    <Icon icon={link.icon} className="corner-menu__glyph-icon" />
+                                </span>
+
+                                <span className="corner-menu__label">{link.label}</span>
+
+                                <span className="corner-menu__arrow" aria-hidden="true">
+                                    <Icon icon={link.disabled ? 'lucide:lock' : 'lucide:arrow-up-right'} />
+                                </span>
+                            </span>
+
+                            <span className="corner-menu__meta">
+                                <span className="corner-menu__code">{link.roomCode || '••'}</span>
+                                <span className="corner-menu__hint">{link.hint}</span>
+                            </span>
                         </a>
-                    ))}
-                    <a className="nav-resume" href="/assets/Chaimongkon-Sokgampang_Resume.pdf" target="_blank" rel="noreferrer">
-                        Resume <Icon icon="lucide:arrow-up-right" />
-                    </a>
-                </div>
-
-                <button
-                    ref={menuButtonRef}
-                    type="button"
-                    className="nav-menu-button"
-                    aria-label="Open navigation menu"
-                    aria-expanded={isMobileMenuOpen}
-                    aria-controls="mobile-menu"
-                    onClick={() => setIsMobileMenuOpen(true)}
-                >
-                    <span />
-                    <span />
-                </button>
-            </nav>
-
-            {isMobileMenuOpen && (
-                <div ref={menuRef} id="mobile-menu" className="mobile-menu" role="dialog" aria-modal="true" aria-label="Navigation menu">
-                    <div className="mobile-menu-head">
-                        <span className="font-mono">CHAPTER SELECT</span>
-                        <button type="button" onClick={closeMenu} aria-label="Close navigation menu">
-                            <Icon icon="lucide:x" />
-                        </button>
-                    </div>
-                    <div className="mobile-menu-links">
-                        {navLinks.map((link, index) => (
-                            <a key={link.id} href={link.href} onClick={closeMenu}>
-                                <span>{String(index).padStart(2, '0')}</span>
-                                {link.label}
-                            </a>
-                        ))}
-                    </div>
-                    <div className="mobile-menu-actions">
-                        <a href="/assets/Chaimongkon-Sokgampang_Resume.pdf" target="_blank" rel="noreferrer">Resume ↗</a>
-                        <a href="mailto:chaimongkon.sokgampang@gmail.com">Email ↗</a>
-                    </div>
-                </div>
-            )}
-        </>
+                    );
+                })}
+            </div>
+        </nav>
     );
 };
 

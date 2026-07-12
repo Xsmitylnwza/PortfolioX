@@ -26,3 +26,10 @@ output/**
 *.njsproj
 *.sln
 *.sw?
+.vercel
+
+tmp/
+.playwright-cli/
+tmp-room-transition-test/
+tmp-room-transition-test.cjs
+

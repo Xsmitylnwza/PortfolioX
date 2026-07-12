@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import './StoryProgress.css';
 
 const chapters = [
@@ -18,37 +18,33 @@ const StoryProgress = () => {
                 const visible = entries
                     .filter((entry) => entry.isIntersecting)
                     .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-
                 if (visible) setActiveChapter(visible.target.id);
             },
-            { rootMargin: '-38% 0px -52% 0px', threshold: [0, 0.1, 0.5] }
+            { rootMargin: '-42% 0px -48% 0px', threshold: [0, 0.1] },
         );
 
         chapters.forEach(({ id }) => {
             const section = document.getElementById(id);
             if (section) observer.observe(section);
         });
-
         return () => observer.disconnect();
     }, []);
 
+    const activeIndex = useMemo(
+        () => Math.max(0, chapters.findIndex((chapter) => chapter.id === activeChapter)),
+        [activeChapter],
+    );
+    const current = chapters[activeIndex];
+
     return (
-        <aside className="story-progress" aria-label="Portfolio story chapters">
-            <span className="story-progress-title">STORY / SCROLL</span>
-            <nav>
-                {chapters.map((chapter) => (
-                    <a
-                        key={chapter.id}
-                        href={`#${chapter.id}`}
-                        className={activeChapter === chapter.id ? 'is-active' : ''}
-                        aria-current={activeChapter === chapter.id ? 'location' : undefined}
-                    >
-                        <span>{chapter.number}</span>
-                        <strong>{chapter.label}</strong>
-                        <i aria-hidden="true" />
-                    </a>
+        <aside className="story-progress" aria-label={`Current chapter: ${current.label}`}>
+            <span className="story-progress-number">{current.number}</span>
+            <div className="story-progress-track" aria-hidden="true">
+                {chapters.map((chapter, index) => (
+                    <i key={chapter.id} className={index <= activeIndex ? 'is-complete' : ''} />
                 ))}
-            </nav>
+            </div>
+            <span className="story-progress-label">{current.label}</span>
         </aside>
     );
 };

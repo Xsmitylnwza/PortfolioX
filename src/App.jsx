@@ -14,11 +14,10 @@ const Experience = lazy(() => import('./components/Experience'));
 const ProjectDetails = lazy(() => import('./components/ProjectDetails'));
 const PersonaReloadView = lazy(() => import('./components/PersonaReloadView'));
 const StackPage = lazy(() => import('./components/StackPage'));
-const ResumePage = lazy(() => import('./components/ResumePage'));
 const ContactPage = lazy(() => import('./components/ContactPage'));
 
 const STAGE_PATHS = new Set(['/', '/experience']);
-const DOCUMENT_PATHS = new Set(['/stack', '/tech', '/resume', '/cv', '/contact']);
+const DOCUMENT_PATHS = new Set(['/stack', '/tech', '/contact', '/resume', '/cv']);
 const ROOM_EXIT_MS = 500;
 const ROOM_ENTER_MS = 820;
 
@@ -313,7 +312,6 @@ function App() {
     let cancelled = false;
     Promise.all([
       import('./components/StackPage'),
-      import('./components/ResumePage'),
       import('./components/ContactPage'),
     ]).catch(() => {
       if (cancelled) return;
@@ -495,15 +493,6 @@ function App() {
             />
             <Route path="/tech" element={<Navigate to="/stack" replace />} />
             <Route
-              path="/resume"
-              element={
-                <Suspense fallback={<div className="loading-fallback" />}>
-                  <ResumePage />
-                </Suspense>
-              }
-            />
-            <Route path="/cv" element={<Navigate to="/resume" replace />} />
-            <Route
               path="/contact"
               element={
                 <Suspense fallback={<div className="loading-fallback" />}>
@@ -511,6 +500,8 @@ function App() {
                 </Suspense>
               }
             />
+            <Route path="/resume" element={<Navigate to="/contact" replace />} />
+            <Route path="/cv" element={<Navigate to="/contact" replace />} />
           </Routes>
         </div>
       </main>

@@ -99,8 +99,8 @@ const TechStack = () => {
                             <Link to="/experience" data-cursor="view" data-cursor-text="SEE PROOF">
                                 See it in Experience
                             </Link>
-                            <Link to="/resume" data-cursor="view" data-cursor-text="OPEN DOSSIER">
-                                Resume packet
+                            <Link to="/contact" data-cursor="view" data-cursor-text="OPEN CONTACT">
+                                Contact / Resume
                             </Link>
                         </div>
                     </div>

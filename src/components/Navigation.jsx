@@ -1,4 +1,4 @@
-﻿import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Icon } from '@iconify/react';
 import { ROOM_HINTS } from '../data/site';
 import './Navigation.css';
@@ -26,20 +26,20 @@ const navLinks = [
         hint: ROOM_HINTS.stack,
     },
     {
-        href: '/resume',
-        label: 'RESUME',
-        roomCode: '04',
-        icon: 'lucide:file-badge',
-        hint: ROOM_HINTS.resume,
-    },
-    {
         href: '/contact',
         label: 'CONTACT',
-        roomCode: '05',
+        roomCode: '04',
         icon: 'lucide:send',
         hint: ROOM_HINTS.contact,
     },
 ];
+
+const isCurrentPath = (href, currentPath) => {
+    if (href === currentPath) return true;
+    if (href === '/stack' && currentPath === '/tech') return true;
+    if (href === '/contact' && (currentPath === '/resume' || currentPath === '/cv')) return true;
+    return false;
+};
 
 const Navigation = ({ currentPath, onRoomNavigate, routeReady = false }) => {
     const [open, setOpen] = useState(false);
@@ -69,7 +69,7 @@ const Navigation = ({ currentPath, onRoomNavigate, routeReady = false }) => {
         if (!link.roomCode) return;
 
         event.preventDefault();
-        if (link.href === currentPath) {
+        if (isCurrentPath(link.href, currentPath)) {
             window.scrollTo({ top: 0, behavior: 'smooth' });
             return;
         }
@@ -103,11 +103,7 @@ const Navigation = ({ currentPath, onRoomNavigate, routeReady = false }) => {
 
             <div className="corner-menu__panel">
                 {navLinks.map((link) => {
-                    const isCurrent = !link.disabled && (
-                        link.href === currentPath
-                        || (link.href === '/stack' && currentPath === '/tech')
-                        || (link.href === '/resume' && currentPath === '/cv')
-                    );
+                    const isCurrent = !link.disabled && isCurrentPath(link.href, currentPath);
                     const isActive = activeLabel === link.label;
 
                     return (

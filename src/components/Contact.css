@@ -1,409 +1,526 @@
+/* Combined contact + resume glass room over the live stage grid. */
 .channel-section {
-    --channel-red: #e3262e;
-    --channel-dark-red: #7f1118;
-    --channel-paper: #e8e0d1;
-    position: relative;
-    isolation: isolate;
-    overflow: clip;
-    padding: clamp(6rem, 10vw, 10rem) clamp(1rem, 4vw, 4rem) 3rem;
-    color: #f2f2f2;
-    background: transparent;
+  --channel-red: #e3262e;
+  --channel-paper: #e8e0d1;
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  min-height: 100svh;
+  padding: clamp(5rem, 8vw, 7rem) clamp(1rem, 4vw, 4rem) 2.5rem;
+  color: #f2f2f2;
+  background: transparent;
 }
 
-
 .channel-section::before {
-    content: "04";
-    position: absolute;
-    right: -0.02em;
-    bottom: -0.2em;
-    z-index: -1;
-    color: rgba(227, 38, 46, 0.055);
-    font-family: var(--font-display);
-    font-size: clamp(16rem, 50vw, 45rem);
-    font-weight: 800;
-    letter-spacing: -0.12em;
-    line-height: 0.7;
-    pointer-events: none;
+  content: "04";
+  position: absolute;
+  right: -0.04em;
+  bottom: -0.18em;
+  z-index: -1;
+  color: rgba(227, 38, 46, 0.05);
+  font-family: var(--font-display);
+  font-size: clamp(12rem, 36vw, 34rem);
+  font-weight: 800;
+  letter-spacing: -0.12em;
+  line-height: 0.7;
+  pointer-events: none;
+}
+
+.channel-shell {
+  width: min(100%, 1180px);
+  margin: 0 auto;
 }
 
 .channel-transmission {
-    display: grid;
-    grid-template-columns: auto auto 1fr;
-    gap: 2rem;
-    width: min(100%, 1440px);
-    margin: 0 auto 1rem;
-    padding: 0.7rem 1rem;
-    color: rgba(242, 242, 242, 0.55);
-    background: rgba(5, 5, 5, 0.42);
-    border: 1px solid rgba(242, 242, 242, 0.14);
-    backdrop-filter: blur(14px) saturate(1.2);
-    -webkit-backdrop-filter: blur(14px) saturate(1.2);
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    font-size: 0.62rem;
-    letter-spacing: 0.14em;
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1rem;
+  padding: 0.55rem 0.85rem;
+  color: rgba(242, 242, 242, 0.55);
+  background: rgba(5, 5, 5, 0.42);
+  border: 1px solid rgba(242, 242, 242, 0.14);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
 }
 
 .channel-transmission span:last-child {
-    text-align: right;
+  text-align: right;
 }
 
-.channel-stage {
-    display: grid;
-    grid-template-columns: minmax(0, 1.25fr) minmax(20rem, 0.6fr);
-    width: min(100%, 1440px);
-    min-height: min(760px, 78vh);
-    margin: 0 auto;
-    overflow: hidden;
-    color: #f2f2f2;
-    background:
-        linear-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.055) 1px, transparent 1px),
-        var(--channel-red);
-    background-size: 44px 44px, 44px 44px, auto;
-    border: 1px solid rgba(242, 242, 242, 0.22);
-    box-shadow: 1.2rem 1.2rem 0 rgba(127, 17, 24, 0.42);
-}
-
-.channel-copy {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: clamp(2rem, 6vw, 6rem);
+.channel-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(15rem, 0.75fr);
+  gap: clamp(1.25rem, 3vw, 2rem);
+  align-items: end;
+  margin-bottom: 1.5rem;
 }
 
 .channel-chapter {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: clamp(2rem, 5vw, 4rem);
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.16em;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0.85rem;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.16em;
 }
 
 .channel-chapter span {
-    display: grid;
-    width: 2.2rem;
-    aspect-ratio: 1;
-    place-items: center;
-    color: var(--channel-red);
-    background: #050505;
+  display: grid;
+  width: 2rem;
+  aspect-ratio: 1;
+  place-items: center;
+  color: var(--channel-red);
+  background: rgba(5, 5, 5, 0.7);
+  border: 1px solid rgba(227, 38, 46, 0.55);
 }
 
 .channel-kicker {
-    margin-bottom: 1rem;
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
+  margin-bottom: 0.55rem;
+  color: var(--channel-red);
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.14em;
 }
 
-.channel-copy h2 {
-    max-width: 10ch;
-    margin: 0;
-    font-family: var(--font-display);
-    font-size: clamp(3.2rem, 5.7vw, 6.2rem);
-    font-weight: 800;
-    letter-spacing: -0.078em;
-    line-height: 0.84;
-    text-transform: uppercase;
+.channel-hero h1 {
+  max-width: 12ch;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 4.6vw, 4.2rem);
+  font-weight: 800;
+  letter-spacing: -0.07em;
+  line-height: 0.9;
+  text-transform: uppercase;
 }
 
-.channel-copy h2 em {
-    color: var(--channel-paper);
-    font-family: var(--font-serif);
-    font-weight: 400;
-    text-transform: none;
+.channel-hero h1 em {
+  color: var(--channel-paper);
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  text-transform: none;
 }
 
 .channel-lede {
-    max-width: 39rem;
-    margin-top: 2rem;
-    color: rgba(242, 242, 242, 0.8);
-    font-size: clamp(1rem, 1.5vw, 1.2rem);
-    line-height: 1.7;
+  max-width: 34rem;
+  margin-top: 0.85rem;
+  color: rgba(242, 242, 242, 0.72);
+  font-size: clamp(0.92rem, 1.2vw, 1.02rem);
+  line-height: 1.55;
+}
+
+.channel-packet {
+  padding: 1.1rem 1.05rem 1.15rem;
+  color: #050505;
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.16), transparent 42%),
+    var(--channel-paper);
+  border: 1px solid rgba(5, 5, 5, 0.18);
+  box-shadow: 0.55rem 0.55rem 0 rgba(127, 17, 24, 0.36);
+}
+
+.channel-packet__label {
+  margin-bottom: 0.55rem;
+  color: rgba(5, 5, 5, 0.52);
+  font-family: var(--font-mono);
+  font-size: 0.54rem;
+  letter-spacing: 0.14em;
+}
+
+.channel-packet strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  letter-spacing: -0.03em;
+}
+
+.channel-packet > span {
+  display: block;
+  margin-top: 0.18rem;
+  color: rgba(5, 5, 5, 0.6);
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.channel-packet__actions {
+  display: grid;
+  gap: 0.45rem;
+  margin-top: 0.95rem;
+}
+
+.channel-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 2.45rem;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid rgba(5, 5, 5, 0.55);
+  color: #050505;
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: color 160ms ease, background-color 160ms ease, transform 160ms ease;
+}
+
+.channel-btn svg {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.channel-btn--primary {
+  color: #f2f2f2;
+  background: #050505;
+  border-color: #050505;
+}
+
+.channel-btn:hover,
+.channel-btn:focus-visible {
+  transform: translateY(-1px);
+}
+
+.channel-btn--primary:hover,
+.channel-btn--primary:focus-visible {
+  background: var(--channel-red);
+  border-color: var(--channel-red);
+}
+
+.channel-section-label {
+  display: grid;
+  grid-template-columns: auto minmax(2rem, 1fr) auto;
+  align-items: center;
+  gap: 0.65rem;
+  margin: 0 0 0.7rem;
+  color: rgba(242, 242, 242, 0.5);
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+}
+
+.channel-section-label i {
+  height: 1px;
+  background: linear-gradient(90deg, var(--channel-red), rgba(255, 255, 255, 0.08));
+}
+
+.channel-proofs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.7rem;
+  margin-bottom: 1.15rem;
+}
+
+.channel-proof {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.7rem;
+  min-height: 0;
+  padding: 0.9rem 0.9rem;
+  background: rgba(5, 5, 5, 0.44);
+  border: 1px solid rgba(242, 242, 242, 0.12);
+  backdrop-filter: blur(12px) saturate(1.15);
+  -webkit-backdrop-filter: blur(12px) saturate(1.15);
+}
+
+.channel-proof__id {
+  color: var(--channel-red);
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.channel-proof__signal {
+  margin-bottom: 0.28rem;
+  color: rgba(242, 242, 242, 0.48);
+  font-family: var(--font-mono);
+  font-size: 0.54rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.channel-proof h2 {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-display);
+  font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.channel-proof p:last-child {
+  color: rgba(242, 242, 242, 0.68);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.channel-roles {
+  margin-bottom: 1.15rem;
+}
+
+.channel-roles ol {
+  list-style: none;
+  border: 1px solid rgba(242, 242, 242, 0.12);
+  background: rgba(5, 5, 5, 0.4);
+  backdrop-filter: blur(12px) saturate(1.15);
+  -webkit-backdrop-filter: blur(12px) saturate(1.15);
+}
+
+.channel-roles li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.72rem 0.9rem;
+  border-bottom: 1px solid rgba(242, 242, 242, 0.08);
+}
+
+.channel-roles li:last-child {
+  border-bottom: 0;
+}
+
+.channel-roles strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  letter-spacing: -0.02em;
+}
+
+.channel-roles span {
+  display: block;
+  margin-top: 0.12rem;
+  color: rgba(242, 242, 242, 0.56);
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.channel-roles time {
+  color: rgba(242, 242, 242, 0.48);
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.channel-skills {
+  margin-bottom: 1.35rem;
+}
+
+.channel-skills ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  list-style: none;
+}
+
+.channel-skills li {
+  padding: 0.4rem 0.65rem;
+  color: rgba(242, 242, 242, 0.82);
+  background: rgba(5, 5, 5, 0.4);
+  border: 1px solid rgba(242, 242, 242, 0.12);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+}
+
+.channel-reach {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(14rem, 0.8fr);
+  gap: 0.85rem;
+  margin-top: 0.25rem;
 }
 
 .channel-email {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1.5rem;
-    width: min(100%, 42rem);
-    margin-top: clamp(2.5rem, 5vw, 4rem);
-    padding: 1.1rem 1.2rem;
-    color: #050505;
-    background: var(--channel-paper);
-    border: 2px solid #050505;
-    box-shadow: 0.45rem 0.45rem 0 #050505;
-    font-family: var(--font-display);
-    font-size: clamp(0.82rem, 1.4vw, 1rem);
-    font-weight: 700;
-    overflow-wrap: anywhere;
-    transition: color 180ms ease, background-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 100%;
+  padding: 1rem 1.05rem;
+  color: #050505;
+  background: var(--channel-paper);
+  border: 2px solid #050505;
+  box-shadow: 0.35rem 0.35rem 0 #050505;
+  font-family: var(--font-display);
+  font-size: clamp(0.82rem, 1.3vw, 0.98rem);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+  text-decoration: none;
+  transition: color 160ms ease, background-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
 }
 
 .channel-email small {
-    display: block;
-    margin-bottom: 0.28rem;
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    font-size: 0.56rem;
-    font-weight: 400;
-    letter-spacing: 0.14em;
+  display: block;
+  margin-bottom: 0.22rem;
+  font-family: var(--font-mono);
+  font-size: 0.54rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
 }
 
 .channel-email b {
-    flex: 0 0 auto;
-    font-size: 1.5rem;
+  flex: 0 0 auto;
+  font-size: 1.25rem;
 }
 
 .channel-email:hover,
 .channel-email:focus-visible {
-    color: #f2f2f2;
-    background: #050505;
-    box-shadow: 0.2rem 0.2rem 0 var(--channel-paper);
-    transform: translate(0.25rem, 0.25rem);
-}
-
-.channel-email:focus-visible,
-.channel-links a:focus-visible {
-    outline: 3px solid var(--channel-paper);
-    outline-offset: 4px;
-}
-
-.channel-directory {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 2rem;
-    padding: clamp(2rem, 5vw, 5rem);
-    color: #f2f2f2;
-    background:
-        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        rgba(5, 5, 5, 0.5);
-    background-size: 100% 7px, auto;
-    backdrop-filter: blur(16px) saturate(1.2);
-    -webkit-backdrop-filter: blur(16px) saturate(1.2);
-    border-left: 1px solid rgba(242, 242, 242, 0.16);
-}
-
-.channel-note {
-    position: relative;
-    padding: clamp(1.6rem, 4vw, 2.7rem);
-    color: #050505;
-    background:
-        linear-gradient(115deg, rgba(0, 0, 0, 0.045), transparent 26%),
-        var(--channel-paper);
-    box-shadow: 0.7rem 0.8rem 0 rgba(127, 17, 24, 0.7);
-    transform: rotate(-2deg);
-}
-
-.channel-note::before {
-    content: "";
-    position: absolute;
-    top: -0.8rem;
-    left: 50%;
-    width: 7rem;
-    height: 1.8rem;
-    background: rgba(255, 255, 255, 0.46);
-    transform: translateX(-50%) rotate(1deg);
-}
-
-.channel-note > p {
-    margin-bottom: 1.7rem;
-    color: var(--channel-red);
-    font-family: 'Permanent Marker', cursive;
-    font-size: 1.25rem;
-    transform: rotate(-2deg);
-}
-
-.channel-note dl,
-.channel-note dl div {
-    margin: 0;
-}
-
-.channel-note dl div {
-    display: grid;
-    grid-template-columns: 5rem 1fr;
-    gap: 0.75rem;
-    padding: 0.7rem 0;
-    border-top: 1px solid rgba(5, 5, 5, 0.2);
-}
-
-.channel-note dt,
-.channel-note dd {
-    margin: 0;
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.08em;
-}
-
-.channel-note dt {
-    color: rgba(5, 5, 5, 0.52);
-}
-
-.channel-note dd {
-    font-weight: 700;
+  color: #f2f2f2;
+  background: #050505;
+  box-shadow: 0.15rem 0.15rem 0 var(--channel-paper);
+  transform: translate(0.18rem, 0.18rem);
 }
 
 .channel-links {
-    border-top: 1px solid rgba(242, 242, 242, 0.18);
+  display: grid;
+  border: 1px solid rgba(242, 242, 242, 0.12);
+  background: rgba(5, 5, 5, 0.42);
+  backdrop-filter: blur(12px) saturate(1.15);
+  -webkit-backdrop-filter: blur(12px) saturate(1.15);
 }
 
 .channel-links a {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 1rem;
-    align-items: center;
-    padding: 1.1rem 0.2rem;
-    border-bottom: 1px solid rgba(242, 242, 242, 0.18);
-    transition: color 180ms ease, padding 180ms ease, border-color 180ms ease;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.85rem 0.9rem;
+  border-bottom: 1px solid rgba(242, 242, 242, 0.1);
+  color: inherit;
+  text-decoration: none;
+  transition: color 160ms ease, padding 160ms ease, border-color 160ms ease;
+}
+
+.channel-links a:last-child {
+  border-bottom: 0;
 }
 
 .channel-links a > span:first-child {
-    color: var(--channel-red);
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    font-size: 0.62rem;
+  color: var(--channel-red);
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
 }
 
 .channel-links small,
 .channel-links strong {
-    display: block;
+  display: block;
 }
 
 .channel-links small {
-    margin-bottom: 0.2rem;
-    color: rgba(242, 242, 242, 0.45);
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    font-size: 0.56rem;
-    font-weight: 400;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+  margin-bottom: 0.12rem;
+  color: rgba(242, 242, 242, 0.45);
+  font-family: var(--font-mono);
+  font-size: 0.52rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 .channel-links strong {
-    font-size: 0.88rem;
-    font-weight: 600;
+  font-size: 0.84rem;
+  font-weight: 600;
 }
 
 .channel-links b {
-    font-size: 1.25rem;
-    font-weight: 400;
+  font-size: 1.1rem;
+  font-weight: 400;
 }
 
 .channel-links a:hover,
 .channel-links a:focus-visible {
-    color: var(--channel-paper);
-    padding-right: 0.7rem;
-    padding-left: 0.7rem;
-    border-color: var(--channel-red);
+  color: var(--channel-paper);
+  padding-right: 1.05rem;
+  padding-left: 1.05rem;
+  border-color: var(--channel-red);
 }
 
-.channel-signoff {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    gap: 1rem;
-    align-items: center;
-    width: min(100%, 1440px);
-    margin: clamp(3rem, 6vw, 6rem) auto 0;
-    color: rgba(242, 242, 242, 0.54);
-    font-family: 'JetBrains Mono', 'Fira Code', monospace;
-    font-size: 0.64rem;
-    letter-spacing: 0.17em;
+.channel-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem 1.25rem;
+  margin-top: 1.35rem;
+  padding-top: 0.95rem;
+  border-top: 1px solid rgba(242, 242, 242, 0.12);
+  color: rgba(242, 242, 242, 0.55);
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
-.channel-signoff i {
-    height: 1px;
-    background: linear-gradient(90deg, rgba(242, 242, 242, 0.1), var(--channel-red), rgba(242, 242, 242, 0.1));
+.channel-foot a {
+  color: #f2f2f2;
+  text-decoration: none;
+}
+
+.channel-foot a:hover,
+.channel-foot a:focus-visible {
+  color: var(--channel-paper);
 }
 
 .channel-reveal {
-    opacity: 0;
-    transform: translateY(2.5rem);
-    transition: opacity 760ms ease, transform 760ms cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0;
+  transform: translateY(1.2rem);
+  transition: opacity 620ms ease, transform 620ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.channel-directory.channel-reveal {
-    transition-delay: 100ms;
-}
-
-.channel-signoff.channel-reveal {
-    transition-delay: 180ms;
+.channel-proof.channel-reveal {
+  transition-delay: calc(var(--proof-index, 0) * 50ms);
 }
 
 .channel-section.is-visible .channel-reveal {
-    opacity: 1;
-    transform: translateY(0);
+  opacity: 1;
+  transform: translateY(0);
 }
 
-@media (max-width: 960px) {
-    .channel-stage {
-        grid-template-columns: 1fr;
-        min-height: 0;
-    }
-
-    .channel-copy {
-        min-height: 70vh;
-    }
-
-    .channel-directory {
-        border-top: 1px solid rgba(242, 242, 242, 0.16);
-        border-left: 0;
-    }
-
-    .channel-note {
-        width: min(100%, 34rem);
-        margin: 0 auto;
-    }
+@media (max-width: 900px) {
+  .channel-hero,
+  .channel-proofs,
+  .channel-reach {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 620px) {
-    .channel-section {
-        padding-right: 1rem;
-        padding-left: 1rem;
-    }
+  .channel-section {
+    padding-right: 1rem;
+    padding-left: 1rem;
+  }
 
-    .channel-transmission {
-        grid-template-columns: auto 1fr;
-        gap: 1rem;
-    }
+  .channel-transmission {
+    grid-template-columns: auto 1fr;
+    gap: 0.75rem;
+  }
 
-    .channel-transmission span:nth-child(2) {
-        display: none;
-    }
+  .channel-transmission span:nth-child(2) {
+    display: none;
+  }
 
-    .channel-copy {
-        min-height: 0;
-        padding: 3rem 1.25rem;
-    }
-
-    .channel-copy h2 {
-        font-size: clamp(2.9rem, 12vw, 4.8rem);
-    }
-
-    .channel-email {
-        align-items: flex-start;
-        padding: 1rem;
-    }
-
-    .channel-directory {
-        padding: 3rem 1.25rem;
-    }
-
-    .channel-signoff {
-        font-size: 0.56rem;
-        letter-spacing: 0.1em;
-    }
+  .channel-roles li {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .channel-reveal,
-    .channel-section.is-visible .channel-reveal,
-    .channel-email,
-    .channel-links a {
-        opacity: 1;
-        transform: none;
-        transition: none;
-    }
+  .channel-reveal,
+  .channel-section.is-visible .channel-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
-

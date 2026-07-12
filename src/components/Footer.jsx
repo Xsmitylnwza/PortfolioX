@@ -1,4 +1,4 @@
-﻿import './Footer.css';
+import './Footer.css';
 import { PROFILE } from '../data/site';
 
 const Footer = () => {
@@ -24,7 +24,6 @@ const Footer = () => {
                 <nav aria-label="Footer links">
                     <a href={PROFILE.mailto}>Email</a>
                     <a href={PROFILE.github.href} target="_blank" rel="noreferrer">GitHub {'->'}</a>
-                    <a href="/resume">Resume {'->'}</a>
                     <a
                         href={PROFILE.resumePdf.href}
                         target="_blank"

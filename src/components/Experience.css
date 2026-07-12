@@ -3,7 +3,7 @@
     --experience-ink: #14100f;
     --experience-muted: rgba(20, 16, 15, 0.68);
     --experience-soft: rgba(20, 16, 15, 0.52);
-    --experience-line: rgba(20, 16, 15, 0.16);
+    --experience-line: rgba(20, 16, 15, 0.1);
     --experience-accent: #7f1118;
     --experience-measure: min(42rem, 100%);
     position: relative;
@@ -125,37 +125,28 @@
     padding: clamp(1.35rem, 3.2vw, 2.4rem);
     color: var(--experience-ink);
     background-color: var(--experience-paper);
-    background-image: repeating-linear-gradient(
-        0deg,
-        rgba(20, 16, 15, 0.015) 0,
-        rgba(20, 16, 15, 0.015) 1px,
-        transparent 1px,
-        transparent 6px
-    );
-    border: 1px solid rgba(20, 16, 15, 0.06);
-    box-shadow:
-        0 2rem 4.5rem rgba(0, 0, 0, calc(0.14 + var(--paper-focus) * 0.12)),
-        0.65rem 0.8rem 0 rgba(5, 5, 5, calc(0.28 + var(--paper-focus) * 0.18));
+    background-image: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
     transform:
         translate3d(var(--paper-x), var(--paper-shift), 0)
         rotateX(var(--paper-tilt))
         rotateZ(var(--paper-roll))
         rotateY(var(--paper-yaw))
-        scale(calc(0.978 + var(--paper-focus) * 0.028));
+        scale(calc(0.992 + var(--paper-focus) * 0.012));
     transform-origin: center;
     transform-style: preserve-3d;
-    /* Keep neighbor cards readable — only a light presence shift */
+    /* Flat minimal paper: no border, no drop shadow, soft presence only */
     filter:
-        saturate(calc(1 - var(--paper-soft) * 0.08))
-        brightness(calc(1 - var(--paper-soft) * 0.025));
-    opacity: calc(1 - var(--paper-soft) * 0.06);
+        saturate(calc(1 - var(--paper-soft) * 0.04))
+        brightness(calc(1 - var(--paper-soft) * 0.015));
+    opacity: calc(1 - var(--paper-soft) * 0.04);
     will-change: transform, opacity, filter;
 }
 
 .experience-record:nth-child(even) .experience-paper {
-    box-shadow:
-        0 2rem 4.5rem rgba(0, 0, 0, calc(0.14 + var(--paper-focus) * 0.12)),
-        -0.65rem 0.8rem 0 rgba(5, 5, 5, calc(0.28 + var(--paper-focus) * 0.18));
+    box-shadow: none;
 }
 
 .experience-record.is-focused .experience-paper {
@@ -185,15 +176,11 @@
     width: clamp(4.5rem, 8vw, 6.25rem);
     height: clamp(4.5rem, 8vw, 6.25rem);
     object-fit: contain;
-    border-radius: 0.9rem;
-    background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.34)),
-        rgba(255, 255, 255, 0.55);
-    border: 1px solid rgba(20, 16, 15, 0.1);
-    box-shadow:
-        0 0.45rem 1rem rgba(20, 16, 15, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.65);
-    padding: 0.45rem;
+    border-radius: 0.75rem;
+    background: rgba(255, 255, 255, 0.42);
+    border: 0;
+    box-shadow: none;
+    padding: 0.35rem;
 }
 
 .experience-paper__identity {
@@ -233,8 +220,8 @@
     padding: 0.42rem 0.7rem;
     color: #f7f1e8;
     background: #14100f;
-    border: 1px solid #14100f;
-    box-shadow: 0.18rem 0.18rem 0 rgba(127, 17, 24, 0.55);
+    border: 0;
+    box-shadow: none;
     font: 700 0.72rem/1 var(--font-mono);
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -416,17 +403,13 @@
             rotateZ(var(--paper-roll))
             rotateY(0deg)
             scale(calc(0.99 + var(--paper-focus) * 0.015));
-        box-shadow:
-            0 1.25rem 2.5rem rgba(0, 0, 0, 0.18),
-            0.35rem 0.45rem 0 rgba(5, 5, 5, 0.42);
+        box-shadow: none;
         filter: none;
         opacity: 1;
     }
 
     .experience-record:nth-child(even) .experience-paper {
-        box-shadow:
-            0 1.25rem 2.5rem rgba(0, 0, 0, 0.18),
-            -0.35rem 0.45rem 0 rgba(5, 5, 5, 0.42);
+        box-shadow: none;
     }
 
     .experience-paper__head {

@@ -7,10 +7,22 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'gsap-vendor': ['gsap'],
-          'ogl-vendor': ['ogl']
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return undefined;
+          if (
+            id.includes('react-dom') ||
+            id.includes('react-router') ||
+            id.includes('scheduler') ||
+            // Keep jsx runtime with React so lazy page chunks do not import back into index.
+            id.includes('react/jsx-runtime') ||
+            id.includes('react/jsx-dev-runtime') ||
+            /[\\/]react[\\/]/.test(id)
+          ) {
+            return 'react-vendor';
+          }
+          if (id.includes('gsap')) return 'gsap-vendor';
+          if (id.includes('ogl')) return 'ogl-vendor';
+          return undefined;
         }
       }
     },

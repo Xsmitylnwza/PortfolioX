@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, Suspense, lazy } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, Suspense, lazy } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import GalleryScene from './components/GalleryScene';

@@ -127,7 +127,7 @@ const Experience = () => {
 
             <ol className="experience-room__records" aria-label="Work experience, newest first">
                 {experiences.map((experience, index) => (
-                    <li className={experience-record} key={experience.id}>
+                    <li className="experience-record" key={experience.id}>
                         <article
                             className="experience-paper"
                             style={{ '--paper-yaw': `${index % 2 === 0 ? 4 : -4}deg` }}

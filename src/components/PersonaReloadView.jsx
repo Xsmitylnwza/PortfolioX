@@ -6,17 +6,17 @@ import './PersonaReloadView.css';
 
 const experience = [
     {
-        period: 'NOW',
-        title: 'Software Engineer',
+        period: '2025-26',
+        title: 'Software Engineer (Part-time)',
         org: 'SCB Siam Commercial Bank',
-        detail: 'React, Spring Boot, SQL rule engine work.',
+        detail: 'AMLX DB-driven rules · React + Spring Boot modernization.',
         logo: '/scb-logo.png',
     },
     {
         period: '2025',
         title: 'Software Engineer Intern',
         org: 'TTB',
-        detail: 'Internal productivity dashboard for team leads and engineers.',
+        detail: 'Dashboard for 7 leads / 100+ devs · Townhall recognition.',
         logo: '/ttb-logo.png',
     },
     {

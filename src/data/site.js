@@ -1,8 +1,8 @@
 export const PROFILE = {
   name: 'Chaimongkon Sokgampang',
   monogram: 'CS',
-  title: 'Software Engineer',
-  positioning: 'Full-stack · systems · hybrid · multi-hat teams.',
+  title: 'Full-Stack Engineer',
+  positioning: 'Banking & fintech systems · full-stack · hybrid · multi-hat teams.',
   email: 'chaimongkon.sokgampang@gmail.com',
   mailto: 'mailto:chaimongkon.sokgampang@gmail.com',
   github: {
@@ -37,20 +37,20 @@ export function normalizeDocumentPath(path) {
 export const RESUME_PROOFS = [
   {
     id: '01',
-    title: 'Configurable compliance systems',
-    detail: 'AML rules moved into explicit config, services, and operator UIs.',
+    title: 'Database-driven AML rules',
+    detail: 'AMLX rule engine re-architected so business teams change rules without deploys.',
     signal: 'SCB',
   },
   {
     id: '02',
-    title: 'Workflow across engineering teams',
-    detail: 'Senior-led product direction became a shared workflow at scale.',
+    title: 'Dashboard at engineering scale',
+    detail: 'Internal productivity tool for 7 team leads and 100+ developers; Townhall recognition.',
     signal: 'TTB',
   },
   {
     id: '03',
     title: 'Full delivery ownership',
-    detail: 'Clarify, architect, ship, and refine production products.',
+    detail: 'End-to-end client products with React, Spring Boot, and MySQL — SDLC owned start to finish.',
     signal: 'Freelance',
   },
 ];
@@ -58,8 +58,8 @@ export const RESUME_PROOFS = [
 export const RESUME_ROLES = [
   {
     company: 'SCB',
-    role: 'Software Engineer',
-    period: 'Oct 2025 - Present',
+    role: 'Software Engineer (Part-time)',
+    period: 'Oct 2025 - May 2026',
   },
   {
     company: 'TTB',
@@ -68,8 +68,8 @@ export const RESUME_ROLES = [
   },
   {
     company: 'Freelance',
-    role: 'Full Stack Developer',
-    period: 'Feb 2025 - Present',
+    role: 'Full-Stack Developer (Part-time)',
+    period: 'Feb - Dec 2025',
   },
   {
     company: 'Tomato Ideas',
@@ -81,10 +81,12 @@ export const RESUME_ROLES = [
 export const RESUME_SKILLS = [
   'React',
   'Spring Boot',
-  'Spring Batch',
-  'SQL',
   'Node.js',
   'Elysia.js',
-  'Docker',
+  'Next.js',
+  'Go',
   'MySQL',
+  'PostgreSQL',
+  'Docker',
+  'AWS',
 ];

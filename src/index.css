@@ -37,6 +37,7 @@
 html {
   scroll-behavior: auto;
   background: var(--stage-red);
+  scrollbar-gutter: stable;
 }
 
 body {

@@ -244,6 +244,8 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
             const renderer = new Renderer({
                 alpha: true,
                 antialias: true,
+                // Keep last frame during layout/resize so route swaps never flash empty canvas.
+                preserveDrawingBuffer: true,
                 dpr: Math.min(window.devicePixelRatio || 1, 1.25),
                 powerPreference: 'high-performance',
             });
@@ -598,6 +600,8 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                 contentExitStart = null;
             };
 
+            let lastRenderWidth = 0;
+            let lastRenderHeight = 0;
             const resize = () => {
                 const width = Math.max(host.clientWidth || window.innerWidth, 1);
                 const height = Math.max(host.clientHeight || window.innerHeight, 1);
@@ -605,6 +609,10 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                 const vv = window.visualViewport;
                 const renderWidth = vv ? Math.max(width, Math.round(vv.width)) : width;
                 const renderHeight = vv ? Math.max(height, Math.round(vv.height)) : height;
+                // Skip no-op resizes. setSize clears the drawing buffer and looked like a grid unmount.
+                if (renderWidth === lastRenderWidth && renderHeight === lastRenderHeight) return;
+                lastRenderWidth = renderWidth;
+                lastRenderHeight = renderHeight;
                 renderer.setSize(renderWidth, renderHeight);
                 camera.perspective({ aspect: renderWidth / Math.max(renderHeight, 1) });
 
@@ -615,6 +623,10 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                     // Keep existing y scroll offset while changing spacing feel via opacity falloff only.
                     row.userData.compact = compact;
                 });
+                // Paint immediately after buffer resize so route layout thrash never shows empty stage.
+                if (!disposed && canRunLoop()) {
+                    renderer.render({ scene, camera });
+                }
             };
 
             const normalizeWheelDelta = (event) => {
@@ -905,10 +917,8 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                 gridProgram.uniforms.uOpacity.value = (revealComplete ? 1 : gridReveal) * 0.86;
                 // sceneOpacity only gates card textures; keep it at 1 after first full reveal.
                 frameUniforms.sceneOpacity = revealComplete ? 1 : sceneReveal;
-                // Sculpture is stage architecture too. Keep it continuous across room swaps;
-                // only a light dim when poster content is fully up so cards stay readable.
-                const sculpturePresence = 0.82 + frameUniforms.contentOpacity * 0.18;
-                const sculptureOpacity = sceneReveal * sculpturePresence;
+                // Sculpture is permanent stage architecture. Never couple opacity to room content.
+                const sculptureOpacity = sceneReveal * 0.96;
                 const tSec = time * 0.001;
                 torusMeshes.forEach((mesh, index) => {
                     const program = mesh.userData.program;

@@ -249,10 +249,10 @@ function App() {
 
   useEffect(() => () => clearTransitionTimers(), [clearTransitionTimers]);
 
-  // Layout classes must update before paint to avoid a one-frame body overflow hitch.
+  // Layout classes must update before paint. Never strip them in the effect cleanup on
+  // dependency changes — that one-frame class gap made the stage look unmounted.
   useLayoutEffect(() => {
     const homeLock = (roomContent === '/' || (isRoomExiting && roomContent === '/')) && !isLoading;
-    const stageActive = isStagePath(roomContent) || isStagePath(destinationRoom);
     const documentRoomActive = isDocumentPath(roomContent) || isDocumentPath(destinationRoom);
     // Keep stage shell classes alive on every non-persona route (including project pages).
     document.documentElement.classList.toggle('home-room-active', homeLock);
@@ -261,15 +261,19 @@ function App() {
     document.documentElement.classList.toggle('room-is-exiting', isRoomExiting);
     document.documentElement.classList.toggle('room-is-entering', isRoomEntering);
     document.documentElement.classList.toggle('boot-loader-active', isLoading);
-    return () => {
-      document.documentElement.classList.remove('home-room-active');
-      document.documentElement.classList.remove('stage-room-active');
-      document.documentElement.classList.remove('document-room-active');
-      document.documentElement.classList.remove('room-is-exiting');
-      document.documentElement.classList.remove('room-is-entering');
-      document.documentElement.classList.remove('boot-loader-active');
-    };
   }, [destinationRoom, isLoading, isPersonaRoute, isRoomEntering, isRoomExiting, roomContent]);
+
+  // Only clear stage classes when App itself unmounts.
+  useEffect(() => () => {
+    document.documentElement.classList.remove(
+      'home-room-active',
+      'stage-room-active',
+      'document-room-active',
+      'room-is-exiting',
+      'room-is-entering',
+      'boot-loader-active',
+    );
+  }, []);
 
   useEffect(() => {
     if (isLoading || roomContent === '/' || isRoomExiting) return undefined;

@@ -142,20 +142,24 @@ void main(){
   float brush = 0.5 + 0.5 * sin((vPosition.x * 38.0 + vPosition.y * 11.0) + uTime * 0.4);
   float flake = 0.5 + 0.5 * sin(vFacet * 2.7 + uLayer * 4.0);
 
-  vec3 steelDark = vec3(0.10, 0.11, 0.12);
-  vec3 steelMid = vec3(0.58, 0.60, 0.63);
-  vec3 chrome = vec3(0.92, 0.94, 0.97);
-  vec3 highlight = vec3(1.0, 0.99, 0.97);
+  // Bright pure silver / polished chrome, little to no graphite.
+  vec3 steelDark = vec3(0.34, 0.36, 0.39);
+  vec3 steelMid = vec3(0.78, 0.80, 0.84);
+  vec3 chrome = vec3(0.96, 0.97, 0.99);
+  vec3 highlight = vec3(1.0, 1.0, 1.0);
 
   vec3 color = mix(steelDark, steelMid, diff);
-  color = mix(color, chrome, fresnel * 0.78 + specSoft * 0.35);
-  color += highlight * (specKey * 0.95 + rim * 0.45);
-  color *= 0.90 + brush * 0.10;
-  color *= 0.88 + seam * 0.18;
-  color += chrome * flake * 0.04;
+  color = mix(color, chrome, fresnel * 0.88 + specSoft * 0.48);
+  color += highlight * (specKey * 1.15 + rim * 0.55);
+  color *= 0.94 + brush * 0.08;
+  color *= 0.92 + seam * 0.14;
+  color += chrome * flake * 0.06;
 
-  // Cool silver, almost no warm tint.
-  color = mix(color, vec3(color.b, color.g, color.r) * vec3(0.96, 0.98, 1.02), 0.18);
+  // Force cool bright silver (desaturate warmth).
+  float luma = dot(color, vec3(0.299, 0.587, 0.114));
+  color = mix(vec3(luma), color, 0.22);
+  color = mix(color, chrome, 0.28);
+  color = min(color * 1.12, vec3(1.0));
 
   gl_FragColor = vec4(color, uOpacity);
 }`;
@@ -434,24 +438,26 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
             cylinderGrid.setParent(scene);
 
             const sculpture = new Transform();
-            sculpture.position.z = 1.28;
+            sculpture.position.z = 1.45;
+            sculpture.scale.set(0.62);
             sculpture.setParent(scene);
-            // Low radial segments = harder plates; multiple geometries = broken layered rings.
+            // Compact Doctor Strange-style mandala: smaller nested silver rings.
             const torusGeometries = [
-                new Torus(gl, { radius: 0.92, tube: 0.078, radialSegments: 7, tubularSegments: 56 }),
-                new Torus(gl, { radius: 1.04, tube: 0.096, radialSegments: 8, tubularSegments: 64 }),
-                new Torus(gl, { radius: 1.16, tube: 0.072, radialSegments: 6, tubularSegments: 52 }),
-                new Torus(gl, { radius: 1.28, tube: 0.088, radialSegments: 9, tubularSegments: 60 }),
-                new Torus(gl, { radius: 1.40, tube: 0.064, radialSegments: 7, tubularSegments: 48 }),
-                new Torus(gl, { radius: 1.52, tube: 0.082, radialSegments: 8, tubularSegments: 58 }),
+                new Torus(gl, { radius: 0.52, tube: 0.042, radialSegments: 7, tubularSegments: 48 }),
+                new Torus(gl, { radius: 0.62, tube: 0.050, radialSegments: 8, tubularSegments: 52 }),
+                new Torus(gl, { radius: 0.72, tube: 0.038, radialSegments: 6, tubularSegments: 46 }),
+                new Torus(gl, { radius: 0.82, tube: 0.046, radialSegments: 9, tubularSegments: 54 }),
+                new Torus(gl, { radius: 0.92, tube: 0.034, radialSegments: 7, tubularSegments: 44 }),
+                new Torus(gl, { radius: 1.02, tube: 0.044, radialSegments: 8, tubularSegments: 50 }),
             ];
+            // Each ring owns an independent orbit axis (Strange portal energy).
             const torusLayerConfig = [
-                { scale: 0.86, rx: 0.18, ry: 0.42, rz: 0.05, speed: 0.11, z: -0.08 },
-                { scale: 0.98, rx: 0.74, ry: -0.28, rz: 0.22, speed: 0.16, z: -0.02 },
-                { scale: 1.10, rx: -0.52, ry: 0.88, rz: -0.18, speed: 0.13, z: 0.04 },
-                { scale: 1.24, rx: 1.12, ry: 0.36, rz: 0.48, speed: 0.19, z: 0.01 },
-                { scale: 1.38, rx: -0.28, ry: -0.96, rz: 0.66, speed: 0.14, z: -0.05 },
-                { scale: 1.54, rx: 0.92, ry: 0.18, rz: -0.42, speed: 0.21, z: 0.07 },
+                { scale: 0.78, rx: 0.22, ry: 0.10, rz: 0.05, ax: 1, ay: 0.15, az: 0.08, speed: 0.55, z: -0.04, phase: 0.0 },
+                { scale: 0.90, rx: 1.05, ry: -0.35, rz: 0.40, ax: 0.2, ay: 1, az: -0.25, speed: -0.72, z: -0.01, phase: 1.1 },
+                { scale: 1.00, rx: -0.70, ry: 0.95, rz: -0.20, ax: -0.35, ay: 0.4, az: 1, speed: 0.48, z: 0.03, phase: 2.3 },
+                { scale: 1.12, rx: 0.40, ry: 1.25, rz: 0.85, ax: 0.75, ay: -0.55, az: 0.35, speed: -0.63, z: 0.00, phase: 0.7 },
+                { scale: 1.24, rx: -1.10, ry: -0.45, rz: 0.55, ax: -0.15, ay: 0.9, az: 0.55, speed: 0.81, z: -0.03, phase: 1.9 },
+                { scale: 1.36, rx: 0.65, ry: 0.25, rz: -0.95, ax: 0.55, ay: 0.25, az: -0.85, speed: -0.44, z: 0.05, phase: 2.8 },
             ];
             const torusMeshes = torusLayerConfig.map((config, index) => {
                 // Unique program per layer so uLayer can differ while sharing shader source.
@@ -479,7 +485,9 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                 mesh.position.z = config.z;
                 mesh.userData = {
                     speed: config.speed,
-                    wobble: 0.08 + index * 0.015,
+                    axis: { x: config.ax, y: config.ay, z: config.az },
+                    phase: config.phase,
+                    base: { x: config.rx, y: config.ry, z: config.rz },
                     program,
                 };
                 mesh.setParent(sculpture);
@@ -879,9 +887,10 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                     row.userData.opacity = Math.max(0, Math.min(1, edgeDistance / 1.05));
                     row.rotation.y = motion.spin;
                 });
-                sculpture.rotation.y = -motion.spin * 1.65;
-                sculpture.rotation.x = Math.sin(time * 0.00022) * 0.22;
-                sculpture.rotation.z = Math.sin(time * 0.00017) * 0.08;
+                // Whole mandala drifts with scroll, while each ring free-orbits on its own axis.
+                sculpture.rotation.y = -motion.spin * 0.85 + Math.sin(time * 0.00019) * 0.18;
+                sculpture.rotation.x = Math.sin(time * 0.00013) * 0.28 + Math.cos(time * 0.00009) * 0.08;
+                sculpture.rotation.z = Math.sin(time * 0.00011 + 1.2) * 0.16;
                 cylinderGrid.rotation.y = motion.spin * 0.11 + Math.sin(time * 0.00008) * 0.016;
                 const revealElapsed = revealStart === null ? 0 : Math.max(0, (time - revealStart) / 1000);
                 const smooth = (value) => {
@@ -897,22 +906,39 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                 // sceneOpacity only gates card textures; keep it at 1 after first full reveal.
                 frameUniforms.sceneOpacity = revealComplete ? 1 : sceneReveal;
                 // Sculpture softens with content fade so Experience stays readable.
-                const sculpturePresence = 0.18 + frameUniforms.contentOpacity * 0.82;
+                const sculpturePresence = 0.22 + frameUniforms.contentOpacity * 0.78;
                 const sculptureOpacity = sceneReveal * sculpturePresence;
                 const tSec = time * 0.001;
                 torusMeshes.forEach((mesh, index) => {
                     const program = mesh.userData.program;
                     if (program) {
                         program.uniforms.uTime.value = tSec;
-                        program.uniforms.uOpacity.value = sculptureOpacity * (0.78 + (index % 3) * 0.08);
+                        program.uniforms.uOpacity.value = sculptureOpacity * (0.88 + (index % 3) * 0.04);
                         program.uniforms.uLayer.value = index;
                     }
-                    const speed = mesh.userData.speed || (0.12 + index * 0.03);
-                    const wobble = mesh.userData.wobble || 0.1;
-                    mesh.rotation.z += dt * speed;
-                    mesh.rotation.x += dt * speed * 0.22 * Math.sin(tSec * 0.35 + index);
-                    mesh.rotation.y += dt * speed * 0.18 * Math.cos(tSec * 0.28 + index * 0.7);
-                    mesh.position.y = Math.sin(tSec * 0.45 + index * 0.9) * wobble * 0.08;
+                    const speed = mesh.userData.speed ?? (0.5 + index * 0.05);
+                    const axis = mesh.userData.axis || { x: 0, y: 1, z: 0 };
+                    const phase = mesh.userData.phase || 0;
+                    // Doctor Strange pattern: independent axis spin + slow precession + counter-orbit.
+                    const spin = tSec * speed + phase;
+                    const precess = tSec * (0.17 + index * 0.03) + phase * 0.5;
+                    const counter = tSec * (-0.21 - index * 0.02);
+                    mesh.rotation.x = (mesh.userData.base?.x || 0)
+                        + axis.x * spin
+                        + Math.sin(precess) * 0.55
+                        + Math.sin(counter + index) * 0.18;
+                    mesh.rotation.y = (mesh.userData.base?.y || 0)
+                        + axis.y * spin
+                        + Math.cos(precess * 0.85) * 0.45
+                        + Math.sin(counter * 1.1) * 0.22;
+                    mesh.rotation.z = (mesh.userData.base?.z || 0)
+                        + axis.z * spin
+                        + Math.sin(precess * 1.25 + 0.6) * 0.35
+                        + Math.cos(counter * 0.75) * 0.16;
+                    const baseZ = [-0.04, -0.01, 0.03, 0, -0.03, 0.05][index] || 0;
+                    mesh.position.x = Math.sin(precess * 0.7 + index) * 0.035;
+                    mesh.position.y = Math.cos(precess * 0.9 + index * 0.8) * 0.03;
+                    mesh.position.z = baseZ + Math.sin(counter + phase) * 0.02;
                 });
                 frameUniforms.time = time * 0.001;
                 frameUniforms.bendH = motion.bendH;

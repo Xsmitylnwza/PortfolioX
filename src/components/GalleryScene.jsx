@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+﻿import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const projectMedia = [
@@ -139,9 +139,19 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
     const modeRef = useRef(mode);
     const showContentRef = useRef(showContent);
     const contentExitMsRef = useRef(contentExitMs);
-    const [activeTitle, setActiveTitle] = useState('Scroll to explore');
-    const [isHoveringCard, setIsHoveringCard] = useState(false);
     const labelRef = useRef(null);
+
+    const setLabelText = (text) => {
+        const el = labelRef.current;
+        if (!el) return;
+        if (el.textContent !== text) el.textContent = text;
+    };
+
+    const setLabelVisible = (visible) => {
+        const el = labelRef.current;
+        if (!el) return;
+        el.classList.toggle('is-visible', Boolean(visible));
+    };
 
     useEffect(() => {
         modeRef.current = mode;
@@ -432,8 +442,8 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                 hovered = null;
                 pointer.active = false;
                 gl.canvas.classList.remove('is-hovering');
-                setIsHoveringCard(false);
-                setActiveTitle('Scroll to explore');
+                setLabelVisible(false);
+                setLabelText('Scroll to explore');
             };
             // Content interactivity is driven by showContent, not only route mode.
             const isInteractive = () => showContentRef.current && modeRef.current === 'gallery';
@@ -813,8 +823,8 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                     if (next !== hovered) {
                         hovered = next;
                         gl.canvas.classList.toggle('is-hovering', Boolean(hovered));
-                        setIsHoveringCard(Boolean(hovered));
-                        setActiveTitle(hovered?.userData?.project?.title || 'Scroll to explore');
+                        setLabelVisible(Boolean(hovered));
+                        setLabelText(hovered?.userData?.project?.title || 'Scroll to explore');
                     }
                 }
 
@@ -908,9 +918,9 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
         >
             <span
                 ref={labelRef}
-                className={`gallery-scene__active${isHoveringCard && mode === 'gallery' ? ' is-visible' : ''}`}
+                className="gallery-scene__active"
             >
-                {activeTitle}
+                Scroll to explore
             </span>
         </div>
     );

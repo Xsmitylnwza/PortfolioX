@@ -1,4 +1,4 @@
-import './Footer.css';
+﻿import './Footer.css';
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
@@ -15,20 +15,20 @@ const Footer = () => {
                 </div>
 
                 <p>
-                    © {currentYear} Chaimongkon Sokgampang.
+                    (c) {currentYear} Chaimongkon Sokgampang.
                     <br />
                     Portfolio built with React.
                 </p>
 
                 <nav aria-label="Footer links">
                     <a href="mailto:chaimongkon.sokgampang@gmail.com">Email</a>
-                    <a href="https://github.com/Xsmitylnwza" target="_blank" rel="noreferrer">GitHub ↗</a>
+                    <a href="https://github.com/Xsmitylnwza" target="_blank" rel="noreferrer">GitHub {'->'}</a>
                     <a
                         href="/assets/Chaimongkon-Sokgampang_Resume.pdf"
                         target="_blank"
                         rel="noreferrer"
                     >
-                        Resume ↗
+                        Resume {'->'}
                     </a>
                 </nav>
             </div>

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+﻿import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import './Cursor.css';
 
@@ -35,6 +35,9 @@ const Cursor = () => {
     const [isPressed, setIsPressed] = useState(false);
 
     useEffect(() => {
+        const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+        if (!finePointer.matches) return undefined;
+
         const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
         if (reducedMotion.matches) return undefined;
 

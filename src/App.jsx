@@ -1,14 +1,15 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, Suspense, lazy } from 'react';
+﻿import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, Suspense, lazy } from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import GalleryScene from './components/GalleryScene';
-import Experience from './components/Experience';
 import Footer from './components/Footer';
 import ScrollManager from './components/ScrollManager';
 import Cursor from './components/Cursor';
 import Loader from './components/Loader';
 import './components/Hero.css';
 
+// Lazy Experience keeps the home shell free of Experience module parse/eval until needed.
+const Experience = lazy(() => import('./components/Experience'));
 // Lazy load ProjectDetails to reduce initial bundle size
 const ProjectDetails = lazy(() => import('./components/ProjectDetails'));
 const PersonaReloadView = lazy(() => import('./components/PersonaReloadView'));
@@ -38,6 +39,12 @@ function App() {
   const enterTimerRef = useRef(0);
   const premountTimerRef = useRef(0);
   const swapRafRef = useRef(0);
+
+  // Custom cursor is desktop/fine-pointer only — avoid mounting pointer shell on touch devices.
+  const finePointer = useMemo(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  }, []);
 
   const [isLoading, setIsLoading] = useState(() => location.pathname === '/');
   const [isHeroReady, setIsHeroReady] = useState(() => location.pathname !== '/');
@@ -89,11 +96,6 @@ function App() {
         setPendingRoom(null);
         setIsRoomExiting(false);
         setIsRoomEntering(true);
-        // Arm smooth-scroll after the enter frame so Lenis/GSAP don't contend with first paint.
-        if (to !== '/') {
-          window.clearTimeout(premountTimerRef.current);
-          premountTimerRef.current = window.setTimeout(() => setScrollReady(true), 80);
-        }
 
         document.documentElement.classList.remove('room-content-exiting');
         document.documentElement.classList.remove('room-is-exiting');
@@ -209,6 +211,32 @@ function App() {
     return undefined;
   }, [roomContent, isRoomExiting]);
 
+  // Lenis should arm for non-home rooms only; returning home must clear the true-only latch.
+  useEffect(() => {
+    const wantsPageScroll = !isPersonaRoute && roomContent !== '/' && !isRoomExiting;
+
+    window.clearTimeout(premountTimerRef.current);
+    if (wantsPageScroll) {
+      premountTimerRef.current = window.setTimeout(() => setScrollReady(true), 80);
+      return () => window.clearTimeout(premountTimerRef.current);
+    }
+
+    setScrollReady(false);
+    return undefined;
+  }, [isPersonaRoute, isRoomExiting, roomContent]);
+
+  // Warm Experience chunk once we know it will mount, so Suspense rarely blanks the overlay.
+  useEffect(() => {
+    if (!experienceMounted) return undefined;
+    let cancelled = false;
+    import('./components/Experience').catch(() => {
+      if (cancelled) return;
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [experienceMounted]);
+
   // Preload experience logo assets once so first reveal doesn't hitch on image decode.
   useEffect(() => {
     if (!isHeroReady) return undefined;
@@ -249,7 +277,7 @@ function App() {
 
       {/* Keep Lenis warm after first non-home stage visit; never boot it on the reveal frame. */}
       {!isPersonaRoute && scrollReady && <ScrollManager />}
-      {!isPersonaRoute && <Cursor />}
+      {!isPersonaRoute && finePointer && <Cursor />}
       {(isStagePath(roomContent) || isStagePath(destinationRoom)) && isHeroReady && (
         <Navigation
           currentPath={isRoomExiting ? roomContent : location.pathname}
@@ -311,7 +339,9 @@ function App() {
                 ].filter(Boolean).join(' ')}
                 aria-hidden={experiencePhase === 'preparing' || experiencePhase === 'hidden'}
               >
-                <Experience />
+                <Suspense fallback={null}>
+                  <Experience />
+                </Suspense>
               </div>
             )}
           </div>

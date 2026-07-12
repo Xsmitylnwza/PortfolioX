@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const projectMedia = [
@@ -169,6 +169,7 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
 
     useEffect(() => {
         activeRef.current = active;
+        // Resume continuous painting immediately so the cylinder grid never flashes empty.
         syncLoopRef.current?.();
     }, [active]);
 
@@ -464,6 +465,8 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
             };
             // Content interactivity is driven by showContent, not only route mode.
             const isInteractive = () => showContentRef.current && modeRef.current === 'gallery';
+            // Keep RAF alive whenever the stage host is active. Pausing blanks WebGL on many GPUs
+            // and looks like the grid unmounted during room transitions.
             const canRunLoop = () => !disposed && !document.hidden && Boolean(activeRef.current);
             const syncLoop = () => {
                 if (canRunLoop()) {
@@ -955,5 +958,5 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
     );
 };
 
-export default GalleryScene;
+export default memo(GalleryScene);
 

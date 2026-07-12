@@ -768,9 +768,17 @@ body.is-scrolling .animate-pulse-glow {
 }
 
 
-/* Document rooms keep the red/WebGL stage identity under translucent content. */
+/* Persistent stage identity: never hide/fade the red stage or WebGL grid on any room. */
+html.stage-room-active .gallery-stage,
+html.stage-room-active .gallery-stage-layer,
 html.document-room-active .gallery-stage,
-html.document-room-active .gallery-stage-layer {
+html.document-room-active .gallery-stage-layer,
+html.room-content-exiting .gallery-stage,
+html.room-content-exiting .gallery-stage-layer,
+html.room-is-exiting .gallery-stage,
+html.room-is-exiting .gallery-stage-layer,
+html.room-is-entering .gallery-stage,
+html.room-is-entering .gallery-stage-layer {
   opacity: 1 !important;
   visibility: visible !important;
 }

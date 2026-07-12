@@ -16,8 +16,9 @@ html.room-content-exiting .orbit-hero {
     pointer-events: none;
     opacity: 1;
     visibility: visible;
-    /* Never fade the stage itself during room content swaps. */
+    /* Persistent across routes: never fade/unmount visually during room content swaps. */
     transition: none;
+    contain: strict;
 }
 .gallery-stage-layer.is-interactive {
     pointer-events: auto;

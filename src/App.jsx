@@ -255,8 +255,9 @@ function App() {
     const homeLock = (roomContent === '/' || (isRoomExiting && roomContent === '/')) && !isLoading;
     const stageActive = isStagePath(roomContent) || isStagePath(destinationRoom);
     const documentRoomActive = isDocumentPath(roomContent) || isDocumentPath(destinationRoom);
+    // Keep stage shell classes alive on every non-persona route (including project pages).
     document.documentElement.classList.toggle('home-room-active', homeLock);
-    document.documentElement.classList.toggle('stage-room-active', stageActive && !isPersonaRoute);
+    document.documentElement.classList.toggle('stage-room-active', !isPersonaRoute);
     document.documentElement.classList.toggle('document-room-active', documentRoomActive && !isPersonaRoute);
     document.documentElement.classList.toggle('room-is-exiting', isRoomExiting);
     document.documentElement.classList.toggle('room-is-entering', isRoomEntering);
@@ -345,8 +346,9 @@ function App() {
   const showStageRoom = isStagePath(roomContent) || isStagePath(destinationRoom);
   const showPageRoutes = !isStagePath(roomContent) && !isStagePath(destinationRoom);
   const documentRoomActive = isDocumentPath(roomContent) || isDocumentPath(destinationRoom);
-  // Keep WebGL grid alive under glass document rooms (upper content only; stage never unmounts).
-  const stageLoopActive = showStageRoom || documentRoomActive;
+  // Persistent stage identity: WebGL grid must keep rendering across EVERY non-persona route.
+  // Pausing the RAF loop on project/document swaps blanked the canvas and looked like an unmount.
+  const stageLoopActive = isHeroReady && !isPersonaRoute;
   const showPrimaryNav = !isPersonaRoute && isHeroReady && (
     showStageRoom || documentRoomActive || showPageRoutes
   );
@@ -380,8 +382,9 @@ function App() {
         />
       )}
       <main className="site-main">
-        {/* Persistent WebGL host: stays mounted across non-persona routes once boot is ready.
-            active=false on document/project rooms pauses RAF but keeps the GL context + red stage identity. */}
+        {/* Persistent WebGL host: mounted once after boot, never unmounted on room swaps.
+            active stays true so the cylinder grid keeps painting every frame (seamless stage).
+            showContent only gates poster cards; grid + red stage remain continuous. */}
         {isHeroReady && !isPersonaRoute && (
           <div
             className={`gallery-stage-layer${stageInteractive ? ' is-interactive' : ' is-stage-only'}`}

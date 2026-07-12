@@ -93,14 +93,14 @@ svg {
     /* Side-only dark edges: left/right denser, center stays open */
     linear-gradient(
       90deg,
-      rgba(10, 0, 2, 0.42) 0%,
-      rgba(24, 0, 4, 0.22) 10%,
-      rgba(42, 0, 4, 0.08) 20%,
-      transparent 32%,
-      transparent 68%,
-      rgba(42, 0, 4, 0.08) 80%,
-      rgba(24, 0, 4, 0.22) 90%,
-      rgba(10, 0, 2, 0.42) 100%
+      rgba(8, 0, 1, 0.58) 0%,
+      rgba(18, 0, 3, 0.34) 11%,
+      rgba(36, 0, 4, 0.14) 22%,
+      transparent 34%,
+      transparent 66%,
+      rgba(36, 0, 4, 0.14) 78%,
+      rgba(18, 0, 3, 0.34) 89%,
+      rgba(8, 0, 1, 0.58) 100%
     );
   animation: gallery-stage-drift 13s ease-in-out infinite alternate;
   will-change: transform;

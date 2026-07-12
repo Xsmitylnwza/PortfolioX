@@ -277,13 +277,6 @@ html.room-is-entering .gallery-stage-layer {
   visibility: visible !important;
 }
 
-/* Pause non-essential CSS motion during room swaps to reduce paint contention. */
-html.room-content-exiting .gallery-stage__glow,
-html.room-is-exiting .gallery-stage__glow,
-html.room-is-entering .gallery-stage__glow {
-  animation-play-state: paused !important;
-}
-
 .loading-fallback {
   min-height: 100svh;
   background: transparent;

@@ -86,8 +86,9 @@ function App() {
   })();
 
   // Non-stage routes use the same enter/exit shell language, gated by the shared loader.
+  // Phase follows currently visible roomContent only so soft exit can finish before unmount.
   const pageShellPhase = (() => {
-    if (isStagePath(roomContent) || isStagePath(destinationRoom)) return 'hidden';
+    if (isStagePath(roomContent)) return 'hidden';
     if (isLoading) return 'preparing';
     if (isRoomExiting) return 'exiting';
     if (isRoomEntering) return 'entering';
@@ -184,32 +185,29 @@ function App() {
     }
     if (isRoomExiting || isRoomEntering) return;
 
-    const fromStage = isStagePath(roomContent);
-    const toStage = isStagePath(to);
-
-    // Stage -> stage keeps the shared gallery stage and content exit/enter choreography.
-    if (fromStage && toStage) {
+    // Soft handoff for every non-persona room so the shared red/WebGL stage never hard-cuts.
+    // Persona remains a full shell swap (no stage continuity expected there).
+    if (to === '/persona' || roomContent === '/persona') {
       clearTransitionTimers();
-      setIsRoomExiting(true);
-      setIsRoomEntering(false);
-      setPendingRoom(to);
-      document.documentElement.classList.add('room-content-exiting');
-      document.documentElement.classList.add('room-is-exiting');
-      document.documentElement.classList.remove('room-content-entering');
-      document.dispatchEvent(new CustomEvent('portfolio:room-content-exit', {
-        detail: { from: roomContent, to, durationMs: ROOM_EXIT_MS },
-      }));
-
-      window.clearTimeout(transitionTimerRef.current);
-      transitionTimerRef.current = window.setTimeout(() => {
-        runRoomSwap(roomContent, to);
-      }, ROOM_EXIT_MS);
+      beginEnter(roomContent, to, { navigateTo: true });
       return;
     }
 
-    // Any other path (project/persona/document rooms): hard cut + mount enter on destination.
     clearTransitionTimers();
-    beginEnter(roomContent, to, { navigateTo: true });
+    setIsRoomExiting(true);
+    setIsRoomEntering(false);
+    setPendingRoom(to);
+    document.documentElement.classList.add('room-content-exiting');
+    document.documentElement.classList.add('room-is-exiting');
+    document.documentElement.classList.remove('room-content-entering');
+    document.dispatchEvent(new CustomEvent('portfolio:room-content-exit', {
+      detail: { from: roomContent, to, durationMs: ROOM_EXIT_MS },
+    }));
+
+    window.clearTimeout(transitionTimerRef.current);
+    transitionTimerRef.current = window.setTimeout(() => {
+      runRoomSwap(roomContent, to);
+    }, ROOM_EXIT_MS);
   }, [
     beginEnter,
     clearTransitionTimers,
@@ -228,23 +226,24 @@ function App() {
     if (isRoomExiting || isRoomEntering) return undefined;
     if (location.pathname === roomContent) return undefined;
 
-    if (isStagePath(roomContent) && isStagePath(location.pathname)) {
+    // Browser history: same soft exit for all non-persona rooms; persona still hard-enters.
+    if (location.pathname === '/persona' || roomContent === '/persona') {
       clearTransitionTimers();
-      setIsRoomExiting(true);
-      setPendingRoom(location.pathname);
-      document.documentElement.classList.add('room-content-exiting');
-      document.documentElement.classList.add('room-is-exiting');
-      document.dispatchEvent(new CustomEvent('portfolio:room-content-exit', {
-        detail: { from: roomContent, to: location.pathname, durationMs: ROOM_EXIT_MS },
-      }));
-      transitionTimerRef.current = window.setTimeout(() => {
-        runRoomSwap(roomContent, location.pathname);
-      }, ROOM_EXIT_MS);
+      beginEnter(roomContent, location.pathname, { navigateTo: false });
       return undefined;
     }
 
     clearTransitionTimers();
-    beginEnter(roomContent, location.pathname, { navigateTo: false });
+    setIsRoomExiting(true);
+    setPendingRoom(location.pathname);
+    document.documentElement.classList.add('room-content-exiting');
+    document.documentElement.classList.add('room-is-exiting');
+    document.dispatchEvent(new CustomEvent('portfolio:room-content-exit', {
+      detail: { from: roomContent, to: location.pathname, durationMs: ROOM_EXIT_MS },
+    }));
+    transitionTimerRef.current = window.setTimeout(() => {
+      runRoomSwap(roomContent, location.pathname);
+    }, ROOM_EXIT_MS);
     return undefined;
   }, [beginEnter, clearTransitionTimers, isLoading, isRoomEntering, isRoomExiting, location.pathname, roomContent, runRoomSwap]);
 
@@ -344,7 +343,9 @@ function App() {
   }, [isHeroReady]);
 
   const showStageRoom = isStagePath(roomContent) || isStagePath(destinationRoom);
-  const showPageRoutes = !isStagePath(roomContent) && !isStagePath(destinationRoom);
+  // Keep current document/project room mounted during exit even if destination is a stage path.
+  // Requiring !isStagePath(destinationRoom) previously hard-cut page content as soon as pending flipped.
+  const showPageRoutes = !isStagePath(roomContent);
   const documentRoomActive = isDocumentPath(roomContent) || isDocumentPath(destinationRoom);
   // Persistent stage identity: WebGL grid must keep rendering across EVERY non-persona route.
   // Pausing the RAF loop on project/document swaps blanked the canvas and looked like an unmount.

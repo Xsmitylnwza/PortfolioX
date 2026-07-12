@@ -905,8 +905,9 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                 gridProgram.uniforms.uOpacity.value = (revealComplete ? 1 : gridReveal) * 0.86;
                 // sceneOpacity only gates card textures; keep it at 1 after first full reveal.
                 frameUniforms.sceneOpacity = revealComplete ? 1 : sceneReveal;
-                // Sculpture softens with content fade so Experience stays readable.
-                const sculpturePresence = 0.22 + frameUniforms.contentOpacity * 0.78;
+                // Sculpture is stage architecture too. Keep it continuous across room swaps;
+                // only a light dim when poster content is fully up so cards stay readable.
+                const sculpturePresence = 0.82 + frameUniforms.contentOpacity * 0.18;
                 const sculptureOpacity = sceneReveal * sculpturePresence;
                 const tSec = time * 0.001;
                 torusMeshes.forEach((mesh, index) => {

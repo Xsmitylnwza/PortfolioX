@@ -430,16 +430,28 @@ const Experience = () => {
                             style={{ '--paper-yaw': `${index % 2 === 0 ? 2.5 : -2.5}deg` }}
                         >
                             <header className="experience-paper__head">
-                                <img src={experience.logo} alt="" width="72" height="72" loading="lazy" decoding="async" />
-                                <div>
-                                    <time>{experience.period}</time>
-                                    <p>{experience.role}</p>
+                                <div className="experience-paper__brand">
+                                    <img
+                                        className="experience-paper__logo"
+                                        src={experience.logo}
+                                        alt=""
+                                        width="112"
+                                        height="112"
+                                        loading="lazy"
+                                        decoding="async"
+                                    />
+                                    <div className="experience-paper__identity">
+                                        <h2 className="experience-paper__company">{experience.company}</h2>
+                                        <p className="experience-paper__role">{experience.role}</p>
+                                    </div>
                                 </div>
-                                <span>{experience.id}</span>
+                                <div className="experience-paper__meta">
+                                    <time className="experience-paper__period">{experience.period}</time>
+                                    <span className="experience-paper__index" aria-hidden="true">{experience.id}</span>
+                                </div>
                             </header>
 
                             <div className="experience-paper__body">
-                                <h2>{experience.company}</h2>
                                 <p className="experience-paper__lead">{experience.summary}</p>
                                 <p className="experience-paper__detail">{experience.detail}</p>
                             </div>

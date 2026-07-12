@@ -1,36 +1,25 @@
-﻿/* Document rooms sit above the persistent red/WebGL stage.
-   Do not paint an opaque full-page background here — keep the stage identity. */
+﻿/* Document rooms are glass overlays on the persistent WebGL grid stage.
+   Never paint page-level backgrounds here — stage + grid stay the identity. */
 .document-room {
   position: relative;
   z-index: 3;
   min-height: 100svh;
   pointer-events: auto;
+  background: transparent;
 }
 
-/* Soft veil so paper content stays readable while the stage grid remains the signature. */
+/* Force section shells transparent so the real stage grid shows through. */
 .document-room--stack .engine-section,
 .document-room--contact .channel-section,
 .document-room--resume .dossier-section {
-  background-color: transparent;
+  background: transparent !important;
+  background-image: none !important;
+  background-color: transparent !important;
 }
 
-.document-room--stack .engine-section {
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    radial-gradient(circle at 86% 18%, rgba(227, 38, 46, 0.14), transparent 28%),
-    linear-gradient(180deg, rgba(5, 5, 5, 0.72) 0%, rgba(5, 5, 5, 0.86) 100%);
-  background-size: 48px 48px, 48px 48px, auto, auto;
-}
-
-.document-room--contact .channel-section {
-  background-image:
-    radial-gradient(circle at 50% 0%, rgba(227, 38, 46, 0.16), transparent 35%),
-    linear-gradient(180deg, rgba(5, 5, 5, 0.7) 0%, rgba(9, 3, 3, 0.86) 100%);
-}
-
-.document-room--resume .dossier-section {
-  background-image:
-    radial-gradient(circle at 12% 0%, rgba(227, 38, 46, 0.14), transparent 32%),
-    linear-gradient(180deg, rgba(5, 5, 5, 0.7) 0%, rgba(8, 3, 3, 0.88) 100%);
+/* Keep pseudo watermark/rings, but no fill behind them. */
+.document-room--stack .engine-section::before,
+.document-room--contact .channel-section::before,
+.document-room--resume .dossier-section::before {
+  opacity: 0.7;
 }

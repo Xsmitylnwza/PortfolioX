@@ -7,10 +7,9 @@
     overflow: clip;
     padding: clamp(6rem, 10vw, 10rem) clamp(1rem, 4vw, 4rem) 3rem;
     color: #f2f2f2;
-    background:
-        radial-gradient(circle at 50% 0%, rgba(227, 38, 46, 0.22), transparent 35%),
-        linear-gradient(180deg, #050505 0%, #090303 100%);
+    background: transparent;
 }
+
 
 .channel-section::before {
     content: "04";
@@ -35,8 +34,10 @@
     margin: 0 auto 1rem;
     padding: 0.7rem 1rem;
     color: rgba(242, 242, 242, 0.55);
-    background: #050505;
-    border: 1px solid rgba(242, 242, 242, 0.12);
+    background: rgba(5, 5, 5, 0.42);
+    border: 1px solid rgba(242, 242, 242, 0.14);
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
     font-family: 'JetBrains Mono', 'Fira Code', monospace;
     font-size: 0.62rem;
     letter-spacing: 0.14em;
@@ -178,9 +179,11 @@
     padding: clamp(2rem, 5vw, 5rem);
     color: #f2f2f2;
     background:
-        linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
-        #050505;
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        rgba(5, 5, 5, 0.5);
     background-size: 100% 7px, auto;
+    backdrop-filter: blur(16px) saturate(1.2);
+    -webkit-backdrop-filter: blur(16px) saturate(1.2);
     border-left: 1px solid rgba(242, 242, 242, 0.16);
 }
 
@@ -403,3 +406,4 @@
         transition: none;
     }
 }
+

@@ -763,6 +763,13 @@ html.document-room-active .gallery-stage-layer {
   visibility: visible !important;
 }
 
-html.document-room-active .route-shell--page {
-  background: transparent;
+/* Stage stays under document glass; no page paint. */
+html.document-room-active .route-shell--page,
+html.document-room-active .route-shell--page .document-room {
+  background: transparent !important;
 }
+
+html.document-room-active .gallery-stage-layer {
+  pointer-events: none;
+}
+

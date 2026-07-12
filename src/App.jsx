@@ -347,8 +347,11 @@ function App() {
 
   const showStageRoom = isStagePath(roomContent) || isStagePath(destinationRoom);
   const showPageRoutes = !isStagePath(roomContent) && !isStagePath(destinationRoom);
+  const documentRoomActive = isDocumentPath(roomContent) || isDocumentPath(destinationRoom);
+  // Keep WebGL grid alive under glass document rooms (upper content only; stage never unmounts).
+  const stageLoopActive = showStageRoom || documentRoomActive;
   const showPrimaryNav = !isPersonaRoute && isHeroReady && (
-    showStageRoom || isDocumentPath(roomContent) || isDocumentPath(destinationRoom) || showPageRoutes
+    showStageRoom || documentRoomActive || showPageRoutes
   );
   const navPath = isRoomExiting ? roomContent : location.pathname;
 
@@ -392,7 +395,7 @@ function App() {
               mode={galleryShowContent ? 'gallery' : 'stage'}
               showContent={galleryShowContent}
               contentExitMs={ROOM_EXIT_MS}
-              active={showStageRoom}
+              active={stageLoopActive}
             />
           </div>
         )}

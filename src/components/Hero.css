@@ -118,7 +118,7 @@ html.gallery-room-exiting .gallery-scene__active {
 html.portfolio-ready .orbit-hero__identity { animation:interface-reveal .7s cubic-bezier(.22,1,.36,1) .18s both; }
 html.portfolio-ready .orbit-hero__footer { animation:interface-reveal .62s cubic-bezier(.22,1,.36,1) 1.88s both; }
 @keyframes interface-reveal { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
-@keyframes aurora-drift { from{transform:translate3d(-1.2%,-.7%,0) scale(1)} to{transform:translate3d(1.5%,1%,0) scale(1.035)} }
+@keyframes aurora-drift { from{transform:translate3d(-1.44%,-.84%,0) scale(1)} to{transform:translate3d(1.8%,1.2%,0) scale(1.042)} }
 @media (max-width: 1024px) {
     .orbit-hero__identity strong {
         font-size: clamp(0.95rem, 2.2vw, 1.25rem);

@@ -37,7 +37,6 @@
 html {
   scroll-behavior: auto;
   background: var(--stage-red);
-  scrollbar-gutter: stable;
 }
 
 body {
@@ -274,7 +273,6 @@ html.room-is-exiting .gallery-stage,
 html.room-is-exiting .gallery-stage-layer,
 html.room-is-entering .gallery-stage,
 html.room-is-entering .gallery-stage-layer {
-  opacity: 1 !important;
   visibility: visible !important;
 }
 
@@ -608,22 +606,28 @@ section[id] { scroll-margin-top: 5.5rem; }
   display: none;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
+/* Hide page scrollbar (no tab/track chrome). */
+html {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-::-webkit-scrollbar-track {
-  background: var(--bg-black);
+body {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-::-webkit-scrollbar-thumb {
-  background: #333;
-  border-radius: 4px;
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+  background: transparent !important;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--red-primary);
+* {
+  scrollbar-width: none;
 }
 
 /* Tag */
@@ -762,7 +766,9 @@ body.is-scrolling .animate-pulse-glow {
 }
 
 
-/* Persistent stage identity: never hide/fade the red stage or WebGL grid on any room. */
+/* Persistent stage identity: keep the red stage + WebGL grid mounted on every room.
+   Sculpture soft-dims only inside GalleryScene when html.stage-dimmed is set.
+   Never fade .gallery-stage-layer — the black cylinder grid must stay full strength. */
 html.stage-room-active .gallery-stage,
 html.stage-room-active .gallery-stage-layer,
 html.document-room-active .gallery-stage,
@@ -773,8 +779,17 @@ html.room-is-exiting .gallery-stage,
 html.room-is-exiting .gallery-stage-layer,
 html.room-is-entering .gallery-stage,
 html.room-is-entering .gallery-stage-layer {
-  opacity: 1 !important;
   visibility: visible !important;
+}
+
+html.stage-room-active .gallery-stage-layer,
+html.home-room-active .gallery-stage-layer,
+html.document-room-active .gallery-stage-layer {
+  opacity: 1;
+}
+
+html.stage-dimmed .gallery-stage__glow {
+  opacity: 0.72;
 }
 
 /* Stage stays under document glass; no page paint. */
@@ -787,3 +802,20 @@ html.document-room-active .gallery-stage-layer {
   pointer-events: none;
 }
 
+
+
+/* Poster fly handoff: keep stage continuous, suppress page enter jitter under flyer. */
+html.poster-flight-active .orbit-hero {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 220ms ease !important;
+}
+
+html.poster-flight-active .gallery-scene__active {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+html.poster-flight-active .route-enter-layer {
+  transition: none !important;
+}

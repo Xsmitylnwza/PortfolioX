@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Icon } from '@iconify/react';
 import { projects } from '../data/projects';
 import ProjectMedia from './ProjectMedia';
+import ScrollPerspectiveWave from './ScrollPerspectiveWave';
 import './PersonaReloadView.css';
 
 const experience = [
@@ -43,7 +44,11 @@ const PersonaReloadView = () => {
     const featuredProjects = useMemo(() => projects.slice(0, 5), []);
 
     return (
-        <div className="p3-page">
+        <ScrollPerspectiveWave
+            className="p3-page"
+            surfaceOpacity={0}
+            intensity={0.9}
+        >
             <div className="p3-water" />
             <div className="p3-bubbles" aria-hidden="true">
                 {Array.from({ length: 14 }).map((_, index) => (
@@ -52,7 +57,7 @@ const PersonaReloadView = () => {
             </div>
             <div className="p3-scan" />
 
-            <header className="p3-topbar">
+            <header className="p3-topbar" data-wave-follow>
                 <a className="p3-mark" href="/">
                     <img src="/profile-logo.jpg" alt="Dev Gabriel" />
                     <span>DEV.GABRIEL</span>
@@ -75,9 +80,9 @@ const PersonaReloadView = () => {
                 </div>
             </header>
 
-            <main className="p3-main">
+            <main className="p3-main" data-wave-surface>
                 <section id="status" className="p3-hero">
-                    <div className="p3-portrait-panel">
+                    <div className="p3-portrait-panel" data-wave-follow>
                         <div className="p3-moon-ring" />
                         <div className="p3-portrait-mask">
                             <img src="/profile-logo.jpg" alt="Gabriel profile" />
@@ -85,7 +90,7 @@ const PersonaReloadView = () => {
                         <div className="p3-orbit-label">SEA OF SKILLS</div>
                     </div>
 
-                    <div className="p3-command">
+                    <div className="p3-command" data-wave-follow>
                         <div className="p3-eyebrow">PORTFOLIO / RELOAD MODE</div>
                         <h1>
                             Gabriel
@@ -108,7 +113,7 @@ const PersonaReloadView = () => {
                         </div>
                     </div>
 
-                    <aside className="p3-status-card">
+                    <aside className="p3-status-card" data-wave-follow>
                         <div className="p3-status-head">
                             <span>Current Status</span>
                             <strong>READY</strong>
@@ -125,7 +130,7 @@ const PersonaReloadView = () => {
                 </section>
 
                 <section className="p3-split">
-                    <div className="p3-panel">
+                    <div className="p3-panel" data-wave-follow>
                         <div className="p3-section-title">
                             <span>01</span>
                             <h2>Experience Link</h2>
@@ -145,7 +150,7 @@ const PersonaReloadView = () => {
                         </div>
                     </div>
 
-                    <div className="p3-panel p3-tech-panel">
+                    <div className="p3-panel p3-tech-panel" data-wave-follow>
                         <div className="p3-section-title">
                             <span>02</span>
                             <h2>Skill Deck</h2>
@@ -161,13 +166,13 @@ const PersonaReloadView = () => {
                 </section>
 
                 <section id="archive" className="p3-archive">
-                    <div className="p3-section-title wide">
+                    <div className="p3-section-title wide" data-wave-follow>
                         <span>03</span>
                         <h2>Project Archive</h2>
                     </div>
 
                     <div className="p3-archive-layout">
-                        <div className="p3-project-list">
+                        <div className="p3-project-list" data-wave-follow>
                             {featuredProjects.map((project, index) => (
                                 <button
                                     key={project.id}
@@ -183,14 +188,14 @@ const PersonaReloadView = () => {
                         </div>
 
                         <article className="p3-project-preview">
-                            <div className="p3-preview-media">
+                            <div className="p3-preview-media" data-wave-follow>
                                 <ProjectMedia
                                     image={activeProject.image}
                                     video={activeProject.video}
                                     alt={activeProject.title}
                                 />
                             </div>
-                            <div className="p3-preview-copy">
+                            <div className="p3-preview-copy" data-wave-follow>
                                 <span>{activeProject.category}</span>
                                 <h3>{activeProject.title}</h3>
                                 <p>{activeProject.description}</p>
@@ -205,18 +210,18 @@ const PersonaReloadView = () => {
                 </section>
 
                 <section id="links" className="p3-links">
-                    <div className="p3-link-copy">
+                    <div className="p3-link-copy" data-wave-follow>
                         <span>04 / Contact Terminal</span>
                         <h2>Ready for next mission.</h2>
                     </div>
-                    <div className="p3-link-actions">
+                    <div className="p3-link-actions" data-wave-follow>
                         <a href="mailto:hello@gabriel.dev"><Icon icon="lucide:mail" /> Email</a>
                         <a href="https://github.com/Xsmitylnwza" target="_blank" rel="noreferrer"><Icon icon="lucide:github" /> GitHub</a>
                         <a href="/"><Icon icon="lucide:rotate-ccw" /> Original</a>
                     </div>
                 </section>
             </main>
-        </div>
+        </ScrollPerspectiveWave>
     );
 };
 

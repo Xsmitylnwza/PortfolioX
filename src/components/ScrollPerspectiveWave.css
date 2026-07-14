@@ -1,0 +1,45 @@
+.scroll-perspective-wave__canvas {
+    position: fixed;
+    inset: 0;
+    z-index: 2;
+    display: block;
+    width: 100vw;
+    height: 100svh;
+    height: 100dvh;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.scroll-perspective-wave__canvas.is-visible {
+    visibility: visible;
+}
+
+.scroll-perspective-wave.is-scroll-wave-active [data-wave-follow] {
+    translate: var(--scroll-wave-x, 0px) var(--scroll-wave-y, 0px);
+    scale: var(--scroll-wave-scale, 1);
+    transform-origin: center;
+    will-change: translate, scale;
+}
+
+.scroll-perspective-wave.is-scroll-wave-active [data-scroll-wave-media-ready] {
+    opacity: 0 !important;
+}
+
+/* Animated rasters stay live in the DOM (WebGL only freezes first frame). */
+.scroll-perspective-wave.is-scroll-wave-active [data-animated-media],
+.scroll-perspective-wave.is-scroll-wave-active [data-wave-media-skip] {
+    opacity: 1 !important;
+}
+
+@media (max-width: 1024px), (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+    .scroll-perspective-wave__canvas {
+        display: none !important;
+    }
+
+    .scroll-perspective-wave [data-wave-follow] {
+        translate: none;
+        scale: none;
+        will-change: auto;
+    }
+}

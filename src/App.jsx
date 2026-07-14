@@ -1,10 +1,11 @@
-﻿import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, Suspense, lazy } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, Suspense, lazy } from 'react';
 import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import GalleryScene from './components/GalleryScene';
 import ScrollManager from './components/ScrollManager';
 import Cursor from './components/Cursor';
 import Loader from './components/Loader';
+import PosterFlyTransition, { FAILSAFE_MS as POSTER_FAILSAFE_MS } from './components/PosterFlyTransition';
 import './components/Hero.css';
 
 // Lazy Experience keeps the home shell free of Experience module parse/eval until needed.
@@ -25,7 +26,8 @@ function isStagePath(path) {
 }
 
 function isDocumentPath(path) {
-  return DOCUMENT_PATHS.has(path);
+  // Project case files share the same transparent document-room stage treatment.
+  return DOCUMENT_PATHS.has(path) || path.startsWith('/project/');
 }
 
 function isHomePath(path) {
@@ -52,6 +54,10 @@ function App() {
   const swapRafRef = useRef(0);
   // Session-level intro: poster flash + red wipe runs once on first entry to any route.
   const bootLoaderDoneRef = useRef(false);
+  // Gallery poster fly handoff into /project/*
+  const [posterFlight, setPosterFlight] = useState(null);
+  const posterFlightActiveRef = useRef(false);
+  const posterNavArmedRef = useRef(false);
 
   // Custom cursor is desktop/fine-pointer only — avoid mounting pointer shell on touch devices.
   const finePointer = useMemo(() => {
@@ -220,6 +226,73 @@ function App() {
     runRoomSwap,
   ]);
 
+  const beginPosterFlight = useCallback((detail) => {
+    if (!detail?.projectId || !detail?.image || !detail?.fromRect) return;
+    if (isLoading || isRoomExiting || isRoomEntering) return;
+    if (posterFlightActiveRef.current) return;
+
+    const to = `/project/${detail.projectId}`;
+    if (to === location.pathname || to === roomContent || to === pendingRoom) return;
+
+    posterFlightActiveRef.current = true;
+    posterNavArmedRef.current = false;
+    document.documentElement.classList.add('poster-flight-active');
+    document.documentElement.classList.remove('poster-flight-settling');
+
+    setPosterFlight({
+      key: `${detail.projectId}:${detail.startedAt || performance.now()}`,
+      projectId: detail.projectId,
+      title: detail.title || '',
+      image: detail.image,
+      fromRect: detail.fromRect,
+      seed: typeof detail.seed === 'number' ? detail.seed : Math.random(),
+      startedAt: detail.startedAt || performance.now(),
+      to,
+    });
+  }, [isLoading, isRoomEntering, isRoomExiting, location.pathname, pendingRoom, roomContent]);
+
+  const handlePosterNavigateReady = useCallback((flight) => {
+    if (!flight?.to || posterNavArmedRef.current) return;
+    if (!posterFlightActiveRef.current) return;
+    posterNavArmedRef.current = true;
+    // Soft room swap under the flyer so ProjectDetails can layout before dissolve.
+    navigateToRoom(flight.to);
+  }, [navigateToRoom]);
+
+  const handlePosterSettled = useCallback(() => {
+    document.documentElement.classList.add('poster-flight-settling');
+    document.documentElement.classList.remove('poster-flight-active');
+  }, []);
+
+  const handlePosterComplete = useCallback(() => {
+    posterFlightActiveRef.current = false;
+    posterNavArmedRef.current = false;
+    setPosterFlight(null);
+    document.documentElement.classList.remove('poster-flight-active', 'poster-flight-settling');
+  }, []);
+
+  // Gallery WebGL posters open Project Details through the floating handoff.
+  useEffect(() => {
+    const onPosterSelect = (event) => {
+      beginPosterFlight(event?.detail);
+    };
+    document.addEventListener('portfolio:poster-select', onPosterSelect);
+    return () => document.removeEventListener('portfolio:poster-select', onPosterSelect);
+  }, [beginPosterFlight]);
+
+  // Hard fail-safe: never leave the floating poster mounted / classes stuck.
+  // Must stay longer than the slowed viscous flight total.
+  useEffect(() => {
+    if (!posterFlight) return undefined;
+    const timer = window.setTimeout(() => {
+      posterFlightActiveRef.current = false;
+      posterNavArmedRef.current = false;
+      setPosterFlight(null);
+      document.documentElement.classList.remove('poster-flight-active', 'poster-flight-settling');
+    }, POSTER_FAILSAFE_MS);
+    return () => window.clearTimeout(timer);
+  }, [posterFlight]);
+
   // Browser back/forward and non-nav route changes.
   useEffect(() => {
     if (isLoading) return undefined;
@@ -258,6 +331,11 @@ function App() {
     document.documentElement.classList.toggle('home-room-active', homeLock);
     document.documentElement.classList.toggle('stage-room-active', !isPersonaRoute);
     document.documentElement.classList.toggle('document-room-active', documentRoomActive && !isPersonaRoute);
+    const galleryStageFull =
+      !isPersonaRoute
+      && !isLoading
+      && (roomContent === '/' || (isRoomExiting && roomContent === '/'));
+    document.documentElement.classList.toggle('stage-dimmed', !isPersonaRoute && !galleryStageFull);
     document.documentElement.classList.toggle('room-is-exiting', isRoomExiting);
     document.documentElement.classList.toggle('room-is-entering', isRoomEntering);
     document.documentElement.classList.toggle('boot-loader-active', isLoading);
@@ -269,6 +347,7 @@ function App() {
       'home-room-active',
       'stage-room-active',
       'document-room-active',
+      'stage-dimmed',
       'room-is-exiting',
       'room-is-entering',
       'boot-loader-active',
@@ -316,6 +395,7 @@ function App() {
     Promise.all([
       import('./components/StackPage'),
       import('./components/ContactPage'),
+      import('./components/ProjectDetails'),
     ]).catch(() => {
       if (cancelled) return;
     });
@@ -414,6 +494,7 @@ function App() {
               isRoomEntering ? 'is-entering' : '',
               isLoading ? 'is-booting' : '',
             ].filter(Boolean).join(' ')}
+            data-wave-host=""
           >
             {showGalleryChrome && (
               <section
@@ -427,7 +508,6 @@ function App() {
                 </header>
                 <footer className="orbit-hero__footer">
                   <span>SELECTED SYSTEMS / 24</span>
-                  <span>SCROLL TO ACCELERATE</span>
                   <span>DRAG TO ORBIT</span>
                 </footer>
               </section>
@@ -467,6 +547,7 @@ function App() {
             isPersonaRoute ? 'route-shell--persona' : 'route-shell--page',
           ].filter(Boolean).join(' ')}
           data-route-phase={showPageRoutes ? pageShellPhase : 'stage'}
+          data-wave-host=""
           aria-hidden={!showPageRoutes || pageShellPhase === 'preparing'}
           hidden={!showPageRoutes}
         >
@@ -511,6 +592,14 @@ function App() {
           </Routes>
         </div>
       </main>
+
+      {/* Floating gallery poster -> Project Details handoff (fiu fiu fiu fiu -> snap). */}
+      <PosterFlyTransition
+        flight={posterFlight}
+        onNavigateReady={handlePosterNavigateReady}
+        onSettled={handlePosterSettled}
+        onComplete={handlePosterComplete}
+      />
 </div>
   );
 }

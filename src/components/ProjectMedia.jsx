@@ -66,6 +66,12 @@ const normalizeMedia = ({ media, image, video }) => {
     };
 };
 
+const isAnimatedRaster = (source) => {
+    if (!source || typeof source !== 'string') return false;
+    const value = source.split('?')[0].split('#')[0].toLowerCase();
+    return value.endsWith('.gif') || value.endsWith('.apng');
+};
+
 const getResponsiveImageProps = (image, sizes) => {
     if (!image) return {};
 
@@ -203,6 +209,8 @@ const ProjectMedia = ({
         );
     }
 
+    const animated = isAnimatedRaster(source.image);
+
     return (
         <img
             ref={mediaRef}
@@ -211,8 +219,11 @@ const ProjectMedia = ({
             className={className}
             style={style}
             loading={eager ? 'eager' : 'lazy'}
-            decoding="async"
+            // Keep animated GIFs on the browser image decoder (not WebGL freeze).
+            decoding={animated ? 'sync' : 'async'}
             fetchPriority={eager ? 'high' : 'low'}
+            data-wave-media-skip={animated ? '' : undefined}
+            data-animated-media={animated ? 'true' : undefined}
             {...responsiveImageProps}
         />
     );

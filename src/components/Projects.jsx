@@ -13,8 +13,8 @@ const FEATURED_IDS = ['keshi-pomodoro', 'zucchini-review', 'decrypt-password'];
 
 const PROJECT_SIGNALS = {
     'keshi-pomodoro': {
-        line: 'Focus, treated as atmosphere.',
-        detail: 'Timer states / sound / motion'
+        line: 'Focus, mirrored as discipline.',
+        detail: 'Timer / habits / focus reality'
     },
     'zucchini-review': {
         line: 'Community, shaped into product.',
@@ -274,6 +274,7 @@ const Projects = () => {
                         </div>
                     </div>
 
+                    {archiveProjects.length > 0 && (
                     <section className="projects-archive" aria-labelledby="projects-archive-heading">
                         <header>
                             <p>ARCHIVE / NEXT</p>
@@ -298,6 +299,7 @@ const Projects = () => {
                             ))}
                         </div>
                     </section>
+                    )}
                 </>
             ) : (
                 <div id="projects-index" className="projects-index">

@@ -2,13 +2,14 @@ import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import './Loader.css';
 
+// Boot posters mirror gallery covers only — one signature image per selected system.
 const loaderProjects = [
-    ['STUDY', '/analytics-hub.jpg'],
-    ['BUILD', '/assets/ดาวน์โหลด (13).jpg'],
-    ['FOCUS', '/assets/keshi-pomodoro/focus_mode.png'],
-    ['REGISTER', '/assets/previews/zucchini-register.jpg'],
-    ['GAME MODE', '/assets/previews/decrypt-select-mode.jpg'],
-    ['NOTES', '/assets/♡.jpg'],
+    ['KESHI', '/assets/previews/keshi-pomodoro-demo.jpg'],
+    ['ZUCCHINI', '/assets/previews/zucchini-homepage.jpg'],
+    ['DECRYPT', '/assets/previews/decrypt-gameplay.jpg'],
+    ['KESHI', '/assets/previews/keshi-pomodoro-demo.jpg'],
+    ['ZUCCHINI', '/assets/previews/zucchini-homepage.jpg'],
+    ['DECRYPT', '/assets/previews/decrypt-gameplay.jpg'],
 ].map(([title, image], index) => ({ id: String(index + 1).padStart(2, '0'), title, image }));
 
 const loaderSequence = [...loaderProjects, ...loaderProjects.slice(0, 3)];
@@ -16,11 +17,6 @@ const galleryPreloadSources = [
     '/assets/previews/keshi-pomodoro-demo.jpg',
     '/assets/previews/zucchini-homepage.jpg',
     '/assets/previews/decrypt-gameplay.jpg',
-    '/assets/keshi-pomodoro/focus_mode.png',
-    '/assets/previews/zucchini-review.jpg',
-    '/assets/previews/decrypt-manual.jpg',
-    '/assets/previews/zucchini-register.jpg',
-    '/assets/previews/decrypt-select-mode.jpg',
 ];
 
 const Loader = ({ onRevealReady, onLoadingComplete }) => {

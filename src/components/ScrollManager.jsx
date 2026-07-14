@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+﻿import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import gsap from 'gsap';
 import Lenis from 'lenis';
@@ -48,6 +48,8 @@ const ScrollManager = () => {
             touchMultiplier: 1.05,
         });
         lenisRef.current = lenis;
+        // Shared read-only motion source for WebGL route materials.
+        window.__lenis = lenis;
 
         const handleLenisScroll = () => {
             markScrolling();
@@ -70,6 +72,9 @@ const ScrollManager = () => {
             gsap.ticker.remove(tick);
             lenis.off('scroll', handleLenisScroll);
             window.removeEventListener('portfolio:scroll-lock', handleScrollLock);
+            if (window.__lenis === lenis) {
+                delete window.__lenis;
+            }
             lenis.destroy();
             lenisRef.current = null;
             window.clearTimeout(scrollTimer);

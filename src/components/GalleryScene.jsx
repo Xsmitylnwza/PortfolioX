@@ -1,15 +1,10 @@
 import { memo, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-
+// Gallery posters: one signature cover per project only (not detail screens).
+// The cylinder grid repeats this list so every card stays on-brand when density > count.
 const projectMedia = [
     { id: 'keshi-pomodoro', title: 'Keshi Pomodoro', image: '/assets/previews/keshi-pomodoro-demo.jpg' },
     { id: 'zucchini-review', title: 'Zucchini Review', image: '/assets/previews/zucchini-homepage.jpg' },
-    { id: 'decrypt-password', title: 'Decrypt', image: '/assets/previews/decrypt-gameplay.jpg' },
-    { id: 'keshi-pomodoro', title: 'Focus Mode', image: '/assets/keshi-pomodoro/focus_mode.png' },
-    { id: 'zucchini-review', title: 'Community', image: '/assets/previews/zucchini-review.jpg' },
-    { id: 'decrypt-password', title: 'Game Manual', image: '/assets/previews/decrypt-manual.jpg' },
-    { id: 'zucchini-review', title: 'Registration', image: '/assets/previews/zucchini-register.jpg' },
-    { id: 'decrypt-password', title: 'Select Mode', image: '/assets/previews/decrypt-select-mode.jpg' },
+    { id: 'decrypt-password', title: 'Decrypt The Secret Password', image: '/assets/previews/decrypt-gameplay.jpg' },
 ];
 
 const planeVertex = /* glsl */ `
@@ -168,11 +163,17 @@ const gridVertex = /* glsl */ `
 attribute vec3 position;
 uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
+uniform float uTime;
+uniform float uScrollWave;
 varying vec3 vGridPosition;
 varying float vViewDepth;
 void main(){
- vec4 view=modelViewMatrix*vec4(position,1.);
- vGridPosition=position;
+ vec3 pos=position;
+ float wave=sin(pos.y*0.42+uTime*0.8)*uScrollWave;
+ pos.z+=wave*0.16;
+ pos.x*=1.0+wave*0.003;
+ vec4 view=modelViewMatrix*vec4(pos,1.);
+ vGridPosition=pos;
  vViewDepth=-view.z;
  gl_Position=projectionMatrix*view;
 }`;
@@ -196,7 +197,6 @@ void main(){
 
 const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 500, active = true }) => {
     const hostRef = useRef(null);
-    const navigate = useNavigate();
     const modeRef = useRef(mode);
     const showContentRef = useRef(showContent);
     const contentExitMsRef = useRef(contentExitMs);
@@ -218,11 +218,21 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
 
     useEffect(() => {
         modeRef.current = mode;
+        // Leaving gallery mode must drop the hover title immediately (stage stays mounted).
+        if (mode !== 'gallery') {
+            setLabelVisible(false);
+            setLabelText('');
+        }
     }, [mode]);
 
     useEffect(() => {
         showContentRef.current = showContent;
         contentExitMsRef.current = contentExitMs;
+        // Soft room exit / project handoff: hide description pill before route paint.
+        if (!showContent) {
+            setLabelVisible(false);
+            setLabelText('');
+        }
     }, [showContent, contentExitMs]);
 
     useEffect(() => {
@@ -238,7 +248,7 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
         let cleanup = () => {};
 
         const init = async () => {
-            const { Camera, Geometry, Mesh, Plane, Program, Raycast, Renderer, Texture, Torus, Transform } = await import('ogl');
+            const { Camera, Geometry, Mesh, Plane, Program, Raycast, Renderer, Texture, Torus, Transform, Vec3 } = await import('ogl');
             if (disposed || !hostRef.current) return;
 
             const renderer = new Renderer({
@@ -433,7 +443,11 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                 cullFace: null,
                 depthTest: true,
                 depthWrite: false,
-                uniforms: { uOpacity: { value: 0 } },
+                uniforms: {
+                    uOpacity: { value: 0 },
+                    uTime: { value: 0 },
+                    uScrollWave: { value: 0 },
+                },
             });
             const cylinderGrid = new Mesh(gl, { geometry: gridGeometry, program: gridProgram, mode: gl.TRIANGLES });
             cylinderGrid.renderOrder = -10;
@@ -497,11 +511,65 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
             });
 
             const raycast = new Raycast();
+
+            const projectMeshScreenRect = (mesh) => {
+                if (!mesh) return null;
+                try {
+                    // Force matrix update so the hover scale / row spin is reflected.
+                    mesh.updateMatrixWorld(true);
+                    camera.updateMatrixWorld(true);
+                    const halfW = planeWidth * 0.5;
+                    const halfH = planeHeight * 0.5;
+                    const corners = [
+                        new Vec3(-halfW, -halfH, 0),
+                        new Vec3(halfW, -halfH, 0),
+                        new Vec3(halfW, halfH, 0),
+                        new Vec3(-halfW, halfH, 0),
+                    ];
+                    const canvasRect = gl.canvas.getBoundingClientRect();
+                    let minX = Infinity;
+                    let minY = Infinity;
+                    let maxX = -Infinity;
+                    let maxY = -Infinity;
+                    let visible = 0;
+                    corners.forEach((corner) => {
+                        // worldMatrix already includes mesh.scale / parent row rotation.
+                        corner.applyMatrix4(mesh.worldMatrix);
+                        camera.project(corner);
+                        if (!Number.isFinite(corner[0]) || !Number.isFinite(corner[1]) || !Number.isFinite(corner[2])) return;
+                        // OGL project leaves clip-space-ish coords; reject extreme depth.
+                        if (Math.abs(corner[2]) > 1.35) return;
+                        visible += 1;
+                        const sx = canvasRect.left + (corner[0] * 0.5 + 0.5) * canvasRect.width;
+                        const sy = canvasRect.top + (-corner[1] * 0.5 + 0.5) * canvasRect.height;
+                        minX = Math.min(minX, sx);
+                        minY = Math.min(minY, sy);
+                        maxX = Math.max(maxX, sx);
+                        maxY = Math.max(maxY, sy);
+                    });
+                    if (visible < 2 || !Number.isFinite(minX) || !Number.isFinite(minY)) return null;
+                    const width = Math.max(maxX - minX, 8);
+                    const height = Math.max(maxY - minY, 8);
+                    if (width > window.innerWidth * 1.5 || height > window.innerHeight * 1.5) return null;
+                    if (width < 20 || height < 20) return null;
+                    return {
+                        left: minX,
+                        top: minY,
+                        width,
+                        height,
+                        right: minX + width,
+                        bottom: minY + height,
+                    };
+                } catch {
+                    return null;
+                }
+            };
+
             const pointer = { x: 0, y: 0, clientX: 0, clientY: 0, active: false };
             const labelEl = labelRef.current;
             const labelPos = { x: 0, y: 0, targetX: 0, targetY: 0, seeded: false };
-            const LABEL_OFFSET_X = 18;
-            const LABEL_OFFSET_Y = 22;
+            const LABEL_OFFSET_X = 20;
+            const LABEL_OFFSET_Y = 0;
             // Device-aware viscous scroll: mouse wheel, trackpad pixel deltas, and touch drag.
             const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
             const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -548,6 +616,8 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
             let revealStart = null;
             let revealComplete = false;
             let snapRevealAtMount = false;
+            // Non-gallery rooms quiet the 3D sculpture only; black grid stays full.
+            let sculptureDim = document.documentElement.classList.contains('stage-dimmed') ? 0.28 : 1;
             if (document.documentElement.classList.contains('portfolio-ready')) {
                 revealStart = performance.now();
                 snapRevealAtMount = true;
@@ -558,7 +628,12 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                 pointer.active = false;
                 gl.canvas.classList.remove('is-hovering');
                 setLabelVisible(false);
-                setLabelText('Scroll to explore');
+                setLabelText('');
+                // Park the pill so a leftover transform cannot flash on the next room.
+                labelPos.seeded = false;
+                if (labelEl) {
+                    labelEl.style.transform = 'translate3d(-9999px, -9999px, 0)';
+                }
             };
             // Content interactivity is driven by showContent, not only route mode.
             const isInteractive = () => showContentRef.current && modeRef.current === 'gallery';
@@ -680,7 +755,7 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                     labelPos.x = labelPos.targetX;
                     labelPos.y = labelPos.targetY;
                     labelPos.seeded = true;
-                    labelEl.style.transform = `translate3d(${labelPos.x}px, ${labelPos.y}px, 0)`;
+                    labelEl.style.transform = `translate3d(${labelPos.x}px, ${labelPos.y}px, 0) translateY(-50%)`;
                 }
 
                 // Subtle camera parallax only for fine pointers; avoid jumpiness on touch.
@@ -804,7 +879,34 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                     event.preventDefault?.();
                     return;
                 }
-                if (hovered?.userData?.project) navigate(`/project/${hovered.userData.project.id}`);
+                const mesh = hovered;
+                const project = mesh?.userData?.project;
+                if (!project) return;
+                // Capture the clicked poster bounds before hover/label teardown.
+                const fromRect = projectMeshScreenRect(mesh) || (() => {
+                    const size = Math.min(window.innerWidth, window.innerHeight) * 0.28;
+                    return {
+                        left: (event.clientX || window.innerWidth / 2) - size / 2,
+                        top: (event.clientY || window.innerHeight / 2) - size / 2,
+                        width: size,
+                        height: size * 0.68,
+                    };
+                })();
+                // Drop the right-side hover description before the room swap starts.
+                // Otherwise the persistent stage host can keep the pill painted over /project/*.
+                clearHover();
+                document.dispatchEvent(new CustomEvent('portfolio:poster-select', {
+                    detail: {
+                        projectId: project.id,
+                        title: project.title,
+                        image: project.image,
+                        fromRect,
+                        clientX: event.clientX,
+                        clientY: event.clientY,
+                        seed: Math.random(),
+                        startedAt: performance.now(),
+                    },
+                }));
             };
 
             // Keyboard fallback (a11y / no-trackpad): arrows + page keys.
@@ -912,13 +1014,24 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                 // Snap only when the host mounted after boot loader finished.
                 const gridReveal = snapRevealAtMount ? 1 : smooth(revealElapsed / 1.15);
                 const sceneReveal = snapRevealAtMount ? 1 : smooth((revealElapsed - 1.45) / 1.05);
-                // Grid is permanent stage architecture. Never fade with room content swaps.
+                // Grid is permanent stage architecture. Never fade with room content swaps,
+                // and never couple it to stage-dimmed (black grid stays full strength).
                 if (gridReveal >= 0.999) revealComplete = true;
                 gridProgram.uniforms.uOpacity.value = (revealComplete ? 1 : gridReveal) * 0.86;
+                const scrollWave = window.__scrollPerspectiveWave;
+                gridProgram.uniforms.uTime.value = time * 0.001;
+                gridProgram.uniforms.uScrollWave.value = scrollWave?.active
+                    ? scrollWave.velocity
+                    : 0;
                 // sceneOpacity only gates card textures; keep it at 1 after first full reveal.
                 frameUniforms.sceneOpacity = revealComplete ? 1 : sceneReveal;
-                // Sculpture is permanent stage architecture. Never couple opacity to room content.
-                const sculptureOpacity = sceneReveal * 0.96;
+                // Dim only the 3D sculpture/tori on non-gallery rooms. Soft-lerp for room swaps.
+                const sculptureDimTarget = document.documentElement.classList.contains('stage-dimmed')
+                    ? 0.28
+                    : 1;
+                const dimBlend = Math.min(1, Math.max(0.016, dt) * 3.2);
+                sculptureDim += (sculptureDimTarget - sculptureDim) * dimBlend;
+                const sculptureOpacity = sceneReveal * 0.96 * sculptureDim;
                 const tSec = time * 0.001;
                 torusMeshes.forEach((mesh, index) => {
                     const program = mesh.userData.program;
@@ -998,7 +1111,7 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                         hovered = next;
                         gl.canvas.classList.toggle('is-hovering', Boolean(hovered));
                         setLabelVisible(Boolean(hovered));
-                        setLabelText(hovered?.userData?.project?.title || 'Scroll to explore');
+                        setLabelText(hovered?.userData?.project?.title || '');
                     }
                 }
 
@@ -1007,7 +1120,7 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                     const follow = 1 - Math.exp(-14 * dt);
                     labelPos.x += (labelPos.targetX - labelPos.x) * follow;
                     labelPos.y += (labelPos.targetY - labelPos.y) * follow;
-                    labelEl.style.transform = `translate3d(${labelPos.x}px, ${labelPos.y}px, 0)`;
+                    labelEl.style.transform = `translate3d(${labelPos.x}px, ${labelPos.y}px, 0) translateY(-50%)`;
                 }
                 if (canRunLoop()) {
                     raf = requestAnimationFrame(render);
@@ -1070,14 +1183,18 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                 textureCache.forEach(({ texture }) => gl.deleteTexture(texture.texture));
                 imageBitmaps.forEach((bitmap) => bitmap.close?.());
                 gl.deleteTexture(placeholder.texture);
-                geometry.remove(); gridGeometry.remove(); gridProgram.remove(); torusGeometries.forEach((geo) => geo.remove()); torusMeshes.forEach((mesh) => mesh.userData.program?.remove());
+                geometry.remove();
+                gridGeometry.remove();
+                gridProgram.remove();
+                torusGeometries.forEach((geo) => geo.remove());
+                torusMeshes.forEach((mesh) => mesh.userData.program?.remove());
                 gl.canvas.remove(); gl.getExtension('WEBGL_lose_context')?.loseContext();
             };
         };
 
         init().catch((error) => console.warn('Gallery WebGL unavailable.', error));
         return () => { disposed = true; cleanup(); };
-    }, [navigate]);
+    }, []);
 
     return (
         <div
@@ -1089,9 +1206,7 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
             <span
                 ref={labelRef}
                 className="gallery-scene__active"
-            >
-                Scroll to explore
-            </span>
+            ></span>
         </div>
     );
 };

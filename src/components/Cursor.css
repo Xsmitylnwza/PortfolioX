@@ -35,11 +35,16 @@
 }
 
 .custom-cursor {
-    width: 21px;
-    height: 21px;
+    width: 18px;
+    height: 18px;
     background: var(--cursor-contrast);
-    box-shadow: 0 0 0 1px rgba(5, 5, 5, 0.28), 0 0 12px rgba(243, 238, 228, 0.22);
-    transition: width 180ms ease, height 180ms ease, opacity 180ms ease, transform 180ms ease;
+    box-shadow: 0 0 0 1px rgba(5, 5, 5, 0.22), 0 0 10px rgba(243, 238, 228, 0.18);
+    transition:
+        width 480ms cubic-bezier(0.22, 1, 0.36, 1),
+        height 480ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 320ms cubic-bezier(0.22, 1, 0.36, 1),
+        transform 480ms cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 360ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .cursor-follower {
@@ -52,12 +57,14 @@
     box-shadow: none;
     opacity: 0;
     transition:
-        width 240ms cubic-bezier(0.16, 1, 0.3, 1),
-        height 240ms cubic-bezier(0.16, 1, 0.3, 1),
-        border-color 180ms ease,
-        background-color 180ms ease,
-        opacity 180ms ease,
-        transform 180ms ease;
+        width 560ms cubic-bezier(0.22, 1, 0.36, 1),
+        height 560ms cubic-bezier(0.22, 1, 0.36, 1),
+        border-width 420ms cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 420ms cubic-bezier(0.22, 1, 0.36, 1),
+        background-color 420ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 360ms cubic-bezier(0.22, 1, 0.36, 1),
+        transform 520ms cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 420ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .cursor-label {
@@ -69,7 +76,9 @@
     line-height: 1;
     opacity: 0;
     transform: scale(0.7);
-    transition: opacity 150ms ease, transform 180ms ease;
+    transition:
+        opacity 320ms cubic-bezier(0.22, 1, 0.36, 1),
+        transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
     white-space: nowrap;
 }
 
@@ -82,40 +91,70 @@
 .state-drag .custom-cursor,
 .state-view .custom-cursor,
 .state-music .custom-cursor {
-    width: 26px;
-    height: 26px;
+    width: 10px;
+    height: 10px;
     opacity: 1;
+    box-shadow: 0 0 0 1px rgba(5, 5, 5, 0.16), 0 0 14px rgba(243, 238, 228, 0.28);
 }
 
+/* Pop/expand ring on interactive targets */
 .state-pointer .cursor-follower {
-    width: 62px;
-    height: 62px;
+    width: 78px;
+    height: 78px;
     opacity: 1;
-    border: 1px solid #e84b42;
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(232, 75, 66, 0.9);
+    background: rgba(255, 255, 255, 0.04);
+    box-shadow:
+        0 0 0 0.5px rgba(255, 255, 255, 0.35),
+        0 8px 24px rgba(0, 0, 0, 0.12);
+    transform: translate(-50%, -50%) scale(1);
 }
 
-.state-explore .cursor-follower,
-.state-view .cursor-follower,
-.state-drag .cursor-follower {
-    width: 99px;
-    height: 99px;
+/* Expand ring: transparent fill + border only (demo media / expand) */
+.state-view .cursor-follower {
+    width: 72px;
+    height: 72px;
     opacity: 1;
-    border: 0;
-    border-color: transparent;
+    border: 1.5px solid rgba(255, 253, 249, 0.88);
+    background: transparent;
+    mix-blend-mode: normal;
+    box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.18),
+        0 0 0 0.5px rgba(255, 255, 255, 0.25);
+}
+
+.state-view .cursor-label {
+    opacity: 0;
+    transform: scale(0.7);
+}
+
+/* Explore / drag keep solid paper labels when text is present */
+.state-explore .cursor-follower {
+    width: 112px;
+    height: 112px;
+    opacity: 1;
+    border: 1px solid rgba(0, 0, 0, 0.18);
+    border-color: rgba(0, 0, 0, 0.18);
     background: var(--paper);
     mix-blend-mode: normal;
-    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.7), 0 0.5rem 2rem rgba(0, 0, 0, 0.3);
+    box-shadow:
+        0 0 0 0.5px rgba(255, 255, 255, 0.35),
+        0 0.55rem 1.6rem rgba(0, 0, 0, 0.22);
 }
 
 .state-drag .cursor-follower {
-    width: 88px;
-    height: 88px;
+    width: 96px;
+    height: 96px;
+    opacity: 1;
+    border: 1px solid rgba(255, 255, 255, 0.18);
     background: #c53c34;
+    mix-blend-mode: normal;
+    box-shadow:
+        0 0 0 0.5px rgba(255, 255, 255, 0.35),
+        0 0.55rem 1.6rem rgba(0, 0, 0, 0.22);
 }
 
 .state-explore .cursor-label,
-.state-view .cursor-label,
 .state-drag .cursor-label {
     opacity: 1;
     transform: scale(1);
@@ -138,10 +177,10 @@
 }
 
 .state-music .cursor-follower {
-    width: 104px;
-    height: 104px;
+    width: 118px;
+    height: 118px;
     opacity: 1;
-    border: 1px solid rgba(232, 224, 209, 0.6);
+    border: 1px solid rgba(232, 224, 209, 0.42);
     mix-blend-mode: normal;
 }
 

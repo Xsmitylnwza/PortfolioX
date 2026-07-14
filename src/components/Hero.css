@@ -19,8 +19,8 @@ html.room-content-exiting .orbit-hero {
     pointer-events: none;
     opacity: 1;
     visibility: visible;
-    /* Persistent across routes: never fade/unmount visually during room content swaps. */
-    transition: none;
+    /* Soft dim on non-gallery routes; stage stays mounted and visible. */
+    transition: opacity 700ms cubic-bezier(0.16, 1, 0.3, 1);
     /* Avoid size containment — it can collapse the stage host during home-lock class thrash. */
     contain: layout paint style;
 }
@@ -64,23 +64,22 @@ html.room-content-exiting .orbit-hero {
     left: 0;
     display: inline-flex;
     align-items: center;
-    gap: 0.6rem;
-    max-width: min(24rem, calc(100% - 1.5rem));
-    padding: 0.9rem 1.25rem;
-    border: 1px solid rgba(255, 255, 255, 0.28);
+    max-width: min(22rem, calc(100% - 1.5rem));
+    padding: 0.54rem 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 999px;
-    color: rgba(255, 252, 248, 0.96);
-    background:
-        linear-gradient(145deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.08) 42%, rgba(255, 255, 255, 0.14)),
-        rgba(18, 18, 20, 0.28);
+    color: rgba(255, 255, 255, 0.98);
+    background: rgba(255, 255, 255, 0.045);
     box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.42),
-        inset 0 -1px 0 rgba(255, 255, 255, 0.08),
-        0 10px 28px rgba(0, 0, 0, 0.22);
-    -webkit-backdrop-filter: blur(18px) saturate(1.45);
-    backdrop-filter: blur(18px) saturate(1.45);
-    font: 650 0.8rem/1.05 var(--font-mono);
+        inset 0 1px 0 rgba(255, 255, 255, 0.18),
+        0 6px 18px rgba(0, 0, 0, 0.08);
+    -webkit-backdrop-filter: blur(24px) saturate(1.35);
+    backdrop-filter: blur(24px) saturate(1.35);
+    font: 650 0.78rem/1 var(--font-mono);
     letter-spacing: 0.08em;
+    text-shadow:
+        0 1px 1px rgba(0, 0, 0, 0.28),
+        0 0 12px rgba(0, 0, 0, 0.18);
     text-transform: uppercase;
     white-space: nowrap;
     overflow: hidden;
@@ -88,34 +87,48 @@ html.room-content-exiting .orbit-hero {
     opacity: 0;
     transform: translate3d(-9999px, -9999px, 0);
     pointer-events: none;
+    isolation: isolate;
     will-change: transform, opacity;
-    transition: opacity 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+    transition:
+        opacity 160ms ease,
+        border-color 180ms ease,
+        box-shadow 180ms ease,
+        background 180ms ease;
 }
+
+.gallery-scene__active::after {
+    content: none;
+}
+
 .gallery-scene__active.is-visible {
     opacity: 1;
 }
+
+/* Clean liquid glass: no status dot */
 .gallery-scene__active::before {
-    content: '';
-    width: 0.48rem;
-    height: 0.48rem;
-    flex: 0 0 auto;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.9);
-    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.16);
+    content: none;
 }
+
 .orbit-hero__identity { position:absolute;z-index:10;top:clamp(1rem,2.2vw,2.2rem);left:clamp(1rem,2.2vw,2.2rem);display:grid;gap:.2rem;opacity:0;pointer-events:none; }
 .orbit-hero__identity strong { font:800 clamp(.92rem,1.42vw,1.45rem)/1 var(--font-display);letter-spacing:-.045em; }
 .orbit-hero__identity span,.orbit-hero__footer { font:600 clamp(.48rem,.58vw,.62rem)/1 var(--font-mono);letter-spacing:.12em; }
 .orbit-hero__footer { position:absolute;z-index:10;right:clamp(1rem,2.2vw,2.2rem);bottom:clamp(1rem,2vw,2rem);left:clamp(1rem,2.2vw,2.2rem);display:flex;justify-content:space-between;color:rgba(238,232,220,.72);opacity:0;pointer-events:none; }
 .orbit-hero__footer a { color:#eee8dc;pointer-events:auto; }
-html.gallery-room-exiting .orbit-hero__identity,
-html.gallery-room-exiting .orbit-hero__footer {
+html.room-content-exiting .orbit-hero__identity,
+html.room-is-exiting .orbit-hero__identity,
+html.room-content-exiting .orbit-hero__footer,
+html.room-is-exiting .orbit-hero__footer {
     opacity: 0 !important;
     transform: translateY(-12px);
     transition: opacity 260ms ease, transform 420ms cubic-bezier(.22,1,.36,1);
 }
-html.gallery-room-exiting .gallery-scene__active {
+/* Persistent stage keeps GalleryScene mounted; force-hide hover description off gallery rooms. */
+html.room-content-exiting .gallery-scene__active,
+html.room-is-exiting .gallery-scene__active,
+html.document-room-active .gallery-scene__active,
+.gallery-scene.is-stage-only .gallery-scene__active {
     opacity: 0 !important;
+    visibility: hidden;
     transition: opacity 180ms ease;
 }
 html.portfolio-ready .orbit-hero__identity { animation:interface-reveal .7s cubic-bezier(.22,1,.36,1) .18s both; }
@@ -127,9 +140,9 @@ html.portfolio-ready .orbit-hero__footer { animation:interface-reveal .62s cubic
         font-size: clamp(0.95rem, 2.2vw, 1.25rem);
     }
     .gallery-scene__active {
-        max-width: min(20rem, calc(100% - 1.25rem));
-        padding: 0.78rem 1.05rem;
-        font-size: 0.72rem;
+        max-width: min(18rem, calc(100% - 1.25rem));
+        padding: 0.52rem 0.85rem;
+        font-size: 0.68rem;
     }
 }
 
@@ -153,19 +166,16 @@ html.portfolio-ready .orbit-hero__footer { animation:interface-reveal .62s cubic
         gap: 0.75rem;
         flex-wrap: wrap;
     }
-    .orbit-hero__footer span:nth-child(2) {
-        display: none;
-    }
     .gallery-scene__active {
-        max-width: min(16.5rem, calc(100% - 1rem));
-        padding: 0.72rem 0.95rem;
-        font-size: 0.68rem;
-        letter-spacing: 0.06em;
+        max-width: min(15rem, calc(100% - 1rem));
+        padding: 0.48rem 0.78rem;
+        font-size: 0.64rem;
+        letter-spacing: 0.05em;
     }
 }
 
 @media (max-width: 420px) {
-    .orbit-hero__footer span:nth-child(3) {
+    .orbit-hero__footer span:nth-child(2) {
         display: none;
     }
     .orbit-hero__identity span {
@@ -181,9 +191,14 @@ html.portfolio-ready .orbit-hero__footer { animation:interface-reveal .62s cubic
     .orbit-hero__footer {
         bottom: 0.7rem;
     }
-    .orbit-hero__footer span:nth-child(2),
-    .orbit-hero__footer span:nth-child(3) {
+    .orbit-hero__footer span:nth-child(2) {
         display: none;
     }
 }
 @media(prefers-reduced-motion:reduce){.orbit-hero::before{animation:none}.gallery-webgl,.orbit-hero__identity,.orbit-hero__footer{opacity:1;animation:none!important}.gallery-scene{background:center/cover no-repeat url('/assets/previews/keshi-pomodoro-demo.jpg');opacity:.55}.gallery-scene__active{display:none}}
+
+/* Non-gallery pages: sculpture dims inside WebGL only (GalleryScene).
+   Never dim .gallery-stage-layer here — that would also fade the black grid. */
+html.stage-dimmed .gallery-stage__glow {
+  opacity: 0.72;
+}

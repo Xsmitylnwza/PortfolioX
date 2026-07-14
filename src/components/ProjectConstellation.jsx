@@ -589,7 +589,6 @@ export default function ProjectConstellation({ projects = [] }) {
             {!isStatic && (
                 <p className="project-constellation__hint" aria-hidden="true">
                     <span>Drag horizontally</span>
-                    <span>Scroll to rotate</span>
                 </p>
             )}
         </section>

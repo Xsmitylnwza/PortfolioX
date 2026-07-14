@@ -11,7 +11,6 @@ const Hero = () => (
         </header>
         <footer className="orbit-hero__footer">
             <span>SELECTED SYSTEMS / 24</span>
-            <span>SCROLL TO ACCELERATE</span>
             <span>DRAG TO ORBIT</span>
         </footer>
     </section>

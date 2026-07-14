@@ -91,7 +91,11 @@ const Cursor = () => {
             const explicitTarget = eventTarget.closest('[data-cursor]');
             if (explicitTarget) {
                 const nextState = (explicitTarget.dataset.cursor || 'default').toLowerCase();
-                const nextText = explicitTarget.dataset.cursorText || STATE_LABELS[nextState] || '';
+                // Empty data-cursor-text must stay empty (no VIEW/FULL fallback).
+                const hasExplicitText = explicitTarget.hasAttribute('data-cursor-text');
+                const nextText = hasExplicitText
+                    ? (explicitTarget.getAttribute('data-cursor-text') || '')
+                    : (STATE_LABELS[nextState] || '');
                 updateCursorState(nextState, nextText);
                 return;
             }
@@ -169,7 +173,8 @@ const Cursor = () => {
 
         const renderFollower = () => {
             if (!hasPosition) return;
-            const alpha = 1 - Math.pow(0.76, Math.min(gsap.ticker.deltaRatio(), 2));
+            // Slightly heavier lag so mode morph + follow feel slower / smoother.
+            const alpha = 1 - Math.pow(0.84, Math.min(gsap.ticker.deltaRatio(), 2));
             current.x += (target.x - current.x) * alpha;
             current.y += (target.y - current.y) * alpha;
             setFollowerX(current.x);

@@ -28,6 +28,10 @@ export const ROOM_HINTS = {
 
 export const DOCUMENT_PATHS = new Set(['/stack', '/tech', '/contact', '/resume', '/cv']);
 
+export function isDocumentPath(path) {
+  return DOCUMENT_PATHS.has(path) || (typeof path === 'string' && path.startsWith('/project/'));
+}
+
 export function normalizeDocumentPath(path) {
   if (path === '/tech') return '/stack';
   if (path === '/resume' || path === '/cv') return '/contact';

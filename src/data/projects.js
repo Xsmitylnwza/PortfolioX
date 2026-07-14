@@ -2,79 +2,43 @@ export const projects = [
   {
     id: 'keshi-pomodoro',
     title: 'Keshi Pomodoro',
-    category: 'PRODUCTIVITY • JAN 2026',
+    category: 'PRODUCTIVITY • 2026',
     year: '2026',
-    description: 'A lo-fi aesthetic focus timer inspired by Keshi\'s musical vibe.',
-    fullDescription: 'An immersive Pomodoro timer that blends productivity with atmosphere. Features include customizable timer settings, a curated lo-fi playlist, and a visual design heavily inspired by Keshi\'s \'Gabriel\' album era. Built to help users stay focused while enjoying a chill, artistic environment.',
-    tags: ['React', 'Vite', 'Tailwind', 'Framer Motion'],
-    image: '/assets/previews/keshi-pomodoro-demo.jpg',
-    link: 'https://keshi-pomodoro.vercel.app/',
-    code: `// Timer Loop Logic
-useEffect(() => {
-  let interval = null;
-  if (isActive && time > 0) {
-    interval = setInterval(() => {
-      setTime((time) => time - 1);
-    }, 1000);
-  } else if (time === 0) {
-    clearInterval(interval);
-    playAlarm();
-  }
-  return () => clearInterval(interval);
-}, [isActive, time]);`,
-    gallery: [
-      '/assets/keshi-pomodoro/focus_mode.png',
-      '/assets/keshi-pomodoro/relax_mode.png'
-    ],
-    role: 'Frontend Developer'
-  },
-  {
-    id: 'nurse-nest',
-    title: 'Nurse-nest',
-    category: 'HEALTHCARE • APR 2025',
-    year: '2025',
-    description: 'A comprehensive healthcare booking platform connecting patients with nurses.',
-    fullDescription: 'Nurse-nest streamlines the process of finding and booking nursing care. It features real-time scheduling, secure payments via Omise, and a robust admin dashboard for managing appointments and nurse profiles. The system is built for reliability and scale.',
-    tags: ['Next.js', 'Spring Boot', 'Omise', 'Jenkins', 'Docker'],
-    image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=2000',
-    link: '#',
-    code: `// Payment Processing Service
-@Service
-public class PaymentService {
-    public Charge createCharge(long amount, String token) {
-        return omise.charges().create(new Charge.Create()
-            .amount(amount)
-            .currency("thb")
-            .card(token));
-    }
+    description: 'A lo-fi focus timer with a real Discipline dashboard — rhythm over empty productivity theater.',
+    fullDescription: 'Keshi Pomodoro sits between sterile stopwatches and aesthetic shells that forget tracking. It pairs an intentional focus/break timer (scrapbook lo-fi UI, theme studio, radio widget) with a Discipline surface that answers whether you actually showed up: binary habit matrices (Grid / Lanes / Weeks / Rank), focus reality (Hours / Days / Rank), 7D–30D range, evidence logs, and per-user habit management. The stack is React 19 + TypeScript + Vite on a Node API with SQLite discipline storage, plus Hermes-ready idempotent writes so humans and agents share the same truth. Live at pomodoro.xsmity.cloud.',
+    tags: ['React 19', 'TypeScript', 'Vite', 'Tailwind CSS', 'Node API', 'SQLite', 'Framer Motion'],
+    // MP4 can be deformed by the shared WebGL wave; WebP is the clean poster.
+    image: '/assets/keshi-pomodoro/main_page.webp',
+    video: '/assets/keshi-pomodoro/main_page.mp4',
+    link: 'https://pomodoro.xsmity.cloud/',
+    repo: 'https://github.com/Xsmitylnwza/keshi-pomodoro',
+    code: `// Binary habit score — done or not done (legacy 1–10 maps to done when > 0)
+function normalizeHabitScore(value) {
+  const n = Number(value);
+  if (!Number.isFinite(n) || n <= 0) return 0;
+  return 1;
+}
+
+function dayCompletion(scores, activeHabits) {
+  if (!activeHabits.length) return 0;
+  const done = activeHabits.filter((key) => normalizeHabitScore(scores[key]) === 1).length;
+  return done / activeHabits.length;
 }`,
     gallery: [
-      'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=2000',
-      'https://images.unsplash.com/photo-1516549655169-df83a0faaf50?auto=format&fit=crop&q=80&w=2000'
+      {
+        image: '/assets/keshi-pomodoro/theme_demo.webp',
+        video: '/assets/keshi-pomodoro/theme_demo.mp4',
+      },
+      {
+        image: '/assets/keshi-pomodoro/menu_general.webp',
+        video: '/assets/keshi-pomodoro/menu_general.mp4',
+      },
+      {
+        image: '/assets/keshi-pomodoro/discipline_dashboard.webp',
+        video: '/assets/keshi-pomodoro/discipline_dashboard.mp4',
+      },
     ],
-    role: 'Full Stack Developer'
-  },
-  {
-    id: 'kanban-board',
-    title: 'Kanban Task Manager',
-    category: 'PRODUCTIVITY • DEC 2024',
-    year: '2024',
-    description: 'A drag-and-drop task management system inspired by Trello.',
-    fullDescription: 'A highly interactive task management tool featuring drag-and-drop capabilities, task categorization, and file attachments. The backend leverages Spring Boot and AWS S3 for secure file storage, deployed via Docker for consistency.',
-    tags: ['Vue.js', 'Spring Boot', 'Docker', 'AWS S3', 'MySQL'],
-    image: 'https://images.unsplash.com/photo-1611224923853-80b023f02d71?auto=format&fit=crop&q=80&w=2000',
-    link: '#',
-    code: `// Task Movement Logic
-public Task moveTask(Long taskId, Long newColumnId) {
-    Task task = taskRepository.findById(taskId).orElseThrow();
-    Column column = columnRepository.findById(newColumnId).orElseThrow();
-    task.setColumn(column);
-    return taskRepository.save(task);
-}`,
-    gallery: [
-      'https://images.unsplash.com/photo-1611224923853-80b023f02d71?auto=format&fit=crop&q=80&w=2000',
-      'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?auto=format&fit=crop&q=80&w=2000'
-    ],
+    galleryLabels: ['Theme studio', 'Settings', 'Discipline'],
     role: 'Full Stack Developer'
   },
   {
@@ -87,7 +51,7 @@ public Task moveTask(Long taskId, Long newColumnId) {
     tags: ['React', 'Node.js', 'MongoDB', 'Authentication'],
     image: '/assets/previews/zucchini-homepage.jpg',
     video: '/assets/previews/zucchini-homepage.mp4',
-    link: 'https://www.youtube.com/watch?v=TIypQWv4l-k', // Using demo video as link for now based on context, or null if no live demo
+    link: 'https://www.youtube.com/watch?v=TIypQWv4l-k',
     repo: 'https://github.com/Xsmitylnwza/PROJECT2-SEC-2-WeLoveReact',
     code: `// Review Calculation Logic
 const calculateScore = (reviews) => {
@@ -112,7 +76,7 @@ const calculateScore = (reviews) => {
     tags: ['React', 'JavaScript', 'CSS Animation'],
     image: '/assets/previews/decrypt-gameplay.jpg',
     video: '/assets/previews/decrypt-gameplay.mp4',
-    link: 'https://xsmitylnwza.github.io/PROJECT1-SEC-2-WeLoveReact/', // Assuming GitHub Pages or similar if repo exists, otherwise null
+    link: 'https://xsmitylnwza.github.io/PROJECT1-SEC-2-WeLoveReact/',
     repo: 'https://github.com/Xsmitylnwza/PROJECT1-SEC-2-WeLoveReact',
     code: `// Rule Validation Logic
 const validateRule = (password, rule) => {
@@ -129,28 +93,5 @@ const validateRule = (password, rule) => {
       { image: '/assets/previews/decrypt-select-mode.jpg', video: '/assets/previews/decrypt-select-mode.mp4' }
     ],
     role: 'Frontend Developer'
-  },
-  {
-    id: 'wild-oasis',
-    title: 'The Wild Oasis',
-    category: 'HOSPITALITY • 2024',
-    year: '2024',
-    description: 'A hotel booking system for customers and staff with realtime updates.',
-    fullDescription: 'The Wild Oasis manages hotel operations including check-ins, cabin management, and guest data. It provides a seamless experience for both staff and customers, utilizing Supabase for realtime data synchronization and Google OAuth for secure authentication.',
-    tags: ['Next.js', 'Supabase', 'Google OAuth', 'Tailwind'],
-    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=2000',
-    link: '#',
-    code: `// Realtime Subscription
-supabase
-  .channel('public:bookings')
-  .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, payload => {
-    console.log('Change received!', payload)
-  })
-  .subscribe()`,
-    gallery: [
-      'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&q=80&w=2000',
-      'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&q=80&w=2000'
-    ],
-    role: 'Full Stack Developer'
   }
 ];

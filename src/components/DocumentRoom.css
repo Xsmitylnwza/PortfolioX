@@ -1,4 +1,4 @@
-﻿/* Document rooms are glass overlays on the persistent WebGL grid stage.
+/* Document rooms are glass overlays on the persistent WebGL grid stage.
    Never paint page-level backgrounds here — stage + grid stay the identity. */
 .document-room {
   position: relative;
@@ -10,14 +10,21 @@
 
 /* Force section shells transparent so the real stage grid shows through. */
 .document-room--stack .engine-section,
-.document-room--contact .channel-section {
+.document-room--contact .engine-section,
+.document-room--contact .channel-section,
+.document-room--project .case-section {
   background: transparent !important;
   background-image: none !important;
   background-color: transparent !important;
 }
 
-/* Keep pseudo watermark/rings, but no fill behind them. */
+/* Document rooms are text-first: kill residual decorative rings if any */
 .document-room--stack .engine-section::before,
-.document-room--contact .channel-section::before::before {
-  opacity: 0.7;
+.document-room--stack .engine-section::after,
+.document-room--contact .engine-section::before,
+.document-room--contact .engine-section::after,
+.document-room--contact .channel-section::before,
+.document-room--contact .channel-section::after {
+  content: none !important;
+  display: none !important;
 }

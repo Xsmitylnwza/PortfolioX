@@ -32,7 +32,8 @@
     opacity: 1 !important;
 }
 
-@media (max-width: 1024px), (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+/* Keep the WebGL wave on for tablet/iPad viewports, including coarse touch input. */
+@media (max-width: 699px), (max-height: 699px), (prefers-reduced-motion: reduce) {
     .scroll-perspective-wave__canvas {
         display: none !important;
     }

@@ -154,10 +154,9 @@ const ScrollPerspectiveWave = forwardRef(({
 
         const host = root.closest('[data-wave-host]') || document.body;
         const phaseHost = root.closest('[data-route-phase]');
-        const desktopQuery = window.matchMedia('(min-width: 1025px)');
-        const finePointerQuery = window.matchMedia('(hover: hover) and (pointer: fine)');
+        const supportedViewportQuery = window.matchMedia('(min-width: 700px) and (min-height: 700px)');
         const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-        if (!desktopQuery.matches || !finePointerQuery.matches || reducedMotionQuery.matches) return undefined;
+        if (!supportedViewportQuery.matches || reducedMotionQuery.matches) return undefined;
 
         let disposed = false;
         let cleanup = () => {};
@@ -379,8 +378,7 @@ const ScrollPerspectiveWave = forwardRef(({
             const waveBus = { active: false, velocity: 0 };
             if (syncStage) window.__scrollPerspectiveWave = waveBus;
 
-            const isEligible = () => desktopQuery.matches
-                && finePointerQuery.matches
+            const isEligible = () => supportedViewportQuery.matches
                 && !reducedMotionQuery.matches;
             const isRouteVisible = () => {
                 const routePhase = phaseHost?.getAttribute('data-route-phase');
@@ -624,8 +622,7 @@ const ScrollPerspectiveWave = forwardRef(({
             window.addEventListener('resize', resize);
             document.addEventListener('visibilitychange', syncLoop);
             gl.canvas.addEventListener('webglcontextlost', onContextLost);
-            desktopQuery.addEventListener?.('change', syncLoop);
-            finePointerQuery.addEventListener?.('change', syncLoop);
+            supportedViewportQuery.addEventListener?.('change', syncLoop);
             reducedMotionQuery.addEventListener?.('change', syncLoop);
 
             resize();
@@ -641,8 +638,7 @@ const ScrollPerspectiveWave = forwardRef(({
                 window.removeEventListener('resize', resize);
                 document.removeEventListener('visibilitychange', syncLoop);
                 gl.canvas.removeEventListener('webglcontextlost', onContextLost);
-                desktopQuery.removeEventListener?.('change', syncLoop);
-                finePointerQuery.removeEventListener?.('change', syncLoop);
+                supportedViewportQuery.removeEventListener?.('change', syncLoop);
                 reducedMotionQuery.removeEventListener?.('change', syncLoop);
                 setSurfaceVisible(false);
                 root.classList.remove('is-scroll-wave-active');

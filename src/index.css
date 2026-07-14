@@ -801,21 +801,3 @@ html.document-room-active .route-shell--page .document-room {
 html.document-room-active .gallery-stage-layer {
   pointer-events: none;
 }
-
-
-
-/* Poster fly handoff: keep stage continuous, suppress page enter jitter under flyer. */
-html.poster-flight-active .orbit-hero {
-  opacity: 0 !important;
-  pointer-events: none !important;
-  transition: opacity 220ms ease !important;
-}
-
-html.poster-flight-active .gallery-scene__active {
-  opacity: 0 !important;
-  visibility: hidden !important;
-}
-
-html.poster-flight-active .route-enter-layer {
-  transition: none !important;
-}

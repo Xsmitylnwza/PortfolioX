@@ -891,21 +891,6 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
-/* Seamless poster fly handoff: hide real hero media while flyer covers it. */
-html.poster-flight-active #project-details .case-media__frame--hero,
-html.poster-flight-active #project-details .case-feature__media .case-media__frame {
-  opacity: 0 !important;
-  transition: none !important;
-}
-
-/* After snap, the flyer dissolves; page content (including hero) fades in with room enter. */
-html.poster-flight-settling #project-details .case-media__frame--hero,
-html.poster-flight-settling #project-details .case-feature__media .case-media__frame {
-  opacity: 1;
-  transition: opacity 260ms ease 80ms;
-}
-
-
 @media (prefers-reduced-motion: reduce) {
   .case-media__frame--gif .case-media__kind-dot {
     animation: none;

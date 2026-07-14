@@ -5,7 +5,7 @@ import GalleryScene from './components/GalleryScene';
 import ScrollManager from './components/ScrollManager';
 import Cursor from './components/Cursor';
 import Loader from './components/Loader';
-import PosterFlyTransition, { FAILSAFE_MS as POSTER_FAILSAFE_MS } from './components/PosterFlyTransition';
+import PosterSelectTransition, { FAILSAFE_MS as POSTER_FAILSAFE_MS } from './components/PosterSelectTransition';
 import './components/Hero.css';
 
 // Lazy Experience keeps the home shell free of Experience module parse/eval until needed.
@@ -54,9 +54,9 @@ function App() {
   const swapRafRef = useRef(0);
   // Session-level intro: poster flash + red wipe runs once on first entry to any route.
   const bootLoaderDoneRef = useRef(false);
-  // Gallery poster fly handoff into /project/*
-  const [posterFlight, setPosterFlight] = useState(null);
-  const posterFlightActiveRef = useRef(false);
+  // Gallery poster curtain handoff into /project/*
+  const [posterTransition, setPosterTransition] = useState(null);
+  const posterTransitionActiveRef = useRef(false);
   const posterNavArmedRef = useRef(false);
 
   // Custom cursor is desktop/fine-pointer only — avoid mounting pointer shell on touch devices.
@@ -226,26 +226,21 @@ function App() {
     runRoomSwap,
   ]);
 
-  const beginPosterFlight = useCallback((detail) => {
-    if (!detail?.projectId || !detail?.image || !detail?.fromRect) return;
+  const beginPosterTransition = useCallback((detail) => {
+    if (!detail?.projectId) return;
     if (isLoading || isRoomExiting || isRoomEntering) return;
-    if (posterFlightActiveRef.current) return;
+    if (posterTransitionActiveRef.current) return;
 
     const to = `/project/${detail.projectId}`;
     if (to === location.pathname || to === roomContent || to === pendingRoom) return;
 
-    posterFlightActiveRef.current = true;
+    posterTransitionActiveRef.current = true;
     posterNavArmedRef.current = false;
-    document.documentElement.classList.add('poster-flight-active');
-    document.documentElement.classList.remove('poster-flight-settling');
 
-    setPosterFlight({
+    setPosterTransition({
       key: `${detail.projectId}:${detail.startedAt || performance.now()}`,
       projectId: detail.projectId,
       title: detail.title || '',
-      image: detail.image,
-      fromRect: detail.fromRect,
-      seed: typeof detail.seed === 'number' ? detail.seed : Math.random(),
       startedAt: detail.startedAt || performance.now(),
       to,
     });
@@ -253,45 +248,48 @@ function App() {
 
   const handlePosterNavigateReady = useCallback((flight) => {
     if (!flight?.to || posterNavArmedRef.current) return;
-    if (!posterFlightActiveRef.current) return;
+    if (!posterTransitionActiveRef.current) return;
     posterNavArmedRef.current = true;
-    // Soft room swap under the flyer so ProjectDetails can layout before dissolve.
-    navigateToRoom(flight.to);
-  }, [navigateToRoom]);
-
-  const handlePosterSettled = useCallback(() => {
-    document.documentElement.classList.add('poster-flight-settling');
-    document.documentElement.classList.remove('poster-flight-active');
-  }, []);
+    // Swap immediately only after the full-screen curtain has covered Gallery.
+    // This bypasses the generic 500ms room exit so there is no second animation underneath.
+    beginEnter(roomContent, flight.to, { navigateTo: true });
+  }, [beginEnter, roomContent]);
 
   const handlePosterComplete = useCallback(() => {
-    posterFlightActiveRef.current = false;
+    posterTransitionActiveRef.current = false;
     posterNavArmedRef.current = false;
-    setPosterFlight(null);
-    document.documentElement.classList.remove('poster-flight-active', 'poster-flight-settling');
+    setPosterTransition(null);
+    document.documentElement.classList.remove(
+      'poster-transition-active',
+      'poster-transition-covering',
+      'poster-transition-revealing',
+    );
   }, []);
 
-  // Gallery WebGL posters open Project Details through the floating handoff.
+  // Gallery WebGL posters open Project Details through the K95-style curtain handoff.
   useEffect(() => {
     const onPosterSelect = (event) => {
-      beginPosterFlight(event?.detail);
+      beginPosterTransition(event?.detail);
     };
     document.addEventListener('portfolio:poster-select', onPosterSelect);
     return () => document.removeEventListener('portfolio:poster-select', onPosterSelect);
-  }, [beginPosterFlight]);
+  }, [beginPosterTransition]);
 
-  // Hard fail-safe: never leave the floating poster mounted / classes stuck.
-  // Must stay longer than the slowed viscous flight total.
+  // Hard fail-safe: never leave the full-screen curtain or transition classes stuck.
   useEffect(() => {
-    if (!posterFlight) return undefined;
+    if (!posterTransition) return undefined;
     const timer = window.setTimeout(() => {
-      posterFlightActiveRef.current = false;
+      posterTransitionActiveRef.current = false;
       posterNavArmedRef.current = false;
-      setPosterFlight(null);
-      document.documentElement.classList.remove('poster-flight-active', 'poster-flight-settling');
+      setPosterTransition(null);
+      document.documentElement.classList.remove(
+        'poster-transition-active',
+        'poster-transition-covering',
+        'poster-transition-revealing',
+      );
     }, POSTER_FAILSAFE_MS);
     return () => window.clearTimeout(timer);
-  }, [posterFlight]);
+  }, [posterTransition]);
 
   // Browser back/forward and non-nav route changes.
   useEffect(() => {
@@ -442,7 +440,7 @@ function App() {
   return (
     <div
       className={isPersonaRoute ? 'app-shell persona-shell' : 'app-shell'}
-      aria-busy={isLoading || isRoomExiting}
+      aria-busy={isLoading || isRoomExiting || Boolean(posterTransition)}
     >
       {!isPersonaRoute && (
         <div className="gallery-stage" aria-hidden="true">
@@ -593,11 +591,10 @@ function App() {
         </div>
       </main>
 
-      {/* Floating gallery poster -> Project Details handoff (fiu fiu fiu fiu -> snap). */}
-      <PosterFlyTransition
-        flight={posterFlight}
+      {/* Full-room Gallery -> Project curtain handoff, matched to the K95 reference. */}
+      <PosterSelectTransition
+        transition={posterTransition}
         onNavigateReady={handlePosterNavigateReady}
-        onSettled={handlePosterSettled}
         onComplete={handlePosterComplete}
       />
 </div>

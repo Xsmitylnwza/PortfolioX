@@ -512,59 +512,6 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
 
             const raycast = new Raycast();
 
-            const projectMeshScreenRect = (mesh) => {
-                if (!mesh) return null;
-                try {
-                    // Force matrix update so the hover scale / row spin is reflected.
-                    mesh.updateMatrixWorld(true);
-                    camera.updateMatrixWorld(true);
-                    const halfW = planeWidth * 0.5;
-                    const halfH = planeHeight * 0.5;
-                    const corners = [
-                        new Vec3(-halfW, -halfH, 0),
-                        new Vec3(halfW, -halfH, 0),
-                        new Vec3(halfW, halfH, 0),
-                        new Vec3(-halfW, halfH, 0),
-                    ];
-                    const canvasRect = gl.canvas.getBoundingClientRect();
-                    let minX = Infinity;
-                    let minY = Infinity;
-                    let maxX = -Infinity;
-                    let maxY = -Infinity;
-                    let visible = 0;
-                    corners.forEach((corner) => {
-                        // worldMatrix already includes mesh.scale / parent row rotation.
-                        corner.applyMatrix4(mesh.worldMatrix);
-                        camera.project(corner);
-                        if (!Number.isFinite(corner[0]) || !Number.isFinite(corner[1]) || !Number.isFinite(corner[2])) return;
-                        // OGL project leaves clip-space-ish coords; reject extreme depth.
-                        if (Math.abs(corner[2]) > 1.35) return;
-                        visible += 1;
-                        const sx = canvasRect.left + (corner[0] * 0.5 + 0.5) * canvasRect.width;
-                        const sy = canvasRect.top + (-corner[1] * 0.5 + 0.5) * canvasRect.height;
-                        minX = Math.min(minX, sx);
-                        minY = Math.min(minY, sy);
-                        maxX = Math.max(maxX, sx);
-                        maxY = Math.max(maxY, sy);
-                    });
-                    if (visible < 2 || !Number.isFinite(minX) || !Number.isFinite(minY)) return null;
-                    const width = Math.max(maxX - minX, 8);
-                    const height = Math.max(maxY - minY, 8);
-                    if (width > window.innerWidth * 1.5 || height > window.innerHeight * 1.5) return null;
-                    if (width < 20 || height < 20) return null;
-                    return {
-                        left: minX,
-                        top: minY,
-                        width,
-                        height,
-                        right: minX + width,
-                        bottom: minY + height,
-                    };
-                } catch {
-                    return null;
-                }
-            };
-
             const pointer = { x: 0, y: 0, clientX: 0, clientY: 0, active: false };
             const labelEl = labelRef.current;
             const labelPos = { x: 0, y: 0, targetX: 0, targetY: 0, seeded: false };
@@ -882,16 +829,6 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                 const mesh = hovered;
                 const project = mesh?.userData?.project;
                 if (!project) return;
-                // Capture the clicked poster bounds before hover/label teardown.
-                const fromRect = projectMeshScreenRect(mesh) || (() => {
-                    const size = Math.min(window.innerWidth, window.innerHeight) * 0.28;
-                    return {
-                        left: (event.clientX || window.innerWidth / 2) - size / 2,
-                        top: (event.clientY || window.innerHeight / 2) - size / 2,
-                        width: size,
-                        height: size * 0.68,
-                    };
-                })();
                 // Drop the right-side hover description before the room swap starts.
                 // Otherwise the persistent stage host can keep the pill painted over /project/*.
                 clearHover();
@@ -899,11 +836,6 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                     detail: {
                         projectId: project.id,
                         title: project.title,
-                        image: project.image,
-                        fromRect,
-                        clientX: event.clientX,
-                        clientY: event.clientY,
-                        seed: Math.random(),
                         startedAt: performance.now(),
                     },
                 }));

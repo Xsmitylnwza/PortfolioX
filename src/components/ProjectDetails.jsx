@@ -318,6 +318,7 @@ const CaseMediaFrame = ({
   sizes,
   className = '',
   label,
+  transitionTarget = false,
 }) => {
   const frameRef = useRef(null);
   const source = resolveMediaSource({ media, image, video });
@@ -365,6 +366,7 @@ const CaseMediaFrame = ({
         data-cursor-text={canExpand ? '' : undefined}
         data-wave-follow
         data-media-kind={kindMeta?.kind || undefined}
+        data-poster-transition-target={transitionTarget ? '' : undefined}
         onClick={openLightbox}
         aria-label={canExpand ? `Open fullscreen demo: ${alt || 'media'}` : undefined}
       >
@@ -405,6 +407,7 @@ const CaseHeroMedia = ({ project, sizes = '(max-width: 900px) 100vw, 920px' }) =
     eager
     sizes={sizes}
     className="case-media__frame--hero"
+    transitionTarget
   />
 );
 

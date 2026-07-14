@@ -519,7 +519,9 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
             const LABEL_OFFSET_Y = 0;
             // Device-aware viscous scroll: mouse wheel, trackpad pixel deltas, and touch drag.
             const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+            const coarsePointer = window.matchMedia('(pointer: coarse)').matches;
             const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const DIMMED_SCULPTURE_OPACITY = coarsePointer ? 0.12 : 0.28;
             const SCROLL_Y_GAIN = finePointer ? 0.0026 : 0.0034;
             const SPIN_GAIN = finePointer ? 0.00055 : 0.0007;
             const SPIN_TARGET_MAX = 0.38;
@@ -564,7 +566,9 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
             let revealComplete = false;
             let snapRevealAtMount = false;
             // Non-gallery rooms quiet the 3D sculpture only; black grid stays full.
-            let sculptureDim = document.documentElement.classList.contains('stage-dimmed') ? 0.28 : 1;
+            let sculptureDim = document.documentElement.classList.contains('stage-dimmed')
+                ? DIMMED_SCULPTURE_OPACITY
+                : 1;
             if (document.documentElement.classList.contains('portfolio-ready')) {
                 revealStart = performance.now();
                 snapRevealAtMount = true;
@@ -979,7 +983,7 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                 frameUniforms.sceneOpacity = revealComplete ? 1 : sceneReveal;
                 // Dim only the 3D sculpture/tori on non-gallery rooms. Soft-lerp for room swaps.
                 const sculptureDimTarget = document.documentElement.classList.contains('stage-dimmed')
-                    ? 0.28
+                    ? DIMMED_SCULPTURE_OPACITY
                     : 1;
                 const dimBlend = Math.min(1, Math.max(0.016, dt) * 3.2);
                 sculptureDim += (sculptureDimTarget - sculptureDim) * dimBlend;

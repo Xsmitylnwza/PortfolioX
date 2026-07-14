@@ -713,6 +713,28 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                 }
             };
 
+            const pickMeshAtEvent = (event) => {
+                updatePointerFromEvent(event, { forHover: false });
+                raycast.castMouse(camera, [pointer.x, pointer.y]);
+                return raycast.intersectBounds(meshes)[0] || null;
+            };
+
+            const selectProject = (mesh) => {
+                const project = mesh?.userData?.project;
+                if (!project) return false;
+
+                // Drop the hover description before the room swap starts.
+                clearHover();
+                document.dispatchEvent(new CustomEvent('portfolio:poster-select', {
+                    detail: {
+                        projectId: project.id,
+                        title: project.title,
+                        startedAt: performance.now(),
+                    },
+                }));
+                return true;
+            };
+
             const onWheel = (event) => {
                 if (!isInteractive()) return;
                 // Always consume wheel while gallery is interactive so trackpad/mouse
@@ -804,6 +826,16 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
             };
 
             const onPointerUp = (event) => {
+                const isTouchTap = event.pointerType === 'touch'
+                    && drag.active
+                    && event.pointerId === drag.pointerId
+                    && !drag.moved;
+
+                if (isTouchTap) {
+                    const selected = selectProject(pickMeshAtEvent(event));
+                    // Ignore the synthetic click that follows a handled touch tap.
+                    if (selected) drag.suppressClick = true;
+                }
                 endDrag(event);
             };
 
@@ -826,19 +858,7 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                     event.preventDefault?.();
                     return;
                 }
-                const mesh = hovered;
-                const project = mesh?.userData?.project;
-                if (!project) return;
-                // Drop the right-side hover description before the room swap starts.
-                // Otherwise the persistent stage host can keep the pill painted over /project/*.
-                clearHover();
-                document.dispatchEvent(new CustomEvent('portfolio:poster-select', {
-                    detail: {
-                        projectId: project.id,
-                        title: project.title,
-                        startedAt: performance.now(),
-                    },
-                }));
+                selectProject(hovered || pickMeshAtEvent(event));
             };
 
             // Keyboard fallback (a11y / no-trackpad): arrows + page keys.

@@ -24,9 +24,9 @@ async function startWorkspace(workspace) {
 }`,
     gallery: [
       { image: '/assets/projectmux/usage-demo.gif' },
-      { image: '/assets/projectmux/workspace-grid.jpg' },
-      { image: '/assets/projectmux/session-editor.jpg' },
-      { image: '/assets/projectmux/sidebar-attention.jpg' },
+      { image: '/assets/projectmux/workspace-grid.gif' },
+      { image: '/assets/projectmux/session-editor.gif' },
+      { image: '/assets/projectmux/sidebar-attention.gif' },
     ],
     galleryLabels: ['Live session', 'Workspace grid', 'Session editor', 'Attention'],
     flow: [

@@ -1070,3 +1070,138 @@ html.case-lightbox-open body {
     transition: none;
   }
 }
+
+
+/* Flow diagram + why cards — clean / minimal / framed */
+.case-media--demo {
+  margin-bottom: clamp(2.25rem, 5vw, 3.5rem);
+}
+
+.case-media__frame--demo-lead {
+  aspect-ratio: 16 / 10;
+}
+
+.case-why {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin-top: 1.35rem;
+}
+
+.case-why__card {
+  display: grid;
+  gap: 0.55rem;
+  min-height: 100%;
+  padding: 1rem 1.05rem 1.1rem;
+  border: 1px solid var(--case-line);
+  border-radius: 0.95rem;
+  background: var(--case-surface);
+}
+
+.case-why__card h3 {
+  margin: 0;
+  color: var(--case-ink);
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.case-why__card p {
+  margin: 0 !important;
+  color: var(--case-mute);
+  font-size: 0.92rem !important;
+  line-height: 1.5 !important;
+}
+
+.case-flow {
+  list-style: none;
+  margin: 0.15rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0;
+  border: 1px solid var(--case-line);
+  border-radius: 1rem;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.case-flow__step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 4.25rem minmax(0, 1fr);
+  gap: 0.85rem 1.1rem;
+  align-items: start;
+  padding: 1.05rem 1.15rem 1.15rem;
+  border-bottom: 1px solid var(--case-line);
+}
+
+.case-flow__step:last-child {
+  border-bottom: 0;
+}
+
+.case-flow__index {
+  color: var(--case-ink);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding-top: 0.2rem;
+}
+
+.case-flow__copy {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.case-flow__copy strong {
+  color: var(--case-ink);
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
+.case-flow__copy p {
+  margin: 0 !important;
+  color: var(--case-mute);
+  font-size: 0.98rem !important;
+  line-height: 1.55 !important;
+}
+
+.case-flow__connector {
+  display: none;
+}
+
+@media (min-width: 901px) {
+  .case-flow {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0;
+  }
+
+  .case-flow__step {
+    grid-template-columns: 1fr;
+    min-height: 100%;
+    padding: 1.15rem 1.1rem 1.25rem;
+    border-bottom: 0;
+    border-right: 1px solid var(--case-line);
+  }
+
+  .case-flow__step:last-child {
+    border-right: 0;
+  }
+
+  .case-flow__index {
+    margin-bottom: 0.85rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .case-why {
+    grid-template-columns: 1fr;
+  }
+}

@@ -7,7 +7,7 @@ export const projects = [
     description: 'Many workspaces. Many terminals. Different agents. One Start — a Windows desktop app for managing AI agent workspaces.',
     fullDescription: 'ProjectMux is a local-first Windows desktop app for people who run many projects with many terminals and different AI agents. Create a workspace per project, configure shells, Codex, Claude Code, servers, tunnels, env, secrets, ports, readiness, and layout once, then press Start Workspace to bring the whole multi-agent environment online. It keeps multiple workspaces side-by-side, runs a resizable terminal grid, surfaces Done/Failed attention until you focus the finished pane, and never auto-runs on open — setup is intentional, start is explicit. Built with Electron, React, TypeScript, xterm.js, and node-pty, with Zod-validated local config and secret-safe IPC.',
     tags: ['Electron', 'React 19', 'TypeScript', 'xterm.js', 'node-pty', 'Zod', 'pnpm'],
-    image: '/assets/projectmux/workspace-grid.jpg',
+    image: '/assets/projectmux/logo-cover.jpg',
     link: 'https://github.com/Xsmitylnwza/projectmux',
     repo: 'https://github.com/Xsmitylnwza/projectmux',
     code: `// Workspace start is explicit — nothing auto-runs on open/import/restore.
@@ -23,12 +23,48 @@ async function startWorkspace(workspace) {
   markWorkspaceRunning(workspace.id);
 }`,
     gallery: [
-      { image: '/assets/projectmux/welcome.jpg' },
+      { image: '/assets/projectmux/usage-demo.gif' },
+      { image: '/assets/projectmux/workspace-grid.jpg' },
       { image: '/assets/projectmux/session-editor.jpg' },
-      { image: '/assets/projectmux/command-palette.jpg' },
       { image: '/assets/projectmux/sidebar-attention.jpg' },
     ],
-    galleryLabels: ['Welcome', 'Session editor', 'Command palette', 'Attention'],
+    galleryLabels: ['Usage demo', 'Workspace grid', 'Session editor', 'Attention'],
+    flow: [
+      {
+        step: '01',
+        title: 'Create a workspace',
+        body: 'One project root. One saved home for every terminal that project needs.',
+      },
+      {
+        step: '02',
+        title: 'Configure once',
+        body: 'Add Codex, Claude Code, servers, tunnels, env, secrets, readiness, and layout.',
+      },
+      {
+        step: '03',
+        title: 'Press Start',
+        body: 'Nothing launches on open. One intentional Start brings the whole grid online.',
+      },
+      {
+        step: '04',
+        title: 'Work, then notice',
+        body: 'Done / Failed stays sticky until you focus the pane. Switch workspaces without redoing setup.',
+      },
+    ],
+    why: [
+      {
+        title: 'Stop rebuilding terminals',
+        body: 'Every project keeps its own multi-agent layout instead of daily re-opening windows.',
+      },
+      {
+        title: 'Mix agents safely',
+        body: 'Codex, Claude Code, servers, and shells share one lifecycle — no special snowflake runtime.',
+      },
+      {
+        title: 'Start is explicit',
+        body: 'Import, restore, and open never auto-run. You choose when the environment comes alive.',
+      },
+    ],
     role: 'Full Stack Developer'
   },
   {

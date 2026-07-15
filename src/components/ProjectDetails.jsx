@@ -545,39 +545,101 @@ const CinemaLayout = ({ project, decision, techItems, gallery, hasLive, hasRepo 
   </>
 );
 
-const FeatureLayout = ({ project, decision, techItems, gallery, hasLive, hasRepo }) => (
-  <>
-    <div className="case-feature case-reveal" data-reveal="mount" style={{ '--reveal-index': 1 }}>
-      <div className="case-feature__copy" data-wave-follow>
-        <p className="case-kicker">{project.category || 'Selected system'}</p>
-        <h1 id="case-title">{project.title}</h1>
-        <p className="case-role">{project.role || 'Software Engineer'}</p>
-        <p className="case-lede">{project.description}</p>
-        <CaseActions hasLive={hasLive} hasRepo={hasRepo} project={project} />
-        <StackBlock items={techItems} reveal="mount" revealIndex={2} title="Product stack" />
-      </div>
-      <div className="case-feature__media" data-wave-follow>
-        <CaseHeroMedia project={project} sizes="(max-width: 900px) 100vw, 560px" />
-      </div>
+const CaseFlow = ({ steps }) => {
+  if (!Array.isArray(steps) || steps.length === 0) return null;
+
+  return (
+    <ol className="case-flow" aria-label="How the product works">
+      {steps.map((step, index) => (
+        <li className="case-flow__step" key={`${step.step || index}-${step.title}`}>
+          <span className="case-flow__index">{step.step || formatIndex(index + 1)}</span>
+          <div className="case-flow__copy">
+            <strong>{step.title}</strong>
+            <p>{step.body}</p>
+          </div>
+          {index < steps.length - 1 && <span className="case-flow__connector" aria-hidden="true" />}
+        </li>
+      ))}
+    </ol>
+  );
+};
+
+const CaseWhy = ({ items }) => {
+  if (!Array.isArray(items) || items.length === 0) return null;
+
+  return (
+    <div className="case-why" aria-label="Why this product">
+      {items.map((item) => (
+        <article className="case-why__card" key={item.title}>
+          <h3>{item.title}</h3>
+          <p>{item.body}</p>
+        </article>
+      ))}
     </div>
+  );
+};
 
-    <CaseBlock title="Product flow" reveal="scroll" revealIndex={0}>
-      <p>{project.fullDescription || project.description}</p>
-      {decision && <p className="case-block__follow">{decision}</p>}
-    </CaseBlock>
+const FeatureLayout = ({ project, decision, techItems, gallery, hasLive, hasRepo }) => {
+  const demoMedia = gallery.find((item) => {
+    const source = typeof item === 'string' ? item : item?.image || item?.video || '';
+    return isGifSource(source) || isVideoSource(source);
+  });
+  const stillGallery = gallery.filter((item) => item !== demoMedia);
+  const galleryLabels = project.galleryLabels || ['Browse', 'Review', 'Community'];
 
-    {gallery.length > 0 && (
-      <section className="case-media case-media--beats case-reveal" data-reveal="scroll" style={{ '--reveal-index': 1 }} aria-label="Feature beats">
-        <CaseGallery
-          project={project}
-          gallery={gallery}
-          columns={gallery.length >= 3 ? 3 : 2}
-          labels={['Browse', 'Review', 'Community'].slice(0, gallery.length)}
-        />
-      </section>
-    )}
-  </>
-);
+  return (
+    <>
+      <div className="case-feature case-reveal" data-reveal="mount" style={{ '--reveal-index': 1 }}>
+        <div className="case-feature__copy" data-wave-follow>
+          <p className="case-kicker">{project.category || 'Selected system'}</p>
+          <h1 id="case-title">{project.title}</h1>
+          <p className="case-role">{project.role || 'Software Engineer'}</p>
+          <p className="case-lede">{project.description}</p>
+          <CaseActions hasLive={hasLive} hasRepo={hasRepo} project={project} />
+          <StackBlock items={techItems} reveal="mount" revealIndex={2} title="Product stack" />
+        </div>
+        <div className="case-feature__media" data-wave-follow>
+          <CaseHeroMedia project={project} sizes="(max-width: 900px) 100vw, 560px" />
+        </div>
+      </div>
+
+      {demoMedia && (
+        <section className="case-media case-media--demo case-reveal" data-reveal="scroll" style={{ '--reveal-index': 0 }} aria-label="Usage demo">
+          <CaseMediaFrame
+            media={demoMedia}
+            alt={`${project.title} usage demo`}
+            sizes="(max-width: 900px) 100vw, 920px"
+            className="case-media__frame--hero case-media__frame--demo-lead"
+            label="Usage demo"
+          />
+        </section>
+      )}
+
+      <CaseBlock title="Why it exists" reveal="scroll" revealIndex={0}>
+        <p>{project.fullDescription || project.description}</p>
+        {decision && <p className="case-block__follow">{decision}</p>}
+        <CaseWhy items={project.why} />
+      </CaseBlock>
+
+      {Array.isArray(project.flow) && project.flow.length > 0 && (
+        <CaseBlock title="How it works" reveal="scroll" revealIndex={1}>
+          <CaseFlow steps={project.flow} />
+        </CaseBlock>
+      )}
+
+      {stillGallery.length > 0 && (
+        <section className="case-media case-media--beats case-reveal" data-reveal="scroll" style={{ '--reveal-index': 2 }} aria-label="Feature beats">
+          <CaseGallery
+            project={project}
+            gallery={stillGallery}
+            columns={stillGallery.length >= 3 ? 3 : 2}
+            labels={galleryLabels.filter((label) => label !== 'Usage demo').slice(0, stillGallery.length)}
+          />
+        </section>
+      )}
+    </>
+  );
+};
 
 const DossierLayout = ({ project, decision, techItems, gallery, hasLive, hasRepo }) => (
   <>

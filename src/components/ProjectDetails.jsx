@@ -549,18 +549,25 @@ const CaseFlow = ({ steps }) => {
   if (!Array.isArray(steps) || steps.length === 0) return null;
 
   return (
-    <ol className="case-flow" aria-label="How the product works">
-      {steps.map((step, index) => (
-        <li className="case-flow__step" key={`${step.step || index}-${step.title}`}>
-          <span className="case-flow__index">{step.step || formatIndex(index + 1)}</span>
-          <div className="case-flow__copy">
-            <strong>{step.title}</strong>
-            <p>{step.body}</p>
-          </div>
-          {index < steps.length - 1 && <span className="case-flow__connector" aria-hidden="true" />}
-        </li>
-      ))}
-    </ol>
+    <div className="case-process" aria-label="Work process">
+      <div className="case-process__rail" aria-hidden="true" />
+      <ol className="case-flow case-flow--process">
+        {steps.map((step, index) => (
+          <li className="case-flow__step" key={`${step.step || index}-${step.title}`}>
+            <div className="case-flow__mark" aria-hidden="true">
+              <span className="case-flow__dot" />
+              {index < steps.length - 1 && <span className="case-flow__connector" />}
+            </div>
+            <span className="case-flow__index">{step.step || formatIndex(index + 1)}</span>
+            <div className="case-flow__copy">
+              <strong>{step.title}</strong>
+              {step.cue ? <span className="case-flow__cue">{step.cue}</span> : null}
+              <p>{step.body}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
   );
 };
 
@@ -604,13 +611,13 @@ const FeatureLayout = ({ project, decision, techItems, gallery, hasLive, hasRepo
       </div>
 
       {demoMedia && (
-        <section className="case-media case-media--demo case-reveal" data-reveal="scroll" style={{ '--reveal-index': 0 }} aria-label="Usage demo">
+        <section className="case-media case-media--demo case-reveal" data-reveal="scroll" style={{ '--reveal-index': 0 }} aria-label="Live session">
           <CaseMediaFrame
             media={demoMedia}
             alt={`${project.title} usage demo`}
             sizes="(max-width: 900px) 100vw, 920px"
             className="case-media__frame--hero case-media__frame--demo-lead"
-            label="Usage demo"
+            label="Live session"
           />
         </section>
       )}
@@ -622,7 +629,10 @@ const FeatureLayout = ({ project, decision, techItems, gallery, hasLive, hasRepo
       </CaseBlock>
 
       {Array.isArray(project.flow) && project.flow.length > 0 && (
-        <CaseBlock title="How it works" reveal="scroll" revealIndex={1}>
+        <CaseBlock title="Work process" reveal="scroll" revealIndex={1}>
+          <p className="case-process__lede">
+            Configure once. Start once. Many agents stay visible — and finished work pulls attention.
+          </p>
           <CaseFlow steps={project.flow} />
         </CaseBlock>
       )}
@@ -633,7 +643,7 @@ const FeatureLayout = ({ project, decision, techItems, gallery, hasLive, hasRepo
             project={project}
             gallery={stillGallery}
             columns={stillGallery.length >= 3 ? 3 : 2}
-            labels={galleryLabels.filter((label) => label !== 'Usage demo').slice(0, stillGallery.length)}
+            labels={galleryLabels.filter((label) => label !== 'Usage demo' && label !== 'Live session').slice(0, stillGallery.length)}
           />
         </section>
       )}

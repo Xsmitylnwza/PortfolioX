@@ -2,7 +2,7 @@ import { memo, useEffect, useRef } from 'react';
 // Gallery posters: one signature cover per project only (not detail screens).
 // The cylinder grid repeats this list so every card stays on-brand when density > count.
 const projectMedia = [
-    { id: 'projectmux', title: 'ProjectMux', image: '/assets/previews/projectmux-demo.jpg' },
+    { id: 'projectmux', title: 'ProjectMux', image: '/assets/projectmux/logo-cover.jpg' },
     { id: 'keshi-pomodoro', title: 'Keshi Pomodoro', image: '/assets/previews/keshi-pomodoro-demo.jpg' },
     { id: 'zucchini-review', title: 'Zucchini Review', image: '/assets/previews/zucchini-homepage.jpg' },
     { id: 'decrypt-password', title: 'Decrypt The Secret Password', image: '/assets/previews/decrypt-gameplay.jpg' },

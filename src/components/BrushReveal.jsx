@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 const sources = [
-    '/assets/previews/projectmux-demo.jpg',
+    '/assets/projectmux/logo-cover.jpg',
     '/assets/previews/keshi-pomodoro-demo.jpg',
     '/assets/previews/zucchini-homepage.jpg',
     '/assets/previews/decrypt-gameplay.jpg',

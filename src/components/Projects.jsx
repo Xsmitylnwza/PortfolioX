@@ -9,9 +9,13 @@ gsap.registerPlugin(ScrollTrigger);
 
 const ProjectConstellation = lazy(() => import('./ProjectConstellation'));
 
-const FEATURED_IDS = ['keshi-pomodoro', 'zucchini-review', 'decrypt-password'];
+const FEATURED_IDS = ['projectmux', 'keshi-pomodoro', 'zucchini-review', 'decrypt-password'];
 
 const PROJECT_SIGNALS = {
+    'projectmux': {
+        line: 'Agents, orchestrated as workspaces.',
+        detail: 'Terminals / Start / multi-agent grid'
+    },
     'keshi-pomodoro': {
         line: 'Focus, mirrored as discipline.',
         detail: 'Timer / habits / focus reality'
@@ -77,22 +81,38 @@ const Projects = () => {
 
                 matchMedia.add('(min-width: 821px) and (prefers-reduced-motion: no-preference)', () => {
                     const wall = section.querySelector('.work-wall');
-                    const keshi = section.querySelector('[data-work-card="keshi-pomodoro"]');
-                    const zucchini = section.querySelector('[data-work-card="zucchini-review"]');
-                    const decrypt = section.querySelector('[data-work-card="decrypt-password"]');
+                    const cards = gsap.utils.toArray('[data-work-card]');
                     const intro = section.querySelector('.work-wall__intro');
                     const progress = section.querySelector('.work-wall__progress-fill');
                     const notes = gsap.utils.toArray('.work-wall__note');
                     const ending = section.querySelector('.work-wall__ending');
 
-                    if (!wall || !keshi || !zucchini || !decrypt) return undefined;
+                    if (!wall || cards.length === 0) return undefined;
 
-                    gsap.set(keshi, { xPercent: 0, yPercent: 0, scale: 1, zIndex: 5 });
-                    gsap.set(zucchini, { xPercent: 0, yPercent: 0, scale: 0.66, zIndex: 4 });
-                    gsap.set(decrypt, { xPercent: 0, yPercent: 0, scale: 0.42, zIndex: 3 });
+                    cards.forEach((card, index) => {
+                        gsap.set(card, {
+                            xPercent: 0,
+                            yPercent: 0,
+                            scale: Math.max(0.42, 1 - index * 0.14),
+                            zIndex: cards.length - index + 2,
+                        });
+                    });
                     gsap.set(notes, { autoAlpha: 0, y: 14 });
                     gsap.set(ending, { autoAlpha: 0, y: 12 });
                     gsap.set(progress, { scaleX: 0, transformOrigin: 'left center' });
+
+                    const spotlight = [
+                        { xPercent: 0, yPercent: 0, scale: 1 },
+                        { xPercent: -118, yPercent: 5, scale: 0.95 },
+                        { xPercent: -82, yPercent: -48, scale: 0.95 },
+                        { xPercent: 123, yPercent: 60, scale: 0.95 },
+                    ];
+                    const rest = [
+                        { xPercent: 123, yPercent: 60, scale: 0.58 },
+                        { xPercent: 10, yPercent: 45, scale: 0.58 },
+                        { xPercent: -82, yPercent: -85, scale: 0.52 },
+                        { xPercent: 0, yPercent: -20, scale: 0.52 },
+                    ];
 
                     const timeline = gsap.timeline({
                         defaults: { ease: 'none' },
@@ -107,62 +127,31 @@ const Projects = () => {
 
                     timeline
                         .to(progress, { scaleX: 1, duration: 1 }, 0)
-                        .to(intro, { autoAlpha: 0, y: -18, duration: 0.12 }, 0.08)
-                        .to(notes[0], { autoAlpha: 1, y: 0, duration: 0.12, ease: 'power2.out' }, 0.13)
-                        .to(notes[0], { autoAlpha: 0, y: -12, duration: 0.07 }, 0.24)
-                        .to(keshi, {
-                            xPercent: 123,
-                            yPercent: 60,
-                            scale: 0.58,
-                            zIndex: 4,
-                            duration: 0.13,
-                            ease: 'power2.inOut'
-                        }, 0.28)
-                        .to(decrypt, {
-                            xPercent: -82,
-                            yPercent: -85,
-                            scale: 0.52,
-                            zIndex: 5,
-                            duration: 0.15,
-                            ease: 'power2.inOut'
-                        }, 0.3)
-                        .to(zucchini, {
-                            xPercent: -118,
-                            yPercent: 5,
-                            scale: 0.95,
-                            zIndex: 6,
-                            duration: 0.17,
-                            ease: 'power2.inOut'
-                        }, 0.42)
-                        .to(notes[1], { autoAlpha: 1, y: 0, duration: 0.09, ease: 'power2.out' }, 0.49)
-                        .to(notes[1], { autoAlpha: 0, y: -12, duration: 0.07 }, 0.59)
-                        .to(zucchini, {
-                            xPercent: 10,
-                            yPercent: 45,
-                            scale: 0.58,
-                            zIndex: 3,
-                            duration: 0.14,
-                            ease: 'power2.inOut'
-                        }, 0.62)
-                        .to(keshi, {
-                            xPercent: 0,
-                            yPercent: -20,
-                            scale: 0.52,
-                            zIndex: 4,
-                            duration: 0.14,
-                            ease: 'power2.inOut'
-                        }, 0.64)
-                        .to(decrypt, {
-                            xPercent: -82,
-                            yPercent: -48,
-                            scale: 0.95,
-                            zIndex: 6,
-                            duration: 0.16,
-                            ease: 'power2.inOut'
-                        }, 0.75)
-                        .to(notes[2], { autoAlpha: 1, y: 0, duration: 0.09, ease: 'power2.out' }, 0.81)
-                        .to(notes[2], { autoAlpha: 0, y: -10, duration: 0.08 }, 0.9)
-                        .to(ending, { autoAlpha: 1, y: 0, duration: 0.08, ease: 'power2.out' }, 0.92);
+                        .to(intro, { autoAlpha: 0, y: -18, duration: 0.12 }, 0.08);
+
+                    const beatCount = cards.length;
+                    cards.forEach((card, index) => {
+                        const beatStart = 0.18 + (index * 0.7) / Math.max(beatCount, 1);
+                        const focus = spotlight[index % spotlight.length];
+                        notes[index] && timeline
+                            .to(notes[index], { autoAlpha: 1, y: 0, duration: 0.09, ease: 'power2.out' }, beatStart)
+                            .to(notes[index], { autoAlpha: 0, y: -12, duration: 0.07 }, beatStart + 0.12);
+
+                        cards.forEach((other, otherIndex) => {
+                            const isFocus = otherIndex === index;
+                            const pose = isFocus ? focus : rest[otherIndex % rest.length];
+                            timeline.to(other, {
+                                xPercent: pose.xPercent,
+                                yPercent: pose.yPercent,
+                                scale: pose.scale,
+                                zIndex: isFocus ? 8 : Math.max(2, cards.length - otherIndex),
+                                duration: 0.15,
+                                ease: 'power2.inOut'
+                            }, beatStart + 0.03);
+                        });
+                    });
+
+                    timeline.to(ending, { autoAlpha: 1, y: 0, duration: 0.08, ease: 'power2.out' }, 0.92);
 
                 });
 
@@ -220,7 +209,7 @@ const Projects = () => {
                             </header>
 
                             <div className="work-wall__intro">
-                                <p>SELECTED / 03</p>
+                                <p>SELECTED / {String(featuredProjects.length).padStart(2, '0')}</p>
                                 <h2 id="projects-heading">Interfaces above.<br />Systems underneath.</h2>
                             </div>
 
@@ -264,7 +253,7 @@ const Projects = () => {
                             </div>
 
                             <div className="work-wall__ending" aria-hidden="true">
-                                <span>THREE PRODUCTS</span>
+                                <span>{featuredProjects.length} PRODUCTS</span>
                                 <strong>ONE ENGINEERING PRACTICE.</strong>
                             </div>
 

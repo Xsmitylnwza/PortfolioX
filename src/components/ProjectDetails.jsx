@@ -11,6 +11,8 @@ import './DocumentRoom.css';
 import './ProjectDetails.css';
 
 const PROJECT_DECISIONS = {
+  'projectmux':
+    'An agent workspace should remember its setup and wait for an intentional Start. ProjectMux makes multi-terminal, multi-agent environments first-class: configure Codex, Claude Code, servers, and shells once per project, keep workspaces side-by-side, and never auto-run on open.',
   'keshi-pomodoro':
     'Focus and break are mental states, not theme toggles. The Discipline dashboard turns habits and deep-work minutes into a binary pattern mirror (done / not done) with multi-view matrices, evidence, and an agent-friendly API — so the product stays honest about whether you showed up.',
   'zucchini-review':
@@ -26,6 +28,7 @@ const PROJECT_DECISIONS = {
  * dossier — interleaved evidence and mechanics (Decrypt)
  */
 const PROJECT_LAYOUTS = {
+  'projectmux': 'feature',
   'keshi-pomodoro': 'cinema',
   'zucchini-review': 'feature',
   'decrypt-password': 'dossier',

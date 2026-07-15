@@ -1,5 +1,37 @@
 export const projects = [
   {
+    id: 'projectmux',
+    title: 'ProjectMux',
+    category: 'DESKTOP • 2026',
+    year: '2026',
+    description: 'Many workspaces. Many terminals. Different agents. One Start — a Windows desktop app for managing AI agent workspaces.',
+    fullDescription: 'ProjectMux is a local-first Windows desktop app for people who run many projects with many terminals and different AI agents. Create a workspace per project, configure shells, Codex, Claude Code, servers, tunnels, env, secrets, ports, readiness, and layout once, then press Start Workspace to bring the whole multi-agent environment online. It keeps multiple workspaces side-by-side, runs a resizable terminal grid, surfaces Done/Failed attention until you focus the finished pane, and never auto-runs on open — setup is intentional, start is explicit. Built with Electron, React, TypeScript, xterm.js, and node-pty, with Zod-validated local config and secret-safe IPC.',
+    tags: ['Electron', 'React 19', 'TypeScript', 'xterm.js', 'node-pty', 'Zod', 'pnpm'],
+    image: '/assets/projectmux/workspace-grid.jpg',
+    link: 'https://github.com/Xsmitylnwza/projectmux',
+    repo: 'https://github.com/Xsmitylnwza/projectmux',
+    code: `// Workspace start is explicit — nothing auto-runs on open/import/restore.
+async function startWorkspace(workspace) {
+  const ready = await resolveDependencies(workspace.sessions);
+  for (const session of ready) {
+    await launchSession(session, {
+      env: hydrateSecrets(session.envRefs),
+      onReady: waitForReadiness(session.readiness),
+      restart: session.restartPolicy,
+    });
+  }
+  markWorkspaceRunning(workspace.id);
+}`,
+    gallery: [
+      { image: '/assets/projectmux/welcome.jpg' },
+      { image: '/assets/projectmux/session-editor.jpg' },
+      { image: '/assets/projectmux/command-palette.jpg' },
+      { image: '/assets/projectmux/sidebar-attention.jpg' },
+    ],
+    galleryLabels: ['Welcome', 'Session editor', 'Command palette', 'Attention'],
+    role: 'Full Stack Developer'
+  },
+  {
     id: 'keshi-pomodoro',
     title: 'Keshi Pomodoro',
     category: 'PRODUCTIVITY • 2026',

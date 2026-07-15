@@ -4,16 +4,17 @@ import './Loader.css';
 
 // Boot posters mirror gallery covers only — one signature image per selected system.
 const loaderProjects = [
+    ['PROJECTMUX', '/assets/previews/projectmux-demo.jpg'],
     ['KESHI', '/assets/previews/keshi-pomodoro-demo.jpg'],
     ['ZUCCHINI', '/assets/previews/zucchini-homepage.jpg'],
     ['DECRYPT', '/assets/previews/decrypt-gameplay.jpg'],
+    ['PROJECTMUX', '/assets/previews/projectmux-demo.jpg'],
     ['KESHI', '/assets/previews/keshi-pomodoro-demo.jpg'],
-    ['ZUCCHINI', '/assets/previews/zucchini-homepage.jpg'],
-    ['DECRYPT', '/assets/previews/decrypt-gameplay.jpg'],
 ].map(([title, image], index) => ({ id: String(index + 1).padStart(2, '0'), title, image }));
 
 const loaderSequence = [...loaderProjects, ...loaderProjects.slice(0, 3)];
 const galleryPreloadSources = [
+    '/assets/previews/projectmux-demo.jpg',
     '/assets/previews/keshi-pomodoro-demo.jpg',
     '/assets/previews/zucchini-homepage.jpg',
     '/assets/previews/decrypt-gameplay.jpg',

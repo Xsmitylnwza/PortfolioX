@@ -171,9 +171,10 @@
     will-change: transform;
 }
 
-.work-card--1 { top: 22%; left: 0; z-index: 5; }
-.work-card--2 { top: 32%; left: 58%; z-index: 4; transform: scale(0.66); }
-.work-card--3 { top: 72%; left: 42%; z-index: 3; transform: scale(0.42); }
+.work-card--1 { top: 18%; left: 0; z-index: 6; }
+.work-card--2 { top: 28%; left: 52%; z-index: 5; transform: scale(0.7); }
+.work-card--3 { top: 62%; left: 8%; z-index: 4; transform: scale(0.52); }
+.work-card--4 { top: 70%; left: 58%; z-index: 3; transform: scale(0.42); }
 
 .work-card__frame {
     position: relative;
@@ -448,10 +449,12 @@
 
     .work-card--1 { grid-column: 1 / -1; }
     .work-card--2,
-    .work-card--3 { grid-column: auto; }
+    .work-card--3,
+    .work-card--4 { grid-column: auto; }
     .work-card__frame { aspect-ratio: 4 / 3; }
     .work-card--2 .work-card__frame,
-    .work-card--3 .work-card__frame { aspect-ratio: 4 / 5; }
+    .work-card--3 .work-card__frame,
+    .work-card--4 .work-card__frame { aspect-ratio: 4 / 5; }
     .work-card__caption { display: block; font-size: 0.58rem; }
     .work-card__caption small { display: none; }
 

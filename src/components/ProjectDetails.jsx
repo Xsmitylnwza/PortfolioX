@@ -2268,516 +2268,71 @@ const ZuchLayout = ({ project, decision, techItems, gallery, hasLive, hasRepo })
   );
 };
 
-const FREEFLOW_CAPABILITIES = [
-  {
-    title: 'LINE OA',
-    detail: 'Live intake',
-    icon: 'simple-icons:line',
-  },
-  {
-    title: 'Conversation',
-    detail: 'Shared context',
-    icon: 'lucide:messages-square',
-  },
-  {
-    title: 'Socket.IO',
-    detail: 'Realtime mirror',
-    icon: 'simple-icons:socketdotio',
-  },
-  {
-    title: 'Go + Postgres',
-    detail: 'Backend spine',
-    icon: 'lucide:server-cog',
-  },
+const FREEFLOW_PATH = [
+  { label: 'Message', cue: 'LINE OA intake' },
+  { label: 'Thread', cue: 'shared client context' },
+  { label: 'Work', cue: 'proposal · project · invoice' },
 ];
 
-const FREEFLOW_EXTERNAL_CONTRACTS = [
-  { label: 'LINE Messaging API', icon: 'simple-icons:line' },
-  { label: 'Google Calendar / Gmail', icon: 'simple-icons:googlecalendar' },
-  { label: 'PDF generation', icon: 'lucide:file-output' },
-];
-
-const FREEFLOW_SIGNALS = [
-  {
-    label: 'Capture',
-    title: 'LINE OA becomes a shared client record.',
-    body: 'The live webhook path resolves the client identity, conversation, message history, unread state, and attachments together.',
-    icon: 'lucide:messages-square',
-  },
-  {
-    label: 'Convert',
-    title: 'Commercial work starts beside the thread.',
-    body: 'Conversation-scoped proposals continue into projects, invoices, documents, and scheduled follow-up.',
-    icon: 'lucide:file-check-2',
-  },
-  {
-    label: 'Operate',
-    title: 'Attention returns to one dashboard.',
-    body: 'Revenue, unpaid invoices, upcoming meetings, and active projects become one visible operating picture.',
-    icon: 'lucide:layout-dashboard',
-  },
-];
-
-const FREEFLOW_SCOPE = [
-  {
-    status: 'Live + demonstrated',
-    title: 'LINE Official Account',
-    body: 'Receive and reply to messages, preserve channel identity, attach files, and mirror new events into the workspace in realtime.',
-    icon: 'simple-icons:line',
-    points: ['Webhook intake', 'Socket.IO updates', 'Media + files'],
-    live: true,
-  },
-  {
-    status: 'Explicit boundary',
-    title: 'Additional providers',
-    body: 'The backend has a provider-shaped data model, but unshipped channels remain roadmap and are not presented here as working integrations.',
-    icon: 'lucide:waypoints',
-    points: ['Provider contract', 'No invented demos', 'Roadmap stays labelled'],
-  },
-];
-
-const FREEFLOW_LOOP = [
+const FREEFLOW_TRAIL = [
   {
     stage: '01',
-    label: 'Client action',
-    title: 'Send a LINE OA message',
-    body: 'Text or an attachment enters through the connected official account.',
+    title: 'A LINE message arrives',
+    body: 'Text or a file enters through the connected Official Account.',
     icon: 'simple-icons:line',
-    connector: 'webhook event',
   },
   {
     stage: '02',
-    label: 'Captured truth',
-    title: 'Resolve shared context',
-    body: 'The service finds or creates the client identity and conversation.',
-    icon: 'lucide:contact-round',
-    connector: 'one transaction',
+    title: 'Context stays one record',
+    body: 'Identity, conversation, attachments, and unread state resolve together.',
+    icon: 'lucide:messages-square',
   },
   {
     stage: '03',
-    label: 'Processing boundary',
-    title: 'Persist + publish',
-    body: 'Go Fiber stores the message, updates conversation metrics, and emits into the organization room.',
-    icon: 'lucide:workflow',
-    connector: 'realtime mirror',
-    focus: true,
-  },
-  {
-    stage: '04',
-    label: 'Visible result',
-    title: 'Reflect it in the inbox',
-    body: 'History, unread state, quotations, attachments, and files stay beside the thread.',
-    icon: 'lucide:panel-top-open',
-    connector: 'human choice',
-  },
-  {
-    stage: '05',
-    label: 'Next choice',
-    title: 'Move the work forward',
-    body: 'The freelancer replies or creates the proposal, project, invoice, appointment, or follow-up.',
+    title: 'The next action is visible',
+    body: 'Reply, quote, project, invoice, or appointment starts beside the same thread.',
     icon: 'lucide:arrow-up-right',
   },
 ];
 
-const FREEFLOW_PROOF_POINTS = [
-  [
-    'LINE identity and conversation history',
-    'Quotations attached to the same client view',
-    'Files and rich attachments one tab away',
-  ],
-  [
-    'Received revenue versus pipeline revenue',
-    'Upcoming meetings and invoice state',
-    'Projects filtered inside the same operating view',
-  ],
-];
-
-const FREEFLOW_ARCHITECTURE_INPUTS = [
+const FREEFLOW_BOUNDARY = [
   {
-    label: 'Freelancer client',
-    title: 'React workspace',
-    body: 'Authenticated REST commands and organization-room Socket.IO events.',
-    icon: 'lucide:monitor-up',
-    contract: 'JWT · REST · Socket.IO',
-  },
-  {
-    label: 'Customer client',
+    status: 'Live',
     title: 'LINE OA',
-    body: 'Messages and attachments enter through the public LINE webhook route.',
+    body: 'Webhook intake, realtime inbox mirror, media + files.',
     icon: 'simple-icons:line',
-    contract: 'Webhook · Messaging API',
+    live: true,
+  },
+  {
+    status: 'Roadmap',
+    title: 'Other channels',
+    body: 'Provider-shaped model only. Not claimed as shipped product.',
+    icon: 'lucide:waypoints',
+    live: false,
   },
 ];
 
-const FREEFLOW_ARCHITECTURE_STORES = [
+const FREEFLOW_SYSTEM = [
   {
-    label: 'Durable records',
-    title: 'PostgreSQL',
-    body: 'Organizations, clients, conversations, messages, projects, proposals, invoices, and appointments.',
+    label: 'Clients',
+    title: 'React workspace + LINE OA',
+    body: 'JWT/REST/Socket.IO for freelancers. Webhook for customers.',
+    icon: 'lucide:monitor-up',
+  },
+  {
+    label: 'Boundary',
+    title: 'Go Fiber API',
+    body: 'Scope the org, persist CRM truth, publish the visible result.',
+    icon: 'lucide:server-cog',
+    focus: true,
+  },
+  {
+    label: 'Stores',
+    title: 'PostgreSQL + MinIO',
+    body: 'Records stay relational. Files and documents stay object storage.',
     icon: 'simple-icons:postgresql',
   },
-  {
-    label: 'Object evidence',
-    title: 'MinIO',
-    body: 'Message attachments, project files, generated documents, and media previews.',
-    icon: 'simple-icons:minio',
-  },
 ];
-
-const FREEFLOW_GUARDS = [
-  {
-    label: 'Route guard',
-    title: 'JWT on workspace APIs',
-    icon: 'lucide:shield-check',
-  },
-  {
-    label: 'Tenant boundary',
-    title: 'Organization membership checks',
-    icon: 'lucide:users-round',
-  },
-  {
-    label: 'Write boundary',
-    title: 'Transactional message intake',
-    icon: 'lucide:git-commit-horizontal',
-  },
-  {
-    label: 'Identity lifecycle',
-    title: 'Verified email + hashed tokens',
-    icon: 'lucide:key-round',
-  },
-];
-
-const FreeflowSignalPanel = () => (
-  <section
-    className="case-freeflow-signals case-reveal"
-    data-reveal="scroll"
-    style={{ '--reveal-index': 0 }}
-    aria-labelledby="freeflow-signals-title"
-  >
-    <StorySectionHead
-      eyebrow="One trail · Three outcomes"
-      title="The client context survives every handoff."
-      body="The product thesis is not more tools. It is one thread of truth moving from first contact to paid work."
-      id="freeflow-signals-title"
-    />
-    <div className="case-freeflow-signals__list">
-      {FREEFLOW_SIGNALS.map((signal, index) => (
-        <div className="case-freeflow-wave-glass" data-wave-follow key={signal.label}>
-          <article className="case-freeflow-glass case-freeflow-signal">
-            <span className="case-freeflow-signal__index">{formatIndex(index + 1)}</span>
-            <span className="case-freeflow-signal__icon" aria-hidden="true">
-              <Icon icon={signal.icon} />
-            </span>
-            <div>
-              <span>{signal.label}</span>
-              <h3>{signal.title}</h3>
-              <p>{signal.body}</p>
-            </div>
-          </article>
-        </div>
-      ))}
-    </div>
-  </section>
-);
-
-const FreeflowChannelScope = () => (
-  <section
-    className="case-freeflow-scope case-reveal"
-    data-reveal="scroll"
-    style={{ '--reveal-index': 1 }}
-    aria-labelledby="freeflow-scope-title"
-  >
-    <StorySectionHead
-      eyebrow="Product boundary"
-      title="One channel is live. The story says exactly that."
-      body="LINE OA is implemented and visible in the captured interface. The provider model can expand, but roadmap channels are kept outside the shipped claim."
-      id="freeflow-scope-title"
-    />
-
-    <div className="case-freeflow-scope__rail">
-      {FREEFLOW_SCOPE.map((item, index) => (
-        <div className="case-freeflow-wave-glass" data-wave-follow key={item.title}>
-          <article className={item.live ? 'case-freeflow-glass case-freeflow-scope-card case-freeflow-scope-card--live' : 'case-freeflow-glass case-freeflow-scope-card'}>
-            <header>
-              <span className="case-freeflow-scope-card__icon" aria-hidden="true">
-                <Icon icon={item.icon} />
-              </span>
-              <span>{item.status}</span>
-            </header>
-            <strong>{formatIndex(index + 1)}</strong>
-            <h3>{item.title}</h3>
-            <p>{item.body}</p>
-            <ul aria-label={`${item.title} evidence`}>
-              {item.points.map((point) => <li key={point}>{point}</li>)}
-            </ul>
-          </article>
-        </div>
-      ))}
-      <div className="case-freeflow-scope__bridge" data-wave-follow aria-hidden="true">
-        <span>Implemented boundary</span>
-        <Icon icon="lucide:arrow-right" />
-      </div>
-    </div>
-  </section>
-);
-
-const FreeflowProductMotion = ({ project, media }) => {
-  if (!media) return null;
-  const label = project.galleryLabels?.[0] || 'Connected client operations';
-  const description = project.galleryDescriptions?.[0];
-
-  return (
-    <section
-      className="case-freeflow-motion case-reveal"
-      data-reveal="scroll"
-      style={{ '--reveal-index': 1 }}
-      aria-labelledby="freeflow-motion-title"
-    >
-      <StorySectionHead
-        eyebrow="Real product · Poster first"
-        title="One sidebar holds the working day."
-        body="A sharp application frame stays readable first; motion starts only when the recorded tour is actually in view."
-        id="freeflow-motion-title"
-      />
-      <div className="case-freeflow-motion__stage">
-        <CaseMediaFrame
-          media={media}
-          alt={`${project.title} — ${label}`}
-          sizes="(max-width: 900px) 100vw, 980px"
-          className="case-media__frame--freeflow-lead"
-          label={label}
-        />
-        <div className="case-freeflow-motion__caption-motion" data-wave-follow>
-          <aside className="case-freeflow-glass case-freeflow-motion__caption">
-            <span>Recorded application</span>
-            {description && <p>{description}</p>}
-            <ul aria-label="Connected product areas">
-              <li>Dashboard</li>
-              <li>Calendar</li>
-              <li>Templates</li>
-            </ul>
-          </aside>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-const FreeflowBehaviorLoop = ({ decision }) => (
-  <section
-    className="case-freeflow-system case-reveal"
-    data-reveal="scroll"
-    style={{ '--reveal-index': 0 }}
-    aria-labelledby="freeflow-system-title"
-  >
-    <StorySectionHead
-      eyebrow="Behavior loop"
-      title="A message becomes a visible next action."
-      body="The backend preserves the evidence first, publishes the realtime result second, and leaves the commercial decision with the freelancer."
-      id="freeflow-system-title"
-    />
-    <ol className="case-freeflow-flow" aria-label="LINE message to freelancer action flow">
-      {FREEFLOW_LOOP.map((node) => (
-        <li data-wave-follow key={node.stage}>
-          <article className={node.focus ? 'case-freeflow-glass case-freeflow-flow__node case-freeflow-flow__node--focus' : 'case-freeflow-glass case-freeflow-flow__node'}>
-            <header>
-              <span>{node.stage}</span>
-              <small>{node.label}</small>
-            </header>
-            <span className="case-freeflow-flow__icon" aria-hidden="true">
-              <Icon icon={node.icon} />
-            </span>
-            <h3>{node.title}</h3>
-            <p>{node.body}</p>
-          </article>
-          {node.connector && (
-            <span className="case-freeflow-flow__connector" aria-hidden="true">
-              <small>{node.connector}</small>
-              <Icon icon="lucide:arrow-right" />
-            </span>
-          )}
-        </li>
-      ))}
-    </ol>
-    {decision && (
-      <div className="case-freeflow-system__note-motion" data-wave-follow>
-        <p className="case-freeflow-glass case-freeflow-system__note">
-          <Icon icon="lucide:circle-check-big" aria-hidden="true" />
-          <span>{decision}</span>
-        </p>
-      </div>
-    )}
-  </section>
-);
-
-const FreeflowEvidence = ({ project, gallery }) => {
-  const evidence = gallery.slice(1).map((media, index) => ({
-    media,
-    label: project.galleryLabels?.[index + 1] || `Feature ${index + 1}`,
-    description: project.galleryDescriptions?.[index + 1],
-    points: FREEFLOW_PROOF_POINTS[index] || [],
-  }));
-
-  if (evidence.length === 0) return null;
-
-  return (
-    <section
-      className="case-freeflow-evidence case-reveal"
-      data-reveal="scroll"
-      style={{ '--reveal-index': 1 }}
-      aria-labelledby="freeflow-evidence-title"
-    >
-      <StorySectionHead
-        eyebrow="Interface proof"
-        title="Read the thread. Then read the business."
-        body="Two recorded surfaces prove the same operating trail at different scales: one client conversation and the whole workspace pulse."
-        id="freeflow-evidence-title"
-      />
-      <div className="case-freeflow-evidence__track">
-        {evidence.map((item, index) => (
-          <article
-            className={index % 2 === 1 ? 'case-freeflow-evidence__beat case-freeflow-evidence__beat--reverse' : 'case-freeflow-evidence__beat'}
-            key={item.label}
-          >
-            <div className="case-freeflow-evidence__media">
-              <CaseMediaFrame
-                media={item.media}
-                alt={`${project.title} — ${item.label}`}
-                sizes="(max-width: 900px) 100vw, 720px"
-                className="case-media__frame--freeflow-evidence"
-                label={item.label}
-              />
-            </div>
-            <div className="case-freeflow-evidence__copy-motion" data-wave-follow>
-              <div className="case-freeflow-glass case-freeflow-evidence__copy">
-                <span>Recorded proof · {formatIndex(index + 1)}</span>
-                <h3>{item.label}</h3>
-                {item.description && <p>{item.description}</p>}
-                <ul aria-label={`${item.label} visible signals`}>
-                  {item.points.map((point) => (
-                    <li key={point}>
-                      <Icon icon="lucide:check" aria-hidden="true" />
-                      {point}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-};
-
-const FreeflowArchitecture = () => (
-  <section
-    className="case-freeflow-architecture case-reveal"
-    data-reveal="scroll"
-    style={{ '--reveal-index': 2 }}
-    aria-labelledby="freeflow-architecture-title"
-  >
-    <StorySectionHead
-      eyebrow="Implementation truth"
-      title="Two clients meet at one backend boundary."
-      body="The browser and LINE OA use different contracts, but the Go service applies organization scope before records and files become durable."
-      id="freeflow-architecture-title"
-    />
-
-    <div className="case-freeflow-architecture__map">
-      <div className="case-freeflow-architecture__inputs">
-        <span className="case-freeflow-architecture__lane" data-wave-follow>Actors + contracts</span>
-        {FREEFLOW_ARCHITECTURE_INPUTS.map((item) => (
-          <div className="case-freeflow-wave-glass" data-wave-follow key={item.title}>
-            <article className="case-freeflow-glass case-freeflow-architecture__node">
-              <span className="case-freeflow-architecture__node-icon" aria-hidden="true">
-                <Icon icon={item.icon} />
-              </span>
-              <div>
-                <span>{item.label}</span>
-                <h3>{item.title}</h3>
-                <p>{item.body}</p>
-                <small>{item.contract}</small>
-              </div>
-            </article>
-          </div>
-        ))}
-      </div>
-
-      <div className="case-freeflow-architecture__connector" data-wave-follow aria-hidden="true">
-        <small>Normalize</small>
-        <span />
-        <Icon icon="lucide:arrow-right" />
-      </div>
-
-      <div className="case-freeflow-architecture__engine-motion" data-wave-follow>
-        <article className="case-freeflow-glass case-freeflow-glass--strong case-freeflow-architecture__engine">
-          <header>
-            <span className="case-freeflow-architecture__engine-icon" aria-hidden="true">
-              <Icon icon="lucide:blocks" />
-            </span>
-            <div>
-              <span>Processing boundary</span>
-              <strong>Go Fiber API</strong>
-            </div>
-            <small>Backend owned</small>
-          </header>
-          <h3>Scope, persist, publish.</h3>
-          <ol>
-            <li><span>01</span>Resolve organization and client context</li>
-            <li><span>02</span>Write CRM records and attachment metadata</li>
-            <li><span>03</span>Emit the visible result to the org room</li>
-          </ol>
-          <footer aria-label="External service contracts">
-            {FREEFLOW_EXTERNAL_CONTRACTS.map((contract) => (
-              <span key={contract.label}>
-                <Icon icon={contract.icon} aria-hidden="true" />
-                {contract.label}
-              </span>
-            ))}
-          </footer>
-        </article>
-      </div>
-
-      <div className="case-freeflow-architecture__connector case-freeflow-architecture__connector--out" data-wave-follow aria-hidden="true">
-        <small>Durable truth</small>
-        <span />
-        <Icon icon="lucide:arrow-right" />
-      </div>
-
-      <div className="case-freeflow-architecture__stores">
-        <span className="case-freeflow-architecture__lane" data-wave-follow>Stores</span>
-        {FREEFLOW_ARCHITECTURE_STORES.map((item) => (
-          <div className="case-freeflow-wave-glass" data-wave-follow key={item.title}>
-            <article className="case-freeflow-glass case-freeflow-architecture__node">
-              <span className="case-freeflow-architecture__node-icon" aria-hidden="true">
-                <Icon icon={item.icon} />
-              </span>
-              <div>
-                <span>{item.label}</span>
-                <h3>{item.title}</h3>
-                <p>{item.body}</p>
-              </div>
-            </article>
-          </div>
-        ))}
-      </div>
-    </div>
-
-    <ul className="case-freeflow-guards" aria-label="FreeFlow backend safeguards">
-      {FREEFLOW_GUARDS.map((guard, index) => (
-        <li data-wave-follow key={guard.label}>
-          <div className="case-freeflow-glass">
-            <span>{formatIndex(index + 1)}</span>
-            <Icon icon={guard.icon} aria-hidden="true" />
-            <small>{guard.label}</small>
-            <strong>{guard.title}</strong>
-          </div>
-        </li>
-      ))}
-    </ul>
-  </section>
-);
 
 const FreeflowHeroMedia = ({ project, media }) => {
   const poster = media && typeof media === 'object' ? media.image : media;
@@ -2798,63 +2353,268 @@ const FreeflowHeroMedia = ({ project, media }) => {
   );
 };
 
-const FreeflowLayout = ({ project, decision, techItems, gallery, hasLive, hasRepo }) => (
-  <>
-    <div className="case-freeflow-hero case-reveal" data-reveal="mount" style={{ '--reveal-index': 1 }}>
-      <div className="case-freeflow-hero__copy" data-wave-follow>
-        <div className="case-freeflow-brand">
-          <img
-            src="/assets/freeflow/logo.png"
-            alt=""
-            width="64"
-            height="64"
-            aria-hidden="true"
-            data-wave-media
-          />
-          <span>Backend-led CRM workspace</span>
-        </div>
-        <p className="case-kicker">{project.category || 'Selected system'}</p>
-        <h1 id="case-title">{project.title}</h1>
-        <p className="case-role">{project.role || 'Software Engineer'}</p>
-        <p className="case-freeflow-hero__thesis">One client message becomes an operating trail.</p>
-        <p className="case-lede">{project.description}</p>
-        <CaseActions hasLive={hasLive} hasRepo={hasRepo} project={project} />
-      </div>
-      <div className="case-freeflow-hero__media">
-        <FreeflowHeroMedia project={project} media={gallery[0]} />
-        <div className="case-freeflow-hero__caption-motion" data-wave-follow>
-          <aside className="case-freeflow-glass case-freeflow-hero__caption">
-            <span><i /> Recorded application</span>
-            <strong>Dashboard · meetings · projects</strong>
-            <small>Sharp poster first · the full recorded tour appears below</small>
-          </aside>
-        </div>
-      </div>
-    </div>
+const FreeflowVideoBeat = ({
+  project,
+  media,
+  label,
+  description,
+  eyebrow,
+  title,
+  points = [],
+  reverse = false,
+  revealIndex = 0,
+}) => {
+  if (!media) return null;
 
-    <ul className="case-freeflow-capabilities" aria-label="FreeFlow system facts">
-      {FREEFLOW_CAPABILITIES.map((item) => (
-        <li data-wave-follow key={item.title}>
-          <span className="case-freeflow-capabilities__icon" aria-hidden="true">
+  return (
+    <section
+      className={[
+        'case-freeflow-beat',
+        'case-reveal',
+        reverse ? 'case-freeflow-beat--reverse' : '',
+      ].filter(Boolean).join(' ')}
+      data-reveal="scroll"
+      style={{ '--reveal-index': revealIndex }}
+      aria-labelledby={`freeflow-beat-${revealIndex}-${label}`}
+    >
+      <div className="case-freeflow-beat__copy" data-wave-follow>
+        <StorySectionHead
+          eyebrow={eyebrow}
+          title={title}
+          body={description}
+          id={`freeflow-beat-${revealIndex}-${label}`}
+        />
+        {points.length > 0 && (
+          <ul className="case-freeflow-beat__points" aria-label={`${label} signals`}>
+            {points.map((point) => (
+              <li key={point}>
+                <Icon icon="lucide:check" aria-hidden="true" />
+                <span>{point}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+      <div className="case-freeflow-beat__media">
+        <CaseMediaFrame
+          media={media}
+          alt={`${project.title} — ${label}`}
+          sizes="(max-width: 900px) 100vw, 760px"
+          className="case-media__frame--freeflow-evidence"
+          label={label}
+          kindLabel="Recorded flow"
+        />
+      </div>
+    </section>
+  );
+};
+
+const FreeflowTrail = ({ decision }) => (
+  <section
+    className="case-freeflow-trail case-reveal"
+    data-reveal="scroll"
+    style={{ '--reveal-index': 0 }}
+    aria-labelledby="freeflow-trail-title"
+  >
+    <StorySectionHead
+      eyebrow="One operating trail"
+      title="Message in. Context held. Work continues."
+      body="Three beats only. Everything else is support detail."
+      id="freeflow-trail-title"
+    />
+    <ol className="case-freeflow-trail__steps" aria-label="FreeFlow operating trail">
+      {FREEFLOW_TRAIL.map((step, index) => (
+        <li data-wave-follow key={step.stage}>
+          <article className="case-freeflow-glass case-freeflow-trail__card">
+            <header>
+              <span>{step.stage}</span>
+              <span className="case-freeflow-trail__icon" aria-hidden="true">
+                <Icon icon={step.icon} />
+              </span>
+            </header>
+            <h3>{step.title}</h3>
+            <p>{step.body}</p>
+          </article>
+          {index < FREEFLOW_TRAIL.length - 1 && (
+            <span className="case-freeflow-trail__connector" aria-hidden="true">
+              <Icon icon="lucide:arrow-right" />
+            </span>
+          )}
+        </li>
+      ))}
+    </ol>
+    {decision && (
+      <p className="case-freeflow-glass case-freeflow-trail__note" data-wave-follow>
+        <Icon icon="lucide:circle-check-big" aria-hidden="true" />
+        <span>{decision}</span>
+      </p>
+    )}
+  </section>
+);
+
+const FreeflowBoundary = () => (
+  <section
+    className="case-freeflow-boundary case-reveal"
+    data-reveal="scroll"
+    style={{ '--reveal-index': 1 }}
+    aria-labelledby="freeflow-boundary-title"
+  >
+    <StorySectionHead
+      eyebrow="Honest scope"
+      title="LINE is live. Other channels stay labelled."
+      body="The page only claims the path you can see in the demos."
+      id="freeflow-boundary-title"
+    />
+    <div className="case-freeflow-boundary__row">
+      {FREEFLOW_BOUNDARY.map((item) => (
+        <article
+          className={[
+            'case-freeflow-glass',
+            'case-freeflow-boundary__card',
+            item.live ? 'is-live' : 'is-roadmap',
+          ].join(' ')}
+          data-wave-follow
+          key={item.title}
+        >
+          <span className="case-freeflow-boundary__icon" aria-hidden="true">
             <Icon icon={item.icon} />
           </span>
           <div>
-            <strong>{item.title}</strong>
-            <small>{item.detail}</small>
+            <small>{item.status}</small>
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
           </div>
+        </article>
+      ))}
+    </div>
+  </section>
+);
+
+const FreeflowSystem = ({ techItems }) => (
+  <section
+    className="case-freeflow-system-rail case-reveal"
+    data-reveal="scroll"
+    style={{ '--reveal-index': 2 }}
+    aria-labelledby="freeflow-system-title"
+  >
+    <StorySectionHead
+      eyebrow="Backend boundary"
+      title="Two clients. One write path."
+      body="The story stays short: who writes, who scopes, what stores."
+      id="freeflow-system-title"
+    />
+    <ol className="case-freeflow-system-rail__list" aria-label="FreeFlow system map">
+      {FREEFLOW_SYSTEM.map((node, index) => (
+        <li data-wave-follow key={node.title}>
+          <article className={node.focus ? 'case-freeflow-glass case-freeflow-system-rail__node is-focus' : 'case-freeflow-glass case-freeflow-system-rail__node'}>
+            <span>{formatIndex(index + 1)}</span>
+            <span className="case-freeflow-system-rail__icon" aria-hidden="true">
+              <Icon icon={node.icon} />
+            </span>
+            <small>{node.label}</small>
+            <h3>{node.title}</h3>
+            <p>{node.body}</p>
+          </article>
+          {index < FREEFLOW_SYSTEM.length - 1 && (
+            <span className="case-freeflow-system-rail__arrow" aria-hidden="true">
+              <Icon icon="lucide:arrow-right" />
+            </span>
+          )}
         </li>
       ))}
-    </ul>
-
-    <FreeflowSignalPanel />
-    <FreeflowChannelScope />
-    <FreeflowProductMotion project={project} media={gallery[0]} />
-    <FreeflowBehaviorLoop decision={decision} />
-    <FreeflowEvidence project={project} gallery={gallery} />
-    <FreeflowArchitecture />
-    <StackBlock items={techItems} reveal="scroll" revealIndex={1} title="Built across the boundary" />
-  </>
+    </ol>
+    <StackBlock items={techItems} reveal="scroll" revealIndex={2} title="Built across the boundary" />
+  </section>
 );
+
+const FreeflowLayout = ({ project, decision, techItems, gallery, hasLive, hasRepo }) => {
+  const workspace = gallery[0];
+  const inbox = gallery[1];
+  const dashboard = gallery[2];
+
+  return (
+    <>
+      <div className="case-freeflow-hero case-reveal" data-reveal="mount" style={{ '--reveal-index': 1 }}>
+        <div className="case-freeflow-hero__copy" data-wave-follow>
+          <div className="case-freeflow-brand">
+            <img
+              src="/assets/freeflow/logo.png"
+              alt=""
+              width="64"
+              height="64"
+              aria-hidden="true"
+              data-wave-media
+            />
+            <span>Backend-led CRM workspace</span>
+          </div>
+          <p className="case-kicker">{project.category || 'Selected system'}</p>
+          <h1 id="case-title">{project.title}</h1>
+          <p className="case-freeflow-hero__thesis">One client message becomes an operating trail.</p>
+          <p className="case-role">{project.role || 'Software Engineer'}</p>
+          <p className="case-lede">{project.description}</p>
+          <CaseActions hasLive={hasLive} hasRepo={hasRepo} project={project} />
+        </div>
+        <div className="case-freeflow-hero__media">
+          <FreeflowHeroMedia project={project} media={workspace} />
+          <div className="case-freeflow-hero__caption-motion" data-wave-follow>
+            <aside className="case-freeflow-glass case-freeflow-hero__caption">
+              <div className="case-freeflow-path" aria-label="FreeFlow product path">
+                {FREEFLOW_PATH.map((step, index) => (
+                  <span key={step.label}>
+                    <strong>{step.label}</strong>
+                    <small>{step.cue}</small>
+                    {index < FREEFLOW_PATH.length - 1 && (
+                      <Icon icon="lucide:arrow-right" aria-hidden="true" />
+                    )}
+                  </span>
+                ))}
+              </div>
+            </aside>
+          </div>
+        </div>
+      </div>
+
+      <FreeflowVideoBeat
+        project={project}
+        media={workspace}
+        label={project.galleryLabels?.[0] || 'Workspace loop'}
+        description={project.galleryDescriptions?.[0]}
+        eyebrow="Demo 01 · Workspace"
+        title="See the day from one sidebar."
+        points={['Dashboard', 'Calendar', 'Templates']}
+        revealIndex={0}
+      />
+
+      <FreeflowTrail decision={decision} />
+
+      <FreeflowVideoBeat
+        project={project}
+        media={inbox}
+        label={project.galleryLabels?.[1] || 'LINE OA inbox'}
+        description={project.galleryDescriptions?.[1]}
+        eyebrow="Demo 02 · Inbox"
+        title="Client context stays beside the chat."
+        points={['LINE identity', 'Quotations', 'Files']}
+        reverse
+        revealIndex={1}
+      />
+
+      <FreeflowVideoBeat
+        project={project}
+        media={dashboard}
+        label={project.galleryLabels?.[2] || 'Business pulse'}
+        description={project.galleryDescriptions?.[2]}
+        eyebrow="Demo 03 · Dashboard"
+        title="Attention returns to one operating picture."
+        points={['Revenue vs pipeline', 'Unpaid invoices', 'Upcoming meetings']}
+        revealIndex={0}
+      />
+
+      <FreeflowBoundary />
+      <FreeflowSystem techItems={techItems} />
+    </>
+  );
+};
 
 const MODENOTE_CAPTURE_CONTEXT = [
   {

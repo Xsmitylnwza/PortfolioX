@@ -1617,3 +1617,259 @@ html.document-room-active .case-section--freeflow {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* -------------------------------------------------------------------------- */
+/* Simplified Keshi-style story beats                                          */
+/* -------------------------------------------------------------------------- */
+
+.case-freeflow-path {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 0.8rem;
+}
+
+.case-freeflow-path > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.case-freeflow-path strong {
+  display: block;
+  color: var(--story-ink);
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.case-freeflow-path small {
+  display: block;
+  color: var(--story-faint);
+  font-size: 0.78rem;
+}
+
+.case-freeflow-path svg {
+  width: 0.95rem;
+  height: 0.95rem;
+  color: var(--story-muted);
+  opacity: 0.8;
+}
+
+.case-freeflow-beat {
+  display: grid;
+  grid-template-columns: minmax(16rem, 0.9fr) minmax(0, 1.2fr);
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  align-items: center;
+  margin: clamp(2.5rem, 6vw, 4.5rem) 0;
+}
+
+.case-freeflow-beat--reverse {
+  grid-template-columns: minmax(0, 1.2fr) minmax(16rem, 0.9fr);
+}
+
+.case-freeflow-beat--reverse .case-freeflow-beat__copy { order: 2; }
+.case-freeflow-beat--reverse .case-freeflow-beat__media { order: 1; }
+
+.case-freeflow-beat__points {
+  display: grid;
+  gap: 0.55rem;
+  margin: 1.1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.case-freeflow-beat__points li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  color: var(--story-soft);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.case-freeflow-beat__points svg {
+  width: 1rem;
+  height: 1rem;
+  margin-top: 0.18rem;
+  flex: 0 0 auto;
+  color: #8dffb0;
+}
+
+.case-section--freeflow .case-media__frame--freeflow-evidence {
+  border-radius: 1.15rem;
+  overflow: hidden;
+}
+
+.case-freeflow-trail,
+.case-freeflow-boundary,
+.case-freeflow-system-rail {
+  margin: clamp(2.5rem, 6vw, 4.75rem) 0;
+}
+
+.case-freeflow-trail__steps,
+.case-freeflow-system-rail__list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+  margin: 1.4rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.case-freeflow-trail__steps > li,
+.case-freeflow-system-rail__list > li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.55rem;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.case-freeflow-trail__card,
+.case-freeflow-system-rail__node,
+.case-freeflow-boundary__card {
+  min-width: 0;
+  border-radius: 1.1rem;
+  padding: 1rem 1.05rem 1.1rem;
+}
+
+.case-freeflow-trail__card header {
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  color: var(--story-faint);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.case-freeflow-trail__icon,
+.case-freeflow-system-rail__icon,
+.case-freeflow-boundary__icon {
+  display: inline-grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 999px;
+  border: 1px solid var(--story-line);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.case-freeflow-trail__icon svg,
+.case-freeflow-system-rail__icon svg,
+.case-freeflow-boundary__icon svg {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.case-freeflow-trail__card h3,
+.case-freeflow-system-rail__node h3,
+.case-freeflow-boundary__card h3 {
+  margin: 0 0 0.4rem;
+  color: var(--story-ink);
+  font-size: 1.05rem;
+  line-height: 1.25;
+}
+
+.case-freeflow-trail__card p,
+.case-freeflow-system-rail__node p,
+.case-freeflow-boundary__card p {
+  margin: 0;
+  color: var(--story-muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.case-freeflow-trail__connector,
+.case-freeflow-system-rail__arrow {
+  display: grid;
+  place-items: center;
+  color: var(--story-faint);
+  align-self: center;
+}
+
+.case-freeflow-trail__note {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  margin: 1.1rem 0 0;
+  padding: 0.95rem 1.05rem;
+  border-radius: 1rem;
+  color: var(--story-soft);
+  line-height: 1.5;
+}
+
+.case-freeflow-trail__note svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  margin-top: 0.15rem;
+  flex: 0 0 auto;
+  color: #8dffb0;
+}
+
+.case-freeflow-boundary__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+  margin-top: 1.35rem;
+}
+
+.case-freeflow-boundary__card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.9rem;
+  align-items: start;
+}
+
+.case-freeflow-boundary__card small,
+.case-freeflow-system-rail__node small {
+  display: inline-block;
+  margin-bottom: 0.35rem;
+  color: var(--story-faint);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.case-freeflow-boundary__card.is-live { border-color: rgba(120, 255, 170, 0.35); }
+.case-freeflow-boundary__card.is-roadmap { opacity: 0.9; }
+
+.case-freeflow-system-rail__node { display: grid; gap: 0.35rem; }
+.case-freeflow-system-rail__node > span:first-child {
+  color: var(--story-faint);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+}
+.case-freeflow-system-rail__node.is-focus {
+  border-color: var(--story-line-strong);
+  background: var(--story-glass-fill-strong);
+}
+.case-freeflow-system-rail .case-block { margin-top: 1.6rem; }
+
+@media (max-width: 1020px) {
+  .case-freeflow-beat,
+  .case-freeflow-beat--reverse { grid-template-columns: 1fr; }
+  .case-freeflow-beat--reverse .case-freeflow-beat__copy,
+  .case-freeflow-beat--reverse .case-freeflow-beat__media { order: initial; }
+  .case-freeflow-trail__steps,
+  .case-freeflow-system-rail__list,
+  .case-freeflow-boundary__row { grid-template-columns: 1fr; }
+  .case-freeflow-trail__steps > li,
+  .case-freeflow-system-rail__list > li { grid-template-columns: 1fr; }
+  .case-freeflow-trail__connector,
+  .case-freeflow-system-rail__arrow {
+    transform: rotate(90deg);
+    justify-self: center;
+    padding: 0.15rem 0 0.35rem;
+  }
+}
+
+@media (max-width: 620px) {
+  .case-freeflow-path { gap: 0.45rem 0.55rem; }
+  .case-freeflow-path strong { font-size: 0.72rem; }
+  .case-freeflow-beat { margin: 2rem 0; }
+}

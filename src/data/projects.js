@@ -1,15 +1,102 @@
 export const projects = [
   {
+    id: 'modenote',
+    title: 'ModeNote',
+    category: 'AI VOICE WORKSPACE • JUN 2026',
+    year: 'JUN 2026',
+    description: 'A context-aware voice workspace that turns Thai-English conversations into searchable, source-linked working memory.',
+    fullDescription: 'ModeNote is a record-first conversation workspace. It keeps recoverable audio capture independent from best-effort live transcription, then turns stopped sessions into recaps, next steps, evidence cards, source-linked chat, local search, exports, and feature-gated read-only MCP access.',
+    tags: ['Next.js 16', 'React 19', 'TypeScript', 'Bun', 'Elysia', 'PostgreSQL', 'MinIO', 'Deepgram', 'Docker'],
+    image: '/assets/modenote/cover.svg?rev=voice-memory-v1',
+    link: 'https://modenote.xsmity.cloud/',
+    code: `// Live transcription is best-effort; durable audio capture remains independent.
+const recorder = new MediaRecorderCtor(stream, { mimeType: "audio/webm" });
+recorder.ondataavailable = (event) => {
+  this.trackChunk(event.data, captureContext);
+};
+recorder.start(4000);
+
+this.pcmStreamer = await this.createPcmStreamer(stream, {
+  onChunk: (chunk) => this.sendRealtimePcm(chunk, captureContext),
+  onLevel: (audioLevel) => this.updateSnapshot({ audioLevel }),
+});`,
+    gallery: [
+      {
+        image: '/assets/modenote/capture-context.jpg',
+        video: '/assets/modenote/capture-context.mp4',
+      },
+      {
+        image: '/assets/modenote/next-question-loop.jpg',
+        video: '/assets/modenote/next-question-loop.mp4',
+      },
+      {
+        image: '/assets/modenote/evidence-workspace.jpg',
+        video: '/assets/modenote/evidence-workspace.mp4',
+      },
+      {
+        image: '/assets/modenote/session-library.jpg',
+        video: '/assets/modenote/session-library.mp4',
+      },
+    ],
+    galleryLabels: ['Context before capture', 'The next-question loop', 'Recap, transcript search, and export', 'Searchable session memory'],
+    galleryDescriptions: [
+      'The real setup flow shows language, conversation mode, and AI assist changing before the microphone opens.',
+      'A simulated landing preview illustrates how a Thai-English transcript and one suggested next question can share the same loop.',
+      'The real workspace moves from recap to transcript search and export while the source session stays attached.',
+      'Search session titles, filter, sort, and reopen recorded sessions as a working memory library instead of a folder of audio files.',
+    ],
+    role: 'Full Stack Developer',
+  },
+  {
+    id: 'freeflow',
+    title: 'FreeFlow',
+    category: 'CRM PLATFORM • AUG 2025',
+    year: 'AUG 2025',
+    description: 'Turn a live LINE OA conversation into proposals, projects, invoices, appointments, and follow-up without losing client context.',
+    fullDescription: 'FreeFlow is a CRM workspace for freelancers and small teams. Its implemented channel path connects LINE OA to a realtime inbox, then keeps messages, attachments, quotations, projects, invoices, appointments, templates, and dashboard follow-up inside one organization-scoped system. Additional messaging channels remain roadmap rather than a live product claim.',
+    tags: ['React 19', 'TypeScript', 'Material UI', 'TanStack Query', 'Socket.IO', 'Go Fiber', 'PostgreSQL', 'MinIO', 'Docker'],
+    image: '/assets/freeflow/freeflow-cover.png',
+    link: 'https://bscit.sit.kmutt.ac.th/capstone25/cp25pl2/',
+    repo: 'https://gitlab.com/freeflow-capstone/freeflow-service',
+    code: `// Identity lifecycle routes implemented by the FreeFlow auth service.
+auth.Post("/register", authHandler.Register)
+auth.Get("/verify", authHandler.VerifyEmail)
+auth.Post("/login", authHandler.Login)
+auth.Post("/refresh", authHandler.RefreshToken)
+auth.Post("/forgot-password", authHandler.ForgotPassword)
+auth.Post("/reset-password", authHandler.ResetPassword)`,
+    gallery: [
+      {
+        image: '/assets/freeflow/product-overview-poster.png',
+        video: '/assets/freeflow/product-overview.mp4',
+      },
+      {
+        image: '/assets/freeflow/unified-inbox-poster.png',
+        video: '/assets/freeflow/unified-inbox.mp4',
+      },
+      {
+        image: '/assets/freeflow/business-dashboard-poster.png',
+        video: '/assets/freeflow/business-dashboard.mp4',
+      },
+    ],
+    galleryLabels: ['Workspace operating loop', 'LINE OA inbox + client context', 'Business pulse at a glance'],
+    galleryDescriptions: [
+      'The real workspace moves from its operating dashboard to scheduling and reusable document templates through one sidebar.',
+      'LINE messages, unread state, attachments, quotations, and files share one conversation surface.',
+      'Received and pipeline revenue, unpaid invoices, upcoming meetings, and active projects return to one dashboard.',
+    ],
+    role: 'Backend Engineer',
+  },
+  {
     id: 'projectmux',
     title: 'ProjectMux',
-    category: 'DESKTOP • 2026',
-    year: '2026',
-    description: 'Many workspaces. Many terminals. Different agents. One Start — a Windows desktop app for managing AI agent workspaces.',
+    category: 'DESKTOP • JUL 2026',
+    year: 'JUL 2026',
+    description: 'Run Codex, Claude Code, Grok, or any coding CLI in one saved workspace — only when you press Start.',
     fullDescription: 'ProjectMux is a local-first Windows desktop app for people who run many projects with many terminals and different AI agents. Create a workspace per project, configure shells, Codex, Claude Code, servers, tunnels, env, secrets, ports, readiness, and layout once, then press Start Workspace to bring the whole multi-agent environment online. It keeps multiple workspaces side-by-side, runs a resizable terminal grid, surfaces Done/Failed attention until you focus the finished pane, and never auto-runs on open — setup is intentional, start is explicit. Built with Electron, React, TypeScript, xterm.js, and node-pty, with Zod-validated local config and secret-safe IPC.',
     tags: ['Electron', 'React 19', 'TypeScript', 'xterm.js', 'node-pty', 'Zod', 'pnpm'],
-    image: '/assets/projectmux/logo-cover.jpg',
-    link: 'https://github.com/Xsmitylnwza/projectmux',
-    repo: 'https://github.com/Xsmitylnwza/projectmux',
+    image: '/assets/projectmux/logo-cover.svg',
+    link: 'https://projectmux.xsmity.cloud/',
     code: `// Workspace start is explicit — nothing auto-runs on open/import/restore.
 async function startWorkspace(workspace) {
   const ready = await resolveDependencies(workspace.sessions);
@@ -23,12 +110,19 @@ async function startWorkspace(workspace) {
   markWorkspaceRunning(workspace.id);
 }`,
     gallery: [
-      { image: '/assets/projectmux/usage-demo.gif' },
-      { image: '/assets/projectmux/workspace-grid.gif' },
-      { image: '/assets/projectmux/session-editor.gif' },
-      { image: '/assets/projectmux/sidebar-attention.gif' },
+      { image: '/assets/projectmux/usage-demo-v2.gif' },
+      { image: '/assets/projectmux/workspace-grid-v2.gif' },
+      { image: '/assets/projectmux/session-editor-v2.gif' },
+      { image: '/assets/projectmux/sidebar-attention-v2.gif' },
     ],
-    galleryLabels: ['Live session', 'Workspace grid', 'Session editor', 'Attention'],
+    galleryLabels: ['Real Codex + live quota', 'Workspace control', 'Session editor', 'Attention that persists'],
+    galleryDescriptions: [
+      'A real Codex session answers, then opens /status with live weekly quota.',
+      'One saved workspace launches four readable roles with a single Start.',
+      'Edit role, command, readiness, and pane identity in one place.',
+      'Done / Failed stays visible until the finished pane receives focus.',
+    ],
+    demoPresentation: 'stacked',
     flow: [
       {
         step: '01',
@@ -80,8 +174,8 @@ async function startWorkspace(workspace) {
   {
     id: 'keshi-pomodoro',
     title: 'Keshi Pomodoro',
-    category: 'PRODUCTIVITY • 2026',
-    year: '2026',
+    category: 'PRODUCTIVITY • JAN 2026',
+    year: 'JAN 2026',
     description: 'A lo-fi focus timer with a real Discipline dashboard — rhythm over empty productivity theater.',
     fullDescription: 'Keshi Pomodoro sits between sterile stopwatches and aesthetic shells that forget tracking. It pairs an intentional focus/break timer (scrapbook lo-fi UI, theme studio, radio widget) with a Discipline surface that answers whether you actually showed up: binary habit matrices (Grid / Lanes / Weeks / Rank), focus reality (Hours / Days / Rank), 7D–30D range, evidence logs, and per-user habit management. The stack is React 19 + TypeScript + Vite on a Node API with SQLite discipline storage, plus Hermes-ready idempotent writes so humans and agents share the same truth. Live at pomodoro.xsmity.cloud.',
     tags: ['React 19', 'TypeScript', 'Vite', 'Tailwind CSS', 'Node API', 'SQLite', 'Framer Motion'],
@@ -117,58 +211,115 @@ function dayCompletion(scores, activeHabits) {
       },
     ],
     galleryLabels: ['Theme studio', 'Settings', 'Discipline'],
+    galleryDescriptions: [
+      'Tune separate Focus and Relax colors, imagery, and atmosphere without changing the timer loop.',
+      'Set focus and break durations, sound, and the small controls that shape each session.',
+      'Read binary habits, focus reality, and day-level evidence across 7D or 30D.',
+    ],
     role: 'Full Stack Developer'
   },
   {
     id: 'zucchini-review',
     title: 'Zucchini Review',
-    category: 'ENTERTAINMENT • OCT 2024',
-    year: '2024',
-    description: 'A film review aggregation platform inspired by Rotten Tomatoes.',
-    fullDescription: 'Zucchini Review is a comprehensive movie review platform where users can browse categories, search for films, and read or write reviews. Features include a weighted scoring system (Zucchinitor), user authentication with profile management, and a dynamic comment section for community engagement.',
-    tags: ['React', 'Node.js', 'MongoDB', 'Authentication'],
-    image: '/assets/previews/zucchini-homepage.jpg',
-    video: '/assets/previews/zucchini-homepage.mp4',
-    link: 'https://www.youtube.com/watch?v=TIypQWv4l-k',
-    repo: 'https://github.com/Xsmitylnwza/PROJECT2-SEC-2-WeLoveReact',
-    code: `// Review Calculation Logic
-const calculateScore = (reviews) => {
-  if (!reviews.length) return 0;
-  const total = reviews.reduce((acc, curr) => acc + curr.rating, 0);
-  return (total / reviews.length).toFixed(1);
-};`,
+    category: 'ENTERTAINMENT • FEB 2024',
+    year: 'FEB 2024',
+    description: 'A Vue film-discovery and review platform where one title carries five community rating axes and the written reviews behind them.',
+    fullDescription: 'Zucchini Review is a five-person Vue 3 coursework project. The browser reads catalogue and film data from TMDB, stores users, ratings, reviews, genres, and liked-review relationships in Supabase tables, and uses Pinia plus localStorage for its browser-side identity state. Signed-in users can submit five 0–100 ratings with one written review, then revisit their Reviewed list to edit or delete it.',
+    tags: ['Vue 3', 'Supabase', 'Pinia', 'Tailwind CSS', 'TMDB API'],
+    image: '/assets/previews/zucchini-homepage-live.png',
+    link: 'https://zuchini-review.vercel.app/',
+    repo: 'https://github.com/Xsmitylnwza/Zuchini-Review',
+    code: `const categoryMeans = categories.map((category) =>
+  reviews.reduce((sum, review) => sum + review.ratings[category], 0)
+  / reviews.length
+);
+
+const zucchinitor = categoryMeans.reduce((sum, value) => sum + value, 0)
+  / categoryMeans.length;`,
     gallery: [
-      { image: '/assets/previews/zucchini-review.jpg', video: '/assets/previews/zucchini-review.mp4' },
-      { image: '/assets/previews/zucchini-commented.jpg', video: '/assets/previews/zucchini-commented.mp4' },
-      { image: '/assets/previews/zucchini-register.jpg', video: '/assets/previews/zucchini-register.mp4' }
+      { image: '/assets/previews/zucchini-review-result-repo.png' },
+      { image: '/assets/previews/zucchini-reviewed-repo.png' },
+      { image: '/assets/previews/zucchini-login-live.png' }
+    ],
+    galleryLabels: ['Five-axis review result', 'Reviewed list', 'Sign-in boundary'],
+    galleryKinds: ['Repository demo still', 'Repository demo still', 'Live still'],
+    galleryDescriptions: [
+      'Category means, the ordinary five-category mean, review text, likes, sorting, and pagination remain visible on the film page.',
+      'A signed-in user returns to their own submitted reviews with explicit Edit and Delete controls.',
+      'The deployed sign-in screen hands browser-side identity into Pinia and localStorage; it is not Supabase Auth.',
+    ],
+    flow: [
+      {
+        step: '01',
+        title: 'Discover',
+        body: 'Search TMDB-backed titles or browse the genre shelves rendered on the homepage.',
+        cue: 'search · shelves · TMDB',
+      },
+      {
+        step: '02',
+        title: 'Open a film',
+        body: 'Read TMDB details alongside the stored ratings and reviews associated with one movieId.',
+        cue: 'one title context',
+      },
+      {
+        step: '03',
+        title: 'Rate & review',
+        body: 'Set five independent 0–100 values and submit one written review after signing in.',
+        cue: 'human submit',
+      },
+      {
+        step: '04',
+        title: 'Read the result',
+        body: 'The browser calculates each category mean and then the ordinary mean of those five values.',
+        cue: 'ordinary mean',
+      },
+      {
+        step: '05',
+        title: 'Revisit Reviewed',
+        body: 'The same signed-in user can reopen the editor or explicitly delete a submitted review.',
+        cue: 'edit · delete',
+      },
+    ],
+    why: [
+      {
+        title: 'Film context first',
+        body: 'TMDB discovery leads into one title view before the product asks for an opinion.',
+      },
+      {
+        title: 'Five signals, one read',
+        body: 'Zucchinitor exposes all five category means and derives one ordinary overall mean.',
+      },
+      {
+        title: 'Human-owned review',
+        body: 'Writing, liking, editing, and deleting remain explicit user actions.',
+      },
     ],
     role: 'Frontend Developer'
   },
   {
     id: 'decrypt-password',
     title: 'Decrypt The Secret Password',
-    category: 'GAME • FEB 2024',
-    year: '2024',
-    description: 'A web-based puzzle game challenging players to decrypt passwords under time pressure.',
-    fullDescription: 'Inspired by "The Password Game", this project challenges users to create a password that satisfies increasingly complex and creative rules within a time limit. Features include difficulty levels (Hard to Hardest), dynamic rule validation, a countdown timer, and game-state animations.',
-    tags: ['React', 'JavaScript', 'CSS Animation'],
+    category: 'GAME • JAN 2024',
+    year: 'JAN 2024',
+    description: 'Keep one password valid while live rules, a countdown, and Hardest-mode mutations fight back.',
+    fullDescription: 'A Vue and Vite browser game inspired by "The Password Game". Hard, Veryhard, and Hardest set 10, 11, and 12 rules with 10:00, 7:30, and 5:00 budgets. The first input starts the timer, every edit revalidates the unlocked rules, and Hardest adds a virus every 4 seconds, fire every 2 seconds, and a final crown rule. Both completion and timeout burn-replace the password before the result appears.',
+    tags: ['Vue 3', 'JavaScript', 'Vite', 'Tailwind CSS', 'DaisyUI'],
     image: '/assets/previews/decrypt-gameplay.jpg',
-    video: '/assets/previews/decrypt-gameplay.mp4',
-    link: 'https://xsmitylnwza.github.io/PROJECT1-SEC-2-WeLoveReact/',
+    link: 'https://decrypt-the-secrect-password.vercel.app/',
     repo: 'https://github.com/Xsmitylnwza/PROJECT1-SEC-2-WeLoveReact',
-    code: `// Rule Validation Logic
-const validateRule = (password, rule) => {
-  if (rule.type === 'regex') {
-    return rule.regex.test(password);
-  }
-  if (rule.type === 'function') {
-    return rule.validate(password);
-  }
-  return false;
-};`,
+    code: `// The input event starts the run and rechecks the selected level
+@input="() => {
+  startGame()
+  checkAnswer['checkAnswer' + selectedLevel.level]()
+}"`,
     gallery: [
-      { image: '/assets/previews/decrypt-manual.jpg', video: '/assets/previews/decrypt-manual.mp4' },
-      { image: '/assets/previews/decrypt-select-mode.jpg', video: '/assets/previews/decrypt-select-mode.mp4' }
+      { image: '/assets/previews/decrypt-manual.jpg' },
+      { image: '/assets/previews/decrypt-select-mode.jpg' }
+    ],
+    galleryLabels: ['How to survive', 'Choose your pressure'],
+    galleryDescriptions: [
+      'The captured opening step introduces the three level identities before play begins.',
+      'Hard, Veryhard, and Hardest trade 10, 11, and 12 rules for 10:00, 7:30, and 5:00.',
     ],
     role: 'Frontend Developer'
   }

@@ -20,6 +20,8 @@ const STAGE_PATHS = new Set(['/', '/experience']);
 const DOCUMENT_PATHS = new Set(['/stack', '/tech', '/contact', '/resume', '/cv']);
 const ROOM_EXIT_MS = 500;
 const ROOM_ENTER_MS = 820;
+// Bump when a persistent GalleryScene poster changes so Fast Refresh rebuilds WebGL textures.
+const GALLERY_MEDIA_REVISION = 'core-systems-v1';
 
 function isStagePath(path) {
   return STAGE_PATHS.has(path);
@@ -474,6 +476,7 @@ function App() {
             aria-hidden={!stageInteractive}
           >
             <GalleryScene
+              key={GALLERY_MEDIA_REVISION}
               mode={galleryShowContent ? 'gallery' : 'stage'}
               showContent={galleryShowContent}
               contentExitMs={ROOM_EXIT_MS}
@@ -602,3 +605,4 @@ function App() {
 }
 
 export default App;
+

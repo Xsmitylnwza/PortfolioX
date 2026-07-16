@@ -834,3 +834,19 @@
     animation: none !important;
   }
 }
+
+
+/* scroll-wave text containers — independent motion groups without redesign */
+.experience-room.is-scroll-wave-active .experience-current__lead,
+.experience-room.is-scroll-wave-active .experience-current__metric,
+.experience-room.is-scroll-wave-active .experience-current__detail,
+.experience-room.is-scroll-wave-active .experience-current__tools,
+.experience-room.is-scroll-wave-active .experience-current__brand-copy,
+.experience-room.is-scroll-wave-active .experience-current__logo-wrap,
+.experience-room.is-scroll-wave-active .experience-entry__head,
+.experience-room.is-scroll-wave-active .experience-entry__body,
+.experience-room.is-scroll-wave-active .experience-entry__tools,
+.experience-room.is-scroll-wave-active .experience-orbit__list > li {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}

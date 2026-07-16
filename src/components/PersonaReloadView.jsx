@@ -47,7 +47,8 @@ const PersonaReloadView = () => {
         <ScrollPerspectiveWave
             className="p3-page"
             surfaceOpacity={0}
-            intensity={0.9}
+            intensity={1.05}
+            syncStage
         >
             <div className="p3-water" />
             <div className="p3-bubbles" aria-hidden="true">
@@ -59,7 +60,7 @@ const PersonaReloadView = () => {
 
             <header className="p3-topbar" data-wave-follow>
                 <a className="p3-mark" href="/">
-                    <img src="/profile-logo.jpg" alt="Dev Gabriel" />
+                    <img src="/profile-logo.jpg" alt="Dev Gabriel" data-wave-media />
                     <span>DEV.GABRIEL</span>
                 </a>
                 <nav className="p3-nav" aria-label="Persona route navigation">
@@ -85,7 +86,7 @@ const PersonaReloadView = () => {
                     <div className="p3-portrait-panel" data-wave-follow>
                         <div className="p3-moon-ring" />
                         <div className="p3-portrait-mask">
-                            <img src="/profile-logo.jpg" alt="Gabriel profile" />
+                            <img src="/profile-logo.jpg" alt="Gabriel profile" data-wave-media />
                         </div>
                         <div className="p3-orbit-label">SEA OF SKILLS</div>
                     </div>
@@ -138,7 +139,7 @@ const PersonaReloadView = () => {
                         <div className="p3-timeline">
                             {experience.map((item) => (
                                 <article key={item.org} className="p3-timeline-item">
-                                    <img src={item.logo} alt={item.org} />
+                                    <img src={item.logo} alt={item.org} data-wave-media />
                                     <div>
                                         <span>{item.period}</span>
                                         <h3>{item.org}</h3>

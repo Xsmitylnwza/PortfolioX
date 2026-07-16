@@ -114,6 +114,7 @@ const TechStack = () => {
       className="engine-section"
       aria-labelledby="engine-title"
       surfaceOpacity={0}
+      intensity={1.05}
       syncStage
     >
       <TechStackIconDefs />

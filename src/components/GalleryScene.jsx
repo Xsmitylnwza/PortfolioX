@@ -1,11 +1,12 @@
 import { memo, useEffect, useRef } from 'react';
-// Gallery posters: one signature cover per project only (not detail screens).
+// Gallery posters: signature covers for the core systems only.
+// Coursework stays on the Projects archive, not the home cylinder.
 // The cylinder grid repeats this list so every card stays on-brand when density > count.
 const projectMedia = [
-    { id: 'projectmux', title: 'ProjectMux', image: '/assets/projectmux/logo-cover.jpg' },
-    { id: 'keshi-pomodoro', title: 'Keshi Pomodoro', image: '/assets/previews/keshi-pomodoro-demo.jpg' },
-    { id: 'zucchini-review', title: 'Zucchini Review', image: '/assets/previews/zucchini-homepage.jpg' },
-    { id: 'decrypt-password', title: 'Decrypt The Secret Password', image: '/assets/previews/decrypt-gameplay.jpg' },
+    { id: 'modenote', title: 'ModeNote', image: '/assets/modenote/cover.svg?rev=voice-memory-v1' },
+    { id: 'freeflow', title: 'FreeFlow', image: '/assets/freeflow/freeflow-cover.png' },
+    { id: 'projectmux', title: 'ProjectMux', image: '/assets/projectmux/logo-cover.svg' },
+    { id: 'keshi-pomodoro', title: 'Keshi Pomodoro', image: '/assets/keshi-pomodoro/main_page.webp' },
 ];
 
 const planeVertex = /* glsl */ `
@@ -277,7 +278,6 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
             const placeholder = new Texture(gl, { image: new Uint8Array([34, 7, 10, 255]), width: 1, height: 1, generateMipmaps: false, flipY: false });
             const textureCache = new Map();
             const uploadQueue = [];
-            const imageBitmaps = [];
             const rows = [];
             const meshes = [];
             const frameUniforms = {
@@ -312,6 +312,25 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
             const radius = 4.65;
             const rowSpacing = 2.7;
 
+            // Normalize every poster through canvas so Image / ImageBitmap / SVG
+            // all share the same upright orientation in WebGL (no mixed flipY paths).
+            const rasterizePosterTexture = (sourceImage, maxTextureWidth = 1024) => {
+                const srcWidth = Math.max(1, sourceImage.naturalWidth || sourceImage.width || 1);
+                const srcHeight = Math.max(1, sourceImage.naturalHeight || sourceImage.height || 1);
+                const scale = srcWidth > maxTextureWidth ? maxTextureWidth / srcWidth : 1;
+                const width = Math.max(1, Math.round(srcWidth * scale));
+                const height = Math.max(1, Math.round(srcHeight * scale));
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d', { alpha: true });
+                if (!ctx) return null;
+                ctx.clearRect(0, 0, width, height);
+                // Canvas top-left origin + texture flipY keeps posters upright.
+                ctx.drawImage(sourceImage, 0, 0, width, height);
+                return { canvas, aspect: width / Math.max(height, 1) };
+            };
+
             const getTexture = (source) => {
                 if (textureCache.has(source)) return textureCache.get(source);
                 const texture = new Texture(gl, { generateMipmaps: false, flipY: true });
@@ -327,31 +346,18 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                         // Continue with browser-decoded image when decode() is unavailable.
                     }
                     if (disposed) return;
-                    let decodedImage = image;
-                    const maxTextureWidth = 1024;
-                    if (image.naturalWidth > maxTextureWidth && 'createImageBitmap' in window) {
-                        const scale = maxTextureWidth / image.naturalWidth;
-                        try {
-                            decodedImage = await createImageBitmap(image, {
-                                resizeWidth: maxTextureWidth,
-                                resizeHeight: Math.max(1, Math.round(image.naturalHeight * scale)),
-                                resizeQuality: 'high',
-                            });
-                            imageBitmaps.push(decodedImage);
-                        } catch {
-                            decodedImage = image;
-                        }
-                    }
-                    if (disposed) {
-                        decodedImage.close?.();
-                        return;
-                    }
-                    record.pendingImage = decodedImage;
-                    record.aspect = decodedImage.width / Math.max(decodedImage.height, 1);
+                    const raster = rasterizePosterTexture(image, 1024);
+                    if (!raster) return;
+                    record.pendingImage = raster.canvas;
+                    record.aspect = raster.aspect;
                     if (!record.queued) {
                         record.queued = true;
                         uploadQueue.push(record);
                     }
+                };
+                image.onerror = () => {
+                    // Keep placeholder plane if a poster asset fails to load.
+                    record.loaded = false;
                 };
                 image.src = source;
                 return record;
@@ -1138,7 +1144,6 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                 if (raf) cancelAnimationFrame(raf);
                 planeProgram.remove();
                 textureCache.forEach(({ texture }) => gl.deleteTexture(texture.texture));
-                imageBitmaps.forEach((bitmap) => bitmap.close?.());
                 gl.deleteTexture(placeholder.texture);
                 geometry.remove();
                 gridGeometry.remove();
@@ -1169,4 +1174,6 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
 };
 
 export default memo(GalleryScene);
+
+
 

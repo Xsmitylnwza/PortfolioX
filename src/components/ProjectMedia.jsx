@@ -135,7 +135,8 @@ const ProjectMedia = ({
     className,
     style,
     eager = false,
-    sizes
+    sizes,
+    waveSkip = false
 }) => {
     const mediaRef = useRef(null);
     const source = normalizeMedia({ media, image, video });
@@ -196,6 +197,7 @@ const ProjectMedia = ({
                 className={className}
                 style={style}
                 data-media-state={hasActiveVideo && isVisible ? 'playing' : 'poster'}
+                data-wave-media-skip={waveSkip ? '' : undefined}
                 muted
                 loop
                 playsInline
@@ -219,11 +221,10 @@ const ProjectMedia = ({
             className={className}
             style={style}
             loading={eager ? 'eager' : 'lazy'}
-            // Keep animated GIFs on the browser image decoder (not WebGL freeze).
             decoding={animated ? 'sync' : 'async'}
             fetchPriority={eager ? 'high' : 'low'}
-            data-wave-media-skip={animated ? '' : undefined}
             data-animated-media={animated ? 'true' : undefined}
+            data-wave-media-skip={waveSkip ? '' : undefined}
             {...responsiveImageProps}
         />
     );

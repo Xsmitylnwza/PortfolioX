@@ -91,6 +91,7 @@ const RoleMark = ({ experience, className = '', size = 112 }) => {
       height={size}
       loading={experience.id === '01' ? 'eager' : 'lazy'}
       decoding="async"
+      data-wave-media
     />
   );
 };
@@ -177,6 +178,7 @@ const Experience = () => {
       className="experience-room"
       aria-labelledby="experience-room-title"
       surfaceOpacity={0}
+      intensity={1.2}
       syncStage
     >
       <TechStackIconDefs />
@@ -214,11 +216,11 @@ const Experience = () => {
           aria-labelledby="experience-current-title"
         >
           <span className="experience-node experience-node--current" aria-hidden="true" />
-          <div className="experience-current__story" data-wave-follow>
-            <span className="experience-current__status">Current</span>
+                    <div className="experience-current__story">
+            <span className="experience-current__status" data-wave-follow>Current</span>
 
             <div className="experience-current__brand">
-              <div className="experience-current__logo-wrap">
+              <div className="experience-current__logo-wrap" data-wave-follow>
                 <RoleMark
                   experience={currentRole}
                   className="experience-current__logo"
@@ -226,7 +228,7 @@ const Experience = () => {
                 />
                 <span className="experience-current__index" aria-hidden="true">{currentRole.id}</span>
               </div>
-              <div className="experience-current__brand-copy">
+              <div className="experience-current__brand-copy" data-wave-follow>
                 <h2 id="experience-current-title" className="experience-current__company">
                   {currentRole.company}
                 </h2>
@@ -237,10 +239,10 @@ const Experience = () => {
               </div>
             </div>
 
-            <p className="experience-current__lead">{currentRole.summary}</p>
-            <p className="experience-current__metric">{currentRole.metric}</p>
-            <p className="experience-current__detail">{currentRole.detail}</p>
-            <div className="experience-current__tools">
+            <p className="experience-current__lead" data-wave-follow>{currentRole.summary}</p>
+            <p className="experience-current__metric" data-wave-follow>{currentRole.metric}</p>
+            <p className="experience-current__detail" data-wave-follow>{currentRole.detail}</p>
+            <div className="experience-current__tools" data-wave-follow>
               <TechStackList
                 variant="layer"
                 title="Used in role"
@@ -259,9 +261,9 @@ const Experience = () => {
           aria-label="Earlier roles"
         >
           <p className="experience-orbit__label" data-wave-follow>Earlier</p>
-          <ol className="experience-orbit__list" data-wave-follow>
+          <ol className="experience-orbit__list">
             {earlierRoles.map((experience) => (
-              <li key={`orbit-${experience.id}`}>
+              <li key={`orbit-${experience.id}`} data-wave-follow>
                 <a href={`#exp-${experience.id}`} data-cursor="default">
                   <RoleMark experience={experience} className="experience-orbit__mark" size={40} />
                   <span>{experience.shortCompany}</span>
@@ -303,10 +305,10 @@ const Experience = () => {
                   </div>
                 </header>
 
-                <div className="experience-entry__body" data-wave-follow>
-                  <p className="experience-entry__lead">{experience.summary}</p>
-                  <p className="experience-entry__metric">{experience.metric}</p>
-                  <p className="experience-entry__detail">{experience.detail}</p>
+                <div className="experience-entry__body">
+                  <p className="experience-entry__lead" data-wave-follow>{experience.summary}</p>
+                  <p className="experience-entry__metric" data-wave-follow>{experience.metric}</p>
+                  <p className="experience-entry__detail" data-wave-follow>{experience.detail}</p>
                 </div>
 
                 <div className="experience-entry__tools" data-wave-follow>

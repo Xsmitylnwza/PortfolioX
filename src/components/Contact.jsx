@@ -72,6 +72,7 @@ const Contact = () => {
       className="engine-section engine-section--contact"
       aria-labelledby="engine-title"
       surfaceOpacity={0}
+      intensity={1.05}
       syncStage
     >
       <svg className="engine-svg-defs" aria-hidden="true" focusable="false">

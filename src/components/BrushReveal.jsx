@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 
 const sources = [
-    '/assets/projectmux/logo-cover.jpg',
-    '/assets/previews/keshi-pomodoro-demo.jpg',
-    '/assets/previews/zucchini-homepage.jpg',
-    '/assets/previews/decrypt-gameplay.jpg',
+    '/assets/modenote/cover.svg?rev=voice-memory-v1',
+    '/assets/freeflow/freeflow-cover.png',
+    '/assets/projectmux/logo-cover.svg',
+    '/assets/keshi-pomodoro/main_page.webp',
 ];
 
 const drawCover = (ctx, image, x, y, width, height) => {
@@ -136,3 +136,4 @@ const BrushReveal = () => {
 };
 
 export default BrushReveal;
+

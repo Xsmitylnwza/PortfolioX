@@ -33,3 +33,6 @@ tmp/
 tmp-room-transition-test/
 tmp-room-transition-test.cjs
 
+tmp-*
+tmp-*/
+

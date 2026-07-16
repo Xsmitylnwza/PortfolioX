@@ -21,7 +21,8 @@ html.room-content-exiting .orbit-hero {
     visibility: visible;
     /* Soft dim on non-gallery routes; stage stays mounted and visible. */
     transition: opacity 700ms cubic-bezier(0.16, 1, 0.3, 1);
-    /* Avoid size containment — it can collapse the stage host during home-lock class thrash. */
+    /* Avoid size containment — it can collapse the stage host during home-lock class thrash.
+       Document rooms override this to contain:none so exterior liquid glass can sample the stage. */
     contain: layout paint style;
 }
 .gallery-stage-layer.is-interactive {
@@ -195,10 +196,11 @@ html.portfolio-ready .orbit-hero__footer { animation:interface-reveal .62s cubic
         display: none;
     }
 }
-@media(prefers-reduced-motion:reduce){.orbit-hero::before{animation:none}.gallery-webgl,.orbit-hero__identity,.orbit-hero__footer{opacity:1;animation:none!important}.gallery-scene{background:center/cover no-repeat url('/assets/previews/keshi-pomodoro-demo.jpg');opacity:.55}.gallery-scene__active{display:none}}
+@media(prefers-reduced-motion:reduce){.orbit-hero::before{animation:none}.gallery-webgl,.orbit-hero__identity,.orbit-hero__footer{opacity:1;animation:none!important}.gallery-scene{background:center/cover no-repeat url('/assets/modenote/cover.svg?rev=voice-memory-v1');opacity:.55}.gallery-scene__active{display:none}}
 
 /* Non-gallery pages: sculpture dims inside WebGL only (GalleryScene).
    Never dim .gallery-stage-layer here — that would also fade the black grid. */
 html.stage-dimmed .gallery-stage__glow {
   opacity: 0.72;
 }
+

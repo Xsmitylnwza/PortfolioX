@@ -26,14 +26,17 @@
     opacity: 0 !important;
 }
 
-/* Animated rasters stay live in the DOM (WebGL only freezes first frame). */
-.scroll-perspective-wave.is-scroll-wave-active [data-animated-media],
+/* Optional method-2 capture targets stay hidden while their mesh is ready. */
+.scroll-perspective-wave.is-scroll-wave-active [data-scroll-wave-capture-ready] {
+    opacity: 0 !important;
+}
+
 .scroll-perspective-wave.is-scroll-wave-active [data-wave-media-skip] {
     opacity: 1 !important;
 }
 
-/* Keep the WebGL wave on for tablet/iPad viewports, including coarse touch input. */
-@media (max-width: 699px), (max-height: 699px), (prefers-reduced-motion: reduce) {
+/* Keep the WebGL wave on for tablet/iPad and short desktop viewports. */
+@media (max-width: 699px), (prefers-reduced-motion: reduce) {
     .scroll-perspective-wave__canvas {
         display: none !important;
     }

@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { PROFILE, RESUME_PROOFS, RESUME_ROLES, RESUME_SKILLS } from '../data/site';
+import ScrollPerspectiveWave from './ScrollPerspectiveWave';
 import './Resume.css';
 
 const Resume = () => {
@@ -30,21 +31,30 @@ const Resume = () => {
   }, []);
 
   return (
-    <section id="resume" ref={sectionRef} className="dossier-section" aria-labelledby="dossier-title">
-      <div className="dossier-shell">
-        <div className="dossier-transmission dossier-reveal" aria-hidden="true">
+    <ScrollPerspectiveWave
+      as="section"
+      id="resume"
+      ref={sectionRef}
+      className="dossier-section"
+      aria-labelledby="dossier-title"
+      surfaceOpacity={0}
+      intensity={1.05}
+      syncStage
+    >
+      <div className="dossier-shell" data-wave-surface>
+        <div className="dossier-transmission dossier-reveal" data-wave-follow aria-hidden="true">
           <span>04 / DOSSIER</span>
           <span>PATH + PROOF</span>
           <span>{PROFILE.name.toUpperCase()}</span>
         </div>
 
         <header className="dossier-header">
-          <div className="dossier-chapter dossier-reveal">
+          <div className="dossier-chapter dossier-reveal" data-wave-follow>
             <span>04</span>
             <p>RESUME</p>
           </div>
 
-          <div className="dossier-title-block dossier-reveal">
+          <div className="dossier-title-block dossier-reveal" data-wave-follow>
             <p className="dossier-kicker">SIGNAL PACKET / HIRE READY</p>
             <h1 id="dossier-title">
               Path and
@@ -54,7 +64,7 @@ const Resume = () => {
             <p className="dossier-positioning">{PROFILE.positioning}</p>
           </div>
 
-          <aside className="dossier-packet dossier-reveal" aria-label="Hire packet">
+          <aside className="dossier-packet dossier-reveal" data-wave-follow aria-label="Hire packet">
             <p className="dossier-packet__label">RECRUITER STRIP</p>
             <strong>{PROFILE.name}</strong>
             <span>{PROFILE.title}</span>
@@ -88,6 +98,7 @@ const Resume = () => {
             <article
               key={proof.id}
               className="dossier-proof dossier-reveal"
+              data-wave-follow
               style={{ '--proof-index': index }}
             >
               <span className="dossier-proof__id">{proof.id}</span>
@@ -100,7 +111,7 @@ const Resume = () => {
           ))}
         </section>
 
-        <section className="dossier-roles dossier-reveal" aria-label="Role rails">
+        <section className="dossier-roles dossier-reveal" data-wave-follow aria-label="Role rails">
           <div className="dossier-section-label">
             <span>ROLE RAILS</span>
             <i aria-hidden="true" />
@@ -120,7 +131,7 @@ const Resume = () => {
           </ol>
         </section>
 
-        <section className="dossier-skills dossier-reveal" aria-label="Skills strip">
+        <section className="dossier-skills dossier-reveal" data-wave-follow aria-label="Skills strip">
           <div className="dossier-section-label">
             <span>SKILLS STRIP</span>
             <i aria-hidden="true" />
@@ -134,14 +145,14 @@ const Resume = () => {
         </section>
 
         <footer className="dossier-footer dossier-reveal">
-          <div>
+          <div data-wave-follow>
             <p>Need the full essay?</p>
             <Link to="/experience" data-cursor="view" data-cursor-text="OPEN EXPERIENCE">
               Read Experience
               <Icon icon="lucide:arrow-up-right" aria-hidden="true" />
             </Link>
           </div>
-          <div className="dossier-footer__sticky" aria-label="Sticky actions">
+          <div className="dossier-footer__sticky" data-wave-follow aria-label="Sticky actions">
             <a
               href={PROFILE.resumePdf.href}
               target="_blank"
@@ -157,7 +168,7 @@ const Resume = () => {
           </div>
         </footer>
       </div>
-    </section>
+    </ScrollPerspectiveWave>
   );
 };
 

@@ -800,4 +800,16 @@ html.document-room-active .route-shell--page .document-room {
 
 html.document-room-active .gallery-stage-layer {
   pointer-events: none;
+  /* contain:paint/style flattens the WebGL stage into an isolated paint group.
+     Gallery toast can blur because it lives INSIDE this layer. Document-room
+     liquid glass lives outside (route-shell), so paint containment left the
+     cylinder grid razor-sharp through backdrop-filter. Drop paint/style
+     containment on document rooms only. */
+  contain: none;
+}
+
+/* Same root: app-shell overflow:clip can act as a backdrop boundary for some
+   compositors. Keep clip on gallery home; open it for document glass pages. */
+html.document-room-active .app-shell {
+  overflow: visible;
 }

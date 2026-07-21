@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useParams } from 'react-router-dom';
 import { Icon } from '@iconify/react';
@@ -3006,9 +3006,7 @@ const ModeNoteRequirementStory = ({ project, media }) => {
 
 const ModeNoteCaptureArchitecture = ({ decision }) => (
     <section
-      className="case-modenote-capture case-reveal"
-      data-reveal="scroll"
-      style={{ '--reveal-index': 1 }}
+      className="case-modenote-capture"
       aria-labelledby="modenote-capture-title"
     >
       <StorySectionHead
@@ -3377,27 +3375,148 @@ const ModeNoteStoryLoop = () => (
   </section>
 );
 
-const ModeNoteProof = ({ project, gallery }) => (
-  <section className="modenote-story__chapter" aria-labelledby="modenote-proof-title">
-    <StorySectionHead eyebrow="The proof" title="The strongest view is the session itself." body="This real product capture shows the bilingual transcript and its timestamps—the source layer every recap, search result, and export must return to." id="modenote-proof-title" />
-    <div className="modenote-story__proof">
-      {gallery[2] && <CaseMediaFrame image={gallery[2].image} alt={`${project.title} — real stopped-session transcript workspace`} sizes="(max-width: 900px) 100vw, 920px" label="Real stopped-session workspace" kindLabel="Product capture" />}
-      <div className="modenote-story__proof-facts" data-wave-follow>
-        <article className="modenote-story__glass"><Icon icon="lucide:languages" /><strong>Mixed language, one timeline</strong><p>Thai, English, and timestamps stay in the order people actually spoke.</p></article>
-        <article className="modenote-story__glass"><Icon icon="lucide:quote" /><strong>Evidence stays findable</strong><p>Derived outputs can point back to supporting transcript segments.</p></article>
-        <article className="modenote-story__glass"><Icon icon="lucide:file-output" /><strong>The session can leave</strong><p>Markdown and JSON exports create explicit human or machine handoffs.</p></article>
-      </div>
-    </div>
+const MODENOTE_DEMO_STEPS = [
+  {
+    galleryIndex: 0,
+    phase: 'capture',
+    stage: '01 · Frame the room',
+    eyebrow: 'Before capture',
+    title: 'Tell ModeNote what kind of room this is.',
+    body: 'Language, conversation mode, and assist level shape the session before the microphone opens.',
+    facts: ['Thai + English', 'Mode-aware analysis', 'Assist stays adjustable'],
+    kindLabel: 'Recorded flow',
+    icon: 'lucide:sliders-horizontal',
+    signal: 'The analytical lens is chosen before the first word.',
+    layout: 'wide',
+  },
+  {
+    galleryIndex: 1,
+    phase: 'capture',
+    stage: '02 · Stay in the conversation',
+    eyebrow: 'During the conversation',
+    title: 'Surface one grounded question—not a wall of prompts.',
+    body: 'The customer-discovery preview shows the intended human-in-the-loop: ModeNote suggests, and the interviewer decides.',
+    facts: ['Zero or one suggestion', 'Recent transcript grounding', 'Simulated product preview'],
+    kindLabel: 'Simulated preview',
+    icon: 'lucide:message-circle-question-mark',
+    signal: 'Guidance remains optional, visible, and source-aware.',
+    layout: 'reverse',
+  },
+  {
+    galleryIndex: 2,
+    phase: 'memory',
+    stage: '03 · Stop with evidence',
+    eyebrow: 'After recording',
+    title: 'Return to the exact line behind the insight.',
+    body: 'The stopped-session workspace keeps bilingual transcript, recap, search, evidence, and export attached to one source.',
+    facts: ['Timestamped transcript', 'Source-linked outputs', 'Markdown + JSON handoff'],
+    kindLabel: 'Recorded flow',
+    icon: 'lucide:quote',
+    signal: 'The strongest output can still point back to what was said.',
+    layout: 'climax',
+  },
+  {
+    galleryIndex: 3,
+    phase: 'memory',
+    stage: '04 · Return without replaying',
+    eyebrow: 'Later, when the conversation matters again',
+    title: 'Find the session by memory—not by filename.',
+    body: 'The library turns recorded conversations into a searchable return path, so the useful context survives beyond the day it was captured.',
+    facts: ['Search by title', 'Filter + sort', 'Reopen the full workspace'],
+    kindLabel: 'Recorded flow',
+    icon: 'lucide:library-big',
+    signal: 'A conversation becomes working memory only when it is easy to return to.',
+    layout: 'epilogue',
+  },
+];
+
+const MODENOTE_DEMO_CHAPTERS = {
+  capture: {
+    eyebrow: 'The live session · Two product moments',
+    title: 'Make the room legible before the AI speaks.',
+    body: 'ModeNote begins with context, then stays deliberately quiet: one bounded suggestion can appear without taking over the conversation.',
+  },
+  memory: {
+    eyebrow: 'The stopped session · Two return paths',
+    title: 'The recording stops. The work keeps moving.',
+    body: 'The output is not a detached summary. Evidence, transcript, exports, and the session library keep leading back to the captured source.',
+  },
+};
+
+const ModeNoteDemoJourney = ({ project, gallery, phase }) => {
+  const chapter = MODENOTE_DEMO_CHAPTERS[phase];
+  const steps = MODENOTE_DEMO_STEPS.filter((step) => step.phase === phase);
+  if (!chapter || !steps.length) return null;
+
+  return (
+  <section
+    className={`modenote-story__chapter modenote-story__chapter--${phase}`}
+    aria-labelledby={`modenote-${phase}-demos-title`}
+  >
+    <StorySectionHead
+      eyebrow={chapter.eyebrow}
+      title={chapter.title}
+      body={chapter.body}
+      id={`modenote-${phase}-demos-title`}
+    />
+    <ol className="modenote-story__demos">
+      {steps.map((step) => {
+        const media = gallery[step.galleryIndex];
+        if (!media) return null;
+        const label = project.galleryLabels?.[step.galleryIndex] || step.title;
+
+        return (
+          <li className={`modenote-story__demo is-${step.layout}`} key={step.stage}>
+            <div className="modenote-story__demo-media">
+              <CaseMediaFrame
+                media={media}
+                alt={`${project.title} — ${label}`}
+                sizes="(max-width: 840px) 100vw, 680px"
+                label={label}
+                kindLabel={step.kindLabel}
+              />
+            </div>
+            <article className="modenote-story__demo-copy modenote-story__glass" data-wave-follow>
+              <span>{step.stage}</span>
+              <small>{step.eyebrow}</small>
+              <h3>{step.title}</h3>
+              <p>{step.body}</p>
+              <ul aria-label={`${step.title} key signals`}>
+                {step.facts.map((fact) => (
+                  <li key={fact}><Icon icon="lucide:check" aria-hidden="true" />{fact}</li>
+                ))}
+              </ul>
+              <div className="modenote-story__demo-signal">
+                <Icon icon={step.icon} aria-hidden="true" />
+                <strong>{step.signal}</strong>
+              </div>
+            </article>
+          </li>
+        );
+      })}
+    </ol>
   </section>
-);
+  );
+};
 
 const ModeNoteSystemSummary = () => (
   <section className="modenote-story__chapter" aria-labelledby="modenote-system-title">
-    <StorySectionHead eyebrow="Under the session" title="Three boundaries keep the story honest." body="Capture, durable processing, and optional agent access do not collapse into one opaque AI box." id="modenote-system-title" />
-    <ol className="modenote-story__system" aria-label="ModeNote system boundaries">
-      <li data-wave-follow><Icon icon="lucide:monitor-up" /><span>Client</span><strong>Next.js capture workspace</strong><p>Records locally recoverable chunks and streams best-effort PCM.</p></li>
-      <li data-wave-follow><Icon icon="lucide:server-cog" /><span>Runtime</span><strong>Elysia API + worker</strong><p>Owns uploads, realtime routes, composition, and versioned analysis jobs.</p></li>
-      <li data-wave-follow><Icon icon="lucide:database" /><span>Durable truth</span><strong>PostgreSQL + MinIO</strong><p>Stores session state and private audio behind explicit boundaries.</p></li>
+    <StorySectionHead eyebrow="Under the session" title="One session moves through explicit boundaries." body="The product journey stays simple because capture, persistence, analysis, and reuse remain separate responsibilities underneath it." id="modenote-system-title" />
+    <ol className="modenote-story__system modenote-story__system--rail" aria-label="ModeNote system lifecycle">
+      {MODENOTE_SYSTEM_NODES.map((node, index) => (
+        <li data-wave-follow key={node.stage}>
+          <Icon icon={node.icon} aria-hidden="true" />
+          <span>{node.stage}</span>
+          <strong>{node.title}</strong>
+          <p>{node.body}</p>
+          <ul aria-label={`${node.title} implementation signals`}>
+            {node.items.map((item) => <li key={item}>{item}</li>)}
+          </ul>
+          {index < MODENOTE_SYSTEM_NODES.length - 1 && (
+            <Icon className="modenote-story__system-arrow" icon="lucide:arrow-right" aria-hidden="true" />
+          )}
+        </li>
+      ))}
     </ol>
     <aside className="modenote-story__mcp modenote-story__glass" data-wave-follow>
       <Icon icon="lucide:bot" aria-hidden="true" />
@@ -3418,7 +3537,7 @@ const ModeNoteStackSummary = ({ items }) => (
   </section>
 );
 
-const ModeNoteLayout = ({ project, techItems, gallery, hasLive, hasRepo }) => (
+const ModeNoteLayout = ({ project, decision, techItems, gallery, hasLive, hasRepo }) => (
   <>
     <header className="modenote-story__hero case-reveal" data-reveal="mount" style={{ '--reveal-index': 1 }}>
       <div className="modenote-story__hero-copy" data-wave-follow>
@@ -3451,12 +3570,21 @@ const ModeNoteLayout = ({ project, techItems, gallery, hasLive, hasRepo }) => (
           kindLabel="Project poster"
           transitionTarget
         />
+        <div className="modenote-story__hero-journey" data-wave-follow aria-label="ModeNote session journey">
+          {['Context', 'Conversation', 'Evidence', 'Memory'].map((step, index) => (
+            <Fragment key={step}>
+              <span>{step}</span>
+              {index < 3 && <Icon icon="lucide:arrow-right" aria-hidden="true" />}
+            </Fragment>
+          ))}
+        </div>
       </div>
     </header>
 
     <ModeNoteProblem />
-    <ModeNoteStoryLoop />
-    <ModeNoteProof project={project} gallery={gallery} />
+    <ModeNoteDemoJourney project={project} gallery={gallery} phase="capture" />
+    <ModeNoteCaptureArchitecture decision={decision} />
+    <ModeNoteDemoJourney project={project} gallery={gallery} phase="memory" />
     <ModeNoteSystemSummary />
     <ModeNoteStackSummary items={techItems} />
   </>

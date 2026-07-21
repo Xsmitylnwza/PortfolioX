@@ -78,7 +78,7 @@
 .modenote-story__hero-media {
   position: relative;
   min-width: 0;
-  padding-bottom: 1.5rem;
+  padding-bottom: 1.9rem;
 }
 
 .case-section--modenote .modenote-story__hero-media .case-media__frame {
@@ -88,6 +88,40 @@
   border-radius: 0.8rem;
   background: #090909;
   box-shadow: 0 26px 72px rgba(0, 0, 0, 0.36);
+}
+
+.modenote-story__hero-journey {
+  position: absolute;
+  right: clamp(1rem, 4vw, 3rem);
+  bottom: 0;
+  left: clamp(1rem, 4vw, 3rem);
+  display: flex;
+  gap: clamp(0.5rem, 1.4vw, 1rem);
+  align-items: center;
+  justify-content: center;
+  min-height: 3.45rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--mn-line-strong);
+  border-radius: 999px;
+  background: rgba(7, 9, 10, 0.76);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 16px 32px rgba(0, 0, 0, 0.3);
+  -webkit-backdrop-filter: blur(10px) saturate(1.15);
+  backdrop-filter: blur(10px) saturate(1.15);
+}
+
+.modenote-story__hero-journey span {
+  color: var(--mn-ink);
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.modenote-story__hero-journey svg {
+  flex: 0 0 auto;
+  color: var(--mn-orange);
+  font-size: 0.8rem;
 }
 
 .modenote-story__chapter { margin: 0 0 clamp(6rem, 12vw, 9.5rem); }
@@ -146,8 +180,8 @@
   list-style: none;
 }
 
-.modenote-story__loop li,
-.modenote-story__system li {
+.modenote-story__loop > li,
+.modenote-story__system > li {
   position: relative;
   min-height: 13rem;
   padding: 1.2rem;
@@ -160,8 +194,8 @@
   backdrop-filter: blur(6px) saturate(1.08);
 }
 
-.modenote-story__loop li:not(:last-child)::after,
-.modenote-story__system li:not(:last-child)::after {
+.modenote-story__loop > li:not(:last-child)::after,
+.modenote-story__system > li:not(:last-child)::after {
   position: absolute;
   top: 2rem;
   right: -0.6rem;
@@ -170,8 +204,8 @@
   content: "";
 }
 
-.modenote-story__loop li > svg,
-.modenote-story__system li > svg {
+.modenote-story__loop > li > svg,
+.modenote-story__system > li > svg {
   display: block;
   margin-bottom: 1rem;
   color: var(--mn-orange);
@@ -205,6 +239,159 @@
 }
 .modenote-story__decision svg { flex: 0 0 auto; color: var(--mn-mint); }
 
+.modenote-story__demos {
+  display: grid;
+  gap: clamp(4.5rem, 9vw, 7.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.modenote-story__demo {
+  display: grid;
+  grid-template-columns: minmax(0, 1.38fr) minmax(17rem, 0.62fr);
+  gap: clamp(1.25rem, 4vw, 3.5rem);
+  align-items: center;
+}
+
+.modenote-story__demo.is-reverse {
+  grid-template-columns: minmax(17rem, 0.62fr) minmax(0, 1.38fr);
+}
+
+.modenote-story__demo.is-reverse .modenote-story__demo-media {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.modenote-story__demo.is-reverse .modenote-story__demo-copy {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.modenote-story__demo-media {
+  position: relative;
+  min-width: 0;
+}
+
+.case-section--modenote .modenote-story__demo-media .case-media__frame {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-color: rgba(245, 196, 77, 0.24);
+  border-radius: 0.82rem;
+  background: #090909;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.32);
+}
+
+.modenote-story__demo-copy {
+  position: relative;
+  z-index: 2;
+  padding: clamp(1.25rem, 2.8vw, 2rem);
+  border-radius: 0.78rem;
+}
+
+.modenote-story__demo-copy > span {
+  color: var(--mn-yellow);
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.modenote-story__demo-copy > small {
+  display: block;
+  margin-top: 0.42rem;
+  color: var(--mn-faint);
+  font-size: 0.7rem;
+  line-height: 1.45;
+}
+
+.modenote-story__demo-copy h3 {
+  max-width: 16ch;
+  margin: 1rem 0 0.65rem;
+  color: var(--mn-ink);
+  font-family: var(--font-display);
+  font-size: clamp(1.65rem, 3.3vw, 2.75rem);
+  letter-spacing: -0.052em;
+  line-height: 0.98;
+}
+
+.modenote-story__demo-copy > p {
+  margin: 0;
+  color: var(--mn-muted);
+  font-size: 0.88rem;
+  line-height: 1.65;
+}
+
+.modenote-story__demo-copy > ul {
+  display: grid;
+  gap: 0.48rem;
+  margin: 1.15rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.modenote-story__demo-copy > ul li {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  color: var(--mn-faint);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.03em;
+}
+
+.modenote-story__demo-copy > ul svg {
+  flex: 0 0 auto;
+  color: var(--mn-mint);
+}
+
+.modenote-story__demo-signal {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.65rem;
+  align-items: start;
+  margin-top: 1.35rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--mn-line);
+}
+
+.modenote-story__demo-signal svg {
+  margin-top: 0.1rem;
+  color: var(--mn-orange);
+  font-size: 1.05rem;
+}
+
+.modenote-story__demo-signal strong {
+  color: var(--mn-ink);
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+.modenote-story__demo.is-climax {
+  grid-template-columns: minmax(0, 1fr) minmax(17rem, 0.38fr);
+  gap: 0;
+}
+
+.modenote-story__demo.is-climax .modenote-story__demo-media {
+  grid-column: 1 / -1;
+  grid-row: 1;
+}
+
+.modenote-story__demo.is-climax .modenote-story__demo-copy {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: end;
+  margin: 2rem;
+  background: rgba(7, 9, 10, 0.82);
+}
+
+.modenote-story__demo.is-epilogue {
+  grid-template-columns: minmax(0, 1.08fr) minmax(17rem, 0.62fr);
+  width: min(100%, 64rem);
+  margin-inline: auto;
+}
+
 .modenote-story__proof { display: grid; justify-items: center; gap: 1rem; }
 .case-section--modenote .modenote-story__proof > .case-media__frame {
   width: min(100%, 58rem);
@@ -232,6 +419,71 @@
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.modenote-story__system--rail {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.modenote-story__system--rail > li {
+  min-height: 18rem;
+  padding: 1.1rem;
+}
+
+.modenote-story__system--rail > li:not(:last-child)::after {
+  display: none;
+}
+
+.modenote-story__system--rail > li > svg:first-child {
+  color: var(--mn-orange);
+}
+
+.modenote-story__system--rail > li > ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.modenote-story__system--rail > li > ul li {
+  padding: 0.3rem 0.42rem;
+  border: 1px solid var(--mn-line);
+  border-radius: 999px;
+  color: var(--mn-faint);
+  font-family: var(--font-mono);
+  font-size: 0.48rem;
+  line-height: 1.2;
+}
+
+.modenote-story__system--rail .modenote-story__system-arrow {
+  position: absolute;
+  top: 2rem;
+  right: -0.63rem;
+  z-index: 3;
+  display: grid;
+  width: 1.2rem;
+  height: 1.2rem;
+  margin: 0;
+  place-items: center;
+  border: 1px solid rgba(233, 111, 45, 0.5);
+  border-radius: 999px;
+  color: var(--mn-orange);
+  background: #0a0b0b;
+  font-size: 0.65rem;
+}
+
+.modenote-story__system-decision {
+  max-width: 58rem;
+  margin: 1rem auto 0;
+  padding: 0.85rem 1rem;
+  border-radius: 0.68rem;
+  color: var(--mn-muted);
+  font-size: 0.76rem;
+  line-height: 1.55;
+  text-align: center;
 }
 
 .modenote-story__mcp {
@@ -300,18 +552,34 @@
   .modenote-story__shift-arrow { transform: rotate(90deg); }
   .modenote-story__loop,
   .modenote-story__system { grid-template-columns: 1fr; }
-  .modenote-story__loop li,
-  .modenote-story__system li { padding: 1rem 1rem 1rem 4rem; }
-  .modenote-story__loop li > svg,
-  .modenote-story__system li > svg { position: absolute; top: 1rem; left: 1rem; }
-  .modenote-story__loop li:not(:last-child)::after,
-  .modenote-story__system li:not(:last-child)::after { top: auto; right: auto; bottom: -0.35rem; left: 2rem; width: 0; height: 0.7rem; border-top: 0; border-left: 1px solid var(--mn-orange); }
+  .modenote-story__loop > li,
+  .modenote-story__system > li { padding: 1rem 1rem 1rem 4rem; }
+  .modenote-story__loop > li > svg:first-child,
+  .modenote-story__system > li > svg:first-child { position: absolute; top: 1rem; left: 1rem; }
+  .modenote-story__loop > li:not(:last-child)::after,
+  .modenote-story__system > li:not(:last-child)::after { top: auto; right: auto; bottom: -0.35rem; left: 2rem; width: 0; height: 0.7rem; border-top: 0; border-left: 1px solid var(--mn-orange); }
+  .modenote-story__demo,
+  .modenote-story__demo.is-reverse,
+  .modenote-story__demo.is-climax,
+  .modenote-story__demo.is-epilogue { grid-template-columns: 1fr; width: 100%; }
+  .modenote-story__demo.is-reverse .modenote-story__demo-media,
+  .modenote-story__demo.is-reverse .modenote-story__demo-copy,
+  .modenote-story__demo.is-climax .modenote-story__demo-media,
+  .modenote-story__demo.is-climax .modenote-story__demo-copy { grid-column: 1; grid-row: auto; }
+  .modenote-story__demo.is-climax .modenote-story__demo-copy { margin: 0; background: var(--mn-glass-strong); }
+  .modenote-story__system--rail { grid-template-columns: 1fr; }
+  .modenote-story__system--rail > li { min-height: 0; }
+  .modenote-story__system--rail .modenote-story__system-arrow { top: auto; right: auto; bottom: -0.68rem; left: 1.4rem; transform: rotate(90deg); }
   .modenote-story__proof-facts { grid-template-columns: 1fr; }
   .modenote-story__stack { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 560px) {
   .modenote-story__hero-copy h1 { font-size: clamp(3.2rem, 17vw, 5.2rem); }
+  .modenote-story__hero-journey { right: 0.5rem; left: 0.5rem; gap: 0.36rem; padding-inline: 0.65rem; }
+  .modenote-story__hero-journey span { font-size: 0.48rem; letter-spacing: 0.04em; }
+  .modenote-story__hero-journey svg { font-size: 0.62rem; }
+  .modenote-story__demo-copy { padding: 1.1rem; }
   .modenote-story__mcp { grid-template-columns: 1fr; }
 }
 

@@ -3386,7 +3386,7 @@ const ModeNoteProof = ({ project, gallery }) => (
   </section>
 );
 
-const ModeNoteLayout = ({ project, gallery, hasLive, hasRepo }) => (
+const ModeNoteLayout = ({ project, decision, gallery, hasLive, hasRepo }) => (
   <>
     <header className="modenote-story__hero case-reveal" data-reveal="mount" style={{ '--reveal-index': 1 }}>
       <div className="modenote-story__hero-copy" data-wave-follow>

@@ -3340,21 +3340,21 @@ const ModeNoteProblem = () => (
   <section className="modenote-story__chapter" aria-labelledby="modenote-problem-title">
     <StorySectionHead
       eyebrow="The gap"
-      title="The conversation happened. The useful part is still buried inside it."
-      body="Audio preserves what was said, but not what the team needs next. Mixed-language speech, decisions, and evidence should return as one navigable record."
+      title="Voice notes save the sound—not the work inside it."
+      body="The real cost arrives afterward: replaying a long recording, reconstructing decisions, and finding the quote that supports them."
       id="modenote-problem-title"
     />
     <div className="modenote-story__shift" data-wave-follow>
       <article className="modenote-story__shift-before modenote-story__glass">
         <span>Before</span>
-        <strong>A long recording and a fading memory.</strong>
-        <p>Replay, scrub, translate, and reconstruct the decisions by hand.</p>
+        <strong>A recording you have to decode again.</strong>
+        <p>Replay, scrub, translate, and rebuild the useful parts by hand.</p>
       </article>
       <span className="modenote-story__shift-arrow" aria-hidden="true"><Icon icon="lucide:arrow-right" /></span>
       <article className="modenote-story__shift-after modenote-story__glass">
         <span>After ModeNote</span>
-        <strong>One session you can search, verify, and continue.</strong>
-        <p>Transcript, recap, evidence, chat, and export stay tied to the same source.</p>
+        <strong>A session that already knows where the work is.</strong>
+        <p>Transcript, recap, evidence, search, chat, and export share one source.</p>
       </article>
     </div>
   </section>
@@ -3362,7 +3362,7 @@ const ModeNoteProblem = () => (
 
 const ModeNoteStoryLoop = () => (
   <section className="modenote-story__chapter" aria-labelledby="modenote-loop-title">
-    <StorySectionHead eyebrow="The product loop" title="Speak once. Keep moving with the result." body="The experience is deliberately linear for the person using it, even though capture and live transcription take separate paths underneath." id="modenote-loop-title" />
+    <StorySectionHead eyebrow="The product loop" title="Speak once. Leave with something usable." body="For the person recording, ModeNote is one clear path from conversation to next action—even while live transcription and recoverable audio remain independent underneath." id="modenote-loop-title" />
     <ol className="modenote-story__loop" aria-label="ModeNote product journey">
       {MODENOTE_STORY_STEPS.map((step) => (
         <li data-wave-follow key={step.label}>
@@ -3435,17 +3435,22 @@ const ModeNoteLayout = ({ project, techItems, gallery, hasLive, hasRepo }) => (
         </div>
         <p className="case-kicker">{project.category || 'Selected system'}</p>
         <h1 id="case-title">{project.title}</h1>
-        <p className="modenote-story__thesis">Turn spoken work into notes you can actually use.</p>
+        <p className="modenote-story__thesis">Record the conversation. Leave with what matters.</p>
         <p className="case-role">{project.role || 'Software Engineer'}</p>
         <p className="case-lede">{project.description}</p>
         <CaseActions hasLive={hasLive} hasRepo={hasRepo} project={project} />
       </div>
       <div className="modenote-story__hero-media">
-        <img className="modenote-story__hero-backdrop" src="/assets/modenote/hero-mascot-backdrop-v2.png" alt="" aria-hidden="true" data-wave-media />
-        <div className="modenote-story__hero-product">
-          <CaseMediaFrame image={gallery[2]?.image} alt={`${project.title} real bilingual transcript workspace`} eager sizes="(max-width: 900px) 88vw, 580px" className="case-media__frame--hero" label="Real product workspace" kindLabel="Product capture" transitionTarget />
-        </div>
-        <div className="modenote-story__hero-promise"><span>Voice in</span><Icon icon="lucide:arrow-right" /><strong>Useful notes out</strong></div>
+        <CaseMediaFrame
+          image={project.image}
+          alt={`${project.title} poster showing the Note Buddy mascot and the real bilingual session workspace`}
+          eager
+          sizes="(max-width: 900px) 100vw, 760px"
+          className="case-media__frame--hero"
+          label="Voice in · clarity out"
+          kindLabel="Project poster"
+          transitionTarget
+        />
       </div>
     </header>
 

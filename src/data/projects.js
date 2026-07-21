@@ -7,7 +7,7 @@ export const projects = [
     description: 'A context-aware voice workspace that turns Thai-English conversations into searchable, source-linked working memory.',
     fullDescription: 'ModeNote is a record-first conversation workspace. It keeps recoverable audio capture independent from best-effort live transcription, then turns stopped sessions into recaps, next steps, evidence cards, source-linked chat, local search, exports, and feature-gated read-only MCP access.',
     tags: ['Next.js 16', 'React 19', 'TypeScript', 'Bun', 'Elysia', 'PostgreSQL', 'MinIO', 'Deepgram', 'Docker'],
-    image: '/assets/modenote/hero-mascot-backdrop-v2.png',
+    image: '/assets/modenote/hero-poster-v3.png',
     link: 'https://modenote.xsmity.cloud/',
     code: `// Live transcription is best-effort; durable audio capture remains independent.
 const recorder = new MediaRecorderCtor(stream, { mimeType: "audio/webm" });

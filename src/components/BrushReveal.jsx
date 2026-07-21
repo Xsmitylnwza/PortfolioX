@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 const sources = [
     '/assets/modenote/cover.svg?rev=voice-memory-v1',
     '/assets/freeflow/freeflow-cover.png',
-    '/assets/projectmux/logo-cover.svg',
+    '/assets/veluma/canvas-thumbnail.png',
     '/assets/keshi-pomodoro/main_page.webp',
 ];
 

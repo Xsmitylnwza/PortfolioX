@@ -10,7 +10,7 @@ gsap.registerPlugin(ScrollTrigger);
 const ProjectConstellation = lazy(() => import('./ProjectConstellation'));
 
 // Core systems first — archive coursework stays out of the wall.
-const FEATURED_IDS = ['modenote', 'freeflow', 'projectmux', 'keshi-pomodoro'];
+const FEATURED_IDS = ['modenote', 'freeflow', 'veluma', 'keshi-pomodoro'];
 
 const PROJECT_SIGNALS = {
     'modenote': {
@@ -21,7 +21,7 @@ const PROJECT_SIGNALS = {
         line: 'Client operations, kept in one trail.',
         detail: 'LINE OA / documents / projects / time'
     },
-    'projectmux': {
+    'veluma': {
         line: 'Agents, orchestrated as workspaces.',
         detail: 'Terminals / Start / multi-agent grid'
     },

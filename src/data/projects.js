@@ -88,7 +88,7 @@ auth.Post("/reset-password", authHandler.ResetPassword)`,
     role: 'Backend Engineer',
   },
   {
-    id: 'projectmux',
+    id: 'veluma',
     title: 'Veluma',
     category: 'DESKTOP • JUL 2026',
     year: 'JUL 2026',

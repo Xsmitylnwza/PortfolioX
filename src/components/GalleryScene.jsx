@@ -5,7 +5,7 @@ import { memo, useEffect, useRef } from 'react';
 const projectMedia = [
     { id: 'modenote', title: 'ModeNote', image: '/assets/modenote/cover.svg?rev=voice-memory-v1' },
     { id: 'freeflow', title: 'FreeFlow', image: '/assets/freeflow/freeflow-cover.png' },
-    { id: 'projectmux', title: 'ProjectMux', image: '/assets/projectmux/logo-cover.svg' },
+    { id: 'veluma', title: 'Veluma', image: '/assets/veluma/canvas-thumbnail.png' },
     { id: 'keshi-pomodoro', title: 'Keshi Pomodoro', image: '/assets/keshi-pomodoro/main_page.webp' },
 ];
 

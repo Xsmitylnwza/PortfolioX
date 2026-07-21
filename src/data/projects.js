@@ -95,7 +95,8 @@ auth.Post("/reset-password", authHandler.ResetPassword)`,
     description: 'A calm Canvas for every project: terminals, agents, backdrop, and arrangement return exactly where you left them.',
     fullDescription: 'Veluma is a local-first Windows desktop app for solo developers who move between projects and terminal-heavy work. Each Project owns a persistent Canvas: agents, servers, shells, pane material, backdrop, and arrangement are restored as one working scene. Reveal the Dock to start a stack deliberately, focus the task at hand, or use Auto Tile to reset a busy Canvas. Nothing auto-runs when you open a Project. Built with Electron, React, TypeScript, xterm.js, node-pty, Zod-validated local config, and secret-safe IPC.',
     tags: ['Electron', 'React 19', 'TypeScript', 'xterm.js', 'node-pty', 'Zod', 'pnpm'],
-    image: '/assets/veluma/canvas-thumbnail.png',
+    image: '/assets/veluma/veluma-canvas-cover.png',
+    heroImage: '/assets/veluma/canvas-thumbnail.png',
     link: 'https://veluma.xsmity.cloud/',
     code: `// Workspace start is explicit — nothing auto-runs on open/import/restore.
 async function startWorkspace(workspace) {
@@ -110,17 +111,17 @@ async function startWorkspace(workspace) {
   markWorkspaceRunning(workspace.id);
 }`,
     gallery: [
-      { image: '/assets/projectmux/usage-demo-v2.gif' },
-      { image: '/assets/projectmux/workspace-grid-v2.gif' },
-      { image: '/assets/projectmux/session-editor-v2.gif' },
-      { image: '/assets/projectmux/sidebar-attention-v2.gif' },
+      { image: '/assets/veluma/project-return.gif' },
+      { image: '/assets/veluma/start-stack.gif' },
+      { image: '/assets/veluma/reset-canvas.gif' },
+      { image: '/assets/veluma/canvas-material.gif' },
     ],
-    galleryLabels: ['Real Codex + live quota', 'Workspace control', 'Session editor', 'Attention that persists'],
+    galleryLabels: ['Return to a Project', 'Start the stack', 'Reset the scene', 'Shape the Canvas'],
     galleryDescriptions: [
-      'A real Codex session answers, then opens /status with live weekly quota.',
-      'One saved workspace launches four readable roles with a single Start.',
-      'Edit role, command, readiness, and pane identity in one place.',
-      'Done / Failed stays visible until the finished pane receives focus.',
+      'Switch Projects from the revealed Dock and return to the Canvas that belongs to that work.',
+      'Start every ready terminal from one explicit Dock command.',
+      'Use Auto Tile to bring a scattered terminal scene back into balance.',
+      'Change a Project backdrop and pane material without losing its working context.',
     ],
     demoPresentation: 'stacked',
     flow: [

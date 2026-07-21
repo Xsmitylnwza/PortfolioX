@@ -18,8 +18,8 @@ const PROJECT_DECISIONS = {
     'Live transcription is useful, but durable capture cannot depend on it. ModeNote separates best-effort PCM transcription from recoverable MediaRecorder chunks, then links supported outputs back to the stopped session and its evidence.',
   'freeflow':
     'A client message should not become five disconnected admin tasks. FreeFlow’s shipped path connects LINE OA to one organization-scoped conversation, then lets proposals, projects, invoices, appointments, files, and follow-up move around that shared context.',
-  'projectmux':
-    'An agent workspace should remember its setup and wait for an intentional Start. ProjectMux makes multi-terminal, multi-agent environments first-class: configure Codex, Claude Code, servers, and shells once per project, keep workspaces side-by-side, and never auto-run on open.',
+  'veluma':
+    'A Project Canvas should remember its working scene and wait for an intentional Start. Veluma keeps terminals, agents, backdrops, and arrangements together per Project—then lets you return, focus, or reset the scene without rebuilding it.',
   'keshi-pomodoro':
     'Focus and break are mental states, not theme toggles. The Discipline dashboard turns habits and deep-work minutes into a binary pattern mirror (done / not done) with multi-view matrices, evidence, and an agent-friendly API — so the product stays honest about whether you showed up.',
   'zucchini-review':
@@ -37,7 +37,7 @@ const PROJECT_DECISIONS = {
 const PROJECT_LAYOUTS = {
   'modenote': 'modenote',
   'freeflow': 'freeflow',
-  'projectmux': 'mux',
+  'veluma': 'mux',
   'keshi-pomodoro': 'keshi',
   'zucchini-review': 'zuch',
   'decrypt-password': 'decrypt',
@@ -663,78 +663,72 @@ const CaseWhy = ({ items }) => {
 const MUX_SHIFTS = [
   {
     icon: 'lucide:panels-top-left',
-    from: 'Rebuild terminal windows',
-    to: 'Open a saved project home',
+    from: 'Rebuild a terminal scene',
+    to: 'Return to a Project Canvas',
   },
   {
     icon: 'lucide:play',
-    from: 'Start every tool by hand',
-    to: 'Press one intentional Start',
+    from: 'Wake tools one by one',
+    to: 'Choose one explicit Start',
   },
   {
-    icon: 'lucide:bell-ring',
-    from: 'Miss finished background work',
-    to: 'Follow sticky Done / Failed',
+    icon: 'lucide:layout-panel-top',
+    from: 'Leave panes scattered',
+    to: 'Reset the scene with Auto Tile',
   },
 ];
 
 const MUX_PIPELINE = [
   {
-    stage: '01 · Save',
-    title: 'Workspace',
+    stage: '01 · Return',
+    title: 'Project Canvas',
     icon: 'lucide:folder-cog',
-    items: ['Sessions', 'Env + secrets', 'Readiness', 'Layout'],
+    items: ['Terminals', 'Backdrop', 'Pane material', 'Arrangement'],
   },
   {
     stage: '02 · Trigger',
-    title: 'Start Workspace',
+    title: 'Reveal the Dock',
     icon: 'lucide:circle-play',
-    items: ['Manual trigger only'],
+    items: ['Project switch', 'Ready terminals', 'Explicit Start'],
     focus: true,
   },
   {
-    stage: '03 · Run',
-    title: 'Any CLI grid',
+    stage: '03 · Work',
+    title: 'Terminal scene',
     icon: 'lucide:layout-grid',
-    items: ['CLI agents', 'Servers', 'Tunnels', 'Shells'],
+    items: ['Agents', 'Dev servers', 'Shells', 'Focused pane'],
     grid: true,
   },
   {
-    stage: '04 · Notice',
-    title: 'Attention',
-    icon: 'lucide:badge-alert',
-    items: ['Done', 'Failed', 'Clear on focus'],
+    stage: '04 · Reset',
+    title: 'Keep it legible',
+    icon: 'lucide:wand-sparkles',
+    items: ['Auto Tile', 'Canvas controls', 'Saved on return'],
   },
 ];
 
-const MUX_AGENTS = [
+const MUX_CANVAS_SIGNALS = [
   {
-    label: 'Codex',
-    maker: 'OpenAI',
-    icon: 'simple-icons:openai',
+    label: 'Project-scoped',
+    maker: 'One scene per project',
+    icon: 'lucide:folder-kanban',
   },
   {
-    label: 'Claude Code',
-    maker: 'Anthropic',
-    icon: 'simple-icons:anthropic',
+    label: 'Explicit launch',
+    maker: 'Nothing runs on open',
+    icon: 'lucide:circle-play',
   },
   {
-    label: 'Grok',
-    maker: 'xAI',
-    icon: 'grok',
+    label: 'Saved arrangement',
+    maker: 'Return without rebuilding',
+    icon: 'lucide:layout-template',
   },
   {
-    label: 'Any CLI',
-    maker: 'Custom command',
-    icon: 'lucide:square-terminal',
+    label: 'Canvas controls',
+    maker: 'Backdrop, material, Auto Tile',
+    icon: 'lucide:sliders-horizontal',
   },
 ];
-
-const GrokBrandMark = () => (
-  <svg viewBox="0 0 256 246" fill="currentColor" aria-hidden="true">
-    <path d="M63.83 56.843c27.469-27.48 67.635-34.865 101.712-21.87l2.314.917c7.645 2.844 14.309 6.89 19.507 10.651l-28.857 13.342c-26.869-11.286-57.649-3.609-76.435 15.2-25.405 25.414-30.539 69.484-.764 97.96L0 245.764c4.296-5.923 9.457-11.573 14.75-17.178l5.815-6.13 2.608-2.774c15.53-16.655 28.81-33.77 20.496-56.709l-.766-1.98c-14.592-35.497-6.094-77.096 20.928-104.15m156.956-21.587L256 0l-10.128 14.069c-21.094 29.716-30.456 48.424-21.11 88.659l-.065-.065c7.23 30.728-.503 64.803-25.472 89.802-31.478 31.538-81.852 38.558-123.336 10.17l28.923-13.407c26.476 10.41 55.442 5.839 76.26-15.003 20.818-20.844 25.493-51.2 15.03-76.462-1.989-4.79-7.952-5.992-12.125-2.909L98.87 157.755 220.786 35.147z" />
-  </svg>
-);
 
 const ProjectMuxGlassDefs = () => (
   <svg className="case-mux-glass-defs" aria-hidden="true" focusable="false">
@@ -771,18 +765,18 @@ const ProjectMuxGlassDefs = () => (
 const ProjectMuxAgentRail = () => (
   <div className="case-mux-agents" data-wave-follow>
     <div className="case-mux-agents__copy">
-      <span>CLI-agnostic core</span>
-      <strong>Every coding agent. One workspace.</strong>
+      <span>Canvas contract</span>
+      <strong>The scene is the project context.</strong>
     </div>
-    <ul aria-label="Supported coding CLI agents">
-      {MUX_AGENTS.map((agent) => (
-        <li key={agent.label}>
+    <ul aria-label="Veluma Canvas signals">
+      {MUX_CANVAS_SIGNALS.map((signal) => (
+        <li key={signal.label}>
           <span className="case-mux-agents__mark" aria-hidden="true">
-            {agent.icon === 'grok' ? <GrokBrandMark /> : <Icon icon={agent.icon} />}
+            <Icon icon={signal.icon} />
           </span>
           <span className="case-mux-agents__name">
-            <strong>{agent.label}</strong>
-            <small>{agent.maker}</small>
+            <strong>{signal.label}</strong>
+            <small>{signal.maker}</small>
           </span>
         </li>
       ))}
@@ -799,7 +793,7 @@ const ProjectMuxShiftDiagram = () => (
   >
     <header className="case-mux-section-head" data-wave-follow>
       <p className="case-mux-section-head__eyebrow">The shift</p>
-      <h2 id="mux-shifts-title">Less terminal choreography. More visible work.</h2>
+      <h2 id="mux-shifts-title">A terminal workspace that returns as one scene.</h2>
     </header>
     <div className="case-mux-shifts__grid">
       {MUX_SHIFTS.map((item, index) => (
@@ -825,8 +819,8 @@ const ProjectMuxPipeline = () => (
     aria-labelledby="mux-system-title"
   >
     <header className="case-mux-section-head" data-wave-follow>
-      <p className="case-mux-section-head__eyebrow">System map</p>
-      <h2 id="mux-system-title">Saved setup → intentional start → visible outcome.</h2>
+      <p className="case-mux-section-head__eyebrow">The working loop</p>
+      <h2 id="mux-system-title">Return → reveal → start → shape the Canvas.</h2>
     </header>
     <ProjectMuxAgentRail />
     <ol className="case-mux-pipeline">
@@ -854,9 +848,9 @@ const ProjectMuxPipeline = () => (
     </ol>
     <div className="case-mux-system__loop" data-wave-follow>
       <Icon icon="lucide:refresh-cw" aria-hidden="true" />
-      <span>Switch project</span>
+      <span>Leave a Project</span>
       <span className="case-mux-system__loop-line" aria-hidden="true" />
-      <strong>Setup stays saved</strong>
+      <strong>Return to the same Canvas</strong>
     </div>
   </section>
 );
@@ -879,7 +873,7 @@ const ProjectMuxEvidence = ({ project, gallery }) => {
     >
       <header className="case-mux-section-head" data-wave-follow>
         <p className="case-mux-section-head__eyebrow">Interface proof</p>
-        <h2 id="mux-evidence-title">Control, configure, then catch the signal.</h2>
+        <h2 id="mux-evidence-title">Four recorded moments, one calm workspace.</h2>
       </header>
       <div className="case-mux-evidence__grid">
         {items.map((item, index) => (
@@ -931,7 +925,13 @@ const MuxLayout = ({ project, techItems, gallery, hasLive, hasRepo }) => {
           <CaseActions hasLive={hasLive} hasRepo={hasRepo} project={project} />
         </div>
         <div className="case-mux-hero__media">
-          <CaseHeroMedia project={project} sizes="(max-width: 900px) 100vw, 560px" />
+          <CaseMediaFrame
+            image={project.heroImage || project.image}
+            alt={`${project.title} Project Canvas`}
+            eager
+            sizes="(max-width: 900px) 100vw, 560px"
+            className="case-media__frame--hero"
+          />
         </div>
       </div>
 
@@ -945,13 +945,13 @@ const MuxLayout = ({ project, techItems, gallery, hasLive, hasRepo }) => {
           aria-labelledby="mux-proof-title"
         >
           <header className="case-mux-proof__copy" data-wave-follow>
-            <p className="case-mux-section-head__eyebrow">Proof 01 · Real session</p>
+            <p className="case-mux-section-head__eyebrow">Proof 01 · Return to context</p>
             <h2 id="mux-proof-title">{demoLabel}</h2>
             {demoDescription && <p>{demoDescription}</p>}
             <ul aria-label="Demo signals">
-              <li>Signed-in Codex</li>
-              <li>Real response</li>
-              <li>Live quota</li>
+              <li>Project-scoped scene</li>
+              <li>Dock reveals on demand</li>
+              <li>Canvas stays intact</li>
             </ul>
           </header>
           <CaseMediaFrame

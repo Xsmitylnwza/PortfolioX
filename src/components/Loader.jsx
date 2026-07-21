@@ -6,7 +6,7 @@ import './Loader.css';
 const loaderProjects = [
     ['MODENOTE', '/assets/modenote/cover.svg?rev=voice-memory-v1'],
     ['FREEFLOW', '/assets/freeflow/freeflow-cover.png'],
-    ['VELUMA', '/assets/veluma/veluma-canvas-cover-v4.png'],
+    ['VELUMA', '/assets/veluma/veluma-canvas-cover-v5.png'],
     ['KESHI', '/assets/keshi-pomodoro/main_page.webp'],
 ].map(([title, image], index) => ({ id: String(index + 1).padStart(2, '0'), title, image }));
 
@@ -14,7 +14,7 @@ const loaderSequence = [...loaderProjects, ...loaderProjects.slice(0, 3)];
 const galleryPreloadSources = [
     '/assets/modenote/cover.svg?rev=voice-memory-v1',
     '/assets/freeflow/freeflow-cover.png',
-    '/assets/veluma/veluma-canvas-cover-v4.png',
+    '/assets/veluma/veluma-canvas-cover-v5.png',
     '/assets/keshi-pomodoro/main_page.webp',
 ];
 

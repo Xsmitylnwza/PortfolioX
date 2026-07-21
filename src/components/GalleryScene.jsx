@@ -47,11 +47,23 @@ varying float vDepth;
 void main() {
     vec2 uv = vUv;
     if (!gl_FrontFacing) uv.x = 1.0 - uv.x;
-    if (uImageAspect > uPlaneAspect) uv.x = (uv.x - .5) * uPlaneAspect / uImageAspect + .5;
-    else uv.y = (uv.y - .5) * uImageAspect / uPlaneAspect + .5;
-    vec3 image = texture2D(tMap, uv).rgb;
+    // Gallery cards are taller than 16:9 covers. Contain the whole poster
+    // within the card instead of cropping its left/right safe areas.
+    float posterVisible = 1.0;
+    if (uImageAspect > uPlaneAspect) {
+        float fittedHeight = uPlaneAspect / uImageAspect;
+        float inset = (1.0 - fittedHeight) * .5;
+        posterVisible = step(inset, uv.y) * step(uv.y, 1.0 - inset);
+        uv.y = (uv.y - inset) / fittedHeight;
+    } else {
+        float fittedWidth = uImageAspect / uPlaneAspect;
+        float inset = (1.0 - fittedWidth) * .5;
+        posterVisible = step(inset, uv.x) * step(uv.x, 1.0 - inset);
+        uv.x = (uv.x - inset) / fittedWidth;
+    }
+    vec3 image = texture2D(tMap, clamp(uv, 0.0, 1.0)).rgb;
     vec3 placeholder = mix(vec3(.055,.018,.022), vec3(.34,.055,.06), vUv.y);
-    vec3 color = mix(placeholder, image, uLoaded);
+    vec3 color = mix(placeholder, image, uLoaded * posterVisible);
     float lum = dot(color, vec3(.299,.587,.114));
     color = mix(vec3(lum), color, .88 + uHover * .12);
     gl_FragColor = vec4(color, uRowOpacity * uSceneOpacity * uCardReveal);

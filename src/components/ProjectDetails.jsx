@@ -3386,7 +3386,7 @@ const ModeNoteProof = ({ project, gallery }) => (
   </section>
 );
 
-const ModeNoteLayout = ({ project, decision, gallery, hasLive, hasRepo }) => (
+const ModeNoteLayout = ({ project, gallery, hasLive, hasRepo }) => (
   <>
     <header className="modenote-story__hero case-reveal" data-reveal="mount" style={{ '--reveal-index': 1 }}>
       <div className="modenote-story__hero-copy" data-wave-follow>
@@ -3437,11 +3437,9 @@ const ModeNoteLayout = ({ project, decision, gallery, hasLive, hasRepo }) => (
       ))}
     </ul>
 
-    <ModeNoteContextProof project={project} media={gallery[0]} />
-    <ModeNoteRequirementStory project={project} media={gallery[1]} />
-    <ModeNoteEvidenceProof project={project} media={gallery[2]} />
-    <ModeNoteMemoryProof project={project} media={gallery[3]} />
-    <ModeNoteCaptureArchitecture decision={decision} />
+    <ModeNoteStateContrast project={project} gallery={gallery} />
+    <ModeNoteCaptureLoop />
+    <ModeNoteProof project={project} gallery={gallery} />
     <ModeNoteMcpBridge />
     <ModeNoteStack />
   </>

@@ -95,8 +95,8 @@ auth.Post("/reset-password", authHandler.ResetPassword)`,
     description: 'A calm Canvas for every project: terminals, agents, backdrop, and arrangement return exactly where you left them.',
     fullDescription: 'Veluma is a local-first Windows desktop app for solo developers who move between projects and terminal-heavy work. Each Project owns a persistent Canvas: agents, servers, shells, pane material, backdrop, and arrangement are restored as one working scene. Reveal the Dock to start a stack deliberately, focus the task at hand, or use Auto Tile to reset a busy Canvas. Nothing auto-runs when you open a Project. Built with Electron, React, TypeScript, xterm.js, node-pty, Zod-validated local config, and secret-safe IPC.',
     tags: ['Electron', 'React 19', 'TypeScript', 'xterm.js', 'node-pty', 'Zod', 'pnpm'],
-    image: '/assets/veluma/veluma-canvas-cover-v2.png',
-    heroImage: '/assets/veluma/canvas-thumbnail.png',
+    image: '/assets/veluma/veluma-canvas-cover-v3.png',
+    heroImage: '/assets/veluma/veluma-canvas-cover-v3.png',
     link: 'https://veluma.xsmity.cloud/',
     code: `// Workspace start is explicit — nothing auto-runs on open/import/restore.
 async function startWorkspace(workspace) {

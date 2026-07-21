@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 const sources = [
     '/assets/modenote/cover.svg?rev=voice-memory-v1',
     '/assets/freeflow/freeflow-cover.png',
-    '/assets/veluma/veluma-canvas-cover-v2.png',
+    '/assets/veluma/veluma-canvas-cover-v3.png',
     '/assets/keshi-pomodoro/main_page.webp',
 ];
 
@@ -136,4 +136,3 @@ const BrushReveal = () => {
 };
 
 export default BrushReveal;
-

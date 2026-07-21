@@ -1344,7 +1344,8 @@ html.case-lightbox-open body {
 }
 
 .case-mux-hero__media .case-media__frame--hero {
-  aspect-ratio: 8 / 5;
+  /* Veluma's branded cover is authored at 16:9; keep its safe logo area intact. */
+  aspect-ratio: 16 / 9;
 }
 
 .case-mux-section-head {

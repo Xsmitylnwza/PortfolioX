@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 112" role="img" aria-labelledby="title">
+  <title id="title">ModeNote note buddy</title>
+  <defs>
+    <filter id="rough"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="1" seed="4" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale=".7" xChannelSelector="R" yChannelSelector="G"/></filter>
+  </defs>
+  <g filter="url(#rough)" stroke="#1F2421" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17 10h48l16 16v57c0 5-4 9-9 9H17c-5 0-9-4-9-9V19c0-5 4-9 9-9Z" fill="#F5C44D" stroke-width="4"/>
+    <path d="M65 10v16h16" fill="#C4612F" stroke-width="4"/>
+    <path d="M34 54c3 4 8 4 11 0" fill="none" stroke-width="3.6"/>
+    <circle cx="29" cy="44" r="2.7" fill="#1F2421" stroke="none"/><circle cx="50" cy="44" r="2.7" fill="#1F2421" stroke="none"/>
+    <path d="M29 93v9m0 0h-6m6 0h5M58 93v9m0 0h-5m5 0h6" fill="none" stroke-width="4"/>
+  </g>
+</svg>

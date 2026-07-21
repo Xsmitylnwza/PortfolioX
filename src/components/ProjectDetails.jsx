@@ -2717,29 +2717,6 @@ const MODENOTE_WORKSPACE_STEPS = [
   },
 ];
 
-const MODENOTE_PRODUCT_SIGNALS = [
-  {
-    label: 'Mode-aware capture',
-    body: 'Language, conversation mode, and assist level are set before the microphone opens.',
-    icon: 'lucide:sliders-horizontal',
-  },
-  {
-    label: 'Best-effort live assist',
-    body: 'Realtime transcript and suggestions can degrade without becoming the recording path.',
-    icon: 'lucide:sparkles',
-  },
-  {
-    label: 'Recoverable audio',
-    body: 'Four-second WebM chunks keep a separate local recovery and upload path.',
-    icon: 'lucide:shield-check',
-  },
-  {
-    label: 'Source-linked outputs',
-    body: 'Recap, transcript search, chat, and exports stay attached to the same session.',
-    icon: 'lucide:link-2',
-  },
-];
-
 const MODENOTE_STACK_LAYERS = [
   {
     layer: 'Product interface',
@@ -3332,116 +3309,151 @@ const ModeNoteStack = () => (
   </section>
 );
 
-const ModeNoteStateContrast = ({ project, gallery }) => (
-  <section className="modenote-story__chapter" aria-labelledby="modenote-state-title">
+const MODENOTE_STORY_STEPS = [
+  {
+    label: '01 · Speak',
+    title: 'Talk naturally.',
+    body: 'Record a meeting, interview, lecture, or idea without stopping when Thai and English mix.',
+    icon: 'lucide:mic-2',
+  },
+  {
+    label: '02 · Preserve',
+    title: 'Keep the source safe.',
+    body: 'Recoverable audio chunks stay independent from the best-effort live transcript.',
+    icon: 'lucide:shield-check',
+  },
+  {
+    label: '03 · Understand',
+    title: 'Return to the point.',
+    body: 'The stopped session becomes a recap, searchable transcript, evidence, and next steps.',
+    icon: 'lucide:sparkles',
+  },
+  {
+    label: '04 · Continue',
+    title: 'Take it into the work.',
+    body: 'Search, ask, or export the same source-linked session instead of replaying an audio file.',
+    icon: 'lucide:arrow-up-right',
+  },
+];
+
+const ModeNoteProblem = () => (
+  <section className="modenote-story__chapter" aria-labelledby="modenote-problem-title">
     <StorySectionHead
-      eyebrow="Choose the lens"
-      title="The same conversation can ask for a different kind of attention."
-      body="Mode, language, and assist level are intentional context controls before recording begins—not labels applied after the fact."
-      id="modenote-state-title"
+      eyebrow="The gap"
+      title="The conversation happened. The useful part is still buried inside it."
+      body="Audio preserves what was said, but not what the team needs next. Mixed-language speech, decisions, and evidence should return as one navigable record."
+      id="modenote-problem-title"
     />
-    <div className="modenote-story__states" data-wave-follow>
-      <article className="modenote-story__state modenote-story__glass">
-        <span>01 · Quiet capture</span>
-        <h3>Keep the room in the room.</h3>
-        <p>Record the Thai-English conversation with a timestamped transcript while assist stays out of the way.</p>
-        <small><Icon icon="lucide:audio-lines" /> capture first · context retained</small>
+    <div className="modenote-story__shift" data-wave-follow>
+      <article className="modenote-story__shift-before modenote-story__glass">
+        <span>Before</span>
+        <strong>A long recording and a fading memory.</strong>
+        <p>Replay, scrub, translate, and reconstruct the decisions by hand.</p>
       </article>
-      <article className="modenote-story__state modenote-story__state--coach modenote-story__glass">
-        <span>02 · Grounded assist</span>
-        <h3>Offer one useful next question.</h3>
-        <p>Live Assist can return zero or one evidence-grounded prompt. The interviewer always decides whether it belongs.</p>
-        <small><Icon icon="lucide:circle-user-round" /> human chooses · no auto-pilot</small>
+      <span className="modenote-story__shift-arrow" aria-hidden="true"><Icon icon="lucide:arrow-right" /></span>
+      <article className="modenote-story__shift-after modenote-story__glass">
+        <span>After ModeNote</span>
+        <strong>One session you can search, verify, and continue.</strong>
+        <p>Transcript, recap, evidence, chat, and export stay tied to the same source.</p>
       </article>
     </div>
-    {gallery[1] && <div className="modenote-story__state-media"><CaseMediaFrame media={gallery[1]} alt={`${project.title} — Live Assist preview`} sizes="(max-width: 900px) 100vw, 1000px" label="One grounded question" kindLabel="Product flow" /></div>}
   </section>
 );
 
-const ModeNoteCaptureLoop = () => (
+const ModeNoteStoryLoop = () => (
   <section className="modenote-story__chapter" aria-labelledby="modenote-loop-title">
-    <StorySectionHead eyebrow="Record-first system" title="Live intelligence is useful. The recording never depends on it." body="One microphone intentionally feeds two responsibilities: a low-latency transcript path and a recoverable audio path that meet again at a stopped session." id="modenote-loop-title" />
-    <ol className="modenote-story__loop" data-wave-follow aria-label="ModeNote record-first behavior loop">
-      <li><Icon icon="lucide:mic-2" /><span>01 · Capture</span><strong>Browser microphone</strong><p>One consented session starts both paths.</p></li>
-      <li><Icon icon="lucide:audio-lines" /><span>02 · Interpret</span><strong>PCM → live transcript</strong><p>Best-effort, low-latency speech and bounded assist.</p></li>
-      <li className="modenote-story__loop-core"><Icon icon="lucide:shield-check" /><span>02 · Preserve</span><strong>4-second WebM chunks</strong><p>Recoverable chunks queue and upload independently.</p></li>
-      <li><Icon icon="lucide:database" /><span>03 · Ground</span><strong>Stopped session truth</strong><p>Audio, final segments, recap, and evidence stay linked.</p></li>
-      <li><Icon icon="lucide:arrow-up-right" /><span>04 · Reuse</span><strong>Review, search, export</strong><p>The human chooses what happens next.</p></li>
+    <StorySectionHead eyebrow="The product loop" title="Speak once. Keep moving with the result." body="The experience is deliberately linear for the person using it, even though capture and live transcription take separate paths underneath." id="modenote-loop-title" />
+    <ol className="modenote-story__loop" aria-label="ModeNote product journey">
+      {MODENOTE_STORY_STEPS.map((step) => (
+        <li data-wave-follow key={step.label}>
+          <Icon icon={step.icon} aria-hidden="true" />
+          <span>{step.label}</span>
+          <strong>{step.title}</strong>
+          <p>{step.body}</p>
+        </li>
+      ))}
     </ol>
-    <p className="modenote-story__decision modenote-story__glass" data-wave-follow>Durable audio capture is independent from realtime transcription—so a degraded live path does not erase the record.</p>
+    <p className="modenote-story__decision modenote-story__glass" data-wave-follow><Icon icon="lucide:shield-check" aria-hidden="true" /> Realtime can degrade; the recoverable recording keeps its own path.</p>
   </section>
 );
 
 const ModeNoteProof = ({ project, gallery }) => (
   <section className="modenote-story__chapter" aria-labelledby="modenote-proof-title">
-    <StorySectionHead eyebrow="Proof · stopped-session workspace" title="A conversation returns as evidence you can work with." body="The session workspace keeps its recap, transcript search, source-linked context, and exports on the same record." id="modenote-proof-title" />
+    <StorySectionHead eyebrow="The proof" title="The strongest view is the session itself." body="This real product capture shows the bilingual transcript and its timestamps—the source layer every recap, search result, and export must return to." id="modenote-proof-title" />
     <div className="modenote-story__proof">
-      {gallery[2] && <CaseMediaFrame media={gallery[2]} alt={`${project.title} — recap, transcript search, and export workspace`} sizes="(max-width: 900px) 100vw, 1050px" label="Real stopped-session workspace" kindLabel="Product capture" />}
+      {gallery[2] && <CaseMediaFrame image={gallery[2].image} alt={`${project.title} — real stopped-session transcript workspace`} sizes="(max-width: 900px) 100vw, 920px" label="Real stopped-session workspace" kindLabel="Product capture" />}
       <div className="modenote-story__proof-facts" data-wave-follow>
-        <article className="modenote-story__glass"><Icon icon="lucide:languages" /><strong>Thai-English stays together</strong><p>Language and timestamps remain attached to the conversation.</p></article>
-        <article className="modenote-story__glass"><Icon icon="lucide:quote" /><strong>Outputs can cite their source</strong><p>Artifacts retain transcript evidence instead of losing the trail.</p></article>
-        <article className="modenote-story__glass"><Icon icon="lucide:file-output" /><strong>Handoff is explicit</strong><p>Export a readable Markdown note or structured JSON from the same session.</p></article>
+        <article className="modenote-story__glass"><Icon icon="lucide:languages" /><strong>Mixed language, one timeline</strong><p>Thai, English, and timestamps stay in the order people actually spoke.</p></article>
+        <article className="modenote-story__glass"><Icon icon="lucide:quote" /><strong>Evidence stays findable</strong><p>Derived outputs can point back to supporting transcript segments.</p></article>
+        <article className="modenote-story__glass"><Icon icon="lucide:file-output" /><strong>The session can leave</strong><p>Markdown and JSON exports create explicit human or machine handoffs.</p></article>
       </div>
     </div>
   </section>
 );
 
-const ModeNoteLayout = ({ project, gallery, hasLive, hasRepo }) => (
+const ModeNoteSystemSummary = () => (
+  <section className="modenote-story__chapter" aria-labelledby="modenote-system-title">
+    <StorySectionHead eyebrow="Under the session" title="Three boundaries keep the story honest." body="Capture, durable processing, and optional agent access do not collapse into one opaque AI box." id="modenote-system-title" />
+    <ol className="modenote-story__system" aria-label="ModeNote system boundaries">
+      <li data-wave-follow><Icon icon="lucide:monitor-up" /><span>Client</span><strong>Next.js capture workspace</strong><p>Records locally recoverable chunks and streams best-effort PCM.</p></li>
+      <li data-wave-follow><Icon icon="lucide:server-cog" /><span>Runtime</span><strong>Elysia API + worker</strong><p>Owns uploads, realtime routes, composition, and versioned analysis jobs.</p></li>
+      <li data-wave-follow><Icon icon="lucide:database" /><span>Durable truth</span><strong>PostgreSQL + MinIO</strong><p>Stores session state and private audio behind explicit boundaries.</p></li>
+    </ol>
+    <aside className="modenote-story__mcp modenote-story__glass" data-wave-follow>
+      <Icon icon="lucide:bot" aria-hidden="true" />
+      <div><span>Optional MCP handoff</span><strong>Read-only context in. No ModeNote writes out.</strong><p>Feature-gated grants expose bounded, owner-scoped stopped-session context with expiry, revocation, and audit events.</p></div>
+    </aside>
+  </section>
+);
+
+const ModeNoteStackSummary = ({ items }) => (
+  <section className="modenote-story__stack" aria-labelledby="modenote-stack-summary-title">
+    <div data-wave-follow>
+      <span>Built as a real system</span>
+      <h2 id="modenote-stack-summary-title">Web, realtime, worker, and durable stores.</h2>
+    </div>
+    <ul data-wave-follow aria-label="ModeNote technology stack">
+      {items.map((item) => <li key={item}>{item}</li>)}
+    </ul>
+  </section>
+);
+
+const ModeNoteLayout = ({ project, techItems, gallery, hasLive, hasRepo }) => (
   <>
     <header className="modenote-story__hero case-reveal" data-reveal="mount" style={{ '--reveal-index': 1 }}>
       <div className="modenote-story__hero-copy" data-wave-follow>
         <div className="case-modenote-brand">
           <img
-            src="/assets/modenote/logo.png"
+            src="/assets/modenote/logo-buddy.svg"
             alt=""
             width="56"
             height="56"
             aria-hidden="true"
             data-wave-media
           />
-          <span>Context-aware conversation intelligence</span>
+          <span>Record · understand · continue</span>
         </div>
         <p className="case-kicker">{project.category || 'Selected system'}</p>
         <h1 id="case-title">{project.title}</h1>
-        <p className="modenote-story__thesis">Capture the conversation. Let its context decide what matters next.</p>
+        <p className="modenote-story__thesis">Turn spoken work into notes you can actually use.</p>
         <p className="case-role">{project.role || 'Software Engineer'}</p>
         <p className="case-lede">{project.description}</p>
         <CaseActions hasLive={hasLive} hasRepo={hasRepo} project={project} />
       </div>
       <div className="modenote-story__hero-media">
-        <CaseMediaFrame
-          image={project.image}
-          alt={`${project.title} voice workspace showing waveform, transcript, evidence, and recovery status`}
-          eager
-          sizes="(max-width: 900px) 100vw, 650px"
-          className="case-media__frame--hero"
-          label="ModeNote voice memory workspace"
-          kindLabel="Brand visual"
-          transitionTarget
-        />
+        <img className="modenote-story__hero-backdrop" src="/assets/modenote/hero-mascot-backdrop-v2.png" alt="" aria-hidden="true" data-wave-media />
+        <div className="modenote-story__hero-product">
+          <CaseMediaFrame image={gallery[2]?.image} alt={`${project.title} real bilingual transcript workspace`} eager sizes="(max-width: 900px) 88vw, 580px" className="case-media__frame--hero" label="Real product workspace" kindLabel="Product capture" transitionTarget />
+        </div>
+        <div className="modenote-story__hero-promise"><span>Voice in</span><Icon icon="lucide:arrow-right" /><strong>Useful notes out</strong></div>
       </div>
     </header>
 
-    <ul className="modenote-story__signals" aria-label="ModeNote product signals">
-      {MODENOTE_PRODUCT_SIGNALS.map((item, index) => (
-        <li data-wave-follow key={item.label}>
-          <span className="modenote-story__signals-index">{formatIndex(index + 1)}</span>
-          <span className="modenote-story__signals-icon" aria-hidden="true">
-            <Icon icon={item.icon} />
-          </span>
-          <div>
-            <strong>{item.label}</strong>
-            <small>{item.body}</small>
-          </div>
-        </li>
-      ))}
-    </ul>
-
-    <ModeNoteStateContrast project={project} gallery={gallery} />
-    <ModeNoteCaptureLoop />
+    <ModeNoteProblem />
+    <ModeNoteStoryLoop />
     <ModeNoteProof project={project} gallery={gallery} />
-    <ModeNoteMcpBridge />
-    <ModeNoteStack />
+    <ModeNoteSystemSummary />
+    <ModeNoteStackSummary items={techItems} />
   </>
 );
 

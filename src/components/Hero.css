@@ -196,7 +196,7 @@ html.portfolio-ready .orbit-hero__footer { animation:interface-reveal .62s cubic
         display: none;
     }
 }
-@media(prefers-reduced-motion:reduce){.orbit-hero::before{animation:none}.gallery-webgl,.orbit-hero__identity,.orbit-hero__footer{opacity:1;animation:none!important}.gallery-scene{background:center/cover no-repeat url('/assets/modenote/cover.svg?rev=voice-memory-v1');opacity:.55}.gallery-scene__active{display:none}}
+@media(prefers-reduced-motion:reduce){.orbit-hero::before{animation:none}.gallery-webgl,.orbit-hero__identity,.orbit-hero__footer{opacity:1;animation:none!important}.gallery-scene{background:center/cover no-repeat url('/assets/modenote/hero-poster-v3.png');opacity:.55}.gallery-scene__active{display:none}}
 
 /* Non-gallery pages: sculpture dims inside WebGL only (GalleryScene).
    Never dim .gallery-stage-layer here — that would also fade the black grid. */

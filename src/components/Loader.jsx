@@ -4,7 +4,7 @@ import './Loader.css';
 
 // Boot posters mirror gallery covers only — one signature image per selected system.
 const loaderProjects = [
-    ['MODENOTE', '/assets/modenote/cover.svg?rev=voice-memory-v1'],
+    ['MODENOTE', '/assets/modenote/hero-poster-v3.png'],
     ['FREEFLOW', '/assets/freeflow/freeflow-cover.png'],
     ['VELUMA', '/assets/veluma/veluma-canvas-cover-v6.png'],
     ['KESHI', '/assets/keshi-pomodoro/main_page.webp'],
@@ -12,7 +12,7 @@ const loaderProjects = [
 
 const loaderSequence = [...loaderProjects, ...loaderProjects.slice(0, 3)];
 const galleryPreloadSources = [
-    '/assets/modenote/cover.svg?rev=voice-memory-v1',
+    '/assets/modenote/hero-poster-v3.png',
     '/assets/freeflow/freeflow-cover.png',
     '/assets/veluma/veluma-canvas-cover-v6.png',
     '/assets/keshi-pomodoro/main_page.webp',

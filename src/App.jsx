@@ -21,7 +21,7 @@ const DOCUMENT_PATHS = new Set(['/stack', '/tech', '/contact', '/resume', '/cv']
 const ROOM_EXIT_MS = 500;
 const ROOM_ENTER_MS = 820;
 // Bump when a persistent GalleryScene poster changes so Fast Refresh rebuilds WebGL textures.
-const GALLERY_MEDIA_REVISION = 'core-systems-v1';
+const GALLERY_MEDIA_REVISION = 'modenote-poster-v3';
 
 function isStagePath(path) {
   return STAGE_PATHS.has(path);

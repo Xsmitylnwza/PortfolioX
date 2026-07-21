@@ -144,7 +144,6 @@
 .modenote-story__shift-before { opacity: 0.92; }
 .modenote-story__shift-after { border-color: rgba(245, 196, 77, 0.4); background: var(--mn-glass-strong); }
 .modenote-story__shift article span,
-.modenote-story__loop span,
 .modenote-story__system span,
 .modenote-story__mcp span {
   color: var(--mn-yellow);
@@ -166,21 +165,10 @@
 }
 
 .modenote-story__shift article p,
-.modenote-story__loop p,
 .modenote-story__system p,
 .modenote-story__mcp p { margin: 0; color: var(--mn-muted); font-size: 0.88rem; line-height: 1.62; }
 .modenote-story__shift-arrow { display: grid; place-items: center; color: var(--mn-orange); font-size: 1.35rem; }
 
-.modenote-story__loop {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.7rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.modenote-story__loop > li,
 .modenote-story__system > li {
   position: relative;
   min-height: 13rem;
@@ -194,7 +182,6 @@
   backdrop-filter: blur(6px) saturate(1.08);
 }
 
-.modenote-story__loop > li:not(:last-child)::after,
 .modenote-story__system > li:not(:last-child)::after {
   position: absolute;
   top: 2rem;
@@ -204,7 +191,6 @@
   content: "";
 }
 
-.modenote-story__loop > li > svg,
 .modenote-story__system > li > svg {
   display: block;
   margin-bottom: 1rem;
@@ -212,7 +198,6 @@
   font-size: 1.35rem;
 }
 
-.modenote-story__loop strong,
 .modenote-story__system strong,
 .modenote-story__mcp strong {
   display: block;
@@ -223,21 +208,6 @@
   letter-spacing: -0.035em;
   line-height: 1.05;
 }
-
-.modenote-story__decision {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  width: fit-content;
-  max-width: 44rem;
-  margin: 1.25rem auto 0;
-  padding: 0.75rem 1rem;
-  border-radius: 999px;
-  color: var(--mn-muted);
-  font-size: 0.74rem;
-  line-height: 1.45;
-}
-.modenote-story__decision svg { flex: 0 0 auto; color: var(--mn-mint); }
 
 .modenote-story__demos {
   display: grid;
@@ -369,21 +339,12 @@
 }
 
 .modenote-story__demo.is-climax {
-  grid-template-columns: minmax(0, 1fr) minmax(17rem, 0.38fr);
-  gap: 0;
-}
-
-.modenote-story__demo.is-climax .modenote-story__demo-media {
-  grid-column: 1 / -1;
-  grid-row: 1;
+  grid-template-columns: minmax(0, 1.45fr) minmax(18rem, 0.55fr);
+  gap: clamp(1.25rem, 4vw, 3.5rem);
 }
 
 .modenote-story__demo.is-climax .modenote-story__demo-copy {
-  grid-column: 2;
-  grid-row: 1;
-  align-self: end;
-  margin: 2rem;
-  background: rgba(7, 9, 10, 0.82);
+  background: var(--mn-glass-strong);
 }
 
 .modenote-story__demo.is-epilogue {
@@ -391,26 +352,6 @@
   width: min(100%, 64rem);
   margin-inline: auto;
 }
-
-.modenote-story__proof { display: grid; justify-items: center; gap: 1rem; }
-.case-section--modenote .modenote-story__proof > .case-media__frame {
-  width: min(100%, 58rem);
-  aspect-ratio: 16 / 9;
-  border-color: rgba(245, 196, 77, 0.24);
-  border-radius: 0.82rem;
-}
-
-.modenote-story__proof-facts {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.7rem;
-  width: min(100%, 58rem);
-}
-
-.modenote-story__proof-facts article { min-height: 9.5rem; padding: 1rem; border-radius: 0.65rem; }
-.modenote-story__proof-facts svg { color: var(--mn-orange); font-size: 1.2rem; }
-.modenote-story__proof-facts strong { display: block; margin: 0.75rem 0 0.35rem; color: var(--mn-ink); font-size: 0.9rem; }
-.modenote-story__proof-facts p { margin: 0; color: var(--mn-muted); font-size: 0.82rem; line-height: 1.58; }
 
 .modenote-story__system {
   display: grid;
@@ -427,7 +368,9 @@
 }
 
 .modenote-story__system--rail > li {
-  min-height: 18rem;
+  display: flex;
+  min-height: 13rem;
+  flex-direction: column;
   padding: 1.1rem;
 }
 
@@ -443,8 +386,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.35rem;
-  margin: 1rem 0 0;
-  padding: 0;
+  margin: auto 0 0;
+  padding: 1rem 0 0;
   list-style: none;
 }
 
@@ -473,17 +416,6 @@
   color: var(--mn-orange);
   background: #0a0b0b;
   font-size: 0.65rem;
-}
-
-.modenote-story__system-decision {
-  max-width: 58rem;
-  margin: 1rem auto 0;
-  padding: 0.85rem 1rem;
-  border-radius: 0.68rem;
-  color: var(--mn-muted);
-  font-size: 0.76rem;
-  line-height: 1.55;
-  text-align: center;
 }
 
 .modenote-story__mcp {
@@ -550,13 +482,9 @@
   .modenote-story__hero-copy h1 { max-width: 10ch; }
   .modenote-story__shift { grid-template-columns: 1fr; }
   .modenote-story__shift-arrow { transform: rotate(90deg); }
-  .modenote-story__loop,
   .modenote-story__system { grid-template-columns: 1fr; }
-  .modenote-story__loop > li,
   .modenote-story__system > li { padding: 1rem 1rem 1rem 4rem; }
-  .modenote-story__loop > li > svg:first-child,
   .modenote-story__system > li > svg:first-child { position: absolute; top: 1rem; left: 1rem; }
-  .modenote-story__loop > li:not(:last-child)::after,
   .modenote-story__system > li:not(:last-child)::after { top: auto; right: auto; bottom: -0.35rem; left: 2rem; width: 0; height: 0.7rem; border-top: 0; border-left: 1px solid var(--mn-orange); }
   .modenote-story__demo,
   .modenote-story__demo.is-reverse,
@@ -570,7 +498,6 @@
   .modenote-story__system--rail { grid-template-columns: 1fr; }
   .modenote-story__system--rail > li { min-height: 0; }
   .modenote-story__system--rail .modenote-story__system-arrow { top: auto; right: auto; bottom: -0.68rem; left: 1.4rem; transform: rotate(90deg); }
-  .modenote-story__proof-facts { grid-template-columns: 1fr; }
   .modenote-story__stack { grid-template-columns: 1fr; }
 }
 

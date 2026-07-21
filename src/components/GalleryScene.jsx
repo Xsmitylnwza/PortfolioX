@@ -3,7 +3,7 @@ import { memo, useEffect, useRef } from 'react';
 // Coursework stays on the Projects archive, not the home cylinder.
 // The cylinder grid repeats this list so every card stays on-brand when density > count.
 const projectMedia = [
-    { id: 'modenote', title: 'ModeNote', image: '/assets/modenote/cover.svg?rev=voice-memory-v1' },
+    { id: 'modenote', title: 'ModeNote', image: '/assets/modenote/hero-poster-v3.png' },
     { id: 'freeflow', title: 'FreeFlow', image: '/assets/freeflow/freeflow-cover.png' },
     { id: 'veluma', title: 'Veluma', image: '/assets/veluma/veluma-canvas-cover-v6.png' },
     { id: 'keshi-pomodoro', title: 'Keshi Pomodoro', image: '/assets/keshi-pomodoro/main_page.webp' },

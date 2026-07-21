@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
 const sources = [
-    '/assets/modenote/cover.svg?rev=voice-memory-v1',
+    '/assets/modenote/hero-poster-v3.png',
     '/assets/freeflow/freeflow-cover.png',
     '/assets/veluma/veluma-canvas-cover-v6.png',
     '/assets/keshi-pomodoro/main_page.webp',

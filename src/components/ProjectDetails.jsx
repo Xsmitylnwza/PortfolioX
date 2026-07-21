@@ -3352,26 +3352,9 @@ const ModeNoteProblem = () => (
       <article className="modenote-story__shift-after modenote-story__glass">
         <span>After ModeNote</span>
         <strong>A session that already knows where the work is.</strong>
-        <p>Transcript, recap, evidence, search, chat, and export share one source.</p>
+        <p>Transcript, recap, evidence, search, and export stay attached to one source.</p>
       </article>
     </div>
-  </section>
-);
-
-const ModeNoteStoryLoop = () => (
-  <section className="modenote-story__chapter" aria-labelledby="modenote-loop-title">
-    <StorySectionHead eyebrow="The product loop" title="Speak once. Leave with something usable." body="For the person recording, ModeNote is one clear path from conversation to next action—even while live transcription and recoverable audio remain independent underneath." id="modenote-loop-title" />
-    <ol className="modenote-story__loop" aria-label="ModeNote product journey">
-      {MODENOTE_STORY_STEPS.map((step) => (
-        <li data-wave-follow key={step.label}>
-          <Icon icon={step.icon} aria-hidden="true" />
-          <span>{step.label}</span>
-          <strong>{step.title}</strong>
-          <p>{step.body}</p>
-        </li>
-      ))}
-    </ol>
-    <p className="modenote-story__decision modenote-story__glass" data-wave-follow><Icon icon="lucide:shield-check" aria-hidden="true" /> Realtime can degrade; the recoverable recording keeps its own path.</p>
   </section>
 );
 
@@ -3381,12 +3364,12 @@ const MODENOTE_DEMO_STEPS = [
     phase: 'capture',
     stage: '01 · Frame the room',
     eyebrow: 'Before capture',
-    title: 'Tell ModeNote what kind of room this is.',
-    body: 'Language, conversation mode, and assist level shape the session before the microphone opens.',
+    title: 'Set the language, mode, and assist level.',
+    body: 'These choices shape the session before the microphone opens, so context does not have to be reconstructed afterward.',
     facts: ['Thai + English', 'Mode-aware analysis', 'Assist stays adjustable'],
     kindLabel: 'Recorded flow',
     icon: 'lucide:sliders-horizontal',
-    signal: 'The analytical lens is chosen before the first word.',
+    signal: 'Context becomes part of capture—not cleanup after the call.',
     layout: 'wide',
   },
   {
@@ -3407,12 +3390,12 @@ const MODENOTE_DEMO_STEPS = [
     phase: 'memory',
     stage: '03 · Stop with evidence',
     eyebrow: 'After recording',
-    title: 'Return to the exact line behind the insight.',
-    body: 'The stopped-session workspace keeps bilingual transcript, recap, search, evidence, and export attached to one source.',
-    facts: ['Timestamped transcript', 'Source-linked outputs', 'Markdown + JSON handoff'],
+    title: 'Review the recap, then return to the transcript.',
+    body: 'The recorded flow moves from recap to transcript search and export without leaving the stopped-session workspace.',
+    facts: ['Bilingual transcript', 'Local text search', 'Markdown + JSON handoff'],
     kindLabel: 'Recorded flow',
     icon: 'lucide:quote',
-    signal: 'The strongest output can still point back to what was said.',
+    signal: 'Every useful handoff still begins with the captured session.',
     layout: 'climax',
   },
   {
@@ -3420,8 +3403,8 @@ const MODENOTE_DEMO_STEPS = [
     phase: 'memory',
     stage: '04 · Return without replaying',
     eyebrow: 'Later, when the conversation matters again',
-    title: 'Find the session by memory—not by filename.',
-    body: 'The library turns recorded conversations into a searchable return path, so the useful context survives beyond the day it was captured.',
+    title: 'Find the session without remembering a filename.',
+    body: 'Search, filter, and sort the library, then reopen the same workspace when the conversation becomes relevant again.',
     facts: ['Search by title', 'Filter + sort', 'Reopen the full workspace'],
     kindLabel: 'Recorded flow',
     icon: 'lucide:library-big',
@@ -3432,14 +3415,14 @@ const MODENOTE_DEMO_STEPS = [
 
 const MODENOTE_DEMO_CHAPTERS = {
   capture: {
-    eyebrow: 'The live session · Two product moments',
-    title: 'Make the room legible before the AI speaks.',
-    body: 'ModeNote begins with context, then stays deliberately quiet: one bounded suggestion can appear without taking over the conversation.',
+    eyebrow: 'Before + during capture · Two product moments',
+    title: 'Set the context. Then stay in the conversation.',
+    body: 'First choose how the room should be understood. During capture, ModeNote can surface at most one grounded question without taking over.',
   },
   memory: {
     eyebrow: 'The stopped session · Two return paths',
     title: 'The recording stops. The work keeps moving.',
-    body: 'The output is not a detached summary. Evidence, transcript, exports, and the session library keep leading back to the captured source.',
+    body: 'Review and export inside the stopped session, then use the library to return when that conversation matters again.',
   },
 };
 
@@ -3449,66 +3432,65 @@ const ModeNoteDemoJourney = ({ project, gallery, phase }) => {
   if (!chapter || !steps.length) return null;
 
   return (
-  <section
-    className={`modenote-story__chapter modenote-story__chapter--${phase}`}
-    aria-labelledby={`modenote-${phase}-demos-title`}
-  >
-    <StorySectionHead
-      eyebrow={chapter.eyebrow}
-      title={chapter.title}
-      body={chapter.body}
-      id={`modenote-${phase}-demos-title`}
-    />
-    <ol className="modenote-story__demos">
-      {steps.map((step) => {
-        const media = gallery[step.galleryIndex];
-        if (!media) return null;
-        const label = project.galleryLabels?.[step.galleryIndex] || step.title;
+    <section
+      className={`modenote-story__chapter modenote-story__chapter--${phase}`}
+      aria-labelledby={`modenote-${phase}-demos-title`}
+    >
+      <StorySectionHead
+        eyebrow={chapter.eyebrow}
+        title={chapter.title}
+        body={chapter.body}
+        id={`modenote-${phase}-demos-title`}
+      />
+      <ol className="modenote-story__demos">
+        {steps.map((step) => {
+          const media = gallery[step.galleryIndex];
+          if (!media) return null;
+          const label = project.galleryLabels?.[step.galleryIndex] || step.title;
 
-        return (
-          <li className={`modenote-story__demo is-${step.layout}`} key={step.stage}>
-            <div className="modenote-story__demo-media">
-              <CaseMediaFrame
-                media={media}
-                alt={`${project.title} — ${label}`}
-                sizes="(max-width: 840px) 100vw, 680px"
-                label={label}
-                kindLabel={step.kindLabel}
-              />
-            </div>
-            <article className="modenote-story__demo-copy modenote-story__glass" data-wave-follow>
-              <span>{step.stage}</span>
-              <small>{step.eyebrow}</small>
-              <h3>{step.title}</h3>
-              <p>{step.body}</p>
-              <ul aria-label={`${step.title} key signals`}>
-                {step.facts.map((fact) => (
-                  <li key={fact}><Icon icon="lucide:check" aria-hidden="true" />{fact}</li>
-                ))}
-              </ul>
-              <div className="modenote-story__demo-signal">
-                <Icon icon={step.icon} aria-hidden="true" />
-                <strong>{step.signal}</strong>
+          return (
+            <li className={`modenote-story__demo is-${step.layout}`} key={step.stage}>
+              <div className="modenote-story__demo-media">
+                <CaseMediaFrame
+                  media={media}
+                  alt={`${project.title} — ${label}`}
+                  sizes="(max-width: 840px) 100vw, 680px"
+                  label={label}
+                  kindLabel={step.kindLabel}
+                />
               </div>
-            </article>
-          </li>
-        );
-      })}
-    </ol>
-  </section>
+              <article className="modenote-story__demo-copy modenote-story__glass" data-wave-follow>
+                <span>{step.stage}</span>
+                <small>{step.eyebrow}</small>
+                <h3>{step.title}</h3>
+                <p>{step.body}</p>
+                <ul aria-label={`${step.title} key signals`}>
+                  {step.facts.map((fact) => (
+                    <li key={fact}><Icon icon="lucide:check" aria-hidden="true" />{fact}</li>
+                  ))}
+                </ul>
+                <div className="modenote-story__demo-signal">
+                  <Icon icon={step.icon} aria-hidden="true" />
+                  <strong>{step.signal}</strong>
+                </div>
+              </article>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
   );
 };
 
 const ModeNoteSystemSummary = () => (
   <section className="modenote-story__chapter" aria-labelledby="modenote-system-title">
-    <StorySectionHead eyebrow="Under the session" title="One session moves through explicit boundaries." body="The product journey stays simple because capture, persistence, analysis, and reuse remain separate responsibilities underneath it." id="modenote-system-title" />
+    <StorySectionHead eyebrow="Under the session" title="A simple journey, backed by clear boundaries." body="Capture, routing, durable storage, analysis, and reuse stay separate so each stage has one responsibility." id="modenote-system-title" />
     <ol className="modenote-story__system modenote-story__system--rail" aria-label="ModeNote system lifecycle">
       {MODENOTE_SYSTEM_NODES.map((node, index) => (
         <li data-wave-follow key={node.stage}>
           <Icon icon={node.icon} aria-hidden="true" />
           <span>{node.stage}</span>
           <strong>{node.title}</strong>
-          <p>{node.body}</p>
           <ul aria-label={`${node.title} implementation signals`}>
             {node.items.map((item) => <li key={item}>{item}</li>)}
           </ul>

@@ -303,28 +303,30 @@ const CaseActions = ({ hasLive, hasRepo, project }) => {
   return (
     <div className="case-actions">
       {hasLive && (
-        <a
-          className="case-btn case-btn--primary"
-          href={project.link}
-          target="_blank"
-          rel="noreferrer"
+        <button
+          type="button"
+          className="case-btn case-btn--disabled"
+          disabled
+          aria-label="View live unavailable. Project access is private."
+          title="Project access is private"
           data-cursor="default"
         >
-          <Icon icon="lucide:arrow-up-right" aria-hidden="true" />
-          View live
-        </a>
+          <Icon icon="lucide:lock-keyhole" aria-hidden="true" />
+          View live <span aria-hidden="true">— Private</span>
+        </button>
       )}
       {hasRepo && (
-        <a
-          className="case-btn"
-          href={project.repo}
-          target="_blank"
-          rel="noreferrer"
+        <button
+          type="button"
+          className="case-btn case-btn--disabled"
+          disabled
+          aria-label={`${isGitLab ? 'GitLab' : 'GitHub'} unavailable. Repository access is private.`}
+          title="Repository access is private"
           data-cursor="default"
         >
-          <Icon icon={isGitLab ? 'simple-icons:gitlab' : 'lucide:github'} aria-hidden="true" />
-          {isGitLab ? 'GitLab' : 'GitHub'}
-        </a>
+          <Icon icon="lucide:lock-keyhole" aria-hidden="true" />
+          {isGitLab ? 'GitLab' : 'GitHub'} <span aria-hidden="true">— Private</span>
+        </button>
       )}
     </div>
   );

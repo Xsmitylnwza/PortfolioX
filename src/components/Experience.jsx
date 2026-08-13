@@ -65,6 +65,17 @@ const experiences = [
 const currentRole = experiences[0];
 const earlierRoles = experiences.slice(1);
 
+const education = {
+  school: "King Mongkut's University of Technology Thonburi",
+  shortSchool: 'KMUTT',
+  degree: 'Bachelor of Science in Information Technology',
+  gpax: '3.68 / 4.00',
+  honours: 'First Class Honours',
+  completed: 'June 2026',
+  scholarship: 'Academic Excellence Scholarship',
+  scholarshipDetail: 'Awarded for top performance in the Information Technology program.',
+};
+
 const parseRole = (role = '') => {
   const match = role.match(/^(.*?)\s*\(([^)]+)\)\s*$/);
   if (!match) return { title: role, type: null };
@@ -197,27 +208,85 @@ const Experience = () => {
           style={{ '--reveal-index': 0 }}
         >
           <div className="experience-hero__title" data-wave-follow>
+            <p>New Graduate</p>
             <h1 id="experience-room-title">Experience</h1>
           </div>
           <div className="experience-hero__meta" data-wave-follow>
             <p>Room — 02</p>
-            <p>Span — 2025–26</p>
-            <p>Mode — Applied roles</p>
+            <p>Profile — New graduate</p>
+            <p>Graduated — June 2026</p>
           </div>
         </header>
+
+        <article
+          className="experience-education experience-reveal"
+          data-reveal="mount"
+          data-timeline-node
+          style={{ '--reveal-index': 1 }}
+          aria-labelledby="experience-education-title"
+        >
+          <span className="experience-node experience-node--education" aria-hidden="true" />
+          <div className="experience-education__intro" data-wave-follow>
+            <p className="experience-education__status">New graduate · June 2026</p>
+            <h2 id="experience-education-title">Education</h2>
+            <p>
+              Recent Information Technology graduate with applied experience across banking,
+              freelance delivery, internships, and product systems built alongside the degree.
+            </p>
+          </div>
+
+          <div className="experience-education__record" data-wave-follow>
+            <div className="experience-education__brands" aria-label="KMUTT and School of Information Technology">
+              <img
+                className="experience-education__kmutt-logo"
+                src="/assets/education/kmutt-logo.svg"
+                alt="King Mongkut's University of Technology Thonburi"
+                width="44"
+                height="51"
+                loading="eager"
+                decoding="async"
+              />
+              <span aria-hidden="true" />
+              <img
+                className="experience-education__sit-logo"
+                src="/assets/education/sit-logo-white.png"
+                alt="School of Information Technology, KMUTT"
+                width="1024"
+                height="156"
+                loading="eager"
+                decoding="async"
+              />
+            </div>
+            <div>
+              <span>Degree</span>
+              <strong>{education.degree}</strong>
+              <p>{education.school} ({education.shortSchool})</p>
+            </div>
+            <div className="experience-education__scholarship">
+              <span>Scholarship</span>
+              <strong>{education.scholarship}</strong>
+              <p>{education.scholarshipDetail}</p>
+            </div>
+            <dl>
+              <div><dt>GPAX</dt><dd>{education.gpax}</dd></div>
+              <div><dt>Recognition</dt><dd>{education.honours}</dd></div>
+              <div><dt>Completed</dt><dd>{education.completed}</dd></div>
+            </dl>
+          </div>
+        </article>
 
         {/* First content: current role story */}
         <article
           className="experience-current experience-reveal"
           data-reveal="mount"
           data-timeline-node
-          style={{ '--reveal-index': 1 }}
+          style={{ '--reveal-index': 2 }}
           id={`exp-${currentRole.id}`}
           aria-labelledby="experience-current-title"
         >
           <span className="experience-node experience-node--current" aria-hidden="true" />
                     <div className="experience-current__story">
-            <span className="experience-current__status" data-wave-follow>Current</span>
+            <span className="experience-current__status" data-wave-follow>Most recent</span>
 
             <div className="experience-current__brand">
               <div className="experience-current__logo-wrap" data-wave-follow>

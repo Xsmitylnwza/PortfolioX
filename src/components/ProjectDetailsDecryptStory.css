@@ -1,0 +1,793 @@
+/* Decrypt story composition: pressure, rules, mutations, outcomes. */
+.case-section--decrypt {
+  --decrypt-violet: #9b87f5;
+  --decrypt-orange: #f0a34a;
+  --decrypt-red: #ef5a67;
+  --decrypt-green: #58d693;
+  background:
+    radial-gradient(circle at 84% 14%, rgba(155, 135, 245, 0.055), transparent 23rem),
+    radial-gradient(circle at 13% 58%, rgba(239, 90, 103, 0.045), transparent 26rem);
+}
+
+.case-decrypt-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.18fr) minmax(16rem, 0.82fr);
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: end;
+  margin-bottom: clamp(4.5rem, 9vw, 7.5rem);
+}
+
+.case-decrypt-hero__copy h1 {
+  margin: 0;
+  max-width: 11ch;
+  color: var(--case-ink);
+  font-family: var(--font-display);
+  font-size: clamp(2.9rem, 7vw, 6.8rem);
+  font-weight: 700;
+  letter-spacing: -0.072em;
+  line-height: 0.84;
+}
+
+.case-decrypt-hero__thesis {
+  max-width: 25ch;
+  margin: 1.35rem 0 0;
+  color: var(--case-soft);
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.8vw, 2.35rem);
+  font-weight: 600;
+  letter-spacing: -0.047em;
+  line-height: 1.02;
+}
+
+.case-decrypt-hero .case-lede {
+  max-width: 35rem;
+}
+
+.case-decrypt-signals {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  border-top: 1px solid var(--story-line-strong);
+}
+
+.case-decrypt-signals > div {
+  display: grid;
+  grid-template-columns: minmax(5rem, 0.7fr) minmax(0, 1.3fr);
+  gap: 1rem;
+  align-items: center;
+  padding: 1.05rem 0;
+  border-bottom: 1px solid var(--story-line);
+}
+
+.case-decrypt-signals dt {
+  color: var(--case-faint);
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.case-decrypt-signals dd {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.8rem;
+  align-items: baseline;
+  margin: 0;
+}
+
+.case-decrypt-signals strong {
+  color: var(--case-ink);
+  font-family: var(--font-display);
+  font-size: clamp(1.55rem, 3vw, 2.35rem);
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+
+.case-decrypt-signals span {
+  color: var(--case-mute);
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.07em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.case-decrypt-proof,
+.case-decrypt-modes,
+.case-decrypt-engine,
+.case-decrypt-manual {
+  margin-bottom: clamp(5.5rem, 11vw, 9rem);
+}
+
+.case-decrypt-proof__stage {
+  position: relative;
+  padding-bottom: 1.7rem;
+}
+
+.case-section--decrypt .case-media__frame--hero,
+.case-media__frame--decrypt-modes,
+.case-media__frame--decrypt-manual {
+  aspect-ratio: 16 / 9;
+}
+
+.case-section--decrypt .case-media__frame {
+  border-radius: 0.62rem;
+  border-color: rgba(155, 135, 245, 0.2);
+  background: #08070c;
+}
+
+.case-decrypt-proof__caption {
+  position: absolute;
+  right: clamp(0.75rem, 3.6vw, 3rem);
+  bottom: 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.82rem 1rem;
+  border: 1px solid rgba(155, 135, 245, 0.3);
+  border-radius: 0.7rem;
+  color: var(--case-mute);
+  background: var(--story-glass-fill);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.36);
+  backdrop-filter: blur(18px) saturate(120%);
+  font-family: var(--font-mono);
+  font-size: 0.52rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.case-decrypt-proof__caption span,
+.case-decrypt-proof__caption strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.36rem;
+}
+
+.case-decrypt-proof__caption strong {
+  color: var(--decrypt-green);
+}
+
+.case-decrypt-proof__caption svg {
+  width: 0.8rem;
+  height: 0.8rem;
+}
+
+.case-decrypt-proof__caption > svg {
+  color: var(--case-faint);
+}
+
+.case-decrypt-modes__stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(17rem, 0.7fr);
+  gap: clamp(1.25rem, 4vw, 3rem);
+  align-items: center;
+}
+
+.case-decrypt-levels {
+  display: grid;
+  gap: 0.8rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.case-decrypt-level {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.85rem;
+  align-items: center;
+  width: calc(100% - (var(--mode-index) * 0.9rem));
+  margin-left: calc(var(--mode-index) * 0.9rem);
+  overflow: hidden;
+  padding: 0.9rem 0.95rem 1.08rem;
+  border: 1px solid var(--story-line);
+  border-radius: 0.68rem;
+  background: var(--story-surface);
+}
+
+.case-decrypt-level--spy {
+  border-color: rgba(155, 135, 245, 0.3);
+}
+
+.case-decrypt-level--fbi {
+  border-color: rgba(240, 163, 74, 0.32);
+}
+
+.case-decrypt-level--hacker {
+  border-color: rgba(239, 90, 103, 0.38);
+  background: linear-gradient(130deg, rgba(239, 90, 103, 0.11), var(--story-surface));
+}
+
+.case-decrypt-level__index {
+  color: var(--case-faint);
+  font-family: var(--font-mono);
+  font-size: 0.47rem;
+  letter-spacing: 0.1em;
+}
+
+.case-decrypt-level__identity {
+  display: grid;
+  gap: 0.22rem;
+}
+
+.case-decrypt-level__identity span {
+  color: var(--case-faint);
+  font-family: var(--font-mono);
+  font-size: 0.46rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.case-decrypt-level__identity strong {
+  color: var(--case-ink);
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  letter-spacing: -0.04em;
+}
+
+.case-decrypt-level dl {
+  display: flex;
+  gap: 0.85rem;
+  margin: 0;
+}
+
+.case-decrypt-level dl > div {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.case-decrypt-level dt {
+  color: var(--case-faint);
+  font-family: var(--font-mono);
+  font-size: 0.4rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.case-decrypt-level dd {
+  margin: 0;
+  color: var(--case-soft);
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+}
+
+.case-decrypt-level__pressure {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  transform-origin: left;
+}
+
+.case-decrypt-level--spy .case-decrypt-level__pressure {
+  width: 48%;
+  background: var(--decrypt-violet);
+}
+
+.case-decrypt-level--fbi .case-decrypt-level__pressure {
+  width: 72%;
+  background: var(--decrypt-orange);
+}
+
+.case-decrypt-level--hacker .case-decrypt-level__pressure {
+  width: 100%;
+  background: var(--decrypt-red);
+}
+
+.case-decrypt-engine {
+  padding: clamp(1.15rem, 3.6vw, 2.55rem);
+  border: 1px solid var(--story-line);
+  border-radius: 1rem;
+  background:
+    linear-gradient(125deg, rgba(155, 135, 245, 0.045), transparent 38%),
+    linear-gradient(315deg, rgba(239, 90, 103, 0.05), transparent 36%),
+    rgba(255, 255, 255, 0.014);
+}
+
+.case-decrypt-engine__board {
+  display: grid;
+  grid-template-columns: minmax(12rem, 0.68fr) clamp(2.7rem, 6vw, 5.2rem) minmax(0, 1.32fr);
+  grid-template-areas:
+    'mode mode-route password'
+    'timer timer-route rules'
+    '. resolution outcomes';
+  gap: clamp(0.85rem, 2.1vw, 1.5rem);
+  align-items: stretch;
+  margin-top: clamp(2rem, 4vw, 3.2rem);
+}
+
+.case-decrypt-engine__mode,
+.case-decrypt-engine__password,
+.case-decrypt-engine__timer,
+.case-decrypt-outcome {
+  border: 1px solid var(--story-line);
+  border-radius: 0.75rem;
+  background: var(--story-glass-fill);
+}
+
+.case-decrypt-engine__mode {
+  grid-area: mode;
+  display: grid;
+  align-content: center;
+  min-height: 10rem;
+  padding: 1rem;
+}
+
+.case-decrypt-engine__mode > span,
+.case-decrypt-engine__password > span,
+.case-decrypt-engine__timer > span {
+  color: var(--case-faint);
+  font-family: var(--font-mono);
+  font-size: 0.48rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.case-decrypt-engine__mode > div {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.case-decrypt-engine__mode > div svg {
+  width: 1.05rem;
+  height: 1.05rem;
+  color: var(--decrypt-red);
+}
+
+.case-decrypt-engine__mode strong {
+  color: var(--case-ink);
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  letter-spacing: -0.05em;
+}
+
+.case-decrypt-engine__mode small,
+.case-decrypt-engine__password small,
+.case-decrypt-engine__timer small {
+  margin-top: 0.3rem;
+  color: var(--case-mute);
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.07em;
+}
+
+.case-decrypt-engine__password {
+  grid-area: password;
+  display: grid;
+  align-content: center;
+  min-height: 12rem;
+  padding: clamp(1rem, 3vw, 1.6rem);
+  border-color: rgba(155, 135, 245, 0.36);
+  background-color: var(--story-glass-fill);
+  background-image: linear-gradient(135deg, rgba(155, 135, 245, 0.1), transparent 72%);
+}
+
+.case-decrypt-engine__password > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 1.2rem;
+  color: var(--case-ink);
+  font-family: var(--font-mono);
+  font-size: clamp(1.35rem, 4.5vw, 3.7rem);
+  letter-spacing: -0.055em;
+  line-height: 1;
+}
+
+.case-decrypt-engine__mutation-icon {
+  display: inline-grid;
+  place-items: center;
+  margin-left: 0.18em;
+  color: #fff;
+}
+
+.case-decrypt-engine__mutation-icon svg {
+  width: 0.72em;
+  height: 0.72em;
+}
+
+.case-decrypt-engine__password b {
+  width: 0.08em;
+  height: 0.86em;
+  margin-left: 0.12em;
+  background: var(--decrypt-violet);
+  animation: decrypt-cursor 900ms steps(1, end) infinite;
+}
+
+@keyframes decrypt-cursor {
+  50% { opacity: 0; }
+}
+
+.case-decrypt-engine__timer {
+  grid-area: timer;
+  display: grid;
+  align-content: center;
+  min-height: 13rem;
+  padding: 1rem;
+  border-color: rgba(239, 90, 103, 0.3);
+}
+
+.case-decrypt-engine__timer > svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-bottom: 1rem;
+  color: var(--decrypt-red);
+}
+
+.case-decrypt-engine__timer strong {
+  margin-top: 0.65rem;
+  color: var(--case-ink);
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 5vw, 4rem);
+  letter-spacing: -0.06em;
+  line-height: 0.9;
+}
+
+.case-decrypt-engine__route {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.38rem;
+  color: var(--case-faint);
+}
+
+.case-decrypt-engine__route--mode {
+  grid-area: mode-route;
+}
+
+.case-decrypt-engine__route--timer {
+  grid-area: timer-route;
+}
+
+.case-decrypt-engine__route span,
+.case-decrypt-engine__resolution span {
+  font-family: var(--font-mono);
+  font-size: 0.42rem;
+  letter-spacing: 0.1em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.case-decrypt-engine__route svg {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+.case-decrypt-rules {
+  position: relative;
+  grid-area: rules;
+  display: grid;
+  gap: 0.56rem;
+  margin: 0;
+  padding: 0 0 0 1rem;
+  list-style: none;
+}
+
+.case-decrypt-rules::before {
+  content: '';
+  position: absolute;
+  top: 1rem;
+  bottom: 1rem;
+  left: 0.28rem;
+  width: 1px;
+  background: linear-gradient(var(--decrypt-green), var(--decrypt-violet), var(--story-line));
+}
+
+.case-decrypt-rules li {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  gap: 0.75rem;
+  align-items: center;
+  min-height: 3.1rem;
+  padding: 0.7rem 0.78rem;
+  border: 1px solid var(--story-line);
+  border-radius: 0.62rem;
+  background: var(--story-glass-fill);
+}
+
+.case-decrypt-rules li::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -1.08rem;
+  width: 0.44rem;
+  height: 0.44rem;
+  border: 1px solid var(--case-faint);
+  border-radius: 999px;
+  background: #0a090d;
+  translate: 0 -50%;
+}
+
+.case-decrypt-rules li.is-passed {
+  border-color: rgba(88, 214, 147, 0.32);
+}
+
+.case-decrypt-rules li.is-passed::before {
+  border-color: var(--decrypt-green);
+  background: var(--decrypt-green);
+}
+
+.case-decrypt-rules li.is-active {
+  border-color: rgba(155, 135, 245, 0.48);
+  background: rgba(155, 135, 245, 0.09);
+}
+
+.case-decrypt-rules li.is-active::before {
+  border-color: var(--decrypt-violet);
+  background: var(--decrypt-violet);
+  box-shadow: 0 0 0 0.25rem rgba(155, 135, 245, 0.12);
+}
+
+.case-decrypt-rules li.is-waiting {
+  opacity: 0.58;
+}
+
+.case-decrypt-rules li > span,
+.case-decrypt-rules li > small {
+  color: var(--case-faint);
+  font-family: var(--font-mono);
+  font-size: 0.45rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.case-decrypt-rules li > strong {
+  color: var(--case-soft);
+  font-size: 0.74rem;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.case-decrypt-rules li > svg {
+  width: 0.85rem;
+  height: 0.85rem;
+  color: var(--case-faint);
+}
+
+.case-decrypt-rules li.is-passed > svg {
+  color: var(--decrypt-green);
+}
+
+.case-decrypt-rules li.is-active > svg {
+  color: var(--decrypt-violet);
+}
+
+.case-decrypt-engine__resolution {
+  grid-area: resolution;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.35rem;
+  color: var(--case-faint);
+}
+
+.case-decrypt-engine__resolution svg {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.case-decrypt-outcomes {
+  grid-area: outcomes;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.case-decrypt-outcome {
+  display: grid;
+  align-content: start;
+  min-height: 10rem;
+  padding: 0.9rem;
+}
+
+.case-decrypt-outcome > svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  margin-bottom: auto;
+}
+
+.case-decrypt-outcome--win {
+  border-color: rgba(88, 214, 147, 0.32);
+  background-color: var(--story-glass-fill);
+  background-image: linear-gradient(145deg, rgba(88, 214, 147, 0.11), transparent 72%);
+}
+
+.case-decrypt-outcome--win > svg {
+  color: var(--decrypt-green);
+}
+
+.case-decrypt-outcome--lose {
+  border-color: rgba(239, 90, 103, 0.36);
+  background-color: var(--story-glass-fill);
+  background-image: linear-gradient(145deg, rgba(239, 90, 103, 0.13), transparent 72%);
+}
+
+.case-decrypt-outcome--lose > svg {
+  color: var(--decrypt-red);
+}
+
+.case-decrypt-outcome > span {
+  margin-top: 1.2rem;
+  color: var(--case-faint);
+  font-family: var(--font-mono);
+  font-size: 0.45rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.case-decrypt-outcome h3 {
+  margin: 0.3rem 0 0;
+  color: var(--case-ink);
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.case-decrypt-outcome p {
+  margin: 0.45rem 0 0;
+  color: var(--case-mute);
+  font-size: 0.64rem;
+  line-height: 1.4;
+}
+
+.case-decrypt-mutations {
+  display: grid;
+  grid-template-columns: minmax(12rem, 0.55fr) minmax(0, 1.45fr);
+  gap: clamp(1.2rem, 4vw, 3rem);
+  align-items: center;
+  margin-top: clamp(2.4rem, 5vw, 4rem);
+  padding-top: clamp(1.3rem, 3vw, 2rem);
+  border-top: 1px solid var(--story-line);
+}
+
+.case-decrypt-mutations__head > span {
+  color: var(--decrypt-red);
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.case-decrypt-mutations__head h3 {
+  margin: 0.48rem 0 0;
+  color: var(--case-ink);
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.8vw, 2rem);
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.case-decrypt-mutations > ol {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.case-decrypt-mutations li {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.7rem;
+  align-items: center;
+  min-height: 5rem;
+  padding: 0.75rem;
+  border: 1px solid var(--story-line);
+  border-radius: 0.68rem;
+  background: var(--story-surface);
+}
+
+.case-decrypt-mutations li > svg {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 0.22rem);
+  width: 1rem;
+  height: 1rem;
+  color: var(--case-faint);
+  translate: 0 -50%;
+}
+
+.case-decrypt-mutations__symbol {
+  display: grid;
+  place-items: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 1.1rem;
+}
+
+.case-decrypt-mutations__symbol svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  color: #fff;
+}
+
+.case-decrypt-mutations li > div {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.case-decrypt-mutations strong {
+  color: var(--case-soft);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  letter-spacing: -0.03em;
+}
+
+.case-decrypt-mutations small {
+  color: var(--case-mute);
+  font-family: var(--font-mono);
+  font-size: 0.43rem;
+  letter-spacing: 0.06em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.case-decrypt-manual__stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(14rem, 0.65fr);
+  gap: clamp(1rem, 3.5vw, 2.6rem);
+  align-items: center;
+}
+
+.case-decrypt-manual__beats {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--story-line-strong);
+  list-style: none;
+}
+
+.case-decrypt-manual__beats li {
+  display: grid;
+  grid-template-columns: 2.2rem minmax(0, 1fr);
+  gap: 0.85rem;
+  align-items: center;
+  min-height: 4.6rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--story-line);
+}
+
+.case-decrypt-manual__beats span {
+  color: var(--decrypt-violet);
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.1em;
+}
+
+.case-decrypt-manual__beats strong {
+  color: var(--case-soft);
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 1.8vw, 1.3rem);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+}
+
+.case-decrypt-build {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(16rem, 0.85fr);
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: start;
+  margin-bottom: clamp(5rem, 9vw, 7rem);
+}
+
+.case-decrypt-build .case-code,
+.case-decrypt-build .tech-stack-list--case {
+  margin: 0;
+}
+
+.case-decrypt-build .case-code__pre {
+  min-height: 18rem;
+}

@@ -9,6 +9,8 @@ import ScrollPerspectiveWave from './ScrollPerspectiveWave';
 import TechStackList from './TechStackList';
 import './DocumentRoom.css';
 import './ProjectDetails.css';
+import './ProjectDetailsMux.css';
+import './ProjectDetailsZuch.css';
 import './ProjectDetailsStories.css';
 import './ProjectDetailsFreeflow.css';
 import './ProjectDetailsModeNote.css';

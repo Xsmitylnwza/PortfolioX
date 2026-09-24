@@ -69,6 +69,7 @@ just the component's own render.
 
 ## Other instructions
 
+- Before editing a legacy component with no active route, read the [Wave 5 reachability decision](docs/architecture/2026-09-24-modularization-wave5-report.md). `Hero.css` and `KeshiLiquidGlass.css` are active even though their namesake JSX modules are parked.
 - Source changes stay local for owner review. Do not commit, push or deploy
   unless asked ([`PRODUCT.md`](PRODUCT.md) § Capabilities and Constraints).
 - Never put private data, identifiers, secrets, unverified metrics or

@@ -22,7 +22,9 @@
     "compare:modularization": "node scripts/modularization-compare.mjs",
     "smoke:modularization-media": "node scripts/modularization-media-smoke.mjs",
     "smoke:modularization-runtime": "node scripts/modularization-runtime-lifecycle.mjs",
-    "smoke:modularization-context": "node scripts/modularization-context-recovery.mjs"
+    "smoke:modularization-context": "node scripts/modularization-context-recovery.mjs",
+    "audit:modularization-reachability": "node scripts/modularization-reachability.mjs",
+    "test:modularization-fallback": "node scripts/modularization-fallback-fixture.mjs"
   },
   "dependencies": {
     "@iconify/react": "^6.0.2",

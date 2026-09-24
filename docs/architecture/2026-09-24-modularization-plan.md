@@ -1,6 +1,6 @@
 # PortfolioX — แผนแยกโมดูลเพื่อให้แก้โค้ดได้ตรงจุด
 
-วันที่ 2026-09-24 · สถานะ **Wave 0 และ bounded Wave 1 pilot (1a–1c) ผ่านแล้ว; 1d และ Waves 2–5 ยังเป็นงาน conditional** · ฐานที่สแกน: working tree บน `0221811` ซึ่งมีงานอื่นที่ยังไม่ commit. ดู [ผลรันและข้อจำกัด](2026-09-24-modularization-wave0-1-report.md)
+วันที่ 2026-09-24 · สถานะ **Wave 0, bounded Wave 1 pilot (1a–1c) และ Wave 2 ผ่านแล้ว; Wave 3 กำลังทำ; 1d/4/5 ยัง conditional** · inventory ด้านล่างเป็น snapshot ของ working tree บน `0221811`. ดู [ผล Wave 0–1](2026-09-24-modularization-wave0-1-report.md) และ [ผล Wave 2](2026-09-24-modularization-wave2-report.md)
 
 ## เป้าหมายและขอบเขตการวัด
 
@@ -49,7 +49,7 @@
 | **D1 / pilot ก่อน** | `ProjectDetails.jsx` **3,994 บรรทัด / 151,745 B**; ช่วงเฉพาะโปรเจกต์ 3,043 บรรทัด (**76.2%**) | **SPLIT active layouts แบบมี gate.** Extract media/lightbox เป็น leaf เดียวแล้วตรวจทันที, ต่อด้วย shared primitives และ **Mux เป็น pilot หนึ่งโปรเจกต์**. หาก locality/parity ดีขึ้นจึงย้าย Keshi, Decrypt, Zucchini, FreeFlow, ModeNote ทีละ slice. Shell หลัง active layouts เป้า ~350–500; ยังไม่สร้าง fallback module เพื่อไล่ตัวเลข | เป็นปัญหาเดียวกับ CSS เดิม แต่ media portal/ref/focus/wave เสี่ยงจริง ต้องพิสูจน์ทุก slice; ทั้ง 7 project IDs มี named layout อยู่แล้ว, generic fallback ยังไม่มี route ที่ทดสอบภาพได้ |
 | **D2 / contingent** | `ProjectDetails.css` **1,370 / 29,996 B** เป็น shared shell, generic layouts, lightbox และ process styles | **KEEP จน D1 บอกว่าการแก้ shared CSS ยังเจ็บจริง.** ถ้าแยก ให้ใช้ seam จริง: 1–516 base, 517–980 layouts, 981–1154 lightbox, 1155–1370 why/flow/process; คง source order | แผนเดิมเหมารวม 981–1370 เป็น lightbox ผิด; หลัง 1154 เป็นคนละหน้าที่และบางส่วนรองรับ dormant fallback. การย้าย CSS มี cascade/strict-scope/debt risk และต้องอัปเดต CSS ownership guide |
 | **D3 / contingent** | ModeNote CSS **2,337 / 53,853 B**, FreeFlow CSS **2,129 / 50,869 B**; มี later passes ที่ 1834 และ 1616 | **KEEP จนมีงานแก้ซ้ำในหน้าเหล่านี้.** ถ้าพิสูจน์ว่าต้องไล่ override หลายจุด ค่อย split source-order blocks ตาม chapter/base/responsive/material; ตัวเลข ~250–550 เป็นเพียง scenario | เป็น CSS เจ้าของโปรเจกต์เดียวแล้ว ความยาวอย่างเดียวไม่พอเป็นเหตุ; ย้ายตามชื่อ selector แบบสุ่มเปลี่ยน cascade ได้ |
-| **D4 / contingent** | `src/data/projects.js` **367 / 18,873 B** มี 7 records อิสระและ featured order/revision | **KEEP ตอนนี้.** ทดลองแยกหนึ่ง record เฉพาะเมื่อพบ wrong-record edit, merge conflict, หรือ measured retrieval cost หลัง D1; ถ้าคุ้มค่อยขยายโดยคง ordered exports/shape/HMR key | ไฟล์ 367 บรรทัดหา record ด้วย ID ได้ตรง การสร้าง 7 modules + index อาจเพิ่ม import hops มากกว่าช่วย; Gallery/App/Loader/Persona ใช้ export นี้จริง |
+| **D4 / Wave 2 PASS** | `src/data/projects.js` เดิม **367 / 18,873 B** มี 7 records อิสระและ featured order/revision | เจ้าของเปิด Wave 2; Veluma pilot ลด owner file จาก 367 → 85 lines โดยข้อมูล/ภาพ/interaction เท่าเดิม จึงขยายครบ 7 records; entrypoint เหลือ 34 lines และคง ordered exports/HMR key | Panel เดิมเลือก KEEP เพราะยังไม่มี evidence; pilot ให้ locality gain พร้อม 24 route/state parity และ HMR เหมือนก่อนแยก. ดู [Wave 2 report](2026-09-24-modularization-wave2-report.md) |
 | **D5 / แยกจาก D4** | ข้อเท็จจริงงาน/การศึกษาซ้ำใน `Experience.jsx:9–77`, `PersonaReloadView.jsx:8–30`, `src/data/site.js:47–96` | **CONTENT AUDIT ก่อน:** รวมเฉพาะ verified org/role/dates/assets เมื่อมี mismatch หรือการแก้พร้อมกัน; narrative และการจัดวางเฉพาะหน้ายังอยู่ที่หน้า | ลดความเสี่ยงข้อมูลไม่ตรงกัน แต่ห้ามรวม copy ต่างบริบทหรือเดาค่าที่ขัดกัน; `/persona` ยังเป็น active route |
 | **D6 / contingent CSS** | `src/index.css` **826 / 18,977 B** มี base/token aliases 1–78, stage/route 79–345 และ 780–826, utility/card cluster 360–756; static search ไม่พบ 26 จาก 58 class names ใน JS/JSX | **AUDIT เมื่อแก้ global CSS จริง:** split global/stage/used utilities เฉพาะเมื่อ locality ดีขึ้น; ลบ class ที่ยืนยันว่า unused เท่านั้น | Global stylesheet ทำให้หาเจ้าของยาก แต่ชื่อที่ไม่พบ (`.glass-panel`, `.experience-card`, `.project-card*`, `.tech-item*` ฯลฯ) อาจสร้างแบบ dynamic; `btn-primary` ยังใช้จริง |
 | **D7 / ชะลอจนมี runtime guard** | `GalleryScene.jsx` **1,169 / 58,279 B**; GLSL 4–189, texture/geometry 305–508, input/render/cleanup ใน effect เดียว | **SPLIT LATER:** shaders และ pure poster/geometry helpers ก่อน; core session เป้า ~450–600 แต่ render loop + listeners + GL cleanup ต้องอยู่เจ้าของเดียวจนมี browser lifecycle checks | persistent WebGL stage ห้ามดับระหว่าง route swap; การแยกตาม LOC อาจทำให้ resource leak, listener ซ้ำ หรือ black frame |
@@ -71,7 +71,7 @@
 
 ชื่อไฟล์ pilot ให้ตรงกับ CSS: `ProjectDetailsMedia.jsx`, shared leaf เท่าที่ใช้จริง, `ProjectDetailsMux.jsx`; ทุก module import shared leaf โดยตรง ห้าม import กลับจาก `ProjectDetails.jsx`. คง CSS imports รวมไว้ที่ route shell และคง props เดิมก่อน; ยังไม่ทำ dynamic import/code splitting. ถ้า pilot ผ่าน จึงพิจารณา Keshi, Decrypt, Zucchini, FreeFlow และ ModeNote ทีละโปรเจกต์. `KeshiSessionClock` ต้องคง body portal. `PROJECT_LAYOUTS` กับ `LAYOUT_RENDERERS` และ wave intensity/Keshi preview policy อยู่เดิมจน active layouts ผ่าน parity; การรวม registry เป็นอีก slice ไม่ทำพร้อม file move
 
-**Wave 2–5 — backlog ที่ต้องมี trigger แยก ไม่ใช่คำสั่งให้ทำรวดเดียว:** Wave 2 = data/content, Wave 3 = CSS, Wave 4 = runtime, Wave 5 = parked code. D4 data แยกหนึ่ง record เป็น pilot เฉพาะเมื่อมี edit-friction evidence; หากทำ ต้องคง IDs, order, gallery labels/descriptions, featured selections 5/4 ที่ต่างกัน, media URLs, `galleryMediaRevision` และ HMR behavior. `PROJECT_DECISIONS` ยังอยู่ใน lazy detail route ไม่ย้ายเข้า `projects.js` ที่ App/Gallery โหลดตั้งแต่ต้น; ปัจจุบัน active layouts ที่ใช้ decision คือ ModeNote กับ Zucchini เท่านั้น (`ProjectDetails.jsx:2523,3348,3836`). ตรวจ content truth ก่อนปรับ copy/ย้าย source-of-truth link ใน `DESIGN.md`. D5 employment facts เป็นงาน content audit อิสระจาก D4
+**Wave 2–5 — owner-activated work ไม่ใช่คำสั่งให้ทำรวดเดียว:** Wave 2 data/content ผ่านแล้วหลัง Veluma pilot และ all-record parity; Wave 3 CSS กำลังทำ; Wave 4 runtime และ Wave 5 parked code ยัง conditional. Wave 2 คง IDs, order, gallery labels/descriptions, featured selections 5/4 ที่ต่างกัน, media URLs, `galleryMediaRevision` และ HMR behavior. `PROJECT_DECISIONS` ยังอยู่ใน lazy detail route ไม่ย้ายเข้า `projects.js` ที่ App/Gallery โหลดตั้งแต่ต้น. D5 employment facts ตรวจแล้วแต่ไม่รวม copy ที่ต่างกันโดยไม่มี canonical evidence; source-of-truth link ใน `DESIGN.md` อัปเดตแล้ว
 
 CSS backlog: D2/D3/D6/D14 จะเริ่มเฉพาะเมื่อวัดว่าการแก้จริงยังเจอ override/ownership friction. ก่อนย้าย rule ให้ตรึง source order, ปรับ `STRICT_SCOPES`, `MOVED_CSS_DEBT_PATHS`, `RENDER_TARGETS` ตาม scope จริง และอัปเดต `PROJECT-DETAILS-CSS-OWNERSHIP.md` ถ้าเจ้าของเปลี่ยน. ห้าม rename selectors/เปลี่ยน token พร้อม mechanical move. `ProjectCoverMedia.css` 57 บรรทัดคงที่ก่อน เพราะ late cascade ตั้งใจใช้ร่วมกัน
 
@@ -89,7 +89,7 @@ Browser parity ใช้ before/after จาก **working tree เดียว�
 
 ### Test/evaluation gate ราย Wave
 
-**สถานะปัจจุบัน:** Wave 0 และ Wave 1a–1c มี strict before/after browser capture, interaction smoke และ mechanical checks ที่รันผ่านแล้วตาม [report](2026-09-24-modularization-wave0-1-report.md). ตารางสำหรับ Wave 1d และ Waves 2–5 ยังเป็น test specification ที่ต้องทำให้รันได้เมื่อเปิดงานนั้น ห้ามเริ่ม Wave ถัดไปด้วยผล `INCONCLUSIVE` หรือใช้ผล build ผ่านแทน behavior parity
+**สถานะปัจจุบัน:** Wave 0–1c และ Wave 2 มี before/after capture, contract tests และ mechanical checks ผ่านตาม [รายงาน Wave 0–1](2026-09-24-modularization-wave0-1-report.md) และ [Wave 2](2026-09-24-modularization-wave2-report.md). Wave 3 กำลังทำ; 1d/4/5 ยังเป็น test specification ที่ต้องทำให้รันได้เมื่อเปิดงานนั้น ห้ามเริ่ม Wave ถัดไปด้วยผล `INCONCLUSIVE` หรือใช้ผล build ผ่านแทน behavior parity
 
 | Wave / จุดหยุด | สิ่งที่ต้องรัน | PASS เมื่อ | หลักฐานที่ต้องเก็บ |
 | --- | --- | --- | --- |
@@ -111,7 +111,7 @@ Browser parity ใช้ before/after จาก **working tree เดียว�
 
 ## Appendix — decision สำหรับทุก maintained source file
 
-Decision code ใช้ใน inventory ด้านล่าง: `D1`–`D14` ชี้ตาราง decision ด้านบน; `K` = คง module ที่มีเจ้าของเดียว/ขนาดเล็กหรือเป็น fixture; `M` = material ที่ถูกเลือกหรือ historical ต้องคง contract ก่อน migration. ขนาดเป็น physical LOC/bytes ของ working tree นี้
+Decision code ใช้ใน inventory ด้านล่าง: `D1`–`D14` ชี้ตาราง decision ด้านบน; `K` = คง module ที่มีเจ้าของเดียว/ขนาดเล็กหรือเป็น fixture; `M` = material ที่ถูกเลือกหรือ historical ต้องคง contract ก่อน migration. ขนาดเป็น **physical LOC/bytes ก่อน Wave 1–2** เพื่อให้เทียบผลหลังงานได้ ไม่ใช่ขนาดปัจจุบัน
 
 | File | LOC | Bytes | Decision |
 | --- | ---: | ---: | --- |

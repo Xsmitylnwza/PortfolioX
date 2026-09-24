@@ -241,12 +241,16 @@ export function strictScopeFor({ file, family, selector }) {
  * as needs-scope and fails, rather than passing on the assumption that nothing
  * consumes it.
  */
+// Every project record affects detail numbering and the gallery/loader order.
+const PROJECT_DATA_SOURCES = [/^src\/data\/projects(?:\/[a-z0-9-]+)?[.]js$/];
+
 export const RENDER_TARGETS = [
   {
     path: '/project/keshi-pomodoro',
     viewports: ['desktop 1440x900', 'mobile 390x844'],
     note: 'Keshi matte surface pilot; legacy optical layout remains in the route stylesheet',
     sources: [
+      ...PROJECT_DATA_SOURCES,
       /^src\/components\/ProjectDetailsKeshiStoryOverrides[.]css$/,
       /^src\/components\/ProjectDetailsStorySharedOverrides[.]css$/,
       /^src\/components\/ProjectDetailsKeshiStory[.]css$/,
@@ -266,6 +270,7 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900', 'mobile 390x844'],
     note: 'Keshi next-layout preview is a distinct render state of the project route',
     sources: [
+      ...PROJECT_DATA_SOURCES,
       /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format)?[.](css|jsx?)$/,
       /^src\/components\/ProjectDetailsKeshiNext[.]css$/,
       /^src\/components\/ProjectCoverMedia[.]css$/,
@@ -278,6 +283,7 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900', 'mobile 390x844'],
     note: 'non-pilot consumer of the same media primitives',
     sources: [
+      ...PROJECT_DATA_SOURCES,
       /^src\/components\/ProjectDetailsZuchStory[.]css$/,
       /^src\/components\/ProjectDetailsZuch[.]css$/,
       /^src\/styles\/tokens[.]css$/,
@@ -292,6 +298,7 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900', 'mobile 390x844'],
     note: 'Liquid Glass was piloted on the hero caption here and reverted after losing a live comparison (DESIGN-DISCOVERY Round 16); back on its own flat-blur treatment',
     sources: [
+      ...PROJECT_DATA_SOURCES,
       /^src\/components\/ProjectDetailsStorySharedOverrides[.]css$/,
       /^src\/styles\/tokens[.]css$/,
       /^src\/index[.]css$/,
@@ -305,6 +312,7 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900', 'mobile 390x844'],
     note: 'project-detail monochrome chrome and story layout',
     sources: [
+      ...PROJECT_DATA_SOURCES,
       /^src\/components\/ProjectDetailsStorySharedOverrides[.]css$/,
       /^src\/components\/ProjectDetailsStories[.]css$/,
       /^src\/styles\/tokens[.]css$/,
@@ -318,6 +326,7 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900', 'mobile 390x844'],
     note: 'project-detail monochrome state colors',
     sources: [
+      ...PROJECT_DATA_SOURCES,
       /^src\/components\/ProjectDetailsDecryptStoryOverrides[.]css$/,
       /^src\/components\/ProjectDetailsStorySharedOverrides[.]css$/,
       /^src\/components\/ProjectDetailsDecryptStory[.]css$/,
@@ -331,6 +340,7 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900', 'mobile 390x844'],
     note: 'project-detail shared chrome and project composition',
     sources: [
+      ...PROJECT_DATA_SOURCES,
       /^src\/components\/ProjectDetailsMux[.]css$/,
       /^src\/components\/ProjectDetailsMux[.]jsx$/,
       /^src\/styles\/tokens[.]css$/,
@@ -344,6 +354,7 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900', 'mobile 390x844'],
     note: 'project-detail shared chrome; private media gate remains in force',
     sources: [
+      ...PROJECT_DATA_SOURCES,
       /^src\/styles\/tokens[.]css$/,
       /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format)?[.](css|jsx?)$/,
       /^src\/components\/ProjectDetailsHermes[.](css|jsx)$/,
@@ -354,6 +365,7 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900'],
     note: 'WebGL poster gallery',
     sources: [
+      ...PROJECT_DATA_SOURCES,
       /^src\/styles\/tokens[.]css$/,
       /^src\/index[.]css$/,
       /^src\/App[.](css|jsx)$/,
@@ -361,6 +373,17 @@ export const RENDER_TARGETS = [
       /^src\/components\/Navigation[.](css|jsx)$/,
       /^src\/components\/Hero[.]css$/,
       /^src\/components\/Loader[.]jsx$/,
+    ],
+  },
+  {
+    path: '/persona',
+    viewports: ['desktop 1440x900', 'mobile 390x844'],
+    note: 'persona preview reads the ordered project records',
+    sources: [
+      ...PROJECT_DATA_SOURCES,
+      /^src\/components\/PersonaReloadView[.](css|jsx)$/,
+      /^src\/styles\/tokens[.]css$/,
+      /^src\/index[.]css$/,
     ],
   },
 ];

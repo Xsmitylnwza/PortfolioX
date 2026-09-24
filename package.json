@@ -6,8 +6,19 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "preview": "vite preview",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "lint:css": "stylelint \"src/**/*.css\"",
+    "check:design": "node scripts/design-check.mjs",
+    "design:snapshot": "node scripts/design-snapshot.mjs",
+    "design:baseline": "node scripts/design-baseline.mjs --capture",
+    "design:baseline:verify": "node scripts/design-baseline.mjs --verify",
+    "test:design": "node --test scripts/design-check.test.mjs",
+    "design:baseline:prune": "node scripts/design-baseline.mjs --prune",
+    "test:modularization": "node --test scripts/modularization-compare.test.mjs",
+    "capture:modularization": "node scripts/modularization-capture.mjs",
+    "compare:modularization": "node scripts/modularization-compare.mjs",
+    "smoke:modularization-media": "node scripts/modularization-media-smoke.mjs"
   },
   "dependencies": {
     "@iconify/react": "^6.0.2",
@@ -27,6 +38,9 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
+    "playwright": "^1.60.0",
+    "postcss-value-parser": "4.2.0",
+    "stylelint": "16.25.0",
     "vite": "^7.2.4"
   }
 }

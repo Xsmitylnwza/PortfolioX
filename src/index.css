@@ -1,31 +1,42 @@
 @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Permanent+Marker&family=Space+Grotesk:wght@400;500;600&family=Syne:wght@500;600;700;800&display=swap');
 
+@import './styles/tokens.css';
+
+/* Compatibility aliases for the names 29 stylesheets already use.
+   Canonical definitions live in src/styles/tokens.css; these forward to the
+   semantic roles so a value has exactly one source of truth.
+
+   Safe because none of these names is redefined in a scoped selector anywhere
+   in src/ — verified before the migration. An alias resolved at :root does not
+   re-resolve for a descendant, so if a theme ever needs to vary one of these,
+   it must override the --color-* role and the consumer must read that role
+   directly rather than the alias. */
 :root {
-  --bg-black: #050505;
-  --bg-dark: #0b0b0b;
-  --bg-card: #111111;
-  --stage-red: #dc2626;
-  --stage-grid: rgba(8, 8, 8, 0.24);
-  --stage-grid-strong: rgba(8, 8, 8, 0.79);
-  --stage-glow: rgba(255, 174, 148, 0.17);
-  --red-primary: #e3262e;
-  --red-dark: #7f1118;
-  --red-glow: rgba(227, 38, 46, 0.4);
-  --paper: #e8e0d1;
-  --text-primary: #f2f2f2;
-  --text-secondary: #aaa6a0;
-  --text-muted: #77736e;
-  --font-serif: 'Instrument Serif', serif;
-  --font-editorial: 'Instrument Serif', serif;
-  --font-display: 'Syne', sans-serif;
-  --font-body: 'Space Grotesk', sans-serif;
-  --font-hand: 'Permanent Marker', cursive;
-  --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+  --bg-black: var(--color-surface-black);
+  --bg-dark: var(--color-surface-dark);
+  --bg-card: var(--color-surface-card);
+  --stage-red: var(--color-stage);
+  --stage-grid: var(--color-stage-grid);
+  --stage-grid-strong: var(--color-stage-grid-strong);
+  --stage-glow: var(--color-stage-glow);
+  --red-primary: var(--color-accent);
+  --red-dark: var(--color-accent-deep);
+  --red-glow: var(--color-accent-glow);
+  --paper: var(--palette-warm-050);
+  --text-primary: var(--color-text-primary);
+  --text-secondary: var(--color-text-secondary);
+  --text-muted: var(--color-text-muted);
+  --font-serif: var(--type-family-serif);
+  --font-editorial: var(--type-family-editorial);
+  --font-display: var(--type-family-display);
+  --font-body: var(--type-family-body);
+  --font-hand: var(--type-family-hand);
+  --font-mono: var(--type-family-mono);
 
   /* Glass Effects */
-  --glass-bg: rgba(255, 255, 255, 0.02);
-  --glass-border: rgba(255, 255, 255, 0.05);
-  --glass-border-hover: rgba(239, 68, 68, 0.5);
+  --glass-bg: var(--color-glass-fill);
+  --glass-border: var(--color-glass-edge);
+  --glass-border-hover: var(--color-glass-edge-active);
 }
 
 * {

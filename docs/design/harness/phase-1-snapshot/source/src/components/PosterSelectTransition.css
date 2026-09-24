@@ -1,0 +1,44 @@
+/* Gallery -> Project curtain, matched to the K95 full-room route handoff. */
+
+.poster-select-transition {
+  position: fixed;
+  inset: 0;
+  z-index: 140;
+  overflow: hidden;
+  pointer-events: auto;
+  visibility: visible;
+  isolation: isolate;
+}
+
+.poster-select-transition__curtain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.poster-select-transition__curtain {
+  z-index: 1;
+  background-color: var(--stage-red, #dc2626);
+  transform: translate3d(0, 100%, 0);
+  will-change: transform;
+}
+
+html.poster-transition-active,
+html.poster-transition-active body {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+html.poster-transition-active .corner-menu {
+  pointer-events: none;
+}
+
+/* The destination is already mounted under the curtain. Do not run the generic
+   room fade as the curtain reveals, otherwise a black intermediate frame leaks
+   through before Project Details reaches full opacity. */
+html.poster-transition-active .route-shell.route-enter-layer {
+  opacity: 1 !important;
+  transform: none !important;
+  visibility: visible !important;
+  animation: none !important;
+}

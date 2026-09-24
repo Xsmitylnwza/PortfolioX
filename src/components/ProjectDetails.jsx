@@ -1,17 +1,20 @@
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useId, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useSearchParams } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 import { projects } from '../data/projects';
 import { useDocumentRoomReveal } from '../hooks/useDocumentRoomReveal';
 import ProjectMedia from './ProjectMedia';
 import ScrollPerspectiveWave from './ScrollPerspectiveWave';
 import TechStackList from './TechStackList';
+import HermesProjectDetails from './ProjectDetailsHermes';
+import CaseMatteSurface from './CaseMatteSurface';
 import './DocumentRoom.css';
 import './ProjectDetails.css';
 import './ProjectDetailsMux.css';
 import './ProjectDetailsZuch.css';
-// Shared base → project bases → shared responsive rules → project refinements.
+// Preserve the cascade: shared base → project bases → shared responsive rules
+// → project refinements. The split changes files, not DOM or visual behavior.
 import './ProjectDetailsStories.css';
 import './ProjectDetailsKeshiStory.css';
 import './ProjectDetailsDecryptStory.css';
@@ -22,12 +25,19 @@ import './ProjectDetailsZuchStory.css';
 import './ProjectDetailsFreeflow.css';
 import './ProjectDetailsModeNote.css';
 import './ProjectDetailsModeNoteStory.css';
+import './ProjectDetailsHermes.css';
+import './KeshiLiquidGlass.css';
+import './CaseMatteSurface.css';
+import './ProjectDetailsKeshiNext.css';
+import './ProjectCoverMedia.css';
 
 const PROJECT_DECISIONS = {
+  'hermes-command-center':
+    'Discord should own the conversation, not every record. Hermes routes intent and evidence; each connected system keeps authority over its own state.',
   'modenote':
     'Live transcription is useful, but durable capture cannot depend on it. ModeNote separates best-effort PCM transcription from recoverable MediaRecorder chunks, then links supported outputs back to the stopped session and its evidence.',
   'freeflow':
-    'A client message should not become five disconnected admin tasks. FreeFlow’s shipped path connects LINE OA to one organization-scoped conversation, then lets proposals, projects, invoices, appointments, files, and follow-up move around that shared context.',
+    'Freelance work breaks when talk, files, and money split. FreeFlow is the ops trail — client → quote → project → invoice — with LINE as intake only.',
   'veluma':
     'A Project Canvas should remember its working scene and wait for an intentional Start. Veluma keeps terminals, agents, backdrops, and arrangements together per Project—then lets you return, focus, or reset the scene without rebuilding it.',
   'keshi-pomodoro':
@@ -45,6 +55,7 @@ const PROJECT_DECISIONS = {
  * decrypt — escalating pressure chamber and outcome split
  */
 const PROJECT_LAYOUTS = {
+  'hermes-command-center': 'hermes',
   'modenote': 'modenote',
   'freeflow': 'freeflow',
   'veluma': 'mux',
@@ -306,34 +317,47 @@ const CaseTop = ({ caseNumber, caseTotal }) => (
 );
 
 const CaseActions = ({ hasLive, hasRepo, project }) => {
-  if (!hasLive && !hasRepo) return null;
+  const isLiveUnderMaintenance = project.liveStatus === 'maintenance';
+  if (!hasLive && !hasRepo && !isLiveUnderMaintenance) return null;
   const isGitLab = String(project.repo || '').includes('gitlab.com');
 
   return (
     <div className="case-actions">
-      {hasLive && (
-        <a
-          className="case-btn case-btn--primary"
-          href={project.link}
-          target="_blank"
-          rel="noreferrer"
+      {isLiveUnderMaintenance ? (
+        <div className="case-live-status" role="status">
+          <span className="case-btn case-btn--disabled" aria-disabled="true">
+            <Icon icon="lucide:wrench" aria-hidden="true" />
+            Live unavailable
+          </span>
+          <span className="case-live-status__copy">
+            {project.liveNotice || 'Under maintenance — not open for use yet.'}
+          </span>
+        </div>
+      ) : hasLive && (
+        <button
+          type="button"
+          className="case-btn case-btn--disabled"
+          disabled
+          aria-label="View live unavailable. Project access is private."
+          title="Project access is private"
           data-cursor="default"
         >
-          <Icon icon="lucide:arrow-up-right" aria-hidden="true" />
-          View live
-        </a>
+          <Icon icon="lucide:lock-keyhole" aria-hidden="true" />
+          View live <span aria-hidden="true">— Private</span>
+        </button>
       )}
       {hasRepo && (
-        <a
-          className="case-btn"
-          href={project.repo}
-          target="_blank"
-          rel="noreferrer"
+        <button
+          type="button"
+          className="case-btn case-btn--disabled"
+          disabled
+          aria-label={`${isGitLab ? 'GitLab' : 'GitHub'} unavailable. Repository access is private.`}
+          title="Repository access is private"
           data-cursor="default"
         >
-          <Icon icon={isGitLab ? 'simple-icons:gitlab' : 'lucide:github'} aria-hidden="true" />
-          {isGitLab ? 'GitLab' : 'GitHub'}
-        </a>
+          <Icon icon="lucide:lock-keyhole" aria-hidden="true" />
+          {isGitLab ? 'GitLab' : 'GitHub'} <span aria-hidden="true">— Private</span>
+        </button>
       )}
     </div>
   );
@@ -393,14 +417,15 @@ const CaseMediaFrame = ({
   kindLabel,
   transitionTarget = false,
   waveSkip = false,
+  cover = false,
 }) => {
   const frameRef = useRef(null);
   const source = resolveMediaSource({ media, image, video });
   const kindMeta = useMemo(
-    () => (source && kindLabel
-      ? { kind: 'image', mark: kindLabel }
+    () => (source && (cover || kindLabel)
+      ? { kind: 'image', mark: kindLabel || 'Project illustration' }
       : getMediaKindMeta(source)),
-    [kindLabel, source],
+    [cover, kindLabel, source],
   );
   const [lightbox, setLightbox] = useState(null);
   const canExpand = Boolean(source);
@@ -434,6 +459,7 @@ const CaseMediaFrame = ({
         type="button"
         className={[
           'case-media__frame',
+          cover ? 'case-media__frame--cover' : '',
           kindMeta ? `case-media__frame--${kindMeta.kind}` : '',
           kindMeta ? 'case-media__frame--demo' : '',
           canExpand ? 'case-media__frame--expandable' : '',
@@ -447,7 +473,7 @@ const CaseMediaFrame = ({
         data-media-kind={kindMeta?.kind || undefined}
         data-poster-transition-target={transitionTarget ? '' : undefined}
         onClick={openLightbox}
-        aria-label={canExpand ? `Open fullscreen demo: ${alt || 'media'}` : undefined}
+        aria-label={canExpand ? `Open fullscreen ${cover ? 'image' : 'demo'}: ${alt || 'media'}` : undefined}
       >
         {label && <span className="case-media__label">{label}</span>}
         {kindMeta && (
@@ -482,8 +508,8 @@ const CaseMediaFrame = ({
 
 const CaseHeroMedia = ({ project, sizes = '(max-width: 900px) 100vw, 920px', waveSkip = false }) => (
   <CaseMediaFrame
-    image={project.image}
-    video={project.video}
+    media={project.heroMedia}
+    cover={project.heroMedia.kind === 'cover'}
     alt={project.title}
     eager
     sizes={sizes}
@@ -936,11 +962,13 @@ const MuxLayout = ({ project, techItems, gallery, hasLive, hasRepo }) => {
         </div>
         <div className="case-mux-hero__media">
           <CaseMediaFrame
-            image={project.heroImage || project.image}
-            alt={`${project.title} Project Canvas`}
+            media={project.heroMedia}
+            alt={`${project.title} V logo and a warm saved Canvas, with Codex, Claude Code, server and shell symbols before Start`}
+            cover
             eager
             sizes="(max-width: 900px) 100vw, 560px"
             className="case-media__frame--hero"
+            transitionTarget
           />
         </div>
       </div>
@@ -1200,10 +1228,12 @@ const KeshiState = ({ state }) => (
       className="case-media__frame--keshi-state"
       label={`${state.mode} mode`}
     />
-    <div className="case-keshi-state__caption" data-wave-follow>
-      <span>{state.cue}</span>
-      <strong>{state.time}</strong>
-      <p>{state.body}</p>
+    <div className="case-keshi-state__caption case-keshi-glass-slot" data-wave-follow>
+      <CaseMatteSurface className="case-keshi-state__glass" contentClassName="keshi-liquid-glass__content">
+        <span>{state.cue}</span>
+        <strong>{state.time}</strong>
+        <p>{state.body}</p>
+      </CaseMatteSurface>
     </div>
   </article>
 );
@@ -1262,23 +1292,27 @@ const KeshiAtmosphere = ({ project, gallery }) => {
               className="case-media__frame--keshi-atmosphere"
               label={project.galleryLabels?.[0] || 'Theme studio'}
             />
-            <div className="case-keshi-atmosphere__caption" data-wave-follow>
-              <Icon icon="lucide:palette" aria-hidden="true" />
-              <div>
-                <span>Theme studio</span>
-                <p>{project.galleryDescriptions?.[0]}</p>
-              </div>
+            <div className="case-keshi-atmosphere__caption case-keshi-glass-slot" data-wave-follow>
+              <CaseMatteSurface className="case-keshi-atmosphere__glass" contentClassName="keshi-liquid-glass__content">
+                <Icon icon="lucide:palette" aria-hidden="true" />
+                <div>
+                  <span>Theme studio</span>
+                  <p>{project.galleryDescriptions?.[0]}</p>
+                </div>
+              </CaseMatteSurface>
             </div>
           </article>
         ) : null}
         {settingsMedia ? (
           <article className="case-keshi-atmosphere__feature case-keshi-atmosphere__feature--settings">
-            <div className="case-keshi-atmosphere__caption" data-wave-follow>
-              <Icon icon="lucide:sliders-horizontal" aria-hidden="true" />
-              <div>
-                <span>Session controls</span>
-                <p>{project.galleryDescriptions?.[1]}</p>
-              </div>
+            <div className="case-keshi-atmosphere__caption case-keshi-glass-slot" data-wave-follow>
+              <CaseMatteSurface className="case-keshi-atmosphere__glass" contentClassName="keshi-liquid-glass__content">
+                <Icon icon="lucide:sliders-horizontal" aria-hidden="true" />
+                <div>
+                  <span>Session controls</span>
+                  <p>{project.galleryDescriptions?.[1]}</p>
+                </div>
+              </CaseMatteSurface>
             </div>
             <CaseMediaFrame
               media={settingsMedia}
@@ -1444,13 +1478,15 @@ const KeshiDisciplineProof = ({ project, gallery }) => {
           label="Actual application capture"
           kindLabel="Product · Still"
         />
-        <aside className="case-keshi-proof__caption" data-wave-follow>
-          <span>Captured from the Keshi application</span>
-          <ul>
-            <li>habit checks</li>
-            <li>focus sessions</li>
-            <li>tasks + activity</li>
-          </ul>
+        <aside className="case-keshi-proof__caption case-keshi-glass-slot" data-wave-follow>
+          <CaseMatteSurface className="case-keshi-proof__glass" contentClassName="keshi-liquid-glass__content">
+            <span>Captured from the Keshi application</span>
+            <ul>
+              <li>habit checks</li>
+              <li>focus sessions</li>
+              <li>tasks + activity</li>
+            </ul>
+          </CaseMatteSurface>
         </aside>
       </div>
       <dl className="case-keshi-pattern__facts case-keshi-pattern__facts--wide">
@@ -1567,6 +1603,254 @@ const KeshiLayout = ({ project, techItems, gallery, hasLive, hasRepo }) => (
     <KeshiArchitecture techItems={techItems} />
   </>
 );
+
+/* ---------------------------------------------------------------------------
+ * Keshi — "next" preview (?layout=next). The page is a Pomodoro session:
+ * dense Focus beats alternate with spacious Relax beats (DESIGN.md A21), and
+ * a session clock counts each beat down as the reader scrolls — the project's
+ * own gimmick (A22). Every sentence below is lifted from verified sources:
+ * projects.js, PROJECT_DECISIONS or the current Keshi copy. Nothing invented.
+ * ------------------------------------------------------------------------ */
+
+const KESHI_NEXT_CHOICES = [
+  {
+    chose: 'A rhythm.',
+    not: 'Two cosmetic themes',
+    body: 'Focus and break are mental states, not theme toggles. The room changes when the work does.',
+  },
+  {
+    chose: 'Done, or not done.',
+    not: 'A 1–10 vibes score',
+    body: 'Habits score binary — legacy 1–10 entries count as done above zero — so the mirror stays honest about whether you showed up.',
+  },
+  {
+    chose: 'The person decides.',
+    not: 'A coach or guilt machine',
+    body: 'Hermes reads the shared evidence and returns a quiet cue. It never silently takes over the timer.',
+  },
+];
+
+const KESHI_SESSION_SECONDS = { focus: 25 * 60, relax: 5 * 60 };
+
+const formatSessionClock = (seconds) => {
+  const safe = Math.max(0, Math.round(seconds));
+  return `${String(Math.floor(safe / 60)).padStart(2, '0')}:${String(safe % 60).padStart(2, '0')}`;
+};
+
+const KeshiBeatMark = ({ mode, index }) => (
+  <p className={`keshi-beat__mark keshi-beat__mark--${mode}`} aria-hidden="true" data-wave-follow>
+    <i />
+    <span>{mode === 'focus' ? 'Focus' : 'Relax'} {index}</span>
+    <span>{mode === 'focus' ? '25:00' : '05:00'}</span>
+  </p>
+);
+
+/**
+ * Fixed session clock. Portalled to <body>: the case section is transformed
+ * by the page wave, and a fixed element inside a transformed ancestor would
+ * pin to that ancestor instead of the viewport. Written through refs rather
+ * than state so scrolling never re-renders the page.
+ */
+const KeshiSessionClock = () => {
+  const rootRef = useRef(null);
+  const modeRef = useRef(null);
+  const timeRef = useRef(null);
+  const barRef = useRef(null);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    const beats = [...document.querySelectorAll('[data-keshi-beat]')];
+    if (!root || beats.length === 0) return undefined;
+
+    let frame = 0;
+    const paint = () => {
+      frame = 0;
+      const line = window.innerHeight * 0.55;
+      let active = beats[0];
+      for (const beat of beats) {
+        if (beat.getBoundingClientRect().top <= line) active = beat;
+      }
+      const rect = active.getBoundingClientRect();
+      // Later beats start counting when their top crosses the line. The first
+      // beat is already past the line at page top, so it counts from scroll 0
+      // instead — otherwise the session would open at 18:45, not 25:00.
+      const raw = active === beats[0]
+        ? window.scrollY / Math.max(1, rect.top + window.scrollY + rect.height - line)
+        : (line - rect.top) / Math.max(1, rect.height);
+      const progress = Math.min(1, Math.max(0, raw));
+      const mode = active.dataset.keshiBeat;
+
+      root.dataset.mode = mode;
+      if (mode === 'end') {
+        modeRef.current.textContent = 'Session complete';
+        timeRef.current.textContent = '00:00';
+        barRef.current.style.transform = 'scaleX(1)';
+      } else {
+        modeRef.current.textContent = `${mode === 'focus' ? 'Focus' : 'Relax'} ${active.dataset.keshiBeatIndex}`;
+        timeRef.current.textContent = formatSessionClock(KESHI_SESSION_SECONDS[mode] * (1 - progress));
+        barRef.current.style.transform = `scaleX(${progress.toFixed(3)})`;
+      }
+      root.dataset.ready = 'true';
+    };
+    const queue = () => {
+      if (!frame) frame = requestAnimationFrame(paint);
+    };
+
+    queue();
+    window.addEventListener('scroll', queue, { passive: true });
+    window.addEventListener('resize', queue);
+    return () => {
+      window.removeEventListener('scroll', queue);
+      window.removeEventListener('resize', queue);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  return createPortal(
+    <div ref={rootRef} className="keshi-session" data-mode="focus" aria-hidden="true">
+      <span className="keshi-session__dot" />
+      <span ref={modeRef} className="keshi-session__mode">Focus 01</span>
+      <span ref={timeRef} className="keshi-session__time">25:00</span>
+      <span className="keshi-session__bar"><i ref={barRef} /></span>
+    </div>,
+    document.body,
+  );
+};
+
+const KeshiLayoutNext = ({ project, techItems, gallery, hasLive, hasRepo }) => {
+  const [firstWord, ...restWords] = project.title.split(' ');
+
+  return (
+    <>
+      {/* FOCUS 01 — the object, at full volume */}
+      <header
+        className="keshi-beat keshi-beat--focus keshi-next-hero case-reveal"
+        data-reveal="mount"
+        data-keshi-beat="focus"
+        data-keshi-beat-index="01"
+        style={{ '--reveal-index': 1 }}
+      >
+        <div className="keshi-next-hero__meta" data-wave-follow>
+          <span>{project.category || 'Selected system'}</span>
+          <span>Role — {project.role || 'Software Engineer'}</span>
+        </div>
+        <h1 id="case-title" className="keshi-next-hero__title" data-wave-follow>
+          <span>{firstWord}</span>
+          <span>{restWords.join(' ')}</span>
+        </h1>
+        <div className="keshi-next-hero__brief" data-wave-follow>
+          <p className="keshi-next-hero__thesis">Focus that leaves evidence.</p>
+          <div className="keshi-next-hero__lede">
+            <p>
+              A lo-fi Focus / Relax timer that grows into a quiet Discipline pattern mirror —
+              not a coach or guilt machine.
+            </p>
+            <CaseActions hasLive={hasLive} hasRepo={hasRepo} project={project} />
+          </div>
+        </div>
+        <div className="keshi-next-hero__stage">
+          <CaseHeroMedia project={project} sizes="(max-width: 900px) 100vw, 1200px" />
+        </div>
+      </header>
+
+      {/* RELAX 01 — one breath: why it exists */}
+      <section
+        className="keshi-beat keshi-beat--relax keshi-next-breath case-reveal"
+        data-reveal="scroll"
+        data-keshi-beat="relax"
+        data-keshi-beat-index="01"
+        style={{ '--reveal-index': 0 }}
+        aria-labelledby="keshi-next-breath-title"
+      >
+        <KeshiBeatMark mode="relax" index="01" />
+        <h2 id="keshi-next-breath-title" data-wave-follow>
+          Rhythm over empty productivity theater.
+        </h2>
+        <p data-wave-follow>
+          Keshi sits between sterile stopwatches and aesthetic shells that forget tracking.
+        </p>
+      </section>
+
+      {/* FOCUS 02 — the product, dense */}
+      <div className="keshi-beat keshi-beat--focus" data-keshi-beat="focus" data-keshi-beat-index="02">
+        <KeshiBeatMark mode="focus" index="02" />
+        <KeshiStatePair />
+        <KeshiAtmosphere project={project} gallery={gallery} />
+      </div>
+
+      {/* RELAX 02 — the decisions, stated as refusals */}
+      <section
+        className="keshi-beat keshi-beat--relax keshi-next-choices case-reveal"
+        data-reveal="scroll"
+        data-keshi-beat="relax"
+        data-keshi-beat-index="02"
+        style={{ '--reveal-index': 0 }}
+        aria-labelledby="keshi-next-choices-title"
+      >
+        <KeshiBeatMark mode="relax" index="02" />
+        <h2 id="keshi-next-choices-title" className="keshi-next-choices__title" data-wave-follow>
+          Three things it refuses to be.
+        </h2>
+        <ol className="keshi-next-choices__list">
+          {KESHI_NEXT_CHOICES.map((choice) => (
+            <li key={choice.chose} data-wave-follow>
+              <p className="keshi-next-choices__not">
+                <span>Not</span> <s>{choice.not}</s>
+              </p>
+              <h3>{choice.chose}</h3>
+              <p className="keshi-next-choices__body">{choice.body}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      {/* FOCUS 03 — the system and its evidence: the climb */}
+      <div className="keshi-beat keshi-beat--focus" data-keshi-beat="focus" data-keshi-beat-index="03">
+        <KeshiBeatMark mode="focus" index="03" />
+        <KeshiRhythmDiagram />
+        <KeshiDisciplineProof project={project} gallery={gallery} />
+        <KeshiArchitecture techItems={techItems} />
+      </div>
+
+      {/* RELAX 03 — the wall label, as in a gallery */}
+      <section
+        className="keshi-beat keshi-beat--relax keshi-next-placard case-reveal"
+        data-reveal="scroll"
+        data-keshi-beat="relax"
+        data-keshi-beat-index="03"
+        style={{ '--reveal-index': 0 }}
+        aria-labelledby="keshi-next-placard-title"
+      >
+        <KeshiBeatMark mode="relax" index="03" />
+        <div className="keshi-next-placard__card" data-wave-follow>
+          <h2 id="keshi-next-placard-title">
+            {project.title}
+            <span>{project.year}</span>
+          </h2>
+          <dl>
+            <div>
+              <dt>Role</dt>
+              <dd>{project.role || 'Software Engineer'}</dd>
+            </div>
+            <div>
+              <dt>Medium</dt>
+              <dd>{techItems.join(' · ')}</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <section className="keshi-next-end" data-keshi-beat="end" aria-label="End of case study">
+        <p className="keshi-next-end__line" data-wave-follow>Session complete.</p>
+        <Link to="/" className="keshi-next-end__link" data-cursor="default">
+          Back to the gallery
+        </Link>
+      </section>
+
+      <KeshiSessionClock />
+    </>
+  );
+};
 
 const DECRYPT_MODES = [
   {
@@ -2250,7 +2534,7 @@ const ZuchLayout = ({ project, decision, techItems, gallery, hasLive, hasRepo })
         </div>
         <div className="case-zucchini-hero__visual">
           <CaseMediaFrame
-            image={project.image}
+            media={project.heroMedia}
             alt={`${project.title} current deployed homepage showing search, a recommended film, five rating categories, and a genre shelf`}
             eager
             sizes="(max-width: 900px) 100vw, 760px"
@@ -2279,67 +2563,78 @@ const ZuchLayout = ({ project, decision, techItems, gallery, hasLive, hasRepo })
 };
 
 const FREEFLOW_PATH = [
-  { label: 'Message', cue: 'LINE OA intake' },
-  { label: 'Thread', cue: 'shared client context' },
-  { label: 'Work', cue: 'proposal · project · invoice' },
+  { label: 'Client', cue: 'request lands in ops' },
+  { label: 'Work', cue: 'quote · project · schedule' },
+  { label: 'Money', cue: 'invoice · follow-up' },
 ];
 
-const FREEFLOW_TRAIL = [
+const FREEFLOW_PROBLEMS = [
   {
-    stage: '01',
-    title: 'A LINE message arrives',
-    body: 'Text or a file enters through the connected Official Account.',
-    icon: 'simple-icons:line',
-  },
-  {
-    stage: '02',
-    title: 'Context stays one record',
-    body: 'Identity, conversation, attachments, and unread state resolve together.',
+    title: 'Talk lives in chat',
+    body: 'Client requests scatter across LINE and DMs, so the job context never becomes a durable record.',
     icon: 'lucide:messages-square',
   },
   {
-    stage: '03',
-    title: 'The next action is visible',
-    body: 'Reply, quote, project, invoice, or appointment starts beside the same thread.',
-    icon: 'lucide:arrow-up-right',
+    title: 'Work lives in files',
+    body: 'Quotes, briefs, and schedules sit in docs and folders disconnected from the client who asked.',
+    icon: 'lucide:folder-open',
+  },
+  {
+    title: 'Money lives elsewhere',
+    body: 'Invoices and unpaid follow-up lag behind the work, so freelancers chase cash without a clear board.',
+    icon: 'lucide:wallet',
   },
 ];
 
-const FREEFLOW_BOUNDARY = [
+const FREEFLOW_JOURNEY = [
+  { label: 'Request', cue: 'client asks' },
+  { label: 'Quote', cue: 'scope + price' },
+  { label: 'Project', cue: 'work runs' },
+  { label: 'Invoice', cue: 'get paid' },
+  { label: 'Follow-up', cue: 'close the loop' },
+];
+
+const FREEFLOW_OWNED = [
   {
-    status: 'Live',
-    title: 'LINE OA',
-    body: 'Webhook intake, realtime inbox mirror, media + files.',
-    icon: 'simple-icons:line',
-    live: true,
+    title: 'Identity lifecycle (Go Fiber + JWT)',
+    body: 'Register, verify, login, refresh, and password reset so every workspace action has a trusted user.',
+    icon: 'lucide:shield-check',
   },
   {
-    status: 'Roadmap',
-    title: 'Other channels',
-    body: 'Provider-shaped model only. Not claimed as shipped product.',
-    icon: 'lucide:waypoints',
-    live: false,
+    title: 'Org-scoped freelance workspace API',
+    body: 'REST and realtime traffic stay inside one organization — clients, jobs, and files do not leak across teams.',
+    icon: 'lucide:building-2',
+  },
+  {
+    title: 'Ops records, not a chat product',
+    body: 'Quotations, projects, invoices, appointments, templates, and files are first-class backend objects.',
+    icon: 'lucide:briefcase-business',
+  },
+  {
+    title: 'LINE as intake, not the product',
+    body: 'Official Account messages can open or update a client record; the workspace is where freelancers run the job.',
+    icon: 'simple-icons:line',
   },
 ];
 
 const FREEFLOW_SYSTEM = [
   {
-    label: 'Clients',
-    title: 'React workspace + LINE OA',
-    body: 'JWT/REST/Socket.IO for freelancers. Webhook for customers.',
+    label: 'Surfaces',
+    title: 'Freelance workspace + intake',
+    body: 'Operators run jobs in React. Clients can reach in through LINE OA.',
     icon: 'lucide:monitor-up',
   },
   {
-    label: 'Boundary',
+    label: 'Write path',
     title: 'Go Fiber API',
-    body: 'Scope the org, persist CRM truth, publish the visible result.',
+    body: 'Org scope, persist ops records, publish what the workspace shows.',
     icon: 'lucide:server-cog',
     focus: true,
   },
   {
     label: 'Stores',
     title: 'PostgreSQL + MinIO',
-    body: 'Records stay relational. Files and documents stay object storage.',
+    body: 'Jobs and money stay relational. Files and docs stay object storage.',
     icon: 'simple-icons:postgresql',
   },
 ];
@@ -2354,7 +2649,8 @@ const FreeflowHeroMedia = ({ project, media }) => {
   return (
     <CaseMediaFrame
       image={poster}
-      alt={`${project.title} workspace dashboard`}
+      alt={`${project.title} blue project dossier with its F logo, LINE client intake, quotations, invoices, document templates and schedule`}
+      cover
       eager
       sizes="(max-width: 900px) 100vw, 680px"
       className="case-media__frame--freeflow-hero"
@@ -2419,84 +2715,101 @@ const FreeflowVideoBeat = ({
   );
 };
 
-const FreeflowTrail = ({ decision }) => (
+const FreeflowProblem = () => (
   <section
-    className="case-freeflow-trail case-reveal"
+    className="case-freeflow-problem case-reveal"
     data-reveal="scroll"
     style={{ '--reveal-index': 0 }}
-    aria-labelledby="freeflow-trail-title"
+    aria-labelledby="freeflow-problem-title"
   >
     <StorySectionHead
-      eyebrow="One operating trail"
-      title="Message in. Context held. Work continues."
-      body="Three beats only. Everything else is support detail."
-      id="freeflow-trail-title"
+      eyebrow="The real problem"
+      title="Freelance work breaks when the trail splits."
+      body="Talk, files, and money live in different places — so follow-up fails even when the work is good."
+      id="freeflow-problem-title"
     />
-    <ol className="case-freeflow-trail__steps" aria-label="FreeFlow operating trail">
-      {FREEFLOW_TRAIL.map((step, index) => (
-        <li data-wave-follow key={step.stage}>
-          <article className="case-freeflow-glass case-freeflow-trail__card">
-            <header>
-              <span>{step.stage}</span>
-              <span className="case-freeflow-trail__icon" aria-hidden="true">
-                <Icon icon={step.icon} />
-              </span>
-            </header>
-            <h3>{step.title}</h3>
-            <p>{step.body}</p>
+    <ul className="case-freeflow-problem__list" aria-label="Freelance ops pain">
+      {FREEFLOW_PROBLEMS.map((item) => (
+        <li data-wave-follow key={item.title}>
+          <article className="case-freeflow-glass case-freeflow-problem__card">
+            <span className="case-freeflow-problem__icon" aria-hidden="true">
+              <Icon icon={item.icon} />
+            </span>
+            <div>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </div>
           </article>
-          {index < FREEFLOW_TRAIL.length - 1 && (
-            <span className="case-freeflow-trail__connector" aria-hidden="true">
+        </li>
+      ))}
+    </ul>
+  </section>
+);
+
+const FreeflowJourney = () => (
+  <section
+    className="case-freeflow-journey case-reveal"
+    data-reveal="scroll"
+    style={{ '--reveal-index': 1 }}
+    aria-labelledby="freeflow-journey-title"
+  >
+    <StorySectionHead
+      eyebrow="How FreeFlow fixes it"
+      title="One ops trail from request to paid work."
+      body="FreeFlow is the back-office lane. LINE can open the door — the workspace keeps client, job, and money on one path."
+      id="freeflow-journey-title"
+    />
+    <ol className="case-freeflow-journey__strip" aria-label="FreeFlow ops journey">
+      {FREEFLOW_JOURNEY.map((step, index) => (
+        <li data-wave-follow key={step.label}>
+          <article className="case-freeflow-glass case-freeflow-journey__node">
+            <span>{formatIndex(index + 1)}</span>
+            <strong>{step.label}</strong>
+            <small>{step.cue}</small>
+          </article>
+          {index < FREEFLOW_JOURNEY.length - 1 && (
+            <span className="case-freeflow-journey__arrow" aria-hidden="true">
               <Icon icon="lucide:arrow-right" />
             </span>
           )}
         </li>
       ))}
     </ol>
-    {decision && (
-      <p className="case-freeflow-glass case-freeflow-trail__note" data-wave-follow>
-        <Icon icon="lucide:circle-check-big" aria-hidden="true" />
-        <span>{decision}</span>
-      </p>
-    )}
+    <p className="case-freeflow-journey__note" data-wave-follow>
+      <Icon icon="simple-icons:line" aria-hidden="true" />
+      <span>LINE OA is optional intake into the client record — not a chat product at the center of FreeFlow.</span>
+    </p>
   </section>
 );
 
-const FreeflowBoundary = () => (
+const FreeflowOwned = () => (
   <section
-    className="case-freeflow-boundary case-reveal"
+    className="case-freeflow-owned case-reveal"
     data-reveal="scroll"
-    style={{ '--reveal-index': 1 }}
-    aria-labelledby="freeflow-boundary-title"
+    style={{ '--reveal-index': 0 }}
+    aria-labelledby="freeflow-owned-title"
   >
     <StorySectionHead
-      eyebrow="Honest scope"
-      title="LINE is live. Other channels stay labelled."
-      body="The page only claims the path you can see in the demos."
-      id="freeflow-boundary-title"
+      eyebrow="Backend ownership"
+      title="What I owned on the backend."
+      body="Team capstone. I own the Go write boundary and identity path — not every UI pixel."
+      id="freeflow-owned-title"
     />
-    <div className="case-freeflow-boundary__row">
-      {FREEFLOW_BOUNDARY.map((item) => (
-        <article
-          className={[
-            'case-freeflow-glass',
-            'case-freeflow-boundary__card',
-            item.live ? 'is-live' : 'is-roadmap',
-          ].join(' ')}
-          data-wave-follow
-          key={item.title}
-        >
-          <span className="case-freeflow-boundary__icon" aria-hidden="true">
-            <Icon icon={item.icon} />
-          </span>
-          <div>
-            <small>{item.status}</small>
-            <h3>{item.title}</h3>
-            <p>{item.body}</p>
-          </div>
-        </article>
+    <ul className="case-freeflow-owned__list" aria-label="Backend ownership">
+      {FREEFLOW_OWNED.map((item) => (
+        <li data-wave-follow key={item.title}>
+          <article className="case-freeflow-glass case-freeflow-owned__card">
+            <span className="case-freeflow-owned__icon" aria-hidden="true">
+              <Icon icon={item.icon} />
+            </span>
+            <div>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </div>
+          </article>
+        </li>
       ))}
-    </div>
+    </ul>
   </section>
 );
 
@@ -2508,15 +2821,21 @@ const FreeflowSystem = ({ techItems }) => (
     aria-labelledby="freeflow-system-title"
   >
     <StorySectionHead
-      eyebrow="Backend boundary"
-      title="Two clients. One write path."
-      body="The story stays short: who writes, who scopes, what stores."
+      eyebrow="One system vertical"
+      title="One ops write path."
+      body="Workspace + LINE intake hit Go Fiber, then Postgres + MinIO."
       id="freeflow-system-title"
     />
     <ol className="case-freeflow-system-rail__list" aria-label="FreeFlow system map">
       {FREEFLOW_SYSTEM.map((node, index) => (
         <li data-wave-follow key={node.title}>
-          <article className={node.focus ? 'case-freeflow-glass case-freeflow-system-rail__node is-focus' : 'case-freeflow-glass case-freeflow-system-rail__node'}>
+          <article
+            className={
+              node.focus
+                ? 'case-freeflow-glass case-freeflow-system-rail__node is-focus'
+                : 'case-freeflow-glass case-freeflow-system-rail__node'
+            }
+          >
             <span>{formatIndex(index + 1)}</span>
             <span className="case-freeflow-system-rail__icon" aria-hidden="true">
               <Icon icon={node.icon} />
@@ -2533,14 +2852,19 @@ const FreeflowSystem = ({ techItems }) => (
         </li>
       ))}
     </ol>
-    <StackBlock items={techItems} reveal="scroll" revealIndex={2} title="Built across the boundary" />
+    <p className="case-freeflow-glass case-freeflow-boundary-line" data-wave-follow>
+      <Icon icon="lucide:circle-check-big" aria-hidden="true" />
+      <span>This is a freelance ops workspace. LINE OA is a shipped intake path; other channels stay roadmap — not a multi-chat product claim.</span>
+    </p>
+    <StackBlock items={techItems} reveal="scroll" revealIndex={2} title="Stack on that path" />
   </section>
 );
 
-const FreeflowLayout = ({ project, decision, techItems, gallery, hasLive, hasRepo }) => {
+const FreeflowLayout = ({ project, techItems, gallery, hasLive, hasRepo }) => {
   const workspace = gallery[0];
   const inbox = gallery[1];
   const dashboard = gallery[2];
+  const heroMedia = project.heroMedia;
 
   return (
     <>
@@ -2555,18 +2879,25 @@ const FreeflowLayout = ({ project, decision, techItems, gallery, hasLive, hasRep
               aria-hidden="true"
               data-wave-media
             />
-            <span>Backend-led CRM workspace</span>
+            <span>Freelance ops platform · backend path</span>
           </div>
           <p className="case-kicker">{project.category || 'Selected system'}</p>
           <h1 id="case-title">{project.title}</h1>
-          <p className="case-freeflow-hero__thesis">One client message becomes an operating trail.</p>
+          <p className="case-freeflow-hero__thesis">
+            Back-office that keeps client, job, and money on one trail.
+          </p>
           <p className="case-role">{project.role || 'Software Engineer'}</p>
           <p className="case-lede">{project.description}</p>
           <CaseActions hasLive={hasLive} hasRepo={hasRepo} project={project} />
         </div>
         <div className="case-freeflow-hero__media">
-          <FreeflowHeroMedia project={project} media={workspace} />
+          <FreeflowHeroMedia project={project} media={heroMedia} />
           <div className="case-freeflow-hero__caption-motion" data-wave-follow>
+            {/* Liquid Glass was piloted here (harness Round 15/16) and lost a
+                live blind comparison against this original flat-blur
+                treatment — DESIGN-DISCOVERY Round 16. Reverted; do not
+                reapply without new evidence the glass wins for this
+                consumer specifically. */}
             <aside className="case-freeflow-glass case-freeflow-hero__caption">
               <div className="case-freeflow-path" aria-label="FreeFlow product path">
                 {FREEFLOW_PATH.map((step, index) => (
@@ -2584,43 +2915,44 @@ const FreeflowLayout = ({ project, decision, techItems, gallery, hasLive, hasRep
         </div>
       </div>
 
+      <FreeflowProblem />
+      <FreeflowJourney />
+
       <FreeflowVideoBeat
         project={project}
         media={workspace}
-        label={project.galleryLabels?.[0] || 'Workspace loop'}
-        description={project.galleryDescriptions?.[0]}
-        eyebrow="Demo 01 · Workspace"
-        title="See the day from one sidebar."
-        points={['Dashboard', 'Calendar', 'Templates']}
+        label={project.galleryLabels?.[0] || 'Freelance workspace'}
+        description="Instead of hopping chat, docs, and calendar, freelancers run the day from one ops shell."
+        eyebrow="Proof 01 · Fixes scattered tools"
+        title="One workspace holds the work trail."
+        points={['Dashboard home', 'Calendar', 'Templates without leaving the shell']}
         revealIndex={0}
       />
 
-      <FreeflowTrail decision={decision} />
-
       <FreeflowVideoBeat
         project={project}
-        media={inbox}
-        label={project.galleryLabels?.[1] || 'LINE OA inbox'}
-        description={project.galleryDescriptions?.[1]}
-        eyebrow="Demo 02 · Inbox"
-        title="Client context stays beside the chat."
-        points={['LINE identity', 'Quotations', 'Files']}
+        media={dashboard}
+        label={project.galleryLabels?.[2] || 'Business board'}
+        description="Money and follow-up stop living in a separate headspace — unpaid work and meetings return to one board."
+        eyebrow="Proof 02 · Fixes lost money trail"
+        title="See what still needs chasing."
+        points={['Unpaid invoices', 'Active jobs', 'Upcoming meetings']}
         reverse
         revealIndex={1}
       />
 
       <FreeflowVideoBeat
         project={project}
-        media={dashboard}
-        label={project.galleryLabels?.[2] || 'Business pulse'}
-        description={project.galleryDescriptions?.[2]}
-        eyebrow="Demo 03 · Dashboard"
-        title="Attention returns to one operating picture."
-        points={['Revenue vs pipeline', 'Unpaid invoices', 'Upcoming meetings']}
+        media={inbox}
+        label={project.galleryLabels?.[1] || 'Client intake'}
+        description="A client can still reach you through LINE — but the request lands on the client/job record, not a disposable chat scroll."
+        eyebrow="Proof 03 · Fixes broken intake"
+        title="Requests enter ops, not a chat silo."
+        points={['LINE as intake only', 'Quotes + files on the client', 'Workspace stays the center']}
         revealIndex={0}
       />
 
-      <FreeflowBoundary />
+      <FreeflowOwned />
       <FreeflowSystem techItems={techItems} />
     </>
   );
@@ -3015,16 +3347,14 @@ const ModeNoteRequirementStory = ({ project, media }) => {
 
 const ModeNoteCaptureArchitecture = ({ decision }) => (
     <section
-      className="case-modenote-capture case-reveal"
-      data-reveal="scroll"
-      style={{ '--reveal-index': 1 }}
+      className="case-modenote-capture"
       aria-labelledby="modenote-capture-title"
     >
       <StorySectionHead
         eyebrow="Two capture paths · One session"
-        title="Realtime can degrade. Durable capture keeps its own path."
-        body="ModeNote treats best-effort live intelligence and recoverable audio as separate responsibilities."
-        id="modenote-capture-title"
+      title="Realtime can degrade. Durable capture keeps its own path."
+      body="ModeNote treats best-effort live intelligence and recoverable audio as separate responsibilities."
+      id="modenote-capture-title"
       />
 
       <div className="case-modenote-architecture" data-wave-follow aria-label="ModeNote dual capture architecture">
@@ -3318,33 +3648,6 @@ const ModeNoteStack = () => (
   </section>
 );
 
-const MODENOTE_STORY_STEPS = [
-  {
-    label: '01 · Speak',
-    title: 'Talk naturally.',
-    body: 'Record a meeting, interview, lecture, or idea without stopping when Thai and English mix.',
-    icon: 'lucide:mic-2',
-  },
-  {
-    label: '02 · Preserve',
-    title: 'Keep the source safe.',
-    body: 'Recoverable audio chunks stay independent from the best-effort live transcript.',
-    icon: 'lucide:shield-check',
-  },
-  {
-    label: '03 · Understand',
-    title: 'Return to the point.',
-    body: 'The stopped session becomes a recap, searchable transcript, evidence, and next steps.',
-    icon: 'lucide:sparkles',
-  },
-  {
-    label: '04 · Continue',
-    title: 'Take it into the work.',
-    body: 'Search, ask, or export the same source-linked session instead of replaying an audio file.',
-    icon: 'lucide:arrow-up-right',
-  },
-];
-
 const ModeNoteProblem = () => (
   <section className="modenote-story__chapter" aria-labelledby="modenote-problem-title">
     <StorySectionHead
@@ -3363,50 +3666,153 @@ const ModeNoteProblem = () => (
       <article className="modenote-story__shift-after modenote-story__glass">
         <span>After ModeNote</span>
         <strong>A session that already knows where the work is.</strong>
-        <p>Transcript, recap, evidence, search, chat, and export share one source.</p>
+        <p>Transcript, recap, evidence, search, and export stay attached to one source.</p>
       </article>
     </div>
   </section>
 );
 
-const ModeNoteStoryLoop = () => (
-  <section className="modenote-story__chapter" aria-labelledby="modenote-loop-title">
-    <StorySectionHead eyebrow="The product loop" title="Speak once. Leave with something usable." body="For the person recording, ModeNote is one clear path from conversation to next action—even while live transcription and recoverable audio remain independent underneath." id="modenote-loop-title" />
-    <ol className="modenote-story__loop" aria-label="ModeNote product journey">
-      {MODENOTE_STORY_STEPS.map((step) => (
-        <li data-wave-follow key={step.label}>
-          <Icon icon={step.icon} aria-hidden="true" />
-          <span>{step.label}</span>
-          <strong>{step.title}</strong>
-          <p>{step.body}</p>
-        </li>
-      ))}
-    </ol>
-    <p className="modenote-story__decision modenote-story__glass" data-wave-follow><Icon icon="lucide:shield-check" aria-hidden="true" /> Realtime can degrade; the recoverable recording keeps its own path.</p>
-  </section>
-);
+const MODENOTE_DEMO_STEPS = [
+  {
+    galleryIndex: 0,
+    phase: 'capture',
+    stage: '01 · Frame the room',
+    eyebrow: 'Before capture',
+    title: 'Set the language, mode, and assist level.',
+    body: 'These choices shape the session before the microphone opens, so context does not have to be reconstructed afterward.',
+    facts: ['Thai + English', 'Mode-aware analysis', 'Assist stays adjustable'],
+    kindLabel: 'Recorded flow',
+    icon: 'lucide:sliders-horizontal',
+    signal: 'Context becomes part of capture—not cleanup after the call.',
+    layout: 'wide',
+  },
+  {
+    galleryIndex: 1,
+    phase: 'capture',
+    stage: '02 · Stay in the conversation',
+    eyebrow: 'During the conversation',
+    title: 'Surface one grounded question—not a wall of prompts.',
+    body: 'The customer-discovery preview shows the intended human-in-the-loop: ModeNote suggests, and the interviewer decides.',
+    facts: ['Zero or one suggestion', 'Recent transcript grounding', 'Simulated product preview'],
+    kindLabel: 'Simulated preview',
+    icon: 'lucide:message-circle-question-mark',
+    signal: 'Guidance remains optional, visible, and source-aware.',
+    layout: 'reverse',
+  },
+  {
+    galleryIndex: 2,
+    phase: 'memory',
+    stage: '03 · Stop with evidence',
+    eyebrow: 'After recording',
+    title: 'Review the recap, then return to the transcript.',
+    body: 'The recorded flow moves from recap to transcript search and export without leaving the stopped-session workspace.',
+    facts: ['Bilingual transcript', 'Local text search', 'Markdown + JSON handoff'],
+    kindLabel: 'Recorded flow',
+    icon: 'lucide:quote',
+    signal: 'Every useful handoff still begins with the captured session.',
+    layout: 'climax',
+  },
+  {
+    galleryIndex: 3,
+    phase: 'memory',
+    stage: '04 · Return without replaying',
+    eyebrow: 'Later, when the conversation matters again',
+    title: 'Find the session without remembering a filename.',
+    body: 'Search, filter, and sort the library, then reopen the same workspace when the conversation becomes relevant again.',
+    facts: ['Search by title', 'Filter + sort', 'Reopen the full workspace'],
+    kindLabel: 'Recorded flow',
+    icon: 'lucide:library-big',
+    signal: 'A conversation becomes working memory only when it is easy to return to.',
+    layout: 'epilogue',
+  },
+];
 
-const ModeNoteProof = ({ project, gallery }) => (
-  <section className="modenote-story__chapter" aria-labelledby="modenote-proof-title">
-    <StorySectionHead eyebrow="The proof" title="The strongest view is the session itself." body="This real product capture shows the bilingual transcript and its timestamps—the source layer every recap, search result, and export must return to." id="modenote-proof-title" />
-    <div className="modenote-story__proof">
-      {gallery[2] && <CaseMediaFrame image={gallery[2].image} alt={`${project.title} — real stopped-session transcript workspace`} sizes="(max-width: 900px) 100vw, 920px" label="Real stopped-session workspace" kindLabel="Product capture" />}
-      <div className="modenote-story__proof-facts" data-wave-follow>
-        <article className="modenote-story__glass"><Icon icon="lucide:languages" /><strong>Mixed language, one timeline</strong><p>Thai, English, and timestamps stay in the order people actually spoke.</p></article>
-        <article className="modenote-story__glass"><Icon icon="lucide:quote" /><strong>Evidence stays findable</strong><p>Derived outputs can point back to supporting transcript segments.</p></article>
-        <article className="modenote-story__glass"><Icon icon="lucide:file-output" /><strong>The session can leave</strong><p>Markdown and JSON exports create explicit human or machine handoffs.</p></article>
-      </div>
-    </div>
-  </section>
-);
+const MODENOTE_DEMO_CHAPTERS = {
+  capture: {
+    eyebrow: 'Before + during capture · Two product moments',
+    title: 'Set the context. Then stay in the conversation.',
+    body: 'First choose how the room should be understood. During capture, ModeNote can surface at most one grounded question without taking over.',
+  },
+  memory: {
+    eyebrow: 'The stopped session · Two return paths',
+    title: 'The recording stops. The work keeps moving.',
+    body: 'Review and export inside the stopped session, then use the library to return when that conversation matters again.',
+  },
+};
+
+const ModeNoteDemoJourney = ({ project, gallery, phase }) => {
+  const chapter = MODENOTE_DEMO_CHAPTERS[phase];
+  const steps = MODENOTE_DEMO_STEPS.filter((step) => step.phase === phase);
+  if (!chapter || !steps.length) return null;
+
+  return (
+    <section
+      className={`modenote-story__chapter modenote-story__chapter--${phase}`}
+      aria-labelledby={`modenote-${phase}-demos-title`}
+    >
+      <StorySectionHead
+        eyebrow={chapter.eyebrow}
+        title={chapter.title}
+        body={chapter.body}
+        id={`modenote-${phase}-demos-title`}
+      />
+      <ol className="modenote-story__demos">
+        {steps.map((step) => {
+          const media = gallery[step.galleryIndex];
+          if (!media) return null;
+          const label = project.galleryLabels?.[step.galleryIndex] || step.title;
+
+          return (
+            <li className={`modenote-story__demo is-${step.layout}`} key={step.stage}>
+              <div className="modenote-story__demo-media">
+                <CaseMediaFrame
+                  media={media}
+                  alt={`${project.title} — ${label}`}
+                  sizes="(max-width: 840px) 100vw, 680px"
+                  label={label}
+                  kindLabel={step.kindLabel}
+                />
+              </div>
+              <article className="modenote-story__demo-copy modenote-story__glass" data-wave-follow>
+                <span>{step.stage}</span>
+                <small>{step.eyebrow}</small>
+                <h3>{step.title}</h3>
+                <p>{step.body}</p>
+                <ul aria-label={`${step.title} key signals`}>
+                  {step.facts.map((fact) => (
+                    <li key={fact}><Icon icon="lucide:check" aria-hidden="true" />{fact}</li>
+                  ))}
+                </ul>
+                <div className="modenote-story__demo-signal">
+                  <Icon icon={step.icon} aria-hidden="true" />
+                  <strong>{step.signal}</strong>
+                </div>
+              </article>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+  );
+};
 
 const ModeNoteSystemSummary = () => (
   <section className="modenote-story__chapter" aria-labelledby="modenote-system-title">
-    <StorySectionHead eyebrow="Under the session" title="Three boundaries keep the story honest." body="Capture, durable processing, and optional agent access do not collapse into one opaque AI box." id="modenote-system-title" />
-    <ol className="modenote-story__system" aria-label="ModeNote system boundaries">
-      <li data-wave-follow><Icon icon="lucide:monitor-up" /><span>Client</span><strong>Next.js capture workspace</strong><p>Records locally recoverable chunks and streams best-effort PCM.</p></li>
-      <li data-wave-follow><Icon icon="lucide:server-cog" /><span>Runtime</span><strong>Elysia API + worker</strong><p>Owns uploads, realtime routes, composition, and versioned analysis jobs.</p></li>
-      <li data-wave-follow><Icon icon="lucide:database" /><span>Durable truth</span><strong>PostgreSQL + MinIO</strong><p>Stores session state and private audio behind explicit boundaries.</p></li>
+    <StorySectionHead eyebrow="Under the session" title="A simple journey, backed by clear boundaries." body="Capture, routing, durable storage, analysis, and reuse stay separate so each stage has one responsibility." id="modenote-system-title" />
+    <ol className="modenote-story__system modenote-story__system--rail" aria-label="ModeNote system lifecycle">
+      {MODENOTE_SYSTEM_NODES.map((node, index) => (
+        <li data-wave-follow key={node.stage}>
+          <Icon icon={node.icon} aria-hidden="true" />
+          <span>{node.stage}</span>
+          <strong>{node.title}</strong>
+          <ul aria-label={`${node.title} implementation signals`}>
+            {node.items.map((item) => <li key={item}>{item}</li>)}
+          </ul>
+          {index < MODENOTE_SYSTEM_NODES.length - 1 && (
+            <Icon className="modenote-story__system-arrow" icon="lucide:arrow-right" aria-hidden="true" />
+          )}
+        </li>
+      ))}
     </ol>
     <aside className="modenote-story__mcp modenote-story__glass" data-wave-follow>
       <Icon icon="lucide:bot" aria-hidden="true" />
@@ -3427,7 +3833,7 @@ const ModeNoteStackSummary = ({ items }) => (
   </section>
 );
 
-const ModeNoteLayout = ({ project, techItems, gallery, hasLive, hasRepo }) => (
+const ModeNoteLayout = ({ project, decision, techItems, gallery, hasLive, hasRepo }) => (
   <>
     <header className="modenote-story__hero case-reveal" data-reveal="mount" style={{ '--reveal-index': 1 }}>
       <div className="modenote-story__hero-copy" data-wave-follow>
@@ -3451,8 +3857,9 @@ const ModeNoteLayout = ({ project, techItems, gallery, hasLive, hasRepo }) => (
       </div>
       <div className="modenote-story__hero-media">
         <CaseMediaFrame
-          image={project.image}
-          alt={`${project.title} poster showing the Note Buddy mascot and the real bilingual session workspace`}
+          media={project.heroMedia}
+          alt={`${project.title} Buddy and a copper voice ribbon connecting a quoted conversation at 1:04 to its real source workspace`}
+          cover
           eager
           sizes="(max-width: 900px) 100vw, 760px"
           className="case-media__frame--hero"
@@ -3460,18 +3867,28 @@ const ModeNoteLayout = ({ project, techItems, gallery, hasLive, hasRepo }) => (
           kindLabel="Project poster"
           transitionTarget
         />
+        <div className="modenote-story__hero-journey" data-wave-follow aria-label="ModeNote session journey">
+          {['Context', 'Conversation', 'Evidence', 'Memory'].map((step, index) => (
+            <Fragment key={step}>
+              <span>{step}</span>
+              {index < 3 && <Icon icon="lucide:arrow-right" aria-hidden="true" />}
+            </Fragment>
+          ))}
+        </div>
       </div>
     </header>
 
     <ModeNoteProblem />
-    <ModeNoteStoryLoop />
-    <ModeNoteProof project={project} gallery={gallery} />
+    <ModeNoteDemoJourney project={project} gallery={gallery} phase="capture" />
+    <ModeNoteCaptureArchitecture decision={decision} />
+    <ModeNoteDemoJourney project={project} gallery={gallery} phase="memory" />
     <ModeNoteSystemSummary />
     <ModeNoteStackSummary items={techItems} />
   </>
 );
 
 const LAYOUT_RENDERERS = {
+  hermes: HermesProjectDetails,
   modenote: ModeNoteLayout,
   freeflow: FreeflowLayout,
   mux: MuxLayout,
@@ -3485,6 +3902,7 @@ const LAYOUT_RENDERERS = {
 
 const ProjectDetails = () => {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
   const sectionRef = useRef(null);
   const project = useMemo(() => projects.find((item) => item.id === id), [id]);
   const currentIndex = useMemo(
@@ -3527,18 +3945,23 @@ const ProjectDetails = () => {
   const caseTotal = formatIndex(projects.length);
   const techItems = project.tags || [];
   const layout = PROJECT_LAYOUTS[project.id] || 'default';
-  const LayoutBody = LAYOUT_RENDERERS[layout] || CinemaLayout;
+  // Preview only: /project/keshi-pomodoro?layout=next renders the redesign
+  // beside the shipped page. The plain URL is unchanged.
+  const isKeshiNext = layout === 'keshi' && searchParams.get('layout') === 'next';
+  const LayoutBody = isKeshiNext ? KeshiLayoutNext : (LAYOUT_RENDERERS[layout] || CinemaLayout);
   return (
     <div className="document-room document-room--project">
       <ScrollPerspectiveWave
         as="section"
         id="project-details"
         ref={sectionRef}
-        className={`case-section case-section--${layout}`}
+        className={`case-section case-section--${layout}${isKeshiNext ? ' case-section--keshi-next' : ''}`}
         aria-labelledby="case-title"
         surfaceOpacity={0}
         intensity={
-          layout === 'modenote'
+          layout === 'hermes'
+            ? 1.12
+            : layout === 'modenote'
             ? 1.15
             : layout === 'freeflow'
             ? 1.08

@@ -1,0 +1,25 @@
+.case-matte-surface {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  overflow: hidden;
+  border: var(--border-width-hairline) solid var(--color-annotation-matte-edge);
+  border-radius: var(--radius-annotation-matte);
+  background: var(--color-annotation-matte-fill);
+  box-shadow: 0 var(--space-annotation-matte-lift-y) var(--space-annotation-matte-lift-blur) var(--color-annotation-matte-lift);
+  color: var(--color-annotation-matte-ink);
+  text-shadow: none;
+  -webkit-backdrop-filter: blur(var(--size-annotation-matte-blur));
+  backdrop-filter: blur(var(--size-annotation-matte-blur));
+}
+
+.case-matte-surface__content {
+  position: relative;
+  width: 100%;
+}
+
+@media (max-width: 620px) {
+  .case-matte-surface {
+    border-radius: var(--radius-annotation-matte-compact);
+  }
+}

@@ -1,3 +1,4 @@
+
 /* Keshi-specific material, responsive, monochrome, and wave refinements. */
 .case-section--keshi .case-keshi-state--focus .case-keshi-state__caption {
   border-bottom-color: rgba(198, 37, 47, 0.5);
@@ -201,7 +202,7 @@
     left: -1.58rem;
     width: 0.62rem;
     height: 0.62rem;
-    border: 2px solid rgba(255, 253, 249, 0.28);
+    border: 2px solid var(--color-detail-line-strong);
     border-radius: 999px;
     background: #bd3037;
     box-shadow: 0 0 0 0.28rem rgba(198, 37, 47, 0.09);

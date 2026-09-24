@@ -1,0 +1,95 @@
+.room-transition {
+    position: fixed;
+    z-index: 500;
+    inset: 0;
+    visibility: hidden;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.room-transition--closing,
+.room-transition--opening,
+.room-transition--exiting {
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.room-transition__blades {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.room-transition__blade {
+    min-width: 0;
+    background-color: #e3262e;
+    background-image:
+        linear-gradient(rgba(8, 8, 8, 0.2) 0.5px, transparent 0.5px),
+        linear-gradient(90deg, rgba(8, 8, 8, 0.18) 0.5px, transparent 0.5px);
+    background-size: 64px 64px;
+    border-right: 0.5px solid rgba(8, 8, 8, 0.72);
+    transform: translateY(105%);
+    transition: transform 680ms cubic-bezier(0.76, 0, 0.24, 1);
+    will-change: transform;
+}
+
+.room-transition__blade:last-child {
+    border-right: 0;
+}
+
+.room-transition--closing .room-transition__blade {
+    transform: translateY(0);
+    transition-delay: var(--room-delay);
+}
+
+.room-transition--opening .room-transition__blade {
+    transform: translateY(-105%);
+    transition-delay: var(--room-exit-delay);
+}
+
+.room-transition__label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: grid;
+    gap: 0.35rem;
+    color: #f3eee4;
+    text-align: center;
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 20px));
+    transition: opacity 220ms ease, transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.room-transition__label span {
+    font: 600 0.58rem/1 var(--font-mono);
+    letter-spacing: 0.18em;
+}
+
+.room-transition__label strong {
+    font: 800 clamp(2.7rem, 8vw, 7rem)/0.85 var(--font-display);
+    letter-spacing: 0;
+}
+
+.room-transition--closing .room-transition__label {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+    transition-delay: 360ms;
+}
+
+.room-transition--opening .room-transition__label {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% - 18px));
+    transition-delay: 0ms;
+}
+
+html.room-transitioning,
+html.room-transitioning body {
+    overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .room-transition {
+        display: none;
+    }
+}

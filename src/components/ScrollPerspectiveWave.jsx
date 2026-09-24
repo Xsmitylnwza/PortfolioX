@@ -1,363 +1,13 @@
-import { createElement, forwardRef, useCallback, useEffect, useRef } from 'react';
+import { createElement, forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import './ScrollPerspectiveWave.css';
+import { isAnimatedRasterSource, getStandaloneWaveMedia, getWaveCaptureElements, rasterizeDomElement } from './ScrollPerspectiveWaveCapture.js';
+import { surfaceVertex, surfaceFragment, mediaFragment } from './ScrollPerspectiveWaveShaders.js';
+import { createAnimatedRasterAdapter } from './ScrollPerspectiveWaveAnimatedRaster.js';
 
 const FOV = 50;
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 const CAPTURE_RECAPTURE_MS = 180;
-const CAPTURE_MAX_DPR = 2;
 
-// Animated rasters use the same mesh as still images, but refresh their texture
-// while visible so GIF/APNG playback stays live inside the wave.
-const isAnimatedRasterSource = (source) => {
-    if (!source) return false;
-    const value = String(source).split('?')[0].split('#')[0].toLowerCase();
-    return value.endsWith('.gif') || value.endsWith('.apng');
-};
-
-const getAnimatedRasterMimeType = (source) => {
-    const value = String(source || '').split('?')[0].split('#')[0].toLowerCase();
-    return value.endsWith('.gif') ? 'image/gif' : 'image/png';
-};
-
-const getAnimationFrameDuration = (duration) => {
-    const milliseconds = Number(duration) / 1000;
-    return Number.isFinite(milliseconds) && milliseconds > 0
-        ? Math.max(16, milliseconds)
-        : 100;
-};
-
-const shouldSkipWaveMediaElement = (element) => {
-    if (!element || element.hasAttribute('data-wave-media-skip')) return true;
-    if (element.getAttribute('data-wave-media') === 'live') return true;
-    return false;
-};
-
-const getStandaloneWaveMedia = (root) => Array.from(root.querySelectorAll([
-    'img[data-wave-media]',
-    'video[data-wave-media]',
-    '[data-wave-follow] > img',
-    '[data-wave-follow] > video',
-    '[data-wave-follow] > picture > img',
-].join(','))).filter((element) => !shouldSkipWaveMediaElement(element));
-
-const getWaveCaptureElements = (root) => Array.from(root.querySelectorAll('[data-wave-capture]'))
-    .filter((element) => element.getAttribute('data-wave-capture') !== 'skip'
-        && !element.hasAttribute('data-wave-capture-skip'));
-
-const copyComputedStyles = (source, target) => {
-    const computed = window.getComputedStyle(source);
-    let cssText = '';
-    for (let index = 0; index < computed.length; index += 1) {
-        const prop = computed.item(index);
-        cssText += `${prop}:${computed.getPropertyValue(prop)};`;
-    }
-    target.style.cssText = cssText;
-};
-
-const prepareCaptureClone = (element, width, height) => {
-    const clone = element.cloneNode(true);
-    const sourceNodes = [element, ...element.querySelectorAll('*')];
-    const cloneNodes = [clone, ...clone.querySelectorAll('*')];
-
-    sourceNodes.forEach((sourceNode, index) => {
-        const cloneNode = cloneNodes[index];
-        if (!(sourceNode instanceof Element) || !(cloneNode instanceof Element)) return;
-        if (!(sourceNode instanceof HTMLElement) || !(cloneNode instanceof HTMLElement)) return;
-        copyComputedStyles(sourceNode, cloneNode);
-        cloneNode.removeAttribute('data-wave-follow');
-        cloneNode.removeAttribute('data-wave-capture');
-        cloneNode.removeAttribute('data-scroll-wave-media-ready');
-        cloneNode.removeAttribute('data-scroll-wave-capture-ready');
-        cloneNode.style.translate = 'none';
-        cloneNode.style.scale = 'none';
-        cloneNode.style.transform = 'none';
-        cloneNode.style.opacity = '1';
-        cloneNode.style.visibility = 'visible';
-        cloneNode.style.filter = 'none';
-        cloneNode.style.backdropFilter = 'none';
-        cloneNode.style.willChange = 'auto';
-        cloneNode.style.pointerEvents = 'none';
-    });
-
-    if (clone instanceof HTMLElement) {
-        clone.setAttribute('xmlns', 'http://www.w3.org/1999/xhtml');
-        clone.style.boxSizing = 'border-box';
-        clone.style.width = `${width}px`;
-        clone.style.height = `${height}px`;
-        clone.style.maxWidth = `${width}px`;
-        clone.style.minHeight = `${height}px`;
-        clone.style.margin = '0';
-        clone.style.position = 'static';
-        clone.style.left = 'auto';
-        clone.style.top = 'auto';
-        clone.style.right = 'auto';
-        clone.style.bottom = 'auto';
-        clone.style.overflow = 'hidden';
-        clone.style.backgroundColor = 'transparent';
-        clone.style.backgroundImage = 'none';
-    }
-
-    return clone;
-};
-
-const parseCssSize = (value, fallback = 0) => {
-    const parsed = Number.parseFloat(value);
-    return Number.isFinite(parsed) ? parsed : fallback;
-};
-
-const wrapCanvasText = (ctx, text, maxWidth) => {
-    const normalized = String(text || '').replace(/\s+/g, ' ').trim();
-    if (!normalized) return [];
-    if (maxWidth <= 1) return [normalized];
-
-    const words = normalized.split(' ');
-    const lines = [];
-    let current = words[0] || '';
-
-    for (let index = 1; index < words.length; index += 1) {
-        const word = words[index];
-        const next = `${current} ${word}`;
-        if (ctx.measureText(next).width <= maxWidth) {
-            current = next;
-        } else {
-            lines.push(current);
-            current = word;
-        }
-    }
-    if (current) lines.push(current);
-    return lines;
-};
-
-const rasterizeTextFallback = (element, width, height, dpr) => {
-    const style = window.getComputedStyle(element);
-    const canvas = document.createElement('canvas');
-    canvas.width = Math.max(1, Math.round(width * dpr));
-    canvas.height = Math.max(1, Math.round(height * dpr));
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return null;
-
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, width, height);
-    ctx.textBaseline = 'top';
-    ctx.fillStyle = style.color || '#f5f0e6';
-    ctx.font = style.font || `${style.fontWeight} ${style.fontSize} ${style.fontFamily}`;
-    if ('letterSpacing' in ctx) {
-        ctx.letterSpacing = style.letterSpacing || '0px';
-    }
-
-    let text = element.textContent || '';
-    const transform = style.textTransform;
-    if (transform === 'uppercase') text = text.toUpperCase();
-    else if (transform === 'lowercase') text = text.toLowerCase();
-    else if (transform === 'capitalize') {
-        text = text.replace(/\b\w/g, (char) => char.toUpperCase());
-    }
-
-    const paddingLeft = parseCssSize(style.paddingLeft);
-    const paddingRight = parseCssSize(style.paddingRight);
-    const paddingTop = parseCssSize(style.paddingTop);
-    const contentWidth = Math.max(1, width - paddingLeft - paddingRight);
-    const fontSize = parseCssSize(style.fontSize, 16);
-    const lineHeightValue = style.lineHeight;
-    const lineHeight = lineHeightValue === 'normal'
-        ? fontSize * 1.35
-        : parseCssSize(lineHeightValue, fontSize * 1.35);
-    const lines = wrapCanvasText(ctx, text, contentWidth);
-    let y = paddingTop;
-    lines.forEach((line) => {
-        ctx.fillText(line, paddingLeft, y);
-        y += lineHeight;
-    });
-
-    return canvas;
-};
-
-const isSimpleTextCapture = (element) => {
-    if (!element) return false;
-    // Prefer untaintable canvas text for leaf-like text boxes.
-    if (element.children.length > 0) return false;
-    const text = (element.textContent || '').trim();
-    return text.length > 0;
-};
-
-const rasterizeDomElement = async (element) => {
-    const rect = element.getBoundingClientRect();
-    const width = Math.max(1, Math.ceil(rect.width));
-    const height = Math.max(1, Math.ceil(rect.height));
-    if (width < 2 || height < 2) return null;
-
-    const dpr = Math.min(window.devicePixelRatio || 1, CAPTURE_MAX_DPR);
-    try {
-        await document.fonts?.ready;
-    } catch {
-        // Font readiness is best-effort; continue with currently available faces.
-    }
-
-    // Text boxes: canvas 2d never taints WebGL; use it first for method-2 demos.
-    if (isSimpleTextCapture(element)) {
-        const fallback = rasterizeTextFallback(element, width, height, dpr);
-        if (fallback) return { canvas: fallback, width, height, dpr };
-    }
-
-    try {
-        const clone = prepareCaptureClone(element, width, height);
-        const serialized = new XMLSerializer().serializeToString(clone);
-        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">`
-            + `<foreignObject width="100%" height="100%">${serialized}</foreignObject>`
-            + '</svg>';
-        const blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-
-        const canvas = await new Promise((resolve) => {
-            const image = new Image();
-            image.decoding = 'async';
-            image.onload = () => {
-                try {
-                    const nextCanvas = document.createElement('canvas');
-                    nextCanvas.width = Math.max(1, Math.round(width * dpr));
-                    nextCanvas.height = Math.max(1, Math.round(height * dpr));
-                    const ctx = nextCanvas.getContext('2d');
-                    if (!ctx) {
-                        resolve(null);
-                        return;
-                    }
-                    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-                    ctx.clearRect(0, 0, width, height);
-                    ctx.drawImage(image, 0, 0, width, height);
-                    // foreignObject captures can taint the canvas (fonts/styles).
-                    // Probe before handing the canvas to WebGL.
-                    try {
-                        ctx.getImageData(0, 0, 1, 1);
-                        resolve(nextCanvas);
-                    } catch {
-                        resolve(null);
-                    }
-                } catch {
-                    resolve(null);
-                } finally {
-                    URL.revokeObjectURL(url);
-                }
-            };
-            image.onerror = () => {
-                URL.revokeObjectURL(url);
-                resolve(null);
-            };
-            image.src = url;
-        });
-
-        if (canvas) return { canvas, width, height, dpr };
-    } catch {
-        // Fall through to canvas text rasterization.
-    }
-
-    const fallback = rasterizeTextFallback(element, width, height, dpr);
-    if (!fallback) return null;
-    return { canvas: fallback, width, height, dpr };
-};
-
-const surfaceVertex = /* glsl */ `
-attribute vec3 position;
-attribute vec2 uv;
-uniform mat4 modelMatrix;
-uniform mat4 modelViewMatrix;
-uniform mat4 projectionMatrix;
-uniform float uTime;
-uniform float uScrollVelocity;
-uniform float uIntensity;
-varying vec2 vUv;
-varying float vWave;
-varying float vSlope;
-
-void main() {
-    vec4 worldPosition = modelMatrix * vec4(position, 1.0);
-    float waveBase = sin(worldPosition.y * 0.0055 + uTime * 0.8) * uScrollVelocity;
-    vec3 newPosition = position;
-    newPosition.z += waveBase * 15.0 * 0.5 * uIntensity;
-
-    vUv = uv;
-    vWave = waveBase * uIntensity;
-    vSlope = cos(worldPosition.y * 0.0055 + uTime * 0.8) * uScrollVelocity * uIntensity;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
-}`;
-
-const surfaceFragment = /* glsl */ `
-precision highp float;
-uniform vec3 uSurfaceColor;
-uniform float uSurfaceOpacity;
-varying vec2 vUv;
-varying float vWave;
-varying float vSlope;
-
-float hash(vec2 point) {
-    return fract(sin(dot(point, vec2(127.1, 311.7))) * 43758.5453123);
-}
-
-void main() {
-    float grain = (hash(floor(vUv * 900.0)) - 0.5) * 0.012;
-    float light = 1.0 + vSlope * 0.025 + vWave * 0.004;
-    vec3 color = clamp(uSurfaceColor * light + grain, vec3(0.0), vec3(1.0));
-    gl_FragColor = vec4(color, uSurfaceOpacity);
-}`;
-
-const mediaFragment = /* glsl */ `
-precision highp float;
-uniform sampler2D tMap;
-uniform float uImageAspect;
-uniform float uPlaneAspect;
-uniform float uFitMode;
-uniform float uRadius;
-uniform vec2 uPlaneSize;
-varying vec2 vUv;
-
-void main() {
-    vec2 uv = vUv;
-    float fitAlpha = 1.0;
-
-    if (uFitMode < 0.5) {
-        if (uImageAspect > uPlaneAspect) {
-            uv.x = (uv.x - 0.5) * uPlaneAspect / uImageAspect + 0.5;
-        } else {
-            uv.y = (uv.y - 0.5) * uImageAspect / uPlaneAspect + 0.5;
-        }
-    } else if (uFitMode < 1.5) {
-        if (uImageAspect > uPlaneAspect) {
-            float visibleHeight = uPlaneAspect / uImageAspect;
-            uv.y = (uv.y - 0.5) / visibleHeight + 0.5;
-            fitAlpha = step(0.0, uv.y) * step(uv.y, 1.0);
-        } else {
-            float visibleWidth = uImageAspect / uPlaneAspect;
-            uv.x = (uv.x - 0.5) / visibleWidth + 0.5;
-            fitAlpha = step(0.0, uv.x) * step(uv.x, 1.0);
-        }
-    }
-
-    vec4 media = texture2D(tMap, clamp(uv, 0.0, 1.0));
-    float radius = min(uRadius, min(uPlaneSize.x, uPlaneSize.y) * 0.5);
-    vec2 halfSize = uPlaneSize * 0.5;
-    vec2 point = abs((vUv - 0.5) * uPlaneSize);
-    vec2 corner = point - (halfSize - vec2(radius));
-    float distanceToEdge = length(max(corner, 0.0))
-        + min(max(corner.x, corner.y), 0.0)
-        - radius;
-    float roundedAlpha = 1.0 - smoothstep(-0.75, 0.75, distanceToEdge);
-
-    gl_FragColor = vec4(media.rgb, media.a * fitAlpha * roundedAlpha);
-}`;
-
-/**
- * Reusable scroll-perspective module.
- *
- * Interface:
- * - mark layout anchors with `data-wave-surface`;
- * - mark visible DOM groups with `data-wave-follow`;
- * - mark text/container boxes with `data-wave-capture` to rasterize them into
- *   the same WebGL mesh/vertex wave as media (method 2);
- * - place the wrapper below a `[data-wave-host]` ancestor when its canvas must
- *   escape a contained/painted route layer;
- * - use `surfaceOpacity={0}` for follower/stage motion without a visible paper plane;
- * - tune `intensity` per page when the default wave needs to be calmer or stronger;
- * - enable `syncStage` only when a persistent GalleryScene should share the wave.
- */
 const ScrollPerspectiveWave = forwardRef(({
     as: Root = 'div',
     children,
@@ -369,6 +19,7 @@ const ScrollPerspectiveWave = forwardRef(({
     ...rootProps
 }, forwardedRef) => {
     const rootRef = useRef(null);
+    const [rendererGeneration, setRendererGeneration] = useState(0);
     const setRootRef = useCallback((node) => {
         rootRef.current = node;
         if (typeof forwardedRef === 'function') forwardedRef(node);
@@ -386,6 +37,7 @@ const ScrollPerspectiveWave = forwardRef(({
         if (!supportedViewportQuery.matches || reducedMotionQuery.matches) return undefined;
 
         let disposed = false;
+        let contextLost = false;
         let cleanup = () => {};
 
         const init = async () => {
@@ -598,163 +250,9 @@ const ScrollPerspectiveWave = forwardRef(({
                 }
             };
 
-            const drawAnimationFrame = (animation, frame) => {
-                animation.context.clearRect(0, 0, animation.canvas.width, animation.canvas.height);
-                animation.context.drawImage(
-                    frame,
-                    0,
-                    0,
-                    animation.canvas.width,
-                    animation.canvas.height,
-                );
-            };
-
-            const restoreLiveAnimatedRasterFallback = (resource) => {
-                resource.ready = false;
-                resource.dynamic = false;
-                resource.mesh.visible = false;
-                resource.element.removeAttribute('data-scroll-wave-media-ready');
-                resource.element.removeAttribute('data-scroll-wave-animation-decoder');
-                resource.element.setAttribute('data-scroll-wave-animation-fallback', 'dom');
-                setMediaHostTransparent(resource, false);
-            };
-
-            const initialiseAnimatedRaster = async (resource, source) => {
-                if (resource.animation || resource.animationInitialising) return;
-                resource.animationInitialising = true;
-                if (typeof window.ImageDecoder !== 'function') {
-                    resource.animationInitialising = false;
-                    restoreLiveAnimatedRasterFallback(resource);
-                    return;
-                }
-
-                const type = getAnimatedRasterMimeType(source);
-                let supported = false;
-                try {
-                    supported = await window.ImageDecoder.isTypeSupported(type);
-                } catch {
-                    resource.animationInitialising = false;
-                    if (!disposed) restoreLiveAnimatedRasterFallback(resource);
-                    return;
-                }
-                if (disposed) {
-                    resource.animationInitialising = false;
-                    return;
-                }
-                if (!supported) {
-                    resource.animationInitialising = false;
-                    restoreLiveAnimatedRasterFallback(resource);
-                    return;
-                }
-
-                const animation = {
-                    canvas: document.createElement('canvas'),
-                    context: null,
-                    controller: new AbortController(),
-                    decoder: null,
-                    disposed: false,
-                    ready: false,
-                    decoding: false,
-                    frameDirty: false,
-                    frameIndex: 0,
-                    frameCount: 0,
-                    frameDuration: 100,
-                    nextFrameAt: 0,
-                };
-                resource.animation = animation;
-                resource.animationInitialising = false;
-
-                try {
-                    const response = await fetch(source, {
-                        credentials: 'same-origin',
-                        signal: animation.controller.signal,
-                    });
-                    if (!response.ok) throw new Error(`Animated raster request failed: ${response.status}`);
-
-                    const data = new Uint8Array(await response.arrayBuffer());
-                    if (disposed || animation.disposed || resource.animation !== animation) return;
-
-                    const decoder = new window.ImageDecoder({
-                        data,
-                        type,
-                        preferAnimation: true,
-                    });
-                    animation.decoder = decoder;
-                    await decoder.tracks.ready;
-
-                    const track = decoder.tracks.selectedTrack;
-                    animation.frameCount = Math.max(1, track?.frameCount || 1);
-                    const { image: firstFrame } = await decoder.decode({ frameIndex: 0 });
-                    if (disposed || animation.disposed || resource.animation !== animation) {
-                        firstFrame.close();
-                        return;
-                    }
-
-                    animation.canvas.width = firstFrame.displayWidth || firstFrame.codedWidth;
-                    animation.canvas.height = firstFrame.displayHeight || firstFrame.codedHeight;
-                    animation.context = animation.canvas.getContext('2d', { alpha: true });
-                    if (!animation.context || !animation.canvas.width || !animation.canvas.height) {
-                        firstFrame.close();
-                        throw new Error('Animated raster canvas unavailable.');
-                    }
-
-                    drawAnimationFrame(animation, firstFrame);
-                    animation.frameDuration = getAnimationFrameDuration(firstFrame.duration);
-                    firstFrame.close();
-                    animation.ready = true;
-                    resource.element.removeAttribute('data-scroll-wave-animation-fallback');
-                    resource.element.setAttribute('data-scroll-wave-animation-decoder', 'image-decoder');
-                    setMediaTexture(
-                        resource,
-                        animation.canvas,
-                        animation.canvas.width,
-                        animation.canvas.height,
-                        animation.frameCount > 1,
-                    );
-                } catch {
-                    if (resource.animation === animation) resource.animation = null;
-                    animation.disposed = true;
-                    animation.decoder?.close();
-                    if (!disposed) restoreLiveAnimatedRasterFallback(resource);
-                }
-            };
-
-            const advanceAnimatedRaster = (resource, time) => {
-                const animation = resource.animation;
-                if (!animation?.ready || animation.decoding || animation.frameCount <= 1) return;
-
-                if (!animation.nextFrameAt) {
-                    animation.nextFrameAt = time + animation.frameDuration;
-                    return;
-                }
-                if (time < animation.nextFrameAt) return;
-
-                animation.decoding = true;
-                const nextFrameIndex = (animation.frameIndex + 1) % animation.frameCount;
-                animation.decoder.decode({ frameIndex: nextFrameIndex })
-                    .then(({ image: frame }) => {
-                        if (disposed || animation.disposed || resource.animation !== animation) {
-                            frame.close();
-                            return;
-                        }
-
-                        drawAnimationFrame(animation, frame);
-                        animation.frameIndex = nextFrameIndex;
-                        animation.frameDuration = getAnimationFrameDuration(frame.duration);
-                        animation.nextFrameAt = performance.now() + animation.frameDuration;
-                        animation.frameDirty = true;
-                        frame.close();
-                    })
-                    .catch(() => {
-                        if (!animation.disposed) {
-                            animation.nextFrameAt = performance.now() + animation.frameDuration;
-                        }
-                    })
-                    .finally(() => {
-                        if (!animation.disposed) animation.decoding = false;
-                    });
-            };
-
+            const { initialiseAnimatedRaster, advanceAnimatedRaster } = createAnimatedRasterAdapter({
+                setMediaTexture, setMediaHostTransparent, isDisposed: () => disposed,
+            });
             const loadMediaImage = (resource, source, dynamic = false) => {
                 if (!source) return;
 
@@ -872,7 +370,7 @@ const ScrollPerspectiveWave = forwardRef(({
                 if (routePhase === 'preparing' || routePhase === 'hidden') return false;
                 return !root.closest('[hidden], [aria-hidden="true"]');
             };
-            const canRender = () => !disposed && !document.hidden && isEligible() && isRouteVisible();
+            const canRender = () => !disposed && !contextLost && !document.hidden && isEligible() && isRouteVisible();
 
             const restoreFollowerStyles = () => {
                 followers.forEach((element) => {
@@ -1104,8 +602,13 @@ const ScrollPerspectiveWave = forwardRef(({
 
             const onContextLost = (event) => {
                 event.preventDefault();
+                contextLost = true;
+                syncLoop();
                 hasRendered = false;
                 setSurfaceVisible(false);
+            };
+            const onContextRestored = () => {
+                setRendererGeneration((generation) => generation + 1);
             };
             const phaseObserver = phaseHost ? new MutationObserver(syncRouteState) : null;
             const resizeObserver = new ResizeObserver(resize);
@@ -1128,6 +631,7 @@ const ScrollPerspectiveWave = forwardRef(({
             window.addEventListener('resize', resize);
             document.addEventListener('visibilitychange', syncLoop);
             gl.canvas.addEventListener('webglcontextlost', onContextLost);
+            gl.canvas.addEventListener('webglcontextrestored', onContextRestored);
             supportedViewportQuery.addEventListener?.('change', syncLoop);
             reducedMotionQuery.addEventListener?.('change', syncLoop);
 
@@ -1145,6 +649,7 @@ const ScrollPerspectiveWave = forwardRef(({
                 window.removeEventListener('resize', resize);
                 document.removeEventListener('visibilitychange', syncLoop);
                 gl.canvas.removeEventListener('webglcontextlost', onContextLost);
+                gl.canvas.removeEventListener('webglcontextrestored', onContextRestored);
                 supportedViewportQuery.removeEventListener?.('change', syncLoop);
                 reducedMotionQuery.removeEventListener?.('change', syncLoop);
                 setSurfaceVisible(false);
@@ -1188,7 +693,7 @@ const ScrollPerspectiveWave = forwardRef(({
             disposed = true;
             cleanup();
         };
-    }, [intensity, surfaceColor, surfaceOpacity, syncStage]);
+    }, [intensity, surfaceColor, surfaceOpacity, syncStage, rendererGeneration]);
 
     return createElement(Root, {
         ...rootProps,

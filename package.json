@@ -20,7 +20,9 @@
     "capture:modularization": "node scripts/modularization-capture.mjs",
     "capture:modularization-global": "node scripts/modularization-global-capture.mjs",
     "compare:modularization": "node scripts/modularization-compare.mjs",
-    "smoke:modularization-media": "node scripts/modularization-media-smoke.mjs"
+    "smoke:modularization-media": "node scripts/modularization-media-smoke.mjs",
+    "smoke:modularization-runtime": "node scripts/modularization-runtime-lifecycle.mjs",
+    "smoke:modularization-context": "node scripts/modularization-context-recovery.mjs"
   },
   "dependencies": {
     "@iconify/react": "^6.0.2",

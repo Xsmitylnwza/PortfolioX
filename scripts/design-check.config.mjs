@@ -251,6 +251,15 @@ const GLOBAL_STYLE_SOURCES = [
   /^src\/styles\/tokens[.]css$/,
   /^src\/styles\/(?:room-stage|site-utilities|room-stage-overrides)[.]css$/,
   /^src\/main[.]jsx$/,
+  /^src\/AppPageRoutes[.]jsx$/,
+];
+// The gallery stage stays mounted behind every non-persona room. The scroll
+// wave belongs to Experience and the Project Details routes only.
+const GALLERY_RUNTIME_SOURCES = [
+  /^src\/components\/GalleryScene(?:Shaders|Geometry|PosterTexture)?[.](?:js|jsx)$/,
+];
+const WAVE_RUNTIME_SOURCES = [
+  /^src\/components\/ScrollPerspectiveWave(?:Capture|Shaders|AnimatedRaster)?[.](?:js|jsx)$/,
 ];
 
 export const RENDER_TARGETS = [
@@ -261,6 +270,8 @@ export const RENDER_TARGETS = [
     sources: [
       ...GLOBAL_STYLE_SOURCES,
       ...PROJECT_DATA_SOURCES,
+      ...GALLERY_RUNTIME_SOURCES,
+      ...WAVE_RUNTIME_SOURCES,
       /^src\/components\/ProjectDetailsKeshiStoryOverrides[.]css$/,
       /^src\/components\/ProjectDetailsStorySharedOverrides[.]css$/,
       /^src\/components\/ProjectDetailsKeshiStory[.]css$/,
@@ -282,6 +293,8 @@ export const RENDER_TARGETS = [
     sources: [
       ...GLOBAL_STYLE_SOURCES,
       ...PROJECT_DATA_SOURCES,
+      ...GALLERY_RUNTIME_SOURCES,
+      ...WAVE_RUNTIME_SOURCES,
       /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format|Layouts|Lightbox|Process)?[.](css|jsx?)$/,
       /^src\/components\/ProjectDetailsKeshiNext[.]css$/,
       /^src\/components\/ProjectCoverMedia[.]css$/,
@@ -296,6 +309,8 @@ export const RENDER_TARGETS = [
     sources: [
       ...GLOBAL_STYLE_SOURCES,
       ...PROJECT_DATA_SOURCES,
+      ...GALLERY_RUNTIME_SOURCES,
+      ...WAVE_RUNTIME_SOURCES,
       /^src\/components\/ProjectDetailsZuchStory[.]css$/,
       /^src\/components\/ProjectDetailsZuch[.]css$/,
       /^src\/styles\/tokens[.]css$/,
@@ -312,6 +327,8 @@ export const RENDER_TARGETS = [
     sources: [
       ...GLOBAL_STYLE_SOURCES,
       ...PROJECT_DATA_SOURCES,
+      ...GALLERY_RUNTIME_SOURCES,
+      ...WAVE_RUNTIME_SOURCES,
       /^src\/components\/ProjectDetailsStorySharedOverrides[.]css$/,
       /^src\/styles\/tokens[.]css$/,
       /^src\/index[.]css$/,
@@ -327,6 +344,8 @@ export const RENDER_TARGETS = [
     sources: [
       ...GLOBAL_STYLE_SOURCES,
       ...PROJECT_DATA_SOURCES,
+      ...GALLERY_RUNTIME_SOURCES,
+      ...WAVE_RUNTIME_SOURCES,
       /^src\/components\/ProjectDetailsStorySharedOverrides[.]css$/,
       /^src\/components\/ProjectDetailsStories[.]css$/,
       /^src\/styles\/tokens[.]css$/,
@@ -342,6 +361,8 @@ export const RENDER_TARGETS = [
     sources: [
       ...GLOBAL_STYLE_SOURCES,
       ...PROJECT_DATA_SOURCES,
+      ...GALLERY_RUNTIME_SOURCES,
+      ...WAVE_RUNTIME_SOURCES,
       /^src\/components\/ProjectDetailsDecryptStoryOverrides[.]css$/,
       /^src\/components\/ProjectDetailsStorySharedOverrides[.]css$/,
       /^src\/components\/ProjectDetailsDecryptStory[.]css$/,
@@ -357,6 +378,8 @@ export const RENDER_TARGETS = [
     sources: [
       ...GLOBAL_STYLE_SOURCES,
       ...PROJECT_DATA_SOURCES,
+      ...GALLERY_RUNTIME_SOURCES,
+      ...WAVE_RUNTIME_SOURCES,
       /^src\/components\/ProjectDetailsMux[.]css$/,
       /^src\/components\/ProjectDetailsMux[.]jsx$/,
       /^src\/styles\/tokens[.]css$/,
@@ -372,6 +395,8 @@ export const RENDER_TARGETS = [
     sources: [
       ...GLOBAL_STYLE_SOURCES,
       ...PROJECT_DATA_SOURCES,
+      ...GALLERY_RUNTIME_SOURCES,
+      ...WAVE_RUNTIME_SOURCES,
       /^src\/styles\/tokens[.]css$/,
       /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format|Layouts|Lightbox|Process)?[.](css|jsx?)$/,
       /^src\/components\/ProjectDetailsHermes[.](css|jsx)$/,
@@ -400,6 +425,7 @@ export const RENDER_TARGETS = [
     sources: [
       ...GLOBAL_STYLE_SOURCES,
       ...PROJECT_DATA_SOURCES,
+      ...GALLERY_RUNTIME_SOURCES,
       /^src\/components\/PersonaReloadView[.](css|jsx)$/,
       /^src\/styles\/tokens[.]css$/,
       /^src\/index[.]css$/,
@@ -411,6 +437,8 @@ export const RENDER_TARGETS = [
     note: 'experience room over the shared stage',
     sources: [
       ...GLOBAL_STYLE_SOURCES,
+      ...GALLERY_RUNTIME_SOURCES,
+      ...WAVE_RUNTIME_SOURCES,
       /^src\/components\/Experience[.](css|jsx)$/,
       /^src\/components\/ScrollPerspectiveWave[.](css|jsx)$/,
     ],
@@ -421,6 +449,7 @@ export const RENDER_TARGETS = [
     note: 'stack document room and shared engine styles',
     sources: [
       ...GLOBAL_STYLE_SOURCES,
+      ...GALLERY_RUNTIME_SOURCES,
       /^src\/components\/TechStack[.](css|jsx)$/,
     ],
   },
@@ -430,6 +459,7 @@ export const RENDER_TARGETS = [
     note: 'contact document room consumes shared engine styles',
     sources: [
       ...GLOBAL_STYLE_SOURCES,
+      ...GALLERY_RUNTIME_SOURCES,
       /^src\/components\/Contact[.](css|jsx)$/,
       /^src\/components\/TechStack[.]css$/,
     ],

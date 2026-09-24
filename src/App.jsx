@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, Suspense, lazy } from 'react';
-import { Routes, Route, Navigate, Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { projects, galleryMediaRevision } from './data/projects';
 import Navigation from './components/Navigation';
 import GalleryScene from './components/GalleryScene';
@@ -8,14 +8,10 @@ import Cursor from './components/Cursor';
 import Loader from './components/Loader';
 import PosterSelectTransition, { FAILSAFE_MS as POSTER_FAILSAFE_MS } from './components/PosterSelectTransition';
 import './components/Hero.css';
+import AppPageRoutes from './AppPageRoutes.jsx';
 
 // Lazy Experience keeps the home shell free of Experience module parse/eval until needed.
 const Experience = lazy(() => import('./components/Experience'));
-// Lazy load ProjectDetails to reduce initial bundle size
-const ProjectDetails = lazy(() => import('./components/ProjectDetails'));
-const PersonaReloadView = lazy(() => import('./components/PersonaReloadView'));
-const StackPage = lazy(() => import('./components/StackPage'));
-const ContactPage = lazy(() => import('./components/ContactPage'));
 
 const STAGE_PATHS = new Set(['/', '/experience']);
 const DOCUMENT_PATHS = new Set(['/stack', '/tech', '/contact', '/resume', '/cv']);
@@ -559,45 +555,7 @@ function App() {
           aria-hidden={!showPageRoutes || pageShellPhase === 'preparing'}
           hidden={!showPageRoutes}
         >
-          <Routes>
-            <Route path="/" element={null} />
-            <Route path="/experience" element={null} />
-            <Route
-              path="/persona"
-              element={
-                <Suspense fallback={<div className="loading-fallback loading-fallback--persona" />}>
-                  <PersonaReloadView />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/project/:id"
-              element={
-                <Suspense fallback={<div className="loading-fallback" />}>
-                  <ProjectDetails />
-                </Suspense>
-              }
-            />
-            <Route
-              path="/stack"
-              element={
-                <Suspense fallback={<div className="loading-fallback" />}>
-                  <StackPage />
-                </Suspense>
-              }
-            />
-            <Route path="/tech" element={<Navigate to="/stack" replace />} />
-            <Route
-              path="/contact"
-              element={
-                <Suspense fallback={<div className="loading-fallback" />}>
-                  <ContactPage />
-                </Suspense>
-              }
-            />
-            <Route path="/resume" element={<Navigate to="/contact" replace />} />
-            <Route path="/cv" element={<Navigate to="/contact" replace />} />
-          </Routes>
+          <AppPageRoutes />
         </div>
       </main>
 

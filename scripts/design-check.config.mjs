@@ -190,6 +190,9 @@ export const STRICT_SCOPES = [
     migratedAt: 'plan step 3',
     files: [
       'src/components/ProjectDetails.css',
+      'src/components/ProjectDetailsLayouts.css',
+      'src/components/ProjectDetailsLightbox.css',
+      'src/components/ProjectDetailsProcess.css',
       'src/components/ProjectDetailsMux.css',
       'src/components/ProjectDetailsZuch.css',
       'src/components/ProjectCoverMedia.css',
@@ -243,6 +246,12 @@ export function strictScopeFor({ file, family, selector }) {
  */
 // Every project record affects detail numbering and the gallery/loader order.
 const PROJECT_DATA_SOURCES = [/^src\/data\/projects(?:\/[a-z0-9-]+)?[.]js$/];
+const GLOBAL_STYLE_SOURCES = [
+  /^src\/index[.]css$/,
+  /^src\/styles\/tokens[.]css$/,
+  /^src\/styles\/(?:room-stage|site-utilities|room-stage-overrides)[.]css$/,
+  /^src\/main[.]jsx$/,
+];
 
 export const RENDER_TARGETS = [
   {
@@ -250,13 +259,14 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900', 'mobile 390x844'],
     note: 'Keshi matte surface pilot; legacy optical layout remains in the route stylesheet',
     sources: [
+      ...GLOBAL_STYLE_SOURCES,
       ...PROJECT_DATA_SOURCES,
       /^src\/components\/ProjectDetailsKeshiStoryOverrides[.]css$/,
       /^src\/components\/ProjectDetailsStorySharedOverrides[.]css$/,
       /^src\/components\/ProjectDetailsKeshiStory[.]css$/,
       /^src\/styles\/tokens[.]css$/,
       /^src\/index[.]css$/,
-      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format)?[.](css|jsx?)$/,
+      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format|Layouts|Lightbox|Process)?[.](css|jsx?)$/,
       /^src\/components\/ProjectDetailsStories[.]css$/,
       /^src\/components\/KeshiLiquidGlass[.](css|jsx)$/,
       /^src\/components\/CaseMatteSurface[.](css|jsx)$/,
@@ -270,8 +280,9 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900', 'mobile 390x844'],
     note: 'Keshi next-layout preview is a distinct render state of the project route',
     sources: [
+      ...GLOBAL_STYLE_SOURCES,
       ...PROJECT_DATA_SOURCES,
-      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format)?[.](css|jsx?)$/,
+      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format|Layouts|Lightbox|Process)?[.](css|jsx?)$/,
       /^src\/components\/ProjectDetailsKeshiNext[.]css$/,
       /^src\/components\/ProjectCoverMedia[.]css$/,
       /^src\/styles\/tokens[.]css$/,
@@ -283,12 +294,13 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900', 'mobile 390x844'],
     note: 'non-pilot consumer of the same media primitives',
     sources: [
+      ...GLOBAL_STYLE_SOURCES,
       ...PROJECT_DATA_SOURCES,
       /^src\/components\/ProjectDetailsZuchStory[.]css$/,
       /^src\/components\/ProjectDetailsZuch[.]css$/,
       /^src\/styles\/tokens[.]css$/,
       /^src\/index[.]css$/,
-      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format)?[.](css|jsx?)$/,
+      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format|Layouts|Lightbox|Process)?[.](css|jsx?)$/,
       /^src\/components\/ProjectDetailsStories[.]css$/,
       /^src\/components\/ProjectCoverMedia[.]css$/,
     ],
@@ -298,11 +310,12 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900', 'mobile 390x844'],
     note: 'Liquid Glass was piloted on the hero caption here and reverted after losing a live comparison (DESIGN-DISCOVERY Round 16); back on its own flat-blur treatment',
     sources: [
+      ...GLOBAL_STYLE_SOURCES,
       ...PROJECT_DATA_SOURCES,
       /^src\/components\/ProjectDetailsStorySharedOverrides[.]css$/,
       /^src\/styles\/tokens[.]css$/,
       /^src\/index[.]css$/,
-      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format)?[.](css|jsx?)$/,
+      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format|Layouts|Lightbox|Process)?[.](css|jsx?)$/,
       /^src\/components\/ProjectDetailsFreeflow[.]css$/,
       /^src\/components\/ProjectDetailsStories[.]css$/,
     ],
@@ -312,11 +325,12 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900', 'mobile 390x844'],
     note: 'project-detail monochrome chrome and story layout',
     sources: [
+      ...GLOBAL_STYLE_SOURCES,
       ...PROJECT_DATA_SOURCES,
       /^src\/components\/ProjectDetailsStorySharedOverrides[.]css$/,
       /^src\/components\/ProjectDetailsStories[.]css$/,
       /^src\/styles\/tokens[.]css$/,
-      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format)?[.](css|jsx?)$/,
+      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format|Layouts|Lightbox|Process)?[.](css|jsx?)$/,
       /^src\/components\/ProjectDetailsModeNote(?:Story)?[.]css$/,
       /^src\/components\/ProjectCoverMedia[.]css$/,
     ],
@@ -326,12 +340,13 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900', 'mobile 390x844'],
     note: 'project-detail monochrome state colors',
     sources: [
+      ...GLOBAL_STYLE_SOURCES,
       ...PROJECT_DATA_SOURCES,
       /^src\/components\/ProjectDetailsDecryptStoryOverrides[.]css$/,
       /^src\/components\/ProjectDetailsStorySharedOverrides[.]css$/,
       /^src\/components\/ProjectDetailsDecryptStory[.]css$/,
       /^src\/styles\/tokens[.]css$/,
-      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format)?[.](css|jsx?)$/,
+      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format|Layouts|Lightbox|Process)?[.](css|jsx?)$/,
       /^src\/components\/ProjectDetailsStories[.]css$/,
     ],
   },
@@ -340,11 +355,12 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900', 'mobile 390x844'],
     note: 'project-detail shared chrome and project composition',
     sources: [
+      ...GLOBAL_STYLE_SOURCES,
       ...PROJECT_DATA_SOURCES,
       /^src\/components\/ProjectDetailsMux[.]css$/,
       /^src\/components\/ProjectDetailsMux[.]jsx$/,
       /^src\/styles\/tokens[.]css$/,
-      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format)?[.](css|jsx?)$/,
+      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format|Layouts|Lightbox|Process)?[.](css|jsx?)$/,
       /^src\/components\/ProjectDetailsStories[.]css$/,
       /^src\/components\/ProjectCoverMedia[.]css$/,
     ],
@@ -354,9 +370,10 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900', 'mobile 390x844'],
     note: 'project-detail shared chrome; private media gate remains in force',
     sources: [
+      ...GLOBAL_STYLE_SOURCES,
       ...PROJECT_DATA_SOURCES,
       /^src\/styles\/tokens[.]css$/,
-      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format)?[.](css|jsx?)$/,
+      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format|Layouts|Lightbox|Process)?[.](css|jsx?)$/,
       /^src\/components\/ProjectDetailsHermes[.](css|jsx)$/,
     ],
   },
@@ -365,6 +382,7 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900'],
     note: 'WebGL poster gallery',
     sources: [
+      ...GLOBAL_STYLE_SOURCES,
       ...PROJECT_DATA_SOURCES,
       /^src\/styles\/tokens[.]css$/,
       /^src\/index[.]css$/,
@@ -380,10 +398,40 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900', 'mobile 390x844'],
     note: 'persona preview reads the ordered project records',
     sources: [
+      ...GLOBAL_STYLE_SOURCES,
       ...PROJECT_DATA_SOURCES,
       /^src\/components\/PersonaReloadView[.](css|jsx)$/,
       /^src\/styles\/tokens[.]css$/,
       /^src\/index[.]css$/,
+    ],
+  },
+  {
+    path: '/experience',
+    viewports: ['desktop 1440x900', 'mobile 390x844'],
+    note: 'experience room over the shared stage',
+    sources: [
+      ...GLOBAL_STYLE_SOURCES,
+      /^src\/components\/Experience[.](css|jsx)$/,
+      /^src\/components\/ScrollPerspectiveWave[.](css|jsx)$/,
+    ],
+  },
+  {
+    path: '/stack',
+    viewports: ['desktop 1440x900', 'mobile 390x844'],
+    note: 'stack document room and shared engine styles',
+    sources: [
+      ...GLOBAL_STYLE_SOURCES,
+      /^src\/components\/TechStack[.](css|jsx)$/,
+    ],
+  },
+  {
+    path: '/contact',
+    viewports: ['desktop 1440x900', 'mobile 390x844'],
+    note: 'contact document room consumes shared engine styles',
+    sources: [
+      ...GLOBAL_STYLE_SOURCES,
+      /^src\/components\/Contact[.](css|jsx)$/,
+      /^src\/components\/TechStack[.]css$/,
     ],
   },
 ];

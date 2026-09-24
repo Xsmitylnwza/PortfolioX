@@ -166,6 +166,39 @@ test('registered CSS split keeps only the original debt allowance', () => {
     'the move cannot duplicate an old violation');
 });
 
+test('shared Project Details CSS moves retain debt identity and strict media scope', () => {
+  const original = fingerprintOf({
+    rule: 'design/token-usage', path: 'src/components/ProjectDetails.css',
+    selector: '.case-media__frame--demo-lead', declaration: 'border-radius: 1rem;',
+  });
+  for (const name of ['Layouts', 'Lightbox', 'Process']) {
+    const path = `src/components/ProjectDetails${name}.css`;
+    const moved = fingerprintOf({
+      rule: 'design/token-usage', path,
+      selector: '.case-media__frame--demo-lead', declaration: 'border-radius: 1rem;',
+    });
+    assert.equal(moved, original, `${name} retains the original fingerprint`);
+    assert.ok(strictScopeFor({ file: path, family: 'shape', selector: '.case-media__frame--demo-lead' }),
+      `${name} keeps migrated media chrome strict`);
+  }
+});
+
+test('global CSS split retains only the index.css debt identity', () => {
+  const original = fingerprintOf({
+    rule: 'design/token-usage', path: 'src/index.css',
+    selector: '.glass-panel', declaration: 'border-radius: 1rem;',
+  });
+  for (const name of ['room-stage', 'site-utilities', 'room-stage-overrides']) {
+    const moved = fingerprintOf({
+      rule: 'design/token-usage', path: `src/styles/${name}.css`,
+      selector: '.glass-panel', declaration: 'border-radius: 1rem;',
+    });
+    assert.equal(moved, original, `${name} retains the original fingerprint`);
+    assert.equal(newViolations({ [original]: 1 }, new Map([[moved, 2]])).length, 1,
+      `${name} cannot duplicate recorded debt`);
+  }
+});
+
 test('baseline fingerprint: same declaration under a different selector is distinct', () => {
   const a = fingerprintOf({
     rule: 'design/token-usage', path: 'src/a.css', selector: '.x', declaration: 'color: #fff;',

@@ -101,6 +101,8 @@ Inline padding ของ kind chip **ไม่ถูกรวม** (`0.48rem` �
 
 Canonical source: [`src/styles/tokens.css`](src/styles/tokens.css) — import ครั้งเดียวจาก `src/index.css`
 
+Global CSS ownership และลำดับ imports ใน `src/main.jsx`: [`GLOBAL-CSS-OWNERSHIP.md`](docs/design/GLOBAL-CSS-OWNERSHIP.md). `index.css` ถือ font/tokens/reset; stage, utilities และ late overrides อยู่คนละไฟล์โดยรักษาลำดับเดิม
+
 โครงสร้าง **primitive → semantic role → scoped project theme**
 
 | Layer | ตัวอย่าง | ใครแก้ |
@@ -122,7 +124,8 @@ override `--color-chip-surface` ที่เดียวกัน → เปล�
 ### สิ่งที่ migrate แล้ว (strict scope — ไม่มีสิทธิ์ใช้ baseline)
 
 `.case-media__frame` / `.case-media__label` / `.case-media__kind*` ใน
-`ProjectDetails.css` และ `ProjectCoverMedia.css` — ค่าดิบใน selector เหล่านี้เป็น error เสมอ
+`ProjectDetails.css`, `ProjectDetailsLayouts.css`, `ProjectDetailsLightbox.css`,
+`ProjectDetailsProcess.css` และ `ProjectCoverMedia.css` — ค่าดิบใน selector เหล่านี้เป็น error เสมอ
 
 ### ยังไม่ migrate
 

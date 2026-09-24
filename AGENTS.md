@@ -10,6 +10,7 @@ it end to end for every task — go to the section the task touches:
 | Task | Section |
 | --- | --- |
 | Changing colour, spacing, type or radius | §3 Implementation levers, then [`src/styles/tokens.css`](src/styles/tokens.css) |
+| Editing the global stage, route shell, utilities or reset | [`docs/design/GLOBAL-CSS-OWNERSHIP.md`](docs/design/GLOBAL-CSS-OWNERSHIP.md); keep `src/main.jsx` import order |
 | Changing Project Details colour or borders | §2.1 A25/A27 and §3 Project Details palette: grayscale chrome only; red stage and original-colour product media are the exceptions |
 | Touching Keshi captions | §2.1 A26: `CaseMatteSurface` is selected; optical Liquid Glass is historical and must not be reintroduced |
 | Editing one project-detail stylesheet | [`docs/design/PROJECT-DETAILS-CSS-OWNERSHIP.md`](docs/design/PROJECT-DETAILS-CSS-OWNERSHIP.md); keep project selectors in that project's file and shared behavior in the common files |

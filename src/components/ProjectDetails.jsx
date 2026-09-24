@@ -14,6 +14,9 @@ import MuxLayout from './ProjectDetailsMux.jsx';
 import CaseMatteSurface from './CaseMatteSurface';
 import './DocumentRoom.css';
 import './ProjectDetails.css';
+import './ProjectDetailsLayouts.css';
+import './ProjectDetailsLightbox.css';
+import './ProjectDetailsProcess.css';
 import './ProjectDetailsMux.css';
 import './ProjectDetailsZuch.css';
 // Preserve the cascade: shared base → project bases → shared responsive rules

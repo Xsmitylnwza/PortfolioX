@@ -56,6 +56,10 @@ try {
         await frame.click();
         const dialog = page.locator('.case-lightbox[role="dialog"]');
         await dialog.waitFor({ state: 'visible', timeout: 10000 });
+        // The dialog can enter layout before its scheduled focus RAF has run.
+        await page.waitForFunction(() =>
+          document.querySelector('.case-lightbox')?.contains(document.activeElement),
+        null, { timeout: 1500 });
         const media = dialog.locator('.case-lightbox__media');
         const tag = await media.evaluate((element) => element.tagName.toLowerCase());
         const source = await media.getAttribute('src');

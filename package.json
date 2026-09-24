@@ -18,6 +18,7 @@
     "test:modularization": "node --test scripts/modularization-compare.test.mjs",
     "test:project-data": "node --test scripts/project-data-contract.test.mjs",
     "capture:modularization": "node scripts/modularization-capture.mjs",
+    "capture:modularization-global": "node scripts/modularization-global-capture.mjs",
     "compare:modularization": "node scripts/modularization-compare.mjs",
     "smoke:modularization-media": "node scripts/modularization-media-smoke.mjs"
   },

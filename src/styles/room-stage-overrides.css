@@ -1,0 +1,49 @@
+
+
+/* Persistent stage identity: keep the red stage + WebGL grid mounted on every room.
+   Sculpture soft-dims only inside GalleryScene when html.stage-dimmed is set.
+   Never fade .gallery-stage-layer — the black cylinder grid must stay full strength. */
+html.stage-room-active .gallery-stage,
+html.stage-room-active .gallery-stage-layer,
+html.document-room-active .gallery-stage,
+html.document-room-active .gallery-stage-layer,
+html.room-content-exiting .gallery-stage,
+html.room-content-exiting .gallery-stage-layer,
+html.room-is-exiting .gallery-stage,
+html.room-is-exiting .gallery-stage-layer,
+html.room-is-entering .gallery-stage,
+html.room-is-entering .gallery-stage-layer {
+  visibility: visible !important;
+}
+
+html.stage-room-active .gallery-stage-layer,
+html.home-room-active .gallery-stage-layer,
+html.document-room-active .gallery-stage-layer {
+  opacity: 1;
+}
+
+html.stage-dimmed .gallery-stage__glow {
+  opacity: 0.72;
+}
+
+/* Stage stays under document glass; no page paint. */
+html.document-room-active .route-shell--page,
+html.document-room-active .route-shell--page .document-room {
+  background: transparent !important;
+}
+
+html.document-room-active .gallery-stage-layer {
+  pointer-events: none;
+  /* contain:paint/style flattens the WebGL stage into an isolated paint group.
+     Gallery toast can blur because it lives INSIDE this layer. Document-room
+     liquid glass lives outside (route-shell), so paint containment left the
+     cylinder grid razor-sharp through backdrop-filter. Drop paint/style
+     containment on document rooms only. */
+  contain: none;
+}
+
+/* Same root: app-shell overflow:clip can act as a backdrop boundary for some
+   compositors. Keep clip on gallery home; open it for document glass pages. */
+html.document-room-active .app-shell {
+  overflow: visible;
+}

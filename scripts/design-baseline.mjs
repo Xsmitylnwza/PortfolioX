@@ -50,6 +50,12 @@ export const normalize = (text) => text.replace(/\s+/g, ' ').trim();
 // paths only: selector, declaration and occurrence count must still match the
 // immutable snapshot, so a new violation cannot be forgiven by a move.
 export const MOVED_CSS_DEBT_PATHS = new Map([
+  ['src/styles/room-stage.css', 'src/index.css'],
+  ['src/styles/site-utilities.css', 'src/index.css'],
+  ['src/styles/room-stage-overrides.css', 'src/index.css'],
+  ['src/components/ProjectDetailsLayouts.css', 'src/components/ProjectDetails.css'],
+  ['src/components/ProjectDetailsLightbox.css', 'src/components/ProjectDetails.css'],
+  ['src/components/ProjectDetailsProcess.css', 'src/components/ProjectDetails.css'],
   ['src/components/ProjectDetailsMux.css', 'src/components/ProjectDetails.css'],
   ['src/components/ProjectDetailsZuch.css', 'src/components/ProjectDetails.css'],
   ['src/components/ProjectDetailsKeshiStory.css', 'src/components/ProjectDetailsStories.css'],

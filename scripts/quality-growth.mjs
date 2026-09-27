@@ -35,7 +35,7 @@ export function ownerCap(file) {
 /** @param {string} file @param {string} functionText @param {number} lines @param {number} occurrence */
 export function functionBudgetFailure(file, functionText, lines, occurrence = 1) {
   if (lines <= baseline.maxNewFunctionLines) return null;
-  const hash = createHash('sha256').update(functionText).digest('hex');
+  const hash = createHash('sha256').update(functionText.replace(/\r\n?/g, '\n')).digest('hex');
   const allowed = functionAllowances.get(`${file}:${hash}`);
   if (allowed && lines <= allowed.lines && occurrence <= allowed.count) return null;
   return `${file}: ${lines} line function exceeds ${baseline.maxNewFunctionLines}; split it or register a reviewed exception`;
@@ -78,7 +78,7 @@ for (const file of maintainedSources(ROOT).filter((path) => ADMISSIBLE.test(path
         const from = tree.getLineAndCharacterOfPosition(node.getStart(tree)).line;
         const to = tree.getLineAndCharacterOfPosition(node.getEnd()).line;
         const functionText = node.getText(tree);
-        const hash = createHash('sha256').update(functionText).digest('hex');
+        const hash = createHash('sha256').update(functionText.replace(/\r\n?/g, '\n')).digest('hex');
         const occurrence = (occurrences.get(hash) ?? 0) + 1;
         occurrences.set(hash, occurrence);
         if (to - from + 1 > baseline.maxNewFunctionLines) {

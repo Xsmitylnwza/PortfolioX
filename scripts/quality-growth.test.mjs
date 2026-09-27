@@ -28,6 +28,7 @@ test('only the exact existing legacy function and occurrence are allowed', () =>
   const lines = tree.getLineAndCharacterOfPosition(legacy.getEnd()).line
     - tree.getLineAndCharacterOfPosition(legacy.getStart(tree)).line + 1;
   assert.equal(functionBudgetFailure(path, legacy.getText(tree), lines), null);
+  assert.equal(functionBudgetFailure(path, legacy.getText(tree).replace(/\r\n?/g, '\n'), lines), null);
   const duplicate = functionBudgetFailure(path, legacy.getText(tree), lines, 2);
   const changed = functionBudgetFailure(path, legacy.getText(tree) + '\n// changed', lines);
   assert.ok(duplicate);

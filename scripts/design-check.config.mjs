@@ -1,3 +1,4 @@
+// @ts-check
 // Design harness configuration: governed properties, token families, the token
 // registry sources and the exceptions that have a stated reason.
 //
@@ -152,6 +153,7 @@ export const EXCEPTIONS = [
  * detection still uses the property's primary family, so a raw hex in a
  * box-shadow is still an error.
  */
+/** @type {Record<string, string[]>} */
 export const COMPOSITE_PROPERTY_FAMILIES = {
   'box-shadow': ['color', 'shape', 'spacing'],
   'text-shadow': ['color', 'shape', 'spacing'],
@@ -169,6 +171,7 @@ export const COMPOSITE_PROPERTY_FAMILIES = {
 };
 
 /** Token families a property will accept. Defaults to its own family. */
+/** @param {string} property @param {string} family */
 export function acceptedFamilies(property, family) {
   return COMPOSITE_PROPERTY_FAMILIES[property] ?? [family];
 }
@@ -218,6 +221,7 @@ export const STRICT_SCOPES = [
  * Pseudo-class arguments are stripped before splitting so `:has()`, `:is()`,
  * `:where()` and `:not()` contents cannot be mistaken for the subject.
  */
+/** @param {string} selector */
 export function selectorSubjects(selector) {
   return (selector ?? '')
     .split(',')
@@ -227,6 +231,7 @@ export function selectorSubjects(selector) {
 }
 
 /** Is this violation inside a strict migrated scope? */
+/** @param {{file: string; family: string; selector: string}} violation */
 export function strictScopeFor({ file, family, selector }) {
   const subjects = selectorSubjects(selector);
   return STRICT_SCOPES.find((scope) => {
@@ -237,52 +242,66 @@ export function strictScopeFor({ file, family, selector }) {
 }
 
 /**
- * Explicit consumer mapping: which routes a source file is known to affect.
- *
- * Deliberately hand-maintained. A dependency graph is out of scope for v1, and
- * a wrong graph is worse than a short list — a file with no mapping is reported
- * as needs-scope and fails, rather than passing on the assumption that nothing
- * consumes it.
+ * Explicit route consumers. Full quality checks both directions against the
+ * static closure of the route's selected entry in the same Vite build graph.
+ * CSS may be declared for fewer routes than its shared chunk reaches because
+ * selectors can be intentionally limited to one project.
  */
-// Every project record affects detail numbering and the gallery/loader order.
-const PROJECT_DATA_SOURCES = [/^src\/data\/projects(?:\/[a-z0-9-]+)?[.]js$/];
-const GLOBAL_STYLE_SOURCES = [
+const PROJECT_DATA_SOURCES = [/^src\/data\/projects(?:\/[a-z0-9-]+)?[.](?:js|ts)$/];
+const GALLERY_RUNTIME_SOURCES = [
+  /^src\/components\/GalleryScene(?:Shaders|Geometry|PosterTexture)?[.](?:js|jsx|ts|tsx)$/,
+];
+const WAVE_RUNTIME_SOURCES = [
+  /^src\/components\/ScrollPerspectiveWave(?:Capture|Shaders|AnimatedRaster)?[.](?:js|jsx|ts|tsx)$/,
+];
+const GLOBAL_SOURCES = [
+  ...PROJECT_DATA_SOURCES,
+  ...GALLERY_RUNTIME_SOURCES,
+  /^src\/App[.](?:jsx|tsx)$/,
+  /^src\/components\/(?:Navigation|Cursor|Loader|PosterSelectTransition)[.](?:jsx|tsx)$/,
+  /^src\/features\/project-details\/(?:ProjectRoute|projectRenderers)[.](?:js|jsx|ts|tsx)$/,
   /^src\/index[.]css$/,
   /^src\/styles\/tokens[.]css$/,
   /^src\/styles\/(?:room-stage|site-utilities|room-stage-overrides)[.]css$/,
-  /^src\/main[.]jsx$/,
-  /^src\/AppPageRoutes[.]jsx$/,
+  /^src\/main[.](?:jsx|tsx)$/,
+  /^src\/AppPageRoutes[.](?:jsx|tsx)$/,
+  /^src\/components\/Loader[.]css$/,
+  /^src\/components\/ScrollManager[.](?:jsx|tsx)$/,
+  /^src\/data\/site[.](?:js|ts)$/,
 ];
-// The gallery stage stays mounted behind every non-persona room. The scroll
-// wave belongs to Experience and the Project Details routes only.
-const GALLERY_RUNTIME_SOURCES = [
-  /^src\/components\/GalleryScene(?:Shaders|Geometry|PosterTexture)?[.](?:js|jsx)$/,
-];
-const WAVE_RUNTIME_SOURCES = [
-  /^src\/components\/ScrollPerspectiveWave(?:Capture|Shaders|AnimatedRaster)?[.](?:js|jsx)$/,
+const PROJECT_SHARED_SOURCES = [
+  /^src\/components\/(?:ProjectMedia|TechStackList)[.](?:jsx|tsx)$/,
+  /^src\/data\/techIcons[.](?:js|ts)$/,
+  /^src\/hooks\/useDocumentRoomReveal[.](?:js|ts)$/,
+  /^src\/components\/ProjectDetails(?:Primitives|Shell)[.](?:jsx|tsx)$/,
+  /^src\/components\/ProjectDetailsStyles[.](?:js|ts)$/,
 ];
 
 export const RENDER_TARGETS = [
   {
     path: '/project/keshi-pomodoro',
     viewports: ['desktop 1440x900', 'mobile 390x844'],
-    note: 'Keshi matte surface pilot; legacy optical layout remains in the route stylesheet',
+    note: 'Keshi Veluma-surface trial with three material levels',
     sources: [
-      ...GLOBAL_STYLE_SOURCES,
-      ...PROJECT_DATA_SOURCES,
-      ...GALLERY_RUNTIME_SOURCES,
+      ...GLOBAL_SOURCES,
       ...WAVE_RUNTIME_SOURCES,
+      ...PROJECT_SHARED_SOURCES,
+      /^src\/features\/project-details\/cases\/keshi\/KeshiCase[.](?:jsx|tsx)$/,
+      /^src\/components\/ProjectDetailsKeshi[.](?:jsx|tsx)$/,
+      /^src\/components\/DocumentRoom[.]css$/,
+      /^src\/components\/ProjectMedia[.](?:jsx|tsx)$/,
+      /^src\/hooks\/useDocumentRoomReveal[.](?:js|ts)$/,
       /^src\/components\/ProjectDetailsKeshiStoryOverrides[.]css$/,
+      /^src\/components\/ProjectDetailsKeshiVelumaSurface[.]css$/,
       /^src\/components\/ProjectDetailsStorySharedOverrides[.]css$/,
       /^src\/components\/ProjectDetailsKeshiStory[.]css$/,
       /^src\/styles\/tokens[.]css$/,
       /^src\/index[.]css$/,
-      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format|Layouts|Lightbox|Process)?[.](css|jsx?)$/,
+      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format|Layouts|Lightbox|Process)?[.](css|jsx?|tsx?)$/,
       /^src\/components\/ProjectDetailsStories[.]css$/,
-      /^src\/components\/KeshiLiquidGlass[.](css|jsx)$/,
-      /^src\/components\/CaseMatteSurface[.](css|jsx)$/,
+      /^src\/components\/KeshiLiquidGlass[.](?:css|jsx|tsx)$/,
       /^src\/components\/ProjectCoverMedia[.]css$/,
-      /^src\/components\/ScrollPerspectiveWave[.](css|jsx)$/,
+      /^src\/components\/ScrollPerspectiveWave[.](?:css|jsx|tsx)$/,
       /^src\/components\/ProjectDetailsKeshiNext[.]css$/,
     ],
   },
@@ -291,11 +310,13 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900', 'mobile 390x844'],
     note: 'Keshi next-layout preview is a distinct render state of the project route',
     sources: [
-      ...GLOBAL_STYLE_SOURCES,
-      ...PROJECT_DATA_SOURCES,
-      ...GALLERY_RUNTIME_SOURCES,
+      ...GLOBAL_SOURCES,
       ...WAVE_RUNTIME_SOURCES,
-      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format|Layouts|Lightbox|Process)?[.](css|jsx?)$/,
+      ...PROJECT_SHARED_SOURCES,
+      /^src\/features\/project-details\/cases\/keshi\/KeshiNextCase[.](?:jsx|tsx)$/,
+      /^src\/components\/ProjectDetailsKeshi[.](?:jsx|tsx)$/,
+      /^src\/components\/ProjectDetailsKeshiNext[.](?:jsx|tsx)$/,
+      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format|Layouts|Lightbox|Process)?[.](css|jsx?|tsx?)$/,
       /^src\/components\/ProjectDetailsKeshiNext[.]css$/,
       /^src\/components\/ProjectCoverMedia[.]css$/,
       /^src\/styles\/tokens[.]css$/,
@@ -307,15 +328,16 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900', 'mobile 390x844'],
     note: 'non-pilot consumer of the same media primitives',
     sources: [
-      ...GLOBAL_STYLE_SOURCES,
-      ...PROJECT_DATA_SOURCES,
-      ...GALLERY_RUNTIME_SOURCES,
+      ...GLOBAL_SOURCES,
       ...WAVE_RUNTIME_SOURCES,
+      ...PROJECT_SHARED_SOURCES,
+      /^src\/features\/project-details\/cases\/zucchini\/ZucchiniCase[.](?:jsx|tsx)$/,
+      /^src\/components\/ProjectDetailsZucchini[.](?:jsx|tsx)$/,
       /^src\/components\/ProjectDetailsZuchStory[.]css$/,
       /^src\/components\/ProjectDetailsZuch[.]css$/,
       /^src\/styles\/tokens[.]css$/,
       /^src\/index[.]css$/,
-      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format|Layouts|Lightbox|Process)?[.](css|jsx?)$/,
+      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format|Layouts|Lightbox|Process)?[.](css|jsx?|tsx?)$/,
       /^src\/components\/ProjectDetailsStories[.]css$/,
       /^src\/components\/ProjectCoverMedia[.]css$/,
     ],
@@ -325,14 +347,15 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900', 'mobile 390x844'],
     note: 'Liquid Glass was piloted on the hero caption here and reverted after losing a live comparison (DESIGN-DISCOVERY Round 16); back on its own flat-blur treatment',
     sources: [
-      ...GLOBAL_STYLE_SOURCES,
-      ...PROJECT_DATA_SOURCES,
-      ...GALLERY_RUNTIME_SOURCES,
+      ...GLOBAL_SOURCES,
       ...WAVE_RUNTIME_SOURCES,
+      ...PROJECT_SHARED_SOURCES,
+      /^src\/features\/project-details\/cases\/freeflow\/FreeFlowCase[.](?:jsx|tsx)$/,
+      /^src\/components\/ProjectDetailsFreeflow[.](?:jsx|tsx)$/,
       /^src\/components\/ProjectDetailsStorySharedOverrides[.]css$/,
       /^src\/styles\/tokens[.]css$/,
       /^src\/index[.]css$/,
-      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format|Layouts|Lightbox|Process)?[.](css|jsx?)$/,
+      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format|Layouts|Lightbox|Process)?[.](css|jsx?|tsx?)$/,
       /^src\/components\/ProjectDetailsFreeflow[.]css$/,
       /^src\/components\/ProjectDetailsStories[.]css$/,
     ],
@@ -342,14 +365,15 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900', 'mobile 390x844'],
     note: 'project-detail monochrome chrome and story layout',
     sources: [
-      ...GLOBAL_STYLE_SOURCES,
-      ...PROJECT_DATA_SOURCES,
-      ...GALLERY_RUNTIME_SOURCES,
+      ...GLOBAL_SOURCES,
       ...WAVE_RUNTIME_SOURCES,
+      ...PROJECT_SHARED_SOURCES,
+      /^src\/features\/project-details\/cases\/modenote\/ModeNoteCase[.](?:jsx|tsx)$/,
+      /^src\/components\/ProjectDetailsModeNote(?:Data|Proofs)?[.](?:js|jsx|ts|tsx)$/,
       /^src\/components\/ProjectDetailsStorySharedOverrides[.]css$/,
       /^src\/components\/ProjectDetailsStories[.]css$/,
       /^src\/styles\/tokens[.]css$/,
-      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format|Layouts|Lightbox|Process)?[.](css|jsx?)$/,
+      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format|Layouts|Lightbox|Process)?[.](css|jsx?|tsx?)$/,
       /^src\/components\/ProjectDetailsModeNote(?:Story)?[.]css$/,
       /^src\/components\/ProjectCoverMedia[.]css$/,
     ],
@@ -359,15 +383,16 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900', 'mobile 390x844'],
     note: 'project-detail monochrome state colors',
     sources: [
-      ...GLOBAL_STYLE_SOURCES,
-      ...PROJECT_DATA_SOURCES,
-      ...GALLERY_RUNTIME_SOURCES,
+      ...GLOBAL_SOURCES,
       ...WAVE_RUNTIME_SOURCES,
+      ...PROJECT_SHARED_SOURCES,
+      /^src\/features\/project-details\/cases\/decrypt\/DecryptCase[.](?:jsx|tsx)$/,
+      /^src\/components\/ProjectDetailsDecrypt[.](?:jsx|tsx)$/,
       /^src\/components\/ProjectDetailsDecryptStoryOverrides[.]css$/,
       /^src\/components\/ProjectDetailsStorySharedOverrides[.]css$/,
       /^src\/components\/ProjectDetailsDecryptStory[.]css$/,
       /^src\/styles\/tokens[.]css$/,
-      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format|Layouts|Lightbox|Process)?[.](css|jsx?)$/,
+      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format|Layouts|Lightbox|Process)?[.](css|jsx?|tsx?)$/,
       /^src\/components\/ProjectDetailsStories[.]css$/,
     ],
   },
@@ -376,14 +401,14 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900', 'mobile 390x844'],
     note: 'project-detail shared chrome and project composition',
     sources: [
-      ...GLOBAL_STYLE_SOURCES,
-      ...PROJECT_DATA_SOURCES,
-      ...GALLERY_RUNTIME_SOURCES,
+      ...GLOBAL_SOURCES,
       ...WAVE_RUNTIME_SOURCES,
+      ...PROJECT_SHARED_SOURCES,
+      /^src\/features\/project-details\/cases\/veluma\/VelumaCase[.](?:jsx|tsx)$/,
       /^src\/components\/ProjectDetailsMux[.]css$/,
-      /^src\/components\/ProjectDetailsMux[.]jsx$/,
+      /^src\/components\/ProjectDetailsMux[.](?:jsx|tsx)$/,
       /^src\/styles\/tokens[.]css$/,
-      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format|Layouts|Lightbox|Process)?[.](css|jsx?)$/,
+      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format|Layouts|Lightbox|Process)?[.](css|jsx?|tsx?)$/,
       /^src\/components\/ProjectDetailsStories[.]css$/,
       /^src\/components\/ProjectCoverMedia[.]css$/,
     ],
@@ -393,13 +418,23 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900', 'mobile 390x844'],
     note: 'project-detail shared chrome; private media gate remains in force',
     sources: [
-      ...GLOBAL_STYLE_SOURCES,
-      ...PROJECT_DATA_SOURCES,
-      ...GALLERY_RUNTIME_SOURCES,
+      ...GLOBAL_SOURCES,
       ...WAVE_RUNTIME_SOURCES,
+      ...PROJECT_SHARED_SOURCES,
+      /^src\/features\/project-details\/cases\/hermes\/HermesCase[.](?:jsx|tsx)$/,
       /^src\/styles\/tokens[.]css$/,
-      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format|Layouts|Lightbox|Process)?[.](css|jsx?)$/,
-      /^src\/components\/ProjectDetailsHermes[.](css|jsx)$/,
+      /^src\/components\/ProjectDetails(?:Media|MediaSource|Format|Layouts|Lightbox|Process)?[.](css|jsx?|tsx?)$/,
+      /^src\/components\/ProjectDetailsHermes[.](?:css|jsx|tsx)$/,
+    ],
+  },
+  {
+    path: '/project/unknown-project',
+    viewports: ['desktop 1440x900', 'mobile 390x844'],
+    note: 'invalid project id displays the missing-project state',
+    sources: [
+      ...GLOBAL_SOURCES,
+      /^src\/features\/project-details\/MissingProject[.](?:jsx|tsx)$/,
+      /^src\/components\/(?:DocumentRoom|ProjectDetails)[.]css$/,
     ],
   },
   {
@@ -407,15 +442,16 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900'],
     note: 'WebGL poster gallery',
     sources: [
-      ...GLOBAL_STYLE_SOURCES,
-      ...PROJECT_DATA_SOURCES,
+      ...GLOBAL_SOURCES,
       /^src\/styles\/tokens[.]css$/,
       /^src\/index[.]css$/,
-      /^src\/App[.](css|jsx)$/,
-      /^src\/components\/GalleryScene[.]jsx$/,
-      /^src\/components\/Navigation[.](css|jsx)$/,
+      /^src\/App[.](?:css|jsx|tsx)$/,
+      /^src\/components\/GalleryScene[.](?:jsx|tsx)$/,
+      /^src\/components\/Navigation[.](?:css|jsx|tsx)$/,
       /^src\/components\/Hero[.]css$/,
-      /^src\/components\/Loader[.]jsx$/,
+      /^src\/components\/Loader[.](?:jsx|tsx)$/,
+      /^src\/components\/Cursor[.](?:css|jsx|tsx)$/,
+      /^src\/components\/PosterSelectTransition[.](?:css|jsx|tsx)$/,
     ],
   },
   {
@@ -423,10 +459,10 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900', 'mobile 390x844'],
     note: 'persona preview reads the ordered project records',
     sources: [
-      ...GLOBAL_STYLE_SOURCES,
-      ...PROJECT_DATA_SOURCES,
-      ...GALLERY_RUNTIME_SOURCES,
-      /^src\/components\/PersonaReloadView[.](css|jsx)$/,
+      ...GLOBAL_SOURCES,
+      /^src\/components\/ProjectMedia[.](?:jsx|tsx)$/,
+      ...WAVE_RUNTIME_SOURCES,
+      /^src\/components\/PersonaReloadView[.](?:css|jsx|tsx)$/,
       /^src\/styles\/tokens[.]css$/,
       /^src\/index[.]css$/,
     ],
@@ -436,11 +472,13 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900', 'mobile 390x844'],
     note: 'experience room over the shared stage',
     sources: [
-      ...GLOBAL_STYLE_SOURCES,
-      ...GALLERY_RUNTIME_SOURCES,
+      ...GLOBAL_SOURCES,
       ...WAVE_RUNTIME_SOURCES,
-      /^src\/components\/Experience[.](css|jsx)$/,
-      /^src\/components\/ScrollPerspectiveWave[.](css|jsx)$/,
+      /^src\/components\/Experience[.](?:css|jsx|tsx)$/,
+      /^src\/components\/TechStackList[.](?:css|jsx|tsx)$/,
+      /^src\/data\/techIcons[.](?:js|ts)$/,
+      /^src\/hooks\/useDocumentRoomReveal[.](?:js|ts)$/,
+      /^src\/components\/ScrollPerspectiveWave[.](?:css|jsx|tsx)$/,
     ],
   },
   {
@@ -448,9 +486,14 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900', 'mobile 390x844'],
     note: 'stack document room and shared engine styles',
     sources: [
-      ...GLOBAL_STYLE_SOURCES,
-      ...GALLERY_RUNTIME_SOURCES,
-      /^src\/components\/TechStack[.](css|jsx)$/,
+      ...GLOBAL_SOURCES,
+      ...WAVE_RUNTIME_SOURCES,
+      /^src\/components\/TechStack[.](?:css|jsx|tsx)$/,
+      /^src\/components\/StackPage[.](?:jsx|tsx)$/,
+      /^src\/components\/DocumentRoom[.]css$/,
+      /^src\/components\/TechStackList[.](?:css|jsx|tsx)$/,
+      /^src\/data\/techIcons[.](?:js|ts)$/,
+      /^src\/hooks\/useDocumentRoomReveal[.](?:js|ts)$/,
     ],
   },
   {
@@ -458,9 +501,12 @@ export const RENDER_TARGETS = [
     viewports: ['desktop 1440x900', 'mobile 390x844'],
     note: 'contact document room consumes shared engine styles',
     sources: [
-      ...GLOBAL_STYLE_SOURCES,
-      ...GALLERY_RUNTIME_SOURCES,
-      /^src\/components\/Contact[.](css|jsx)$/,
+      ...GLOBAL_SOURCES,
+      ...WAVE_RUNTIME_SOURCES,
+      /^src\/components\/Contact[.](?:css|jsx|tsx)$/,
+      /^src\/components\/ContactPage[.](?:jsx|tsx)$/,
+      /^src\/components\/DocumentRoom[.]css$/,
+      /^src\/hooks\/useDocumentRoomReveal[.](?:js|ts)$/,
       /^src\/components\/TechStack[.]css$/,
     ],
   },
@@ -497,12 +543,14 @@ export const PROTECTED_INTERNALS = [
  * Existing `!important` uses across the codebase are recorded debt, not
  * allowances — they are in the baseline and stay visible as debt.
  */
+/** @type {Array<{file: string; selectorPattern?: string; properties?: string[]; reason: string}>} */
 export const IMPORTANT_ALLOWANCES = [];
 
 /** Files the CSS rule reads at all. */
 export const CSS_GLOBS = ['src/**/*.css'];
 
 /** Resolve a token name to its family, or `unknown`. */
+/** @param {string} tokenName */
 export function familyOf(tokenName) {
   for (const { pattern, family } of TOKEN_FAMILY_PATTERNS) {
     if (pattern.test(tokenName)) return family;
@@ -528,6 +576,7 @@ export function governedPropertyMap() {
 }
 
 /** Does an exception cover this file + family (+ selector, when it names one)? */
+/** @param {{file: string; family: string; selector?: string}} violation */
 export function exceptionFor({ file, family, selector }) {
   return EXCEPTIONS.find((exception) => {
     if (!exception.families.includes(family)) return false;

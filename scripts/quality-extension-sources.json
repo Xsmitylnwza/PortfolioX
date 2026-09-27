@@ -1,0 +1,14 @@
+[
+  {
+    "path": "src/features/project-details/FallbackCase.tsx",
+    "owner": "project-details",
+    "proof": "test:modularization-fallback",
+    "reason": "Valid future project records use Cinema without adding a public fixture route."
+  },
+  {
+    "path": "src/components/ProjectDetailsFallback.tsx",
+    "owner": "project-details",
+    "proof": "test:modularization-fallback",
+    "reason": "Valid future records use this fallback story through FallbackCase; no public fixture route exists."
+  }
+]

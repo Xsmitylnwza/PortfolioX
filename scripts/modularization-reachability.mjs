@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { build } from 'vite';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+/** @param {string} name @param {string} fallback */
 const option = (name, fallback) => {
   const index = process.argv.indexOf(name);
   return index < 0 ? fallback : process.argv[index + 1];
@@ -15,23 +16,28 @@ const output = resolve(root, option('--out', 'output/playwright/modularization-r
 if (!output.startsWith(resolve(root, 'output/playwright') + sep) || existsSync(output)) {
   throw new Error('Choose a new output/playwright/*.json path');
 }
+/** @param {string} id */
 const normalize = (id) => {
   if (!id || id.startsWith('\0')) return null;
   const clean = id.split('?')[0];
   const path = relative(root, clean).replaceAll('\\', '/');
   return path.startsWith('src/') ? path : null;
 };
+/** @type {string[]} */
 const sourceFiles = [];
+/** @param {string} directory */
 function visit(directory) {
   for (const entry of readdirSync(directory, { withFileTypes: true })) {
     const path = resolve(directory, entry.name);
     if (entry.isDirectory()) visit(path);
-    else if (/\.(?:js|jsx|css)$/.test(entry.name)) sourceFiles.push(relative(root, path).replaceAll('\\', '/'));
+    else if (/\.(?:js|jsx|ts|tsx|css)$/.test(entry.name)) sourceFiles.push(relative(root, path).replaceAll('\\', '/'));
   }
 }
 visit(resolve(root, 'src'));
 
+/** @type {Set<string>} */
 const bundleModules = new Set();
+/** @type {Map<string,{static:string[],dynamic:string[]}>} */
 const edges = new Map();
 let emittedCss = 0;
 await build({
@@ -53,9 +59,13 @@ await build({
         const source = normalize(id);
         if (!source) continue;
         const info = this.getModuleInfo(id);
+        if (!info) continue;
+        // CSS-only entry modules may disappear from emitted JavaScript, but
+        // their imports are still live. Match the single-build graph's scope.
+        bundleModules.add(source);
         edges.set(source, {
-          static: info.importedIds.map(normalize).filter(Boolean).sort(),
-          dynamic: info.dynamicallyImportedIds.map(normalize).filter(Boolean).sort(),
+          static: info.importedIds.map(normalize).filter((path) => path !== null).sort(),
+          dynamic: info.dynamicallyImportedIds.map(normalize).filter((path) => path !== null).sort(),
         });
       }
     },
@@ -68,6 +78,7 @@ const runtimeSources = new Set(bundleModules);
 const pendingCss = [...runtimeSources].filter((path) => path.endsWith('.css'));
 while (pendingCss.length) {
   const parent = pendingCss.pop();
+  if (!parent) continue;
   const text = readFileSync(resolve(root, parent), 'utf8');
   for (const match of text.matchAll(/@import\s+(?:url\()?\s*['"]([^'"]+)['"]/g)) {
     if (!match[1].startsWith('.')) continue;
@@ -79,15 +90,17 @@ while (pendingCss.length) {
 }
 
 const sourceSet = new Set(sourceFiles);
+/** @param {string} parent @param {string} specifier */
 const resolveImport = (parent, specifier) => {
   if (!specifier.startsWith('.')) return null;
   const base = resolve(root, dirname(parent), specifier);
-  for (const candidate of [base, `${base}.js`, `${base}.jsx`, `${base}.css`, resolve(base, 'index.js'), resolve(base, 'index.jsx')]) {
+  for (const candidate of [base, `${base}.js`, `${base}.jsx`, `${base}.ts`, `${base}.tsx`, `${base}.css`, resolve(base, 'index.js'), resolve(base, 'index.jsx'), resolve(base, 'index.ts'), resolve(base, 'index.tsx')]) {
     const path = relative(root, candidate).replaceAll('\\', '/');
     if (sourceSet.has(path)) return path;
   }
   return null;
 };
+/** @param {string} path @param {string} text */
 const scannedImports = (path, text) => {
   const staticSpecs = [
     ...[...text.matchAll(/\bfrom\s*['"]([^'"]+)['"]/g)].map((match) => match[1]),
@@ -96,8 +109,8 @@ const scannedImports = (path, text) => {
   const dynamicSpecs = [...text.matchAll(/\bimport\s*\(\s*['"]([^'"]+)['"]\s*\)/g)]
     .map((match) => match[1]);
   return {
-    static: [...new Set(staticSpecs.map((specifier) => resolveImport(path, specifier)).filter(Boolean))].sort(),
-    dynamic: [...new Set(dynamicSpecs.map((specifier) => resolveImport(path, specifier)).filter(Boolean))].sort(),
+    static: [...new Set(staticSpecs.map((specifier) => resolveImport(path, specifier)).filter((item) => item !== null))].sort(),
+    dynamic: [...new Set(dynamicSpecs.map((specifier) => resolveImport(path, specifier)).filter((item) => item !== null))].sort(),
   };
 };
 
@@ -112,7 +125,7 @@ const source = sourceFiles.sort().map((path) => {
 const report = {
   schemaVersion: 1,
   generatedAt: new Date().toISOString(),
-  entry: 'src/main.jsx',
+  entry: sourceFiles.includes('src/main.tsx') ? 'src/main.tsx' : 'src/main.jsx',
   emittedCss,
   runtimeCount: source.filter((item) => item.runtime).length,
   disconnectedCount: source.filter((item) => !item.runtime).length,

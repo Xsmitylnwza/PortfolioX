@@ -66,6 +66,8 @@
 
 **การทบทวนปัจจุบัน (2026-09-23):** A6–A11 เป็นบันทึกสูตร optical glass เดิม ไม่ใช่ทิศทางสำหรับงานใหม่หลัง A26; อย่านำกลับมาใช้กับ caption หรือขยายไปทุกหน้า `CaseMatteSurface` เป็นวัสดุที่เลือกแล้วบน Keshi แต่บทบาท/รูปทรงของ container ในแต่ละ story beat ยังต้องทดสอบ ดู [criteria log](docs/design/DESIGN-DISCOVERY.md), [quality contract draft](docs/design/PROJECT-PAGE-QUALITY-CONTRACT-DRAFT.md) และ [material component contract](docs/design/CASE-MATTE-SURFACE-SPEC.md)
 
+**การทดลองปัจจุบัน (2026-09-24):** ตามคำสั่งล่าสุด หน้า Keshi ใช้ surface สามระดับจากสูตร Veluma (`ProjectDetailsKeshiVelumaSurface.css`) แทน matte caption เดิมเพื่อดูผลบนหน้าเต็ม: พื้นโปร่งและแผ่นขาวใช้ค่าสูตร Veluma, จุดรองเข้มเพิ่มความเข้มจากสูตร inset ของ Veluma นี่เป็นการทดลองบน route จริง ยังไม่ใช่การอนุมัติให้เปลี่ยนกฎวัสดุของทุกโปรเจกต์; A26 บันทึกการเลือกก่อนการทดลองนี้
+
 ### 2.1a Decisions made during harness work
 
 | # | การตัดสิน | ผลต่อ pixel | Source |

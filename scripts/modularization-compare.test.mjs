@@ -2,9 +2,11 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { compareReports } from './modularization-compare.mjs';
 
+// @ts-check
 function fixture() {
   return {
     schemaVersion: 1,
+    sourceTreeHash: 'a'.repeat(64),
     routes: [{ id: 'veluma', path: '/project/veluma' }],
     states: [{ id: 'desktop-motion', width: 1440, height: 900 }],
     failures: [],
@@ -16,7 +18,7 @@ function fixture() {
       title: 'Veluma',
       textHash: 'same-text',
       headings: [{ tag: 'h1', id: 'case-title', text: 'Veluma' }],
-      frames: [],
+      frames: /** @type {{tag: string}[]} */ ([]),
       waveFollowers: 1,
       waveDirectMedia: 0,
       posterTargets: 0,
@@ -44,6 +46,17 @@ test('missing route capture fails even when both sides omit it', () => {
   const before = fixture();
   before.captures = [];
   assert.match(compareReports(before, structuredClone(before)).differences.join('\n'), /missing capture/);
+});
+
+test('missing source manifest fails even when both sides omit it', () => {
+  const before = fixture();
+  before.sourceTreeHash = '';
+  assert.match(compareReports(before, structuredClone(before)).differences.join('\n'), /missing or invalid source tree hash/);
+});
+
+test('stale after-source manifest fails despite identical rendered targets', () => {
+  const before = fixture();
+  assert.match(compareReports(before, structuredClone(before), 'b'.repeat(64)).differences.join('\n'), /stale source tree hash/);
 });
 
 test('missing target fails', () => {

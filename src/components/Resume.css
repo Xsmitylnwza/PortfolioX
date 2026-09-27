@@ -377,6 +377,13 @@
   letter-spacing: -0.02em;
 }
 
+@media (pointer: coarse) {
+  .dossier-footer a {
+    min-height: 44px;
+    padding-block: 0.45rem;
+  }
+}
+
 .dossier-footer a:hover,
 .dossier-footer a:focus-visible {
   color: var(--dossier-paper);

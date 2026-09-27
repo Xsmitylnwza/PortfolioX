@@ -10,7 +10,7 @@ it end to end for every task — go to the section the task touches:
 | Task | Section |
 | --- | --- |
 | Changing colour, spacing, type or radius | §3 Implementation levers, then [`src/styles/tokens.css`](src/styles/tokens.css) |
-| Editing the global stage, route shell, utilities or reset | [`docs/design/GLOBAL-CSS-OWNERSHIP.md`](docs/design/GLOBAL-CSS-OWNERSHIP.md); keep `src/main.jsx` import order |
+| Editing the global stage, route shell, utilities or reset | [`docs/design/GLOBAL-CSS-OWNERSHIP.md`](docs/design/GLOBAL-CSS-OWNERSHIP.md); keep `src/main.tsx` import order |
 | Changing Project Details colour or borders | §2.1 A25/A27 and §3 Project Details palette: grayscale chrome only; red stage and original-colour product media are the exceptions |
 | Touching Keshi captions | §2.1 A26: `CaseMatteSurface` is selected; optical Liquid Glass is historical and must not be reintroduced |
 | Editing one project-detail stylesheet | [`docs/design/PROJECT-DETAILS-CSS-OWNERSHIP.md`](docs/design/PROJECT-DETAILS-CSS-OWNERSHIP.md); keep project selectors in that project's file and shared behavior in the common files |
@@ -75,3 +75,14 @@ just the component's own render.
 - Never put private data, identifiers, secrets, unverified metrics or
   unsupported deployment claims into public assets or copy.
 - Hermes product screenshots are **not** approved for public use.
+
+## AI change contract
+
+Before a source edit, identify its owner file and affected routes. Keep unrelated
+files alone, reuse established components and semantic tokens, and add an
+abstraction only for two live consumers or a clear complexity boundary.
+For a handoff, report changed owners and route impact, the quality-gate result,
+render/interaction evidence for visual changes, and any remaining uncertainty.
+`npm run check:quality` runs strict app and tooling typechecks, lint, boundaries,
+growth budgets, the design ratchet and one Vite build whose graph is checked
+against route declarations. A green mechanical gate still needs render review.

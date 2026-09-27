@@ -16,6 +16,7 @@ import {
 } from './design-check.config.mjs';
 
 /** React style props are camelCase; the config speaks CSS. */
+/** @param {string} name */
 function toCssProperty(name) {
   if (name.startsWith('--')) return name;
   return name.replace(/[A-Z]/g, (char) => `-${char.toLowerCase()}`);
@@ -28,9 +29,9 @@ const VAR_REF = /var\(\s*(--[\w-]+)/g;
 const STRUCTURAL = /^(?:0|auto|none|normal|inherit|initial|unset|revert|transparent|currentcolor|\d+(?:\.\d+)?%|\d+(?:\.\d+)?fr)$/i;
 
 export const rules = {
-  'token-usage-jsx': {
+  'token-usage-jsx': /** @type {import('eslint').Rule.RuleModule} */ ({
     meta: {
-      type: 'problem',
+      type: /** @type {'problem'} */ ('problem'),
       docs: { description: 'Governed values in static JSX style props must come from the token registry.' },
       schema: [{
         type: 'object',
@@ -50,6 +51,7 @@ export const rules = {
       const propertyMap = governedPropertyMap();
 
       /** Literal string/number, or a same-file const bound to one. */
+/** @param {import('eslint').Rule.Node} node @param {import('eslint').Scope.Scope} scope */
       function staticValueOf(node, scope) {
         if (node.type === 'Literal') return typeof node.value === 'string' || typeof node.value === 'number'
           ? String(node.value) : null;
@@ -68,6 +70,7 @@ export const rules = {
         return null;
       }
 
+/** @param {string} property @param {string} value @param {import('eslint').Rule.Node} node */
       function check(property, value, node) {
         const family = propertyMap.get(property);
         if (!family) return;
@@ -106,6 +109,7 @@ export const rules = {
       }
 
       return {
+/** @param {import('eslint').Rule.Node & {name:{name?:string},value?:{expression?:import('eslint').Rule.Node}}} node */
         JSXAttribute(node) {
           if (node.name?.name !== 'style') return;
           const expression = node.value?.expression;
@@ -122,23 +126,25 @@ export const rules = {
             const property = toCssProperty(name);
             if (!propertyMap.has(property)) continue;
 
-            const value = staticValueOf(prop.value, scope);
-            if (value === null) {
+            const value = staticValueOf(/** @type {import('eslint').Rule.Node} */ (prop.value), scope);
+            if (value == null) {
               // A governed property whose value cannot be resolved is reported,
               // not skipped. Silence here would be a coverage claim we cannot make.
-              context.report({ node: prop, messageId: 'unsupported', data: { property } });
+              context.report({ node: /** @type {import('eslint').Rule.Node} */ (prop), messageId: 'unsupported', data: { property } });
               continue;
             }
-            check(property, value, prop);
+            check(property, value, /** @type {import('eslint').Rule.Node} */ (prop));
           }
         },
       };
     },
-  },
+  }),
 };
 
 /** Build the registry argument from the token sources. */
+/** @param {string[]} sources */
 export function registryFromSources(sources) {
+  /** @type {Record<string,string>} */
   const registry = {};
   for (const css of sources) {
     for (const match of css.matchAll(/(--[\w-]+)\s*:/g)) registry[match[1]] = familyOf(match[1]);

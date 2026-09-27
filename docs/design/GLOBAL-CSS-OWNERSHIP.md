@@ -1,6 +1,6 @@
 # Global CSS ownership
 
-`src/main.jsx` imports the global styles in source order. A rule moved between these files must keep that order unless a separate visual change is intended.
+`src/main.tsx` imports the global styles in source order. A rule moved between these files must keep that order unless a separate visual change is intended.
 
 | Edit | File |
 | --- | --- |

@@ -55,6 +55,9 @@ export const PROBE_PROPERTIES = {
 // Selectors are scoped to one specific instance each. `document.querySelector`
 // on a bare class would drift to whichever element happens to come first in the
 // DOM, which made the hero frame masquerade as the pilot slice.
+/** @typedef {keyof typeof PROBE_PROPERTIES} ProbeGroup */
+/** @typedef {{id:string,selector:string,groups:ProbeGroup[],routes?:string[],extraProperties?:string[],sentinel?:boolean}} ProbeTarget */
+/** @type {ProbeTarget[]} */
 export const PROBE_TARGETS = [
   // --- pilot slice: the Keshi state media frame, its chips and its caption ---
   {
@@ -163,6 +166,7 @@ export const PROBE_TARGETS = [
 ];
 
 /** Resolve the property list for one target. */
+/** @param {ProbeTarget} target */
 export function propertiesFor(target) {
   const fromGroups = target.groups.flatMap((group) => PROBE_PROPERTIES[group] ?? []);
   return [...new Set([...fromGroups, ...(target.extraProperties ?? [])])];
@@ -172,6 +176,7 @@ export function propertiesFor(target) {
  * Serializable browser-side collector. Returned as a string so the same code
  * can be evaluated by any driver (devtools, Playwright) without bundling.
  */
+/** @param {string} routeId */
 export function buildCollectorSource(routeId) {
   const targets = PROBE_TARGETS
     .filter((target) => !target.routes || target.routes.includes(routeId))
@@ -219,12 +224,15 @@ export function buildCollectorSource(routeId) {
  * equivalent is scripts/design-compare-render.mjs, which step 4 drives from
  * Playwright once devicePixelRatio can be pinned.
  */
+/** @param {string} routeId @param {string} viewportId @param {string} [beforeUrl] */
 export async function compareAgainstBefore(routeId, viewportId, beforeUrl = '/docs/design/harness/phase-1-before-render.json') {
+  /** @type {{captures:Array<{route:string,viewport:string,environment:{devicePixelRatio:number},results:Array<{id:string,found:boolean,values:Record<string,string>,box?:Record<string,number>,sentinel?:boolean}>}>}} */
   const before = await (await fetch(beforeUrl)).json();
   const baseline = before.captures.find((c) => c.route === routeId && c.viewport === viewportId);
   if (!baseline) return { error: `no before-capture for ${routeId}/${viewportId}` };
 
   await document.fonts.ready;
+  /** @type {{environment:{devicePixelRatio:number},results:Array<{id:string,found:boolean,values:Record<string,string>,box?:Record<string,number>}>}} */
   const { environment, results } = eval(buildCollectorSource(routeId));
 
   const byId = new Map(results.map((r) => [r.id, r]));

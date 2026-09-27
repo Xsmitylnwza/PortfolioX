@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Render the three retained generic Project Details compositions without
 // exporting them from production code or adding a public test route.
+import { randomUUID } from 'node:crypto';
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -10,11 +11,12 @@ import { MemoryRouter } from 'react-router-dom';
 import { createServer } from 'vite';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+/** @param {string} name @param {string} fallback */
 const option = (name, fallback) => {
   const index = process.argv.indexOf(name);
   return index < 0 ? fallback : process.argv[index + 1];
 };
-const output = resolve(root, option('--out', 'output/playwright/modularization-fallback-fixture.json'));
+const output = resolve(root, option('--out', `output/playwright/modularization-fallback-fixture-${randomUUID()}.json`));
 if (!output.startsWith(resolve(root, 'output/playwright') + sep) || existsSync(output)) {
   throw new Error('Choose a new output/playwright/*.json path');
 }
@@ -25,21 +27,11 @@ const server = await createServer({
   optimizeDeps: { noDiscovery: true, entries: [] },
   server: { middlewareMode: true },
   appType: 'custom',
-  plugins: [{
-    name: 'fixture-only-generic-layout-exports',
-    enforce: 'pre',
-    transform(code, id) {
-      if (id.replaceAll('\\', '/').endsWith('/src/components/ProjectDetails.jsx')) {
-        return `${code}\nexport { CinemaLayout, FeatureLayout, DossierLayout };`;
-      }
-      return null;
-    },
-  }],
 });
 const results = [];
 try {
-  const { projects } = await server.ssrLoadModule('/src/data/projects.js');
-  const layouts = await server.ssrLoadModule('/src/components/ProjectDetails.jsx');
+  const { projects } = /** @type {typeof import('../src/data/projects.ts')} */ (await server.ssrLoadModule('/src/data/projects.ts'));
+  const layouts = await server.ssrLoadModule('/src/components/ProjectDetailsFallback.tsx');
   const project = projects.find((item) => item.id === 'veluma');
   if (!project) throw new Error('Veluma fixture record missing');
   const props = {

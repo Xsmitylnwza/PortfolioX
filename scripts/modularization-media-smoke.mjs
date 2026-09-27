@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 // Exercise the media kinds and close paths beyond the first-frame route capture.
-/* global document */
 
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, resolve, sep } from 'node:path';
@@ -14,11 +13,13 @@ const CASES = [
   { id: 'keshi-video-button', route: '/project/keshi-pomodoro', kind: 'video', tag: 'video', close: 'button' },
   { id: 'veluma-image-backdrop', route: '/project/veluma', kind: 'image', tag: 'img', close: 'backdrop' },
 ];
+/** @type {Array<{id:string,width:number,height:number,reducedMotion:'reduce'|'no-preference'}>} */
 const STATES = [
   { id: 'desktop-motion', width: 1440, height: 900, reducedMotion: 'no-preference' },
   { id: 'mobile-fallback', width: 390, height: 844, reducedMotion: 'no-preference' },
   { id: 'desktop-reduced', width: 1440, height: 900, reducedMotion: 'reduce' },
 ];
+/** @param {string} name @param {string} fallback */
 const option = (name, fallback) => {
   const index = process.argv.indexOf(name);
   return index === -1 ? fallback : process.argv[index + 1];
@@ -78,8 +79,9 @@ try {
         results.push({ key, pass, tag, source, focusInside, focusReturned, overflowRestored });
         console.log(`${pass ? 'PASS' : 'FAIL'} ${key}`);
       } catch (error) {
-        results.push({ key, pass: false, error: error.message });
-        console.error(`FAIL ${key}: ${error.message}`);
+        const message = error instanceof Error ? error.message : String(error);
+        results.push({ key, pass: false, error: message });
+        console.error(`FAIL ${key}: ${message}`);
       } finally {
         await page.close();
       }

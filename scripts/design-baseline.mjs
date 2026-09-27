@@ -37,13 +37,16 @@ const SNAPSHOT_DIR = join(ROOT, 'docs', 'design', 'harness', 'phase-1-snapshot')
 const SNAPSHOT_SOURCE = join(SNAPSHOT_DIR, 'source');
 const BASELINE_PATH = join(ROOT, 'scripts', 'design-check-baseline.json');
 
+/** @param {string} name @param {string | null} fallback */
 function arg(name, fallback) {
   const i = process.argv.indexOf(name);
   return i === -1 ? fallback : process.argv[i + 1];
 }
+/** @param {string} name */
 const has = (name) => process.argv.includes(name);
 
 /** Collapse whitespace so reformatting does not invent or retire debt. */
+/** @param {string} text */
 export const normalize = (text) => text.replace(/\s+/g, ' ').trim();
 
 // Mechanical CSS moves retain the original pre-edit debt identity. This maps
@@ -65,13 +68,23 @@ export const MOVED_CSS_DEBT_PATHS = new Map([
   ['src/components/ProjectDetailsKeshiStoryOverrides.css', 'src/components/ProjectDetailsStories.css'],
   ['src/components/ProjectDetailsDecryptStoryOverrides.css', 'src/components/ProjectDetailsStories.css'],
 ]);
+// Mechanical JSX -> TSX moves keep the recorded debt identity. The rule and
+// normalized offending line still have to match; occurrence counts cannot grow.
+export const MOVED_JS_DEBT_PATHS = new Map([
+  ['src/components/About.tsx', 'src/components/About.jsx'],
+  ['src/components/Cursor.tsx', 'src/components/Cursor.jsx'],
+  ['src/components/TVModal.tsx', 'src/components/TVModal.jsx'],
+  ['src/components/VCRPlayer.tsx', 'src/components/VCRPlayer.jsx'],
+  ['src/components/VHSTape.tsx', 'src/components/VHSTape.jsx'],
+]);
 
 /**
  * Stable identity for one violation. Exported so the fixture tests exercise the
  * real implementation instead of a copy that could drift from it.
  */
+/** @param {{rule:string,path:string,selector?:string,declaration:string}} entry */
 export function fingerprint({ rule, path, selector, declaration }) {
-  return [rule, MOVED_CSS_DEBT_PATHS.get(path) ?? path, normalize(selector ?? ''), normalize(declaration ?? '')].join(' | ');
+  return [rule, MOVED_CSS_DEBT_PATHS.get(path) ?? MOVED_JS_DEBT_PATHS.get(path) ?? path, normalize(selector ?? ''), normalize(declaration ?? '')].join(' | ');
 }
 
 /**
@@ -81,6 +94,7 @@ export function fingerprint({ rule, path, selector, declaration }) {
  * allowance at all, so re-introducing a literal that predates the migration
  * still fails. Everything else ratchets against its recorded debt.
  */
+/** @param {Record<string,number>} baselineDebt @param {Map<string,number>} currentCounts @param {Set<string>} [strictKeys] */
 export function newViolations(baselineDebt, currentCounts, strictKeys = new Set()) {
   const out = [];
   for (const [key, count] of currentCounts) {
@@ -95,6 +109,7 @@ export function newViolations(baselineDebt, currentCounts, strictKeys = new Set(
  * context the fingerprint needs. Stylelint reports line/column, so the context
  * is recovered from the source text at that position.
  */
+/** @param {{sourceRoot:string,registrySources:Array<[string,string]>}} options */
 async function lintTree({ sourceRoot, registrySources }) {
   const config = {
     plugins: [
@@ -151,6 +166,7 @@ async function lintTree({ sourceRoot, registrySources }) {
  * to pass. Both are existing debt, so both belong in the ratchet: visible,
  * forgiven, and impossible to add to.
  */
+/** @param {{sourceRoot:string}} options */
 async function lintJsTree({ sourceRoot }) {
   // cwd is the tree being linted, because the repo config's `files` patterns
   // are relative to cwd: with cwd=ROOT the snapshot's nested path would match
@@ -164,9 +180,9 @@ async function lintJsTree({ sourceRoot }) {
 
   let results;
   try {
-    results = await eslint.lintFiles(['src/**/*.{js,jsx}']);
+    results = await eslint.lintFiles(['src/**/*.{js,jsx,ts,tsx}']);
   } catch (error) {
-    console.error(`design-baseline: eslint failed for ${sourceRoot}: ${error.message}`);
+    console.error(`design-baseline: eslint failed for ${sourceRoot}: ${error instanceof Error ? error.message : String(error)}`);
     process.exit(1);
   }
 
@@ -194,6 +210,7 @@ async function lintJsTree({ sourceRoot }) {
   return out;
 }
 
+/** @param {Array<{rule:string,path:string,selector?:string,declaration:string}>} warnings */
 function tally(warnings) {
   const counts = new Map();
   for (const warning of warnings) {
@@ -211,13 +228,14 @@ function tally(warnings) {
  * actually had before the migration, which is the whole point of measuring the
  * baseline against it.
  */
+/** @param {string} sourceRoot @returns {Array<[string,string]>} */
 function registryFrom(sourceRoot) {
   return TOKEN_SOURCES
     .map((path) => {
       const abs = join(sourceRoot, path);
-      return existsSync(abs) ? [path, readFileSync(abs, 'utf8')] : null;
+      return existsSync(abs) ? /** @type {[string,string]} */ ([path, readFileSync(abs, 'utf8')]) : null;
     })
-    .filter(Boolean);
+    .filter((entry) => entry !== null);
 }
 
 // --- CLI -------------------------------------------------------------------
@@ -381,6 +399,7 @@ else if (has('--prune')) {
     process.exit(1);
   }
 
+  /** @type {Record<string,number>} */
   const pruned = {};
   let removed = 0;
   let lowered = 0;

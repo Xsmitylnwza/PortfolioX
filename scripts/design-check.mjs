@@ -23,14 +23,18 @@ import { isExcluded, toPosix } from './design-scope.mjs';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 const argv = process.argv.slice(2);
+/** @param {string} flag */
 const has = (flag) => argv.includes(flag);
+/** @param {string} flag */
 function valuesAfter(flag) {
   const i = argv.indexOf(flag);
   if (i === -1) return null;
+  /** @type {string[]} */
   const out = [];
   for (let j = i + 1; j < argv.length && !argv[j].startsWith('--'); j += 1) out.push(argv[j]);
   return out;
 }
+/** @param {string} flag */
 function valueAfter(flag) {
   return valuesAfter(flag)?.[0] ?? null;
 }
@@ -39,21 +43,30 @@ function valueAfter(flag) {
 // Shelling out to npm/npx would mean spawning a .cmd on Windows, which Node 24
 // refuses without a shell — and adding a shell just to launch a local tool
 // invites quoting bugs for no benefit.
+/** @param {string} relativePath */
 const nodeBin = (relativePath) => [process.execPath, join(ROOT, relativePath)];
 
-function run(command, args) {
+/** @param {string} command @param {string[]} args @param {NodeJS.ProcessEnv} [extraEnv] */
+function run(command, args, extraEnv = {}) {
   try {
-    const stdout = execFileSync(command, args, { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+    const stdout = execFileSync(command, args, {
+      cwd: ROOT,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'pipe'],
+      env: { ...process.env, ...extraEnv },
+    });
     return { ok: true, stdout, stderr: '' };
   } catch (error) {
+    const failed = /** @type {Error & {stdout?: Buffer | string, stderr?: Buffer | string}} */ (error);
     return {
       ok: false,
-      stdout: error.stdout?.toString() ?? '',
-      stderr: error.stderr?.toString() ?? String(error),
+      stdout: failed.stdout?.toString() ?? '',
+      stderr: failed.stderr?.toString() ?? String(error),
     };
   }
 }
 
+/** @param {...string} args */
 function git(...args) {
   // Capture stderr rather than inheriting it: git's CRLF advisories would
   // otherwise bury the report under one warning per file.
@@ -79,6 +92,8 @@ there is no default scope.
 // Scope
 // ---------------------------------------------------------------------------
 
+/** @typedef {{kind: string, files: string[] | null, note: string, message?: string, untracked?: string[], deleted?: string[]}} Scope */
+/** @returns {Scope} */
 function resolveScope() {
   if (has('--full')) {
     return { kind: 'full', files: null, note: 'every maintained source' };
@@ -87,7 +102,7 @@ function resolveScope() {
   const files = valuesAfter('--files');
   if (files) {
     if (files.length === 0) {
-      return { kind: 'error', message: '--files needs at least one path' };
+      return { kind: 'error', files: null, note: '', message: '--files needs at least one path' };
     }
     const normalized = files.map(toPosix).filter((file) => !isExcluded(file));
     const dropped = files.length - normalized.length;
@@ -106,41 +121,58 @@ function resolveScope() {
       // guessed default branch: the caller says what to compare against.
       diff = git('diff', '--name-only', base, '--');
     } catch {
-      return { kind: 'error', message: `--base: cannot diff against "${base}". Is it a valid git ref?` };
+      return { kind: 'error', files: null, note: '', message: `--base: cannot diff against "${base}". Is it a valid git ref?` };
     }
     const changed = diff.split('\n').map(toPosix).filter(Boolean).filter((file) => !isExcluded(file));
+    const deleted = changed.filter((file) => !existsSync(join(ROOT, file)));
+    const present = changed.filter((file) => existsSync(join(ROOT, file)));
 
-    // Untracked files are real changes a diff will not show. Report them rather
-    // than checking a scope that silently omits new work.
+    // Untracked files are real changes a diff will not show. Include them in
+    // the scope; removed legacy names cannot be linted or route-mapped.
     const untracked = git('ls-files', '--others', '--exclude-standard')
       .split('\n').map(toPosix).filter(Boolean).filter((file) => !isExcluded(file));
 
     return {
       kind: 'base',
-      files: changed,
+      files: [...new Set([...present, ...untracked])],
       untracked,
-      note: `diff vs ${base}: ${changed.length} tracked file(s)`,
+      deleted,
+      note: `diff vs ${base}: ${present.length} tracked, ${untracked.length} untracked, ${deleted.length} deleted file(s)`,
     };
   }
 
-  return { kind: 'error', message: 'no scope given' };
+  return { kind: 'error', files: null, note: '', message: 'no scope given' };
 }
 
 // ---------------------------------------------------------------------------
 // What a scope implies
 // ---------------------------------------------------------------------------
 
-const isUiSource = (file) => /^src\/.*\.(css|jsx?|)$/.test(file) || file === 'index.html';
+/** @param {string} file */
+const isUiSource = (file) => /^src\/.*\.(?:css|jsx?|tsx?)$/.test(file) || file === 'index.html';
+/** @param {string} file */
 const isCss = (file) => file.endsWith('.css');
-const isScript = (file) => /\.(js|jsx|mjs|cjs)$/.test(file);
+/** @param {string} file */
+const isScript = (file) => /\.(?:js|jsx|ts|tsx|mjs|cjs|mts|cts)$/.test(file);
+/** @param {string} file */
 const isRulesDoc = (file) => /^(DESIGN|AGENTS)\.md$/.test(file) || file.startsWith('docs/design/');
+/** @param {string} file */
 const isTokenSource = (file) => TOKEN_SOURCES.includes(file);
+/** @param {string} file */
 const isHarnessConfig = (file) =>
   file === 'scripts/design-check.config.mjs' || file === 'scripts/stylelint-design-tokens.mjs';
+const parkedSources = new Set(JSON.parse(readFileSync(join(ROOT, 'scripts/quality-parked-sources.json'), 'utf8')));
+/** @type {Array<{path:string}>} */
+const typeOnlyManifest = JSON.parse(readFileSync(join(ROOT, 'scripts/quality-type-sources.json'), 'utf8'));
+/** @type {Array<{path:string}>} */
+const fallbackManifest = JSON.parse(readFileSync(join(ROOT, 'scripts/quality-extension-sources.json'), 'utf8'));
+const typeOnlySources = new Set(typeOnlyManifest.map((entry) => entry.path));
+const fallbackSources = new Set(fallbackManifest.map((entry) => entry.path));
 
+/** @param {Scope} scope @param {string} mode */
 function planChecks(scope, mode) {
-  const files = scope.files;
-  const all = files === null;
+  const all = scope.files === null;
+  const files = scope.files ?? [];
 
   const touchesCss = all || files.some(isCss);
   const touchesScript = all || files.some(isScript);
@@ -164,14 +196,22 @@ function planChecks(scope, mode) {
   };
 }
 
-/** Routes a changed file is known to affect. No dependency graph in v1. */
+/** Routes a changed file is known to affect; the full gate also checks the build graph. */
+/** @param {Scope} scope */
 function consumersFor(scope) {
   if (scope.files === null) return { routes: RENDER_TARGETS, unmapped: [] };
 
+  /** @type {typeof RENDER_TARGETS} */
   const routes = [];
+  /** @type {string[]} */
   const unmapped = [];
-  for (const file of scope.files) {
+  for (const file of scope.files ?? []) {
     if (!isUiSource(file)) continue;
+    if (file === 'index.html') {
+      for (const target of RENDER_TARGETS) if (!routes.includes(target)) routes.push(target);
+      continue;
+    }
+    if (parkedSources.has(file) || typeOnlySources.has(file) || fallbackSources.has(file)) continue;
     const matched = RENDER_TARGETS.filter((target) =>
       target.sources.some((pattern) => new RegExp(pattern).test(file)));
     if (matched.length === 0) unmapped.push(file);
@@ -211,9 +251,12 @@ const { routes, unmapped } = consumersFor(scope);
 let eslintOutput = '';
 const checked = [];
 const skipped = [];
+/** @type {Array<{check:string,output:string}>} */
 const failures = [];
+/** @type {Array<{label:string,ms:number}>} */
 const timings = [];
 
+/** @template T @param {string} label @param {() => T} fn */
 function timed(label, fn) {
   const start = Date.now();
   const result = fn();
@@ -221,22 +264,22 @@ function timed(label, fn) {
   return result;
 }
 
-// --- JS/JSX ----------------------------------------------------------------
+// --- JS/TS -----------------------------------------------------------------
 if (plan.lintJs) {
   const [node, eslintBin] = nodeBin('node_modules/eslint/bin/eslint.js');
-  const targets = scope.files === null ? ['.'] : scope.files.filter(isScript);
+  const targets = scope.files?.filter(isScript) ?? ['.'];
   if (targets.length > 0) {
     const result = timed('eslint', () => run(node, [eslintBin, ...targets]));
     // Diagnostics only. ESLint's own exit code cannot distinguish a new
     // violation from debt that predates the rule, so the pass/fail decision
     // belongs to the ratchet below, which can.
-    checked.push('eslint (js/jsx) — diagnostics; gated by the ratchet');
+    checked.push('eslint (JS/TS) — diagnostics; gated by the ratchet');
     eslintOutput = result.stdout || result.stderr;
   } else {
-    skipped.push('eslint — no JS/JSX in scope');
+    skipped.push('eslint — no JS/TS in scope');
   }
 } else {
-  skipped.push('eslint — no JS/JSX in scope');
+  skipped.push('eslint — no JS/TS in scope');
 }
 
 // --- CSS tokens, against the debt baseline ---------------------------------
@@ -245,8 +288,8 @@ if (plan.ratchet) {
     run(process.execPath, [join(ROOT, 'scripts/design-baseline.mjs'), '--verify']));
   checked.push(
     plan.tokenScopeWidened
-      ? 'design rules across ALL maintained CSS + JSX (token registry or rule config changed)'
-      : 'design rules (CSS + static JSX) vs debt baseline',
+      ? 'design rules across ALL maintained CSS + JSX/TSX (token registry or rule config changed)'
+      : 'design rules (CSS + static JSX/TSX) vs debt baseline',
   );
   if (!result.ok) failures.push({ check: 'design rules', output: result.stdout || result.stderr });
 } else {
@@ -256,9 +299,19 @@ if (plan.ratchet) {
 // --- build -----------------------------------------------------------------
 if (plan.build) {
   const [node, viteBin] = nodeBin('node_modules/vite/bin/vite.js');
-  const result = timed('build', () => run(node, [viteBin, 'build']));
+  const graphPath = scope.kind === 'full'
+    ? `output/quality/graph-${process.pid}-${Date.now()}.json`
+    : null;
+  const result = timed('build', () => run(node, [viteBin, 'build'],
+    graphPath ? { PORTFOLIO_QUALITY_GRAPH_PATH: graphPath } : {}));
   checked.push('vite build');
   if (!result.ok) failures.push({ check: 'build', output: (result.stdout || result.stderr).slice(-2000) });
+  if (result.ok && graphPath) {
+    const scopeResult = timed('single-build source scope', () =>
+      run(process.execPath, [join(ROOT, 'scripts/quality-scope.mjs'), '--graph', graphPath]));
+    checked.push('single-build source scope and parked ownership');
+    if (!scopeResult.ok) failures.push({ check: 'source scope', output: [scopeResult.stdout, scopeResult.stderr].filter(Boolean).join('\n') });
+  }
 } else if (mode === 'fast') {
   skipped.push('build — fast mode does not build');
 } else if (plan.onlyRulesDocs) {
@@ -280,8 +333,12 @@ if (scope.files !== null && scope.files.length <= 12) {
   for (const file of scope.files) console.log(`  in scope  ${file}`);
 }
 if (scope.kind === 'base' && scope.untracked?.length) {
-  console.log(`\n  untracked source present (not in the diff, not checked):`);
+  console.log(`\n  untracked files included in scope:`);
   for (const file of scope.untracked.slice(0, 10)) console.log(`    ? ${file}`);
+}
+if (scope.kind === 'base' && scope.deleted?.length) {
+  console.log(`\n  deleted paths skipped as source; the current tree is checked:`);
+  for (const file of scope.deleted.slice(0, 10)) console.log(`    - ${file}`);
 }
 
 console.log('\nchecked:');

@@ -4,6 +4,7 @@ import js from '@eslint/js'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
+import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 import designTokens, { registryFromSources } from './scripts/eslint-design-tokens.mjs'
@@ -14,6 +15,7 @@ import { TOKEN_SOURCES } from './scripts/design-check.config.mjs'
 const tokenRegistry = registryFromSources(TOKEN_SOURCES.map((path) => readFileSync(path, 'utf8')))
 
 export default defineConfig([
+  { linterOptions: { noInlineConfig: true } },
   // Scope repair (AI-DESIGN-HARNESS-PLAN step 2). `eslint .` previously walked
   // build output, browser profiles under output/, scratch files and design
   // prototypes, which made a whole-repo run meaningless. Keep this list in sync
@@ -64,6 +66,27 @@ export default defineConfig([
     },
   },
 
+  {
+    files: ['src/**/*.{ts,tsx}'],
+    extends: [
+      js.configs.recommended,
+      ...tseslint.configs.recommended,
+      reactHooks.configs.flat.recommended,
+      reactRefresh.configs.vite,
+    ],
+    languageOptions: {
+      parser: tseslint.parser,
+      globals: globals.browser,
+    },
+    plugins: { design: designTokens },
+    rules: {
+      'no-undef': 'off',
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      'design/token-usage-jsx': ['warn', { registry: tokenRegistry }],
+    },
+  },
+
   // Maintained Node tooling: node globals, no React rules, but still linted —
   // the harness must not be the one part of the repo nobody checks.
   {
@@ -79,11 +102,40 @@ export default defineConfig([
     },
   },
 
+  {
+    files: ['scripts/**/*.{ts,mts,cts}', '*.config.{ts,mts}'],
+    extends: [js.configs.recommended, ...tseslint.configs.recommended],
+    languageOptions: {
+      parser: tseslint.parser,
+      globals: globals.node,
+    },
+    rules: {
+      'no-undef': 'off',
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    },
+  },
+
   // design-probe.mjs is genuinely dual-environment: node reads its target
   // definitions, and compareAgainstBefore() runs inside the page. Give it both
   // global sets rather than sprinkling eslint-disable comments over real code.
   {
     files: ['scripts/design-probe.mjs'],
+    languageOptions: {
+      globals: { ...globals.node, ...globals.browser },
+    },
+  },
+
+  // Playwright callbacks run in the browser even though their drivers run in
+  // Node. Keep these globals in config so inline directives cannot waive lint.
+  {
+    files: [
+      'scripts/modularization-capture.mjs',
+      'scripts/modularization-context-recovery.mjs',
+      'scripts/modularization-global-capture.mjs',
+      'scripts/modularization-media-smoke.mjs',
+      'scripts/modularization-runtime-lifecycle.mjs',
+    ],
     languageOptions: {
       globals: { ...globals.node, ...globals.browser },
     },

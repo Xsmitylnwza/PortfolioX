@@ -26,9 +26,9 @@ const messages = stylelint.utils.ruleMessages(ruleName, {
   unknownToken: (token, property, family) =>
     `"${token}" in "${property}" is not declared in the token registry. ` +
     `Declare it in a token source, or use an existing ${family} token.`,
-  wrongFamily: (token, tokenFamily, property, accepted) =>
+  wrongFamily: /** @type {(token:string,tokenFamily:string,property:string,accepted:string[])=>string} */ ((token, tokenFamily, property, accepted) =>
     `"${token}" is a ${tokenFamily} token but "${property}" accepts ${accepted.join(' or ')} tokens. ` +
-    `Reuse the semantic role that means the right thing rather than the value that looks closest.`,
+    `Reuse the semantic role that means the right thing rather than the value that looks closest.`),
   unclassifiedToken: (token, property, family) =>
     `"${token}" belongs to no token family, so it cannot stand in for a ${family} role on "${property}". ` +
     `Declaring a local custom property does not make its value a token — use an existing ${family} token.`,
@@ -59,6 +59,7 @@ const NAMED_COLORS = new Set([
 ]);
 
 /** Collect every custom property declared by the registry sources. */
+/** @param {import('postcss').Root} root @param {Array<[string,string]>} registrySources */
 function buildRegistry(root, registrySources) {
   const registry = new Map();
   for (const [, css] of registrySources) {
@@ -75,20 +76,24 @@ function buildRegistry(root, registrySources) {
   return registry;
 }
 
+/** @param {string} word */
 function isStructural(word) {
   const lower = word.toLowerCase();
   return STRUCTURAL_KEYWORDS.has(lower) || ZERO.test(lower) || lower.endsWith('%') || lower.endsWith('fr');
 }
 
+/** @param {string} word */
 function looksLikeRawColor(word) {
   const lower = word.toLowerCase();
   return HEX.test(lower) || NAMED_COLORS.has(lower);
 }
 
+/** @param {string} word */
 function looksLikeRawLength(word) {
   return LENGTH.test(word);
 }
 
+/** @type {import('stylelint').Rule<boolean, {registrySources?:Array<[string,string]>,propertyMap?:ReturnType<typeof governedPropertyMap>}>} */
 const ruleFunction = (primary, secondaryOptions = {}) => (root, result) => {
   const valid = stylelint.utils.validateOptions(result, ruleName, {
     actual: primary,
@@ -101,6 +106,7 @@ const ruleFunction = (primary, secondaryOptions = {}) => (root, result) => {
   const file = (root.source?.input?.from ?? '').replace(/\\/g, '/');
   const registry = buildRegistry(root, registrySources);
 
+/** @param {import('postcss').Declaration} decl @param {string} message @param {string | undefined} word */
   const report = (decl, message, word) => {
     stylelint.utils.report({
       ruleName,
@@ -116,7 +122,7 @@ const ruleFunction = (primary, secondaryOptions = {}) => (root, result) => {
     const family = propertyMap.get(property);
     if (!family) return;
 
-    const selector = decl.parent?.selector ?? '';
+    const selector = decl.parent?.type === 'rule' ? decl.parent.selector : '';
     if (exceptionFor({ file, family, selector })) return;
 
     const parsed = valueParser(decl.value);

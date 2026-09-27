@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 // Repeat real room transitions on one mounted app to catch canvas, RAF, and
 // global-listener accumulation before/after runtime module moves.
-/* global document, window, location */
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+/** @param {string} name @param {string} fallback */
 const option = (name, fallback) => {
   const index = process.argv.indexOf(name);
   return index < 0 ? fallback : process.argv[index + 1];
@@ -19,28 +19,36 @@ if (!output.startsWith(resolve(root, 'output/playwright') + sep) || existsSync(o
 }
 if (!/^http:\/\/127\.0\.0\.1:\d+$/.test(origin)) throw new Error('Use a local 127.0.0.1 origin');
 
+/** @type {Array<{id:string,width:number,height:number,reducedMotion:'reduce'|'no-preference',hasTouch:boolean}>} */
 const states = [
   { id: 'desktop-motion', width: 1440, height: 900, reducedMotion: 'no-preference', hasTouch: false },
   { id: 'mobile-fallback', width: 390, height: 844, reducedMotion: 'no-preference', hasTouch: true },
   { id: 'desktop-reduced', width: 1440, height: 900, reducedMotion: 'reduce', hasTouch: false },
 ];
+/** @type {Array<{state:string,failures:string[],[field:string]:unknown}>} */
 const results = [];
 const browser = await chromium.launch({ headless: true });
 
+/** @param {import('playwright').Page} page */
 async function sample(page) {
-  return page.evaluate(() => ({
+  return page.evaluate(() => {
+    const probe = /** @type {Window & {__runtimeProbe?:{raf:Set<number>,listeners:Set<string>}}} */ (window).__runtimeProbe;
+    if (!probe) throw new Error('Runtime probe missing');
+    return ({
     path: location.pathname,
     canvases: document.querySelectorAll('canvas').length,
     stageCanvases: document.querySelectorAll('.gallery-scene canvas').length,
     waveCanvases: document.querySelectorAll('.scroll-perspective-wave__canvas').length,
     stageConnected: Boolean(document.querySelector('.gallery-stage-layer .gallery-scene')),
     routePhase: document.querySelector('.route-shell')?.getAttribute('data-route-phase'),
-    activeRaf: window.__runtimeProbe.raf.size,
-    globalListeners: [...window.__runtimeProbe.listeners].sort(),
+    activeRaf: probe.raf.size,
+    globalListeners: [...probe.listeners].sort(),
     navigationCount: performance.getEntriesByType('navigation').length,
-  }));
+  });
+  });
 }
 
+/** @param {import('playwright').Page} page @param {string} path */
 async function navigateMenu(page, path) {
   await page.locator('.corner-menu__trigger').click();
   await page.locator(`.corner-menu__link[href="${path}"]`).click();
@@ -63,6 +71,7 @@ try {
     await context.addInitScript(() => {
       const nativeRaf = window.requestAnimationFrame.bind(window);
       const nativeCancel = window.cancelAnimationFrame.bind(window);
+      /** @type {Set<number>} */
       const raf = new Set();
       window.requestAnimationFrame = (callback) => {
         const id = nativeRaf((time) => { raf.delete(id); callback(time); });
@@ -72,28 +81,34 @@ try {
       window.cancelAnimationFrame = (id) => { raf.delete(id); nativeCancel(id); };
       const add = EventTarget.prototype.addEventListener;
       const remove = EventTarget.prototype.removeEventListener;
+      /** @type {WeakMap<EventListenerOrEventListenerObject,number>} */
       const listenerIds = new WeakMap();
       let nextId = 0;
+      /** @type {Set<string>} */
       const listeners = new Set();
+/** @param {EventTarget} target @param {string} type @param {EventListenerOrEventListenerObject | null} listener @param {boolean | AddEventListenerOptions | EventListenerOptions | undefined} options */
       const keyFor = (target, type, listener, options) => {
         if (!listener || (target !== window && target !== document)) return null;
         if (!listenerIds.has(listener)) listenerIds.set(listener, ++nextId);
         const capture = typeof options === 'boolean' ? options : Boolean(options?.capture);
         return `${target === window ? 'window' : 'document'}:${type}:${listenerIds.get(listener)}:${capture}`;
       };
+      /** @this {EventTarget} @param {string} type @param {EventListenerOrEventListenerObject | null} listener @param {boolean | AddEventListenerOptions} [options] */
       EventTarget.prototype.addEventListener = function (type, listener, options) {
         const key = keyFor(this, type, listener, options);
-        if (key && !options?.once) listeners.add(key);
+        if (key && !(typeof options === 'object' && options && 'once' in options && options.once)) listeners.add(key);
         return add.call(this, type, listener, options);
       };
+      /** @this {EventTarget} @param {string} type @param {EventListenerOrEventListenerObject | null} listener @param {boolean | EventListenerOptions} [options] */
       EventTarget.prototype.removeEventListener = function (type, listener, options) {
         const key = keyFor(this, type, listener, options);
         if (key) listeners.delete(key);
         return remove.call(this, type, listener, options);
       };
-      window.__runtimeProbe = { raf, listeners };
+      /** @type {Window & {__runtimeProbe?:{raf:Set<number>,listeners:Set<string>}}} */ (window).__runtimeProbe = { raf, listeners };
     });
     const page = await context.newPage();
+    /** @type {string[]} */
     const errors = [];
     page.on('pageerror', (error) => errors.push(error.message));
     page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
@@ -127,7 +142,7 @@ try {
           await page.waitForTimeout(120);
           const hidden = await sample(page);
           await page.evaluate(() => {
-            delete document.hidden;
+            Reflect.deleteProperty(document, 'hidden');
             document.dispatchEvent(new Event('visibilitychange'));
           });
           await page.waitForTimeout(180);
@@ -169,17 +184,17 @@ try {
         failures.push('final home resource count changed');
       }
       if (errors.length) failures.push(`${errors.length} browser errors`);
-      if (state.reducedMotion === 'no-preference'
+      if (visibilityProbe && state.reducedMotion === 'no-preference'
         && visibilityProbe.hidden.activeRaf >= visibilityProbe.beforeHide.activeRaf) {
         failures.push('visibility hide did not pause a scheduled RAF');
       }
-      if (visibilityProbe.restored.stageCanvases !== visibilityProbe.beforeHide.stageCanvases
-        || visibilityProbe.restored.waveCanvases !== visibilityProbe.beforeHide.waveCanvases) {
+      if (visibilityProbe && (visibilityProbe.restored.stageCanvases !== visibilityProbe.beforeHide.stageCanvases
+        || visibilityProbe.restored.waveCanvases !== visibilityProbe.beforeHide.waveCanvases)) {
         failures.push('visibility restore changed canvas count');
       }
       results.push({ state: state.id, baseline, cycles, final, visibilityProbe, errors, failures });
     } catch (error) {
-      results.push({ state: state.id, cycles, errors, failures: [error.message] });
+      results.push({ state: state.id, cycles, errors, failures: [error instanceof Error ? error.message : String(error)] });
     } finally {
       await context.close();
     }

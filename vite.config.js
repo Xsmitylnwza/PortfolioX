@@ -1,9 +1,11 @@
 ﻿import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { resolve } from 'node:path'
+import { qualityGraphPlugin } from './scripts/quality-graph.mjs'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), qualityGraphPlugin(resolve('.'))],
   build: {
     rollupOptions: {
       output: {

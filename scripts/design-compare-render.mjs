@@ -21,9 +21,14 @@ if (!afterPath) {
   process.exit(1);
 }
 
+/** @typedef {{id:string, found:boolean, values:Record<string,string>, box?:Record<string,number>, sentinel?:boolean}} RenderTarget */
+/** @typedef {{route:string, viewport:string, environment:{devicePixelRatio:number}, results:RenderTarget[]}} Capture */
+/** @type {{captures:Capture[]}} */
 const before = JSON.parse(readFileSync(BEFORE, 'utf8'));
+/** @type {{captures:Capture[]}} */
 const after = JSON.parse(readFileSync(resolve(afterPath), 'utf8'));
 
+/** @param {Capture} capture */
 const key = (capture) => `${capture.route}/${capture.viewport}`;
 const beforeByKey = new Map(before.captures.map((c) => [key(c), c]));
 

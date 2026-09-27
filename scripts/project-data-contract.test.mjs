@@ -1,6 +1,7 @@
+// @ts-check
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { featuredProjects, galleryMediaRevision, projects } from '../src/data/projects.js';
+import { featuredProjects, galleryMediaRevision, projects } from '../src/data/projects.ts';
 
 const PROJECT_ORDER = [
   'modenote',
@@ -39,7 +40,7 @@ test('gallery copy stays aligned with media and every media source is a local as
     assert.equal(project.galleryDescriptions?.length || 0, gallery.length, `${project.id} descriptions`);
     for (const media of [project.heroMedia, ...gallery]) {
       if (!media) continue;
-      const sources = typeof media === 'string' ? [media] : [media.image, media.video].filter(Boolean);
+      const sources = typeof media === 'string' ? [media] : [media.image, media.video].filter((source) => typeof source === 'string');
       assert.ok(sources.length > 0, `${project.id} empty media record`);
       for (const source of sources) assert.ok(source.startsWith('/assets/'), `${project.id} ${source}`);
     }

@@ -1,3 +1,4 @@
+// @ts-check
 // Maintained source scope for the design harness.
 // Single definition shared by the snapshot capture and (later) the checker,
 // so "what we hashed" and "what we lint" can never drift apart.
@@ -7,6 +8,8 @@ import { sep } from 'node:path';
 export const MAINTAINED_UI_GLOBS = [
   'src/**/*.js',
   'src/**/*.jsx',
+  'src/**/*.ts',
+  'src/**/*.tsx',
   'src/**/*.css',
   'index.html',
 ];
@@ -29,10 +32,12 @@ export const EXCLUDED_DIRS = [
 
 export const EXCLUDED_PREFIXES = ['tmp-'];
 
+/** @param {string} path */
 export function toPosix(path) {
   return sep === '/' ? path : path.split(sep).join('/');
 }
 
+/** @param {string} relPath */
 export function isExcluded(relPath) {
   const [head] = toPosix(relPath).split('/');
   if (EXCLUDED_DIRS.includes(head)) return true;

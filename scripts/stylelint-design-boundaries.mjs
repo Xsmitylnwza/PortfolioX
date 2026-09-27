@@ -32,6 +32,7 @@ const messages = stylelint.utils.ruleMessages(ruleName, {
     `Position the component from the outside and change the recipe in its own file.`,
 });
 
+/** @type {import('stylelint').Rule<boolean>} */
 const ruleFunction = (primary) => (root, result) => {
   const valid = stylelint.utils.validateOptions(result, ruleName, {
     actual: primary,
@@ -43,7 +44,7 @@ const ruleFunction = (primary) => (root, result) => {
 
   root.walkDecls((decl) => {
     if (!decl.important) return;
-    const selector = decl.parent?.selector ?? '';
+    const selector = decl.parent?.type === 'rule' ? decl.parent.selector : '';
     const allowed = IMPORTANT_ALLOWANCES.some((allowance) =>
       (file === allowance.file || file.endsWith(`/${allowance.file}`)) &&
       (!allowance.selectorPattern || new RegExp(allowance.selectorPattern).test(selector)) &&

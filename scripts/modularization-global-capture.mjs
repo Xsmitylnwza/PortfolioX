@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 // Browser evidence for global CSS ownership moves across every active room.
-/* global document, getComputedStyle, innerWidth, innerHeight, devicePixelRatio, matchMedia, location */
 
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -17,11 +16,13 @@ const ROUTES = [
   { id: 'contact', path: '/contact', root: '.engine-section--contact', title: '.engine-hero h1' },
   { id: 'persona', path: '/persona', root: '.p3-page', title: '.p3-command h1' },
 ];
+/** @type {Array<{id:string,width:number,height:number,reducedMotion:'reduce'|'no-preference',hasTouch:boolean}>} */
 const STATES = [
   { id: 'desktop-motion', width: 1440, height: 900, reducedMotion: 'no-preference', hasTouch: false },
   { id: 'mobile-fallback', width: 390, height: 844, reducedMotion: 'no-preference', hasTouch: true },
   { id: 'desktop-reduced', width: 1440, height: 900, reducedMotion: 'reduce', hasTouch: false },
 ];
+/** @param {string} name @param {string} fallback */
 const option = (name, fallback) => {
   const index = process.argv.indexOf(name);
   return index === -1 ? fallback : process.argv[index + 1];
@@ -33,6 +34,7 @@ if (!output.startsWith(`${OUTPUT_ROOT}${sep}`) || existsSync(output)) {
   throw new Error(`Output must be a new child of ${OUTPUT_ROOT}`);
 }
 if (!/^https?:\/\/127\.0\.0\.1:\d+$/.test(origin)) throw new Error('Expected a dedicated local server URL');
+/** @type {{files:Array<{path:string,sha256:string}>,treeHash:string} | null} */
 const sourceManifest = sourceManifestPath
   ? JSON.parse(readFileSync(resolve(ROOT, sourceManifestPath), 'utf8'))
   : null;
@@ -43,6 +45,7 @@ if (sourceManifest) {
 }
 mkdirSync(join(output, 'screenshots'), { recursive: true });
 
+/** @param {import('playwright').Page} page @param {(typeof ROUTES)[number]} route */
 async function snapshot(page, route) {
   return page.evaluate((config) => {
     const root = document.querySelector(config.root);
@@ -86,7 +89,7 @@ async function snapshot(page, route) {
     const headings = [...(root?.querySelectorAll('h1,h2,h3') || [])].map((heading) => ({
       tag: heading.tagName.toLowerCase(),
       id: heading.id,
-      text: heading.textContent.trim().replace(/\s+/g, ' '),
+      text: heading.textContent?.trim().replace(/\s+/g, ' ') ?? '',
     }));
     const media = [...(root?.querySelectorAll('img,video,source') || [])].map((element) => ({
       tag: element.tagName.toLowerCase(),
@@ -99,7 +102,7 @@ async function snapshot(page, route) {
       '[data-wave-follow] > img', '[data-wave-follow] > video',
       '[data-wave-follow] > picture > img',
     ].join(',')).length || 0;
-    const text = config.id === 'persona' ? '' : (root?.innerText || '').replace(/\s+/g, ' ').trim();
+    const text = config.id === 'persona' ? '' : (root instanceof HTMLElement ? root.innerText : '').replace(/\s+/g, ' ').trim();
     return {
       title: title?.textContent?.trim().replace(/\s+/g, ' ') || null,
       text,
@@ -120,9 +123,13 @@ async function snapshot(page, route) {
   }, route);
 }
 
+/** @typedef {{key:string,route:string,state:string,[field:string]:unknown}} Capture */
+/** @param {import('playwright').BrowserContext} context @param {(typeof ROUTES)[number]} route @param {(typeof STATES)[number]} state @param {Capture[]} captures @param {string[]} failures */
 async function captureRoute(context, route, state, captures, failures) {
   const page = await context.newPage();
+  /** @type {string[]} */
   const consoleErrors = [];
+  /** @type {string[]} */
   const pageErrors = [];
   page.on('console', (message) => { if (message.type() === 'error') consoleErrors.push(message.text()); });
   page.on('pageerror', (error) => pageErrors.push(error.message));
@@ -143,23 +150,23 @@ async function captureRoute(context, route, state, captures, failures) {
     await page.evaluate(async () => { await document.fonts.ready; });
     await page.waitForTimeout(route.id === 'home' ? 1200 : 350);
     const data = await snapshot(page, route);
-    data.textHash = createHash('sha256').update(data.text).digest('hex');
-    delete data.text;
+    const { text, ...snapshotData } = data;
     const screenshot = `screenshots/${route.id}-${state.id}.png`;
     await page.screenshot({ path: join(output, screenshot), animations: 'disabled' });
-    captures.push({ key, route: route.path, state: state.id, screenshot, ...data,
+    captures.push({ key, route: route.path, state: state.id, screenshot, ...snapshotData, textHash: createHash('sha256').update(text).digest('hex'),
       interaction: { applicable: false, reason: 'global style capture' }, consoleErrors, pageErrors });
     if (!data.title || pageErrors.length) failures.push(`${key}: missing title or page error`);
     console.log(`${key}: ${data.targets.length} style targets`);
   } catch (error) {
-    captures.push({ key, route: route.path, state: state.id, error: error.message, consoleErrors, pageErrors });
-    failures.push(`${key}: ${error.message}`);
-    console.error(`${key}: ${error.message}`);
+    captures.push({ key, route: route.path, state: state.id, error: error instanceof Error ? error.message : String(error), consoleErrors, pageErrors });
+    failures.push(`${key}: ${error instanceof Error ? error.message : String(error)}`);
+    console.error(`${key}: ${error instanceof Error ? error.message : String(error)}`);
   } finally {
     await page.close();
   }
 }
 
+/** @param {import('playwright').BrowserContext} context @param {(typeof STATES)[number]} state @param {string[]} failures */
 async function navigationSmoke(context, state, failures) {
   const page = await context.newPage();
   try {
@@ -178,15 +185,17 @@ async function navigationSmoke(context, state, failures) {
       null, { timeout: 30000 });
     return { state: state.id, pass: true };
   } catch (error) {
-    failures.push(`navigation/${state.id}: ${error.message}`);
-    return { state: state.id, pass: false, error: error.message };
+    failures.push(`navigation/${state.id}: ${error instanceof Error ? error.message : String(error)}`);
+    return { state: state.id, pass: false, error: error instanceof Error ? error.message : String(error) };
   } finally {
     await page.close();
   }
 }
 
 const browser = await chromium.launch({ headless: true });
+/** @type {Capture[]} */
 const captures = [];
+/** @type {string[]} */
 const failures = [];
 const navigation = [];
 try {

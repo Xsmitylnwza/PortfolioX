@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// @ts-check
 // Capture the task-start source snapshot required by AI-DESIGN-HARNESS-PLAN step 1.
 //
 // Writes a copy of every maintained UI source plus a manifest recording git
@@ -19,11 +20,13 @@ import { MAINTAINED_UI_GLOBS, isExcluded, toPosix } from './design-scope.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
+/** @param {string} name @param {string} fallback */
 function arg(name, fallback) {
   const i = process.argv.indexOf(name);
   return i === -1 ? fallback : process.argv[i + 1];
 }
 
+/** @param {string[]} args */
 function git(...args) {
   try {
     return execFileSync('git', args, { cwd: ROOT, encoding: 'utf8' }).trim();

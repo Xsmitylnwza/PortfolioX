@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 // Exercise the persistent gallery canvas through a real WebGL context loss.
-/* global document, window */
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+/** @param {string} name @param {string} fallback */
 const option = (name, fallback) => {
   const index = process.argv.indexOf(name);
   return index < 0 ? fallback : process.argv[index + 1];
@@ -20,6 +20,7 @@ if (!output.startsWith(resolve(root, 'output/playwright') + sep) || existsSync(o
 }
 const browser = await chromium.launch({ headless: true });
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+/** @type {string[]} */
 const errors = [];
 page.on('pageerror', (error) => errors.push(error.message));
 page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
@@ -27,11 +28,12 @@ page.on('console', (message) => { if (message.type() === 'error') errors.push(me
 async function pixels() {
   return page.evaluate((selector) => {
     const canvas = document.querySelector(selector);
-    if (!canvas) return { present: false, opaquePixels: 0 };
+    if (!(canvas instanceof HTMLCanvasElement)) return { present: false, opaquePixels: 0 };
     const probe = document.createElement('canvas');
     probe.width = 36;
     probe.height = 24;
     const context = probe.getContext('2d', { willReadFrequently: true });
+    if (!context) throw new Error('2D probe context unavailable');
     context.drawImage(canvas, 0, 0, probe.width, probe.height);
     const data = context.getImageData(0, 0, probe.width, probe.height).data;
     let opaquePixels = 0;
@@ -40,7 +42,7 @@ async function pixels() {
     }
     return { present: true, opaquePixels,
       marker: canvas.getAttribute('data-context-probe'),
-      waveActive: Boolean(window.__scrollPerspectiveWave?.active),
+      waveActive: Boolean(/** @type {Window & {__scrollPerspectiveWave?:{active:boolean}}} */ (window).__scrollPerspectiveWave?.active),
     };
   }, canvasSelector);
 }
@@ -54,21 +56,24 @@ try {
   await page.waitForTimeout(1200);
   const before = await pixels();
   await page.evaluate((selector) => {
-    document.querySelector(selector).setAttribute('data-context-probe', 'before');
+    const canvas = document.querySelector(selector);
+    if (!canvas) throw new Error('Probe canvas disappeared');
+    canvas.setAttribute('data-context-probe', 'before');
   }, canvasSelector);
   await page.screenshot({ path: output.replace(/\.json$/, '-before.png') });
   const extension = await page.evaluate((selector) => {
     const canvas = document.querySelector(selector);
+    if (!(canvas instanceof HTMLCanvasElement)) throw new Error('WebGL canvas unavailable');
     const gl = canvas.getContext('webgl2') || canvas.getContext('webgl');
     const lose = gl?.getExtension('WEBGL_lose_context');
     if (!lose) return false;
-    window.__wave4LoseContext = lose;
+    /** @type {Window & {__wave4LoseContext?:WEBGL_lose_context}} */ (window).__wave4LoseContext = lose;
     lose.loseContext();
     return true;
   }, canvasSelector);
   if (extension) {
     await page.waitForTimeout(200);
-    await page.evaluate(() => window.__wave4LoseContext.restoreContext());
+    await page.evaluate(() => /** @type {Window & {__wave4LoseContext?:WEBGL_lose_context}} */ (window).__wave4LoseContext?.restoreContext());
     await page.waitForTimeout(1800);
   }
   const after = await pixels();
@@ -79,7 +84,7 @@ try {
       && (isWave ? after.waveActive : before.opaquePixels > 0 && after.opaquePixels > 0)
       && errors.length === 0 };
 } catch (error) {
-  report = { error: error.message, errors, pass: false };
+  report = { error: error instanceof Error ? error.message : String(error), errors, pass: false };
 } finally {
   await browser.close();
 }

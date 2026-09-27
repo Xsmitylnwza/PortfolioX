@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 // Current-tree browser baseline for the Project Details modularization pilot.
 // Writes only under output/playwright and refuses to overwrite an existing run.
-/* global document, getComputedStyle, innerWidth, innerHeight, devicePixelRatio, matchMedia, window, location */
 
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -21,12 +20,14 @@ const ROUTES = [
   { id: 'decrypt', path: '/project/decrypt-password' },
   { id: 'keshi-next', path: '/project/keshi-pomodoro?layout=next' },
 ];
+/** @type {Array<{id:string,width:number,height:number,reducedMotion:'reduce'|'no-preference',hasTouch:boolean}>} */
 const STATES = [
   { id: 'desktop-motion', width: 1440, height: 900, reducedMotion: 'no-preference', hasTouch: false },
   { id: 'mobile-fallback', width: 390, height: 844, reducedMotion: 'no-preference', hasTouch: true },
   { id: 'desktop-reduced', width: 1440, height: 900, reducedMotion: 'reduce', hasTouch: false },
 ];
 
+/** @param {string} name @param {string} fallback */
 function option(name, fallback) {
   const index = process.argv.indexOf(name);
   return index === -1 ? fallback : process.argv[index + 1];
@@ -53,6 +54,7 @@ if (!/^https?:\/\/127\.0\.0\.1:\d+$/.test(origin)) {
   throw new Error('Use a dedicated local server URL such as http://127.0.0.1:5187');
 }
 
+/** @type {{files:Array<{path:string,sha256:string}>,treeHash:string} | null} */
 const sourceManifest = sourceManifestPath
   ? JSON.parse(readFileSync(resolve(ROOT, sourceManifestPath), 'utf8'))
   : null;
@@ -67,13 +69,17 @@ if (sourceManifest) {
 }
 mkdirSync(join(output, 'screenshots'), { recursive: true });
 const browser = await chromium.launch({ headless: true });
+/** @type {Array<{key:string,route:string,state:string,[field:string]:unknown}>} */
 const captures = [];
+/** @type {string[]} */
 const failures = [];
 
+/** @param {string} value */
 function hash(value) {
   return createHash('sha256').update(value).digest('hex');
 }
 
+/** @param {import('playwright').Page} page */
 async function domSnapshot(page) {
   return page.evaluate(() => {
     const root = document.querySelector('#project-details');
@@ -134,7 +140,7 @@ async function domSnapshot(page) {
     const headings = [...(root?.querySelectorAll('h1,h2,h3') || [])].map((heading) => ({
       tag: heading.tagName.toLowerCase(),
       id: heading.id,
-      text: heading.textContent.trim().replace(/\s+/g, ' '),
+      text: heading.textContent?.trim().replace(/\s+/g, ' ') ?? '',
     }));
     const directMedia = root?.querySelectorAll([
       '[data-wave-follow] > img',
@@ -143,7 +149,7 @@ async function domSnapshot(page) {
     ].join(',')).length || 0;
     return {
       title: root?.querySelector('#case-title')?.textContent?.trim() || null,
-      text: root?.innerText?.replace(/\s+/g, ' ').trim() || '',
+      text: root instanceof HTMLElement ? root.innerText.replace(/\s+/g, ' ').trim() : '',
       headings,
       targets,
       frames,
@@ -162,6 +168,7 @@ async function domSnapshot(page) {
   });
 }
 
+/** @param {import('playwright').Page} page */
 async function mediaInteraction(page) {
   const frame = page.locator('button.case-media__frame--expandable').first();
   if (await frame.count() === 0) return { applicable: false, reason: 'no expandable frame' };
@@ -203,9 +210,12 @@ async function mediaInteraction(page) {
   };
 }
 
+/** @param {import('playwright').BrowserContext} context @param {(typeof ROUTES)[number]} route @param {(typeof STATES)[number]} state */
 async function captureRoute(context, route, state) {
   const page = await context.newPage();
+  /** @type {string[]} */
   const consoleErrors = [];
+  /** @type {string[]} */
   const pageErrors = [];
   page.on('console', (message) => { if (message.type() === 'error') consoleErrors.push(message.text()); });
   page.on('pageerror', (error) => pageErrors.push(error.message));
@@ -217,28 +227,30 @@ async function captureRoute(context, route, state) {
       return section && section.closest('[data-route-phase]')?.getAttribute('data-route-phase') === 'active';
     }, null, { timeout: 30000 });
     await page.evaluate(async () => { await document.fonts.ready; });
-    await page.waitForTimeout(350);
+    // The room can become active before its CSS enter transition settles.
+    // Capture computed styles after that animation, not midway through it.
+    await page.waitForTimeout(1500);
     await page.evaluate(() => window.scrollTo(0, 0));
     const snapshot = await domSnapshot(page);
-    snapshot.textHash = hash(snapshot.text);
-    delete snapshot.text;
+    const { text, ...snapshotData } = snapshot;
     const screenshot = `screenshots/${route.id}-${state.id}.png`;
     await page.screenshot({ path: join(output, screenshot), animations: 'disabled' });
     const interaction = await mediaInteraction(page);
     if (interaction.applicable && !interaction.pass) failures.push(`${key}: lightbox interaction failed`);
-    const capture = { key, route: route.path, state: state.id, screenshot, ...snapshot, interaction, consoleErrors, pageErrors };
+    const capture = { key, route: route.path, state: state.id, screenshot, ...snapshotData, textHash: hash(text), interaction, consoleErrors, pageErrors };
     if (pageErrors.length) failures.push(`${key}: ${pageErrors.length} page error(s)`);
     captures.push(capture);
     console.log(`${key}: ${snapshot.frames.length} frames, media ${interaction.applicable ? (interaction.pass ? 'PASS' : 'FAIL') : 'N/A'}`);
   } catch (error) {
-    failures.push(`${key}: ${error.message}`);
-    captures.push({ key, route: route.path, state: state.id, error: error.message, consoleErrors, pageErrors });
-    console.error(`${key}: ${error.message}`);
+    failures.push(`${key}: ${error instanceof Error ? error.message : String(error)}`);
+    captures.push({ key, route: route.path, state: state.id, error: error instanceof Error ? error.message : String(error), consoleErrors, pageErrors });
+    console.error(`${key}: ${error instanceof Error ? error.message : String(error)}`);
   } finally {
     await page.close();
   }
 }
 
+/** @param {import('playwright').BrowserContext} context @param {(typeof STATES)[number]} state */
 async function captureHomeNavigation(context, state) {
   const page = await context.newPage();
   try {
@@ -277,8 +289,8 @@ async function captureHomeNavigation(context, state) {
     const returnedHome = new URL(page.url()).pathname === '/';
     return { state: state.id, reachedProject, returnedHome, pass: reachedProject && returnedHome };
   } catch (error) {
-    failures.push(`navigation/${state.id}: ${error.message}`);
-    return { state: state.id, pass: false, error: error.message };
+    failures.push(`navigation/${state.id}: ${error instanceof Error ? error.message : String(error)}`);
+    return { state: state.id, pass: false, error: error instanceof Error ? error.message : String(error) };
   } finally {
     await page.close();
   }

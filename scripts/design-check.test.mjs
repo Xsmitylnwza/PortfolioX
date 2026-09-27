@@ -11,6 +11,7 @@ import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 
 import stylelint from 'stylelint';
+import { ESLint } from 'eslint';
 
 import { TOKEN_SOURCES, governedPropertyMap, selectorSubjects, strictScopeFor } from './design-check.config.mjs';
 import { fingerprint as fingerprintOf, newViolations } from './design-baseline.mjs';
@@ -24,11 +25,13 @@ const config = {
   },
 };
 
+/** @param {string} code @param {string} [codeFilename] */
 async function lintCss(code, codeFilename = 'src/components/Fixture.css') {
   const { results } = await stylelint.lint({ code, codeFilename, config });
   return results[0].warnings;
 }
 
+/** @param {string | string[]} files */
 async function lintFile(files) {
   const { results } = await stylelint.lint({ files, config });
   return results.flatMap((result) => result.warnings);
@@ -91,6 +94,7 @@ test('registered exception is scoped to declared families, not the whole file or
   // point to a reason for.
   const { EXCEPTIONS } = await import('./design-check.config.mjs');
   const glass = EXCEPTIONS.find((e) => e.id === 'keshi-liquid-glass-material');
+  assert.ok(glass, 'Keshi material exception must exist');
   assert.deepEqual(glass.families, ['color', 'spacing', 'shape']);
   assert.ok(!glass.families.includes('typography'));
   assert.ok(glass.reason.length > 40, 'an exception must carry a stated reason');
@@ -252,6 +256,7 @@ test('composite allowance does not leak to a simple property', async () => {
 // --- strict migrated scope (step 3) -----------------------------------------
 
 test('strict scope matches the selector subject, not any mention', () => {
+  /** @type {Array<[string,boolean]>} */
   const cases = [
     ['.case-section .case-media__frame.case-media__frame--cover', true],
     ['.case-media__frame--expandable:hover', true],
@@ -326,6 +331,7 @@ const boundaryConfig = {
 };
 void boundaries;
 
+/** @param {string} code @param {string} [codeFilename] */
 async function lintBoundaries(code, codeFilename = 'src/components/Fixture.css') {
   const { results } = await stylelint.lint({ code, codeFilename, config: boundaryConfig });
   return results[0].warnings;
@@ -455,6 +461,7 @@ test('prune retires fixed debt and never adds', () => {
   const baseline = { [fixed]: 1, [still]: 3 };
   const current = new Map([[still, 2], [fresh, 1]]);
 
+  /** @type {Record<string,number>} */
   const pruned = {};
   for (const [key, allowed] of Object.entries(baseline)) {
     const actual = current.get(key) ?? 0;
@@ -466,4 +473,28 @@ test('prune retires fixed debt and never adds', () => {
   assert.equal(pruned[still], 2, 'a partially fixed violation has its count lowered');
   assert.ok(!(fresh in pruned), 'prune never grants an allowance that was not already there');
   assert.ok(Object.keys(pruned).length < Object.keys(baseline).length);
+});
+
+test('moved JSX debt keeps exact line identity and cannot gain an occurrence', () => {
+  const original = fingerprintOf({ rule: 'design/token-usage-jsx', path: 'src/components/TVModal.jsx', declaration: "boxShadow: '0 0 5px red'" });
+  const moved = fingerprintOf({ rule: 'design/token-usage-jsx', path: 'src/components/TVModal.tsx', declaration: "boxShadow: '0 0 5px red'" });
+  const changed = fingerprintOf({ rule: 'design/token-usage-jsx', path: 'src/components/TVModal.tsx', declaration: "boxShadow: '0 0 6px red'" });
+  assert.equal(moved, original);
+  assert.notEqual(changed, original);
+  assert.equal(newViolations({ [original]: 1 }, new Map([[moved, 2]])).length, 1);
+  assert.equal(newViolations({ [original]: 1 }, new Map([[changed, 1]])).length, 1);
+});
+
+test('tsx receives the same static style token rule as jsx', async () => {
+  const eslint = new ESLint();
+  const [bad] = await eslint.lintText(
+    'export default function Fixture() { return <div style={{ color: "#ffffff" }} />; }',
+    { filePath: 'src/DesignTokenFixture.tsx' },
+  );
+  const [good] = await eslint.lintText(
+    'export default function Fixture() { return <div style={{ color: "var(--color-detail-ink)" }} />; }',
+    { filePath: 'src/DesignTokenFixture.tsx' },
+  );
+  assert.ok(bad.messages.some((message) => message.ruleId === 'design/token-usage-jsx'));
+  assert.ok(!good.messages.some((message) => message.ruleId === 'design/token-usage-jsx'));
 });

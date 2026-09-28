@@ -1,0 +1,174 @@
+import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { projects } from '../data/projects';
+import './Loader.css';
+
+// Boot posters mirror gallery covers only — one signature image per selected system.
+const loaderProjects = [
+    ['modenote', 'MODENOTE'],
+    ['freeflow', 'FREEFLOW'],
+    ['veluma', 'VELUMA'],
+    ['keshi-pomodoro', 'KESHI'],
+].map(([projectId, title], index) => {
+    const project = projects.find((item) => item.id === projectId);
+    if (!project) throw new Error(`Missing loader project: ${projectId}`);
+    return { id: String(index + 1).padStart(2, '0'), title, image: project.coverImage };
+});
+
+const loaderSequence = [...loaderProjects, ...loaderProjects.slice(0, 3)];
+
+const Loader = ({ onRevealReady, onLoadingComplete }: { onRevealReady: () => void; onLoadingComplete: () => void }) => {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const counterRef = useRef<HTMLSpanElement>(null);
+
+    useEffect(() => {
+        const container = containerRef.current;
+        if (!container) return undefined;
+
+        document.documentElement.classList.remove('portfolio-ready');
+        document.documentElement.classList.add('loader-active');
+        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        let cancelled = false;
+        let completionTimer = 0;
+        let completed = false;
+        let revealReady = false;
+        let portfolioRevealStarted = false;
+        const startPortfolioRevealOnce = () => {
+            if (cancelled || portfolioRevealStarted) return;
+            portfolioRevealStarted = true;
+            document.documentElement.classList.add('portfolio-ready');
+            document.dispatchEvent(new CustomEvent('portfolio:reveal-start'));
+        };
+        const prepareRevealOnce = () => {
+            if (cancelled || revealReady) return;
+            revealReady = true;
+            onRevealReady?.();
+        };
+        const completeOnce = () => {
+            if (completed || cancelled) return;
+            completed = true;
+            prepareRevealOnce();
+            startPortfolioRevealOnce();
+            onLoadingComplete?.();
+        };
+
+        const preloadSources = [...new Set(loaderProjects.map(({ image }) => image))];
+        const preload = preloadSources.map((image) => new Promise<void>((resolve) => {
+            const asset = new Image();
+            const settle = async () => {
+                try {
+                    await asset.decode?.();
+                } catch {
+                    // Decoding can reject for already-decoded or unsupported assets.
+                }
+                resolve();
+            };
+            asset.onload = settle;
+            asset.onerror = settle;
+            asset.src = image;
+        }));
+
+        if (reducedMotion) {
+            if (counterRef.current) counterRef.current.textContent = '100';
+            void Promise.all(preload).then(() => {
+                if (!cancelled) completionTimer = window.setTimeout(completeOnce, 180);
+            });
+            return () => {
+                cancelled = true;
+                window.clearTimeout(completionTimer);
+                document.documentElement.classList.remove('loader-active');
+            };
+        }
+
+        const safetyTimer = window.setTimeout(completeOnce, 7200);
+        const ctx = gsap.context(() => {
+            const frames = gsap.utils.toArray<HTMLElement>('.loader-frame');
+            const referenceFrame = frames[frames.length - 1];
+            if (!referenceFrame) return;
+            const frameBounds = referenceFrame.getBoundingClientRect();
+            const count = { value: 0 };
+            gsap.set(frames, { autoAlpha: 0, scale: 0.035, force3D: true });
+            gsap.set('.loader-counter', { autoAlpha: 0 });
+            gsap.set('.loader-wipe', {
+                autoAlpha: 0,
+                width: 0,
+                height: 0,
+                xPercent: -50,
+                yPercent: -50,
+                force3D: true,
+            });
+
+            const timeline = gsap.timeline({ defaults: { overwrite: 'auto' } });
+            timeline
+                .to('.loader-counter', { autoAlpha: 1, duration: 0.3, ease: 'none' })
+                .to(count, {
+                    value: 100,
+                    duration: 2.55,
+                    ease: 'sine.inOut',
+                    snap: { value: 1 },
+                    onUpdate: () => {
+                        if (counterRef.current) counterRef.current.textContent = String(Math.round(count.value));
+                    },
+                }, 0);
+
+            frames.forEach((frame, index) => {
+                const at = 0.14 + index * 0.227;
+                timeline
+                    .set(frame, { autoAlpha: 1 }, at)
+                    .to(frame, { scale: 1, duration: 0.453, ease: 'power2.out', force3D: true }, at);
+            });
+
+            timeline
+                .to('.loader-wipe', {
+                    autoAlpha: 1,
+                    width: frameBounds.width,
+                    height: frameBounds.height,
+                    duration: 0.72,
+                    ease: 'power3.inOut',
+                }, 2.58)
+                .to('.loader-counter', { autoAlpha: 0, duration: 0.28, ease: 'sine.out' }, 3.08)
+                .to('.loader-wipe', {
+                    width: window.innerWidth + 2,
+                    height: window.innerHeight + 2,
+                    duration: 0.94,
+                    ease: 'power3.inOut',
+                }, 3.8)
+                .call(prepareRevealOnce, undefined, 3.34)
+                .set('.loader-stage', { autoAlpha: 0 }, 4.77)
+                .set(container, { backgroundColor: 'transparent' }, 4.77)
+                .call(startPortfolioRevealOnce, undefined, 4.84)
+                .to('.loader-wipe', {
+                    autoAlpha: 0,
+                    duration: 0.86,
+                    ease: 'sine.inOut',
+                    force3D: true,
+                }, 4.9)
+                .call(() => { void Promise.all(preload).then(completeOnce); });
+        }, container);
+
+        return () => {
+            cancelled = true;
+            window.clearTimeout(safetyTimer);
+            window.clearTimeout(completionTimer);
+            ctx.revert();
+            document.documentElement.classList.remove('loader-active');
+        };
+    }, [onRevealReady, onLoadingComplete]);
+
+    return (
+        <div ref={containerRef} className="loader-container" role="status" aria-live="polite" aria-label="Loading selected work">
+            <span ref={counterRef} className="loader-counter" aria-hidden="true">0</span>
+
+            <div className="loader-stage" aria-hidden="true">
+                {loaderSequence.map((project, index) => (
+                    <figure key={`${project.id}-${index}`} className={`loader-frame loader-frame--${(index % 3) + 1}`}>
+                        <img src={project.image} alt="" decoding="async" fetchPriority={index < 2 ? 'high' : 'auto'} />
+                    </figure>
+                ))}
+            </div>
+            <span className="loader-wipe" aria-hidden="true" />
+        </div>
+    );
+};
+
+export default Loader;

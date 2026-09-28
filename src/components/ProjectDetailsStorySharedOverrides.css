@@ -1,0 +1,118 @@
+
+/* Keshi — atmosphere becomes rhythm, rhythm becomes evidence                  */
+/* -------------------------------------------------------------------------- */
+/* Hermes-centered behavior loop. The WebGL scroll wave moves each slot while
+   these paths only explain data direction inside the product story. */
+/* -------------------------------------------------------------------------- */
+/* Decrypt — pressure escalates into a branching outcome                       */
+/* -------------------------------------------------------------------------- */
+/* -------------------------------------------------------------------------- */
+/* Shared responsive rules for Keshi and Decrypt; Decrypt retains the legacy
+   material here. Keshi's trial material lives in its own later stylesheet. */
+/* -------------------------------------------------------------------------- */
+/* Decrypt keeps its previous material. Chapter shells remain open. */
+.case-section--decrypt :is(
+  .case-decrypt-proof__caption,
+  .case-decrypt-level,
+  .case-decrypt-engine__mode,
+  .case-decrypt-engine__password,
+  .case-decrypt-engine__timer,
+  .case-decrypt-rules li,
+  .case-decrypt-outcome,
+  .case-decrypt-mutations li,
+  .case-decrypt-mutations__symbol
+) {
+  border: var(--story-glass-border);
+  background: var(--story-glass-fill);
+  box-shadow: var(--story-glass-shadow);
+  -webkit-backdrop-filter: var(--story-glass-backdrop);
+  backdrop-filter: var(--story-glass-backdrop);
+  background-clip: padding-box;
+  isolation: isolate;
+  /* ScrollPerspectiveWave normally writes independent translate/scale values
+     onto followers. A transformed glass surface becomes its own compositor
+     layer and the backdrop stays razor-sharp. Let nearby media carry the wave. */
+  translate: none !important;
+  scale: none !important;
+  will-change: auto !important;
+}
+/* Chapter frames organise the diagram but are not glass surfaces themselves.
+   Their child cards provide the material contrast while the stage remains open. */
+.case-section--keshi .case-keshi-rhythm,
+.case-section--decrypt .case-decrypt-engine {
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  isolation: auto;
+}
+.case-section--decrypt .case-decrypt-proof__caption {
+  -webkit-backdrop-filter: var(--story-glass-backdrop-media);
+  backdrop-filter: var(--story-glass-backdrop-media);
+  text-shadow: var(--story-glass-text-shadow);
+}
+/* Product accents tint the sampled stage; they never fall back to opaque black. */
+/* -------------------------------------------------------------------------- */
+/* Responsive story order                                                      */
+/* -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .case-story-head {
+    grid-template-columns: 1fr;
+  }
+
+  .case-story-head > p {
+    grid-row: auto;
+  }
+
+  .case-story-head h2 {
+    max-width: 22ch;
+  }
+
+  .case-keshi-hero,
+  .case-keshi-atmosphere__grid,
+  .case-keshi-pattern,
+  .case-decrypt-hero,
+  .case-decrypt-modes__stage,
+  .case-decrypt-mutations,
+  .case-decrypt-manual__stage,
+  .case-decrypt-build {
+    grid-template-columns: 1fr;
+  }
+
+  .case-keshi-hero__copy h1,
+  .case-decrypt-hero__copy h1 {
+    max-width: 11ch;
+  }
+}
+@media (max-width: 620px) {
+  .case-story-head h2 {
+    font-size: clamp(1.65rem, 9vw, 2.5rem);
+  }
+
+  .case-keshi-hero,
+  .case-decrypt-hero {
+    margin-bottom: 5rem;
+  }
+
+  .case-keshi-hero__caption,
+  .case-decrypt-proof__caption {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    width: 100%;
+    margin-top: 0.6rem;
+    justify-content: center;
+    border-radius: 0.65rem;
+  }
+
+  .case-keshi-hero__visual,
+  .case-decrypt-proof__stage {
+    padding-bottom: 0;
+  }
+
+  .case-keshi-rhythm,
+  .case-decrypt-engine {
+    padding: 0.9rem;
+    border-radius: 0.8rem;
+  }
+}

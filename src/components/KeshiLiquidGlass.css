@@ -1,0 +1,188 @@
+/* Historical optical material retained for its shared component consumers.
+   The Keshi route now uses the Veluma surface trial instead. */
+
+/* :root, not `.keshi-liquid-glass` — these two roles are reused by consumers
+   that do not use the component itself (e.g. Freeflow's caption, which kept
+   the radius after reverting the glass surface, DESIGN-DISCOVERY Round 16).
+   Scoping them to `.keshi-liquid-glass` would make them invisible outside
+   an actual glass instance, which is exactly the bug that shipped first. */
+:root {
+  /* Compatibility values for remaining horizontal caption consumers. */
+  --radius-glass-compact: 1.35rem;
+  --space-glass-content-compact: 0.95rem 1rem;
+}
+
+/* Keyed on the component's own base class. */
+.keshi-liquid-glass {
+  --keshi-glass-light-x: 28%;
+  --keshi-glass-light-y: 22%;
+  --keshi-glass-light-angle: 135deg;
+  --keshi-glass-border-angle: 135deg;
+  --keshi-glass-border-stop-one: 33%;
+  --keshi-glass-border-stop-two: 66%;
+  --keshi-glass-border-screen-one: 0.12;
+  --keshi-glass-border-screen-two: 0.4;
+  --keshi-glass-border-overlay-one: 0.32;
+  --keshi-glass-border-overlay-two: 0.6;
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  /* Historical default for the optical component. */
+  border-radius: 2rem;
+  color: #fff;
+  text-shadow: none;
+  -webkit-backdrop-filter: blur(1.3px) saturate(104%) var(--keshi-glass-refraction);
+  backdrop-filter: blur(1.3px) saturate(104%) var(--keshi-glass-refraction);
+}
+
+.keshi-liquid-glass__filter {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.keshi-liquid-glass__glass {
+  position: relative;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  border-radius: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+}
+
+.keshi-liquid-glass__warp,
+.keshi-liquid-glass__reflection-face,
+.keshi-liquid-glass__reflection-rim,
+.keshi-liquid-glass__border {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.keshi-liquid-glass__warp {
+  z-index: 0;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.018));
+}
+
+.keshi-liquid-glass__content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+.keshi-liquid-glass__border {
+  z-index: 3;
+  padding: 1.5px;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  box-shadow:
+    inset 0 0 0 0.5px rgba(255, 255, 255, 0.5),
+    inset 0 1px 3px rgba(255, 255, 255, 0.25),
+    0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.keshi-liquid-glass__border--screen {
+  background: linear-gradient(
+    var(--keshi-glass-border-angle),
+    rgba(255, 255, 255, 0) 0%,
+    rgb(255 255 255 / var(--keshi-glass-border-screen-one)) var(--keshi-glass-border-stop-one),
+    rgb(255 255 255 / var(--keshi-glass-border-screen-two)) var(--keshi-glass-border-stop-two),
+    rgba(255, 255, 255, 0) 100%
+  );
+  mix-blend-mode: screen;
+  opacity: 0.2;
+}
+
+.keshi-liquid-glass__border--overlay {
+  background: linear-gradient(
+    var(--keshi-glass-border-angle),
+    rgba(255, 255, 255, 0) 0%,
+    rgb(255 255 255 / var(--keshi-glass-border-overlay-one)) var(--keshi-glass-border-stop-one),
+    rgb(255 255 255 / var(--keshi-glass-border-overlay-two)) var(--keshi-glass-border-stop-two),
+    rgba(255, 255, 255, 0) 100%
+  );
+  mix-blend-mode: overlay;
+}
+
+.keshi-liquid-glass__reflection-rim {
+  z-index: 4;
+  padding: 2px;
+  background: conic-gradient(
+    from var(--keshi-glass-light-angle) at 50% 50%,
+    transparent 0deg,
+    rgba(255, 255, 255, 0.07) 35deg,
+    rgba(255, 255, 255, 1) 64deg,
+    rgba(255, 255, 255, 0.16) 84deg,
+    transparent 110deg,
+    transparent 165deg,
+    rgba(255, 255, 255, 0.09) 208deg,
+    rgba(255, 255, 255, 0.69) 244deg,
+    transparent 277deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4));
+  opacity: 0.55;
+}
+
+.keshi-liquid-glass__reflection-face {
+  z-index: 2;
+  background: radial-gradient(
+    ellipse 55% 28% at var(--keshi-glass-light-x) var(--keshi-glass-light-y),
+    rgba(255, 255, 255, 0.094),
+    transparent 80%
+  );
+  opacity: 0.55;
+}
+
+/* --- intensity: the hierarchy lever ---------------------------------------
+ * "primary" is the values above, unlisted, so the default (no modifier
+ * class) already reads as primary. "secondary" recedes it for supporting
+ * information — same material, less visual claim on the eye.
+ *
+ * Tuned live against the real Freeflow caption (design/ab/glass-intensity-r1):
+ * the first pass still read as a bright white outline competing with the
+ * text it frames. The outline/rim opacities below are cut further so the
+ * blur/refraction still reads as glass, but the border itself all but
+ * disappears — "blend in, stay readable" was the explicit ask. */
+.keshi-liquid-glass--secondary .keshi-liquid-glass__glass {
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
+}
+
+.keshi-liquid-glass--secondary .keshi-liquid-glass__border--screen {
+  opacity: 0.05;
+}
+
+.keshi-liquid-glass--secondary .keshi-liquid-glass__border--overlay {
+  opacity: 0.28;
+}
+
+.keshi-liquid-glass--secondary .keshi-liquid-glass__reflection-rim {
+  opacity: 0.1;
+}
+
+.keshi-liquid-glass--secondary .keshi-liquid-glass__reflection-face {
+  opacity: 0.32;
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .keshi-liquid-glass__warp {
+    background: rgba(20, 8, 10, 0.58);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .keshi-liquid-glass {
+    --keshi-glass-light-x: 28%;
+    --keshi-glass-light-y: 22%;
+    --keshi-glass-light-angle: 135deg;
+    --keshi-glass-border-angle: 135deg;
+  }
+}

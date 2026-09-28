@@ -13,6 +13,7 @@ concurrency:
 jobs:
   deploy:
     name: Build and deploy
+    if: github.ref == 'refs/heads/main'
     runs-on:
       - self-hosted
       - xsmity-portfolio-vps
@@ -33,8 +34,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
+      - name: Quality and build
+        run: npm run check:quality
 
       - name: Deploy static files
         run: |

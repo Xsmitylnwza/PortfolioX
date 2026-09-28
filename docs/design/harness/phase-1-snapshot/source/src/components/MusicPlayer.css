@@ -1,0 +1,61 @@
+.sound-control {
+    position: fixed;
+    right: clamp(1rem, 2.4vw, 2rem);
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    z-index: 94;
+}
+
+.sound-control button {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    align-items: center;
+    gap: 0.48rem;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+    padding: 0.45rem 0.6rem;
+    color: rgba(242, 242, 242, 0.52);
+    border: 1px solid rgba(242, 242, 242, 0.12);
+    background: rgba(5, 5, 5, 0.94);
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+}
+
+.sound-control button:hover,
+.sound-control button:focus-visible { color: var(--text-primary); }
+
+.sound-control i {
+    width: 0.42rem;
+    height: 0.42rem;
+    border-radius: 50%;
+    background: rgba(242, 242, 242, 0.25);
+}
+
+.sound-control strong {
+    color: var(--paper);
+    font-weight: 500;
+}
+
+.sound-control.is-playing i {
+    background: var(--red-primary);
+    box-shadow: 0 0 8px rgba(227, 38, 46, 0.72);
+    animation: sound-pulse 1.4s ease-in-out infinite;
+}
+
+.sound-control.is-playing strong { color: var(--red-primary); }
+
+@keyframes sound-pulse {
+    50% { opacity: 0.35; }
+}
+
+body.is-scrolling .sound-control i { animation-play-state: paused; }
+
+@media (max-width: 640px) {
+    .sound-control { right: 0.65rem; bottom: max(0.65rem, env(safe-area-inset-bottom)); }
+    .sound-control button > span { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sound-control i { animation: none !important; }
+}

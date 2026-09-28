@@ -1,0 +1,735 @@
+
+
+/* Decrypt-specific material, responsive, monochrome, and wave refinements. */
+.case-section--decrypt .case-decrypt-level--spy {
+  border-color: rgba(155, 135, 245, 0.44);
+}
+
+.case-section--decrypt .case-decrypt-level--fbi {
+  border-color: rgba(240, 163, 74, 0.46);
+}
+
+.case-section--decrypt .case-decrypt-level--hacker {
+  border-color: rgba(239, 90, 103, 0.52);
+  background-color: var(--story-glass-fill);
+  background-image: linear-gradient(130deg, rgba(239, 90, 103, 0.16), transparent 72%);
+}
+
+.case-section--decrypt .case-decrypt-engine__password {
+  border-color: rgba(155, 135, 245, 0.5);
+  background-color: var(--story-glass-fill);
+  background-image: linear-gradient(135deg, rgba(155, 135, 245, 0.14), transparent 72%);
+}
+
+.case-section--decrypt .case-decrypt-engine__timer {
+  border-color: rgba(239, 90, 103, 0.44);
+  background-color: var(--story-glass-fill);
+  background-image: linear-gradient(145deg, rgba(239, 90, 103, 0.09), transparent 72%);
+}
+
+.case-section--decrypt .case-decrypt-rules li.is-passed {
+  border-color: rgba(88, 214, 147, 0.46);
+  background-color: var(--story-glass-fill);
+  background-image: linear-gradient(135deg, rgba(88, 214, 147, 0.08), transparent 70%);
+}
+
+.case-section--decrypt .case-decrypt-rules li.is-active {
+  border-color: rgba(155, 135, 245, 0.56);
+  background-color: var(--story-glass-fill);
+  background-image: linear-gradient(135deg, rgba(155, 135, 245, 0.16), transparent 72%);
+}
+
+.case-section--decrypt .case-decrypt-outcome--win {
+  border-color: rgba(88, 214, 147, 0.46);
+  background-color: var(--story-glass-fill);
+  background-image: linear-gradient(145deg, rgba(88, 214, 147, 0.14), transparent 72%);
+}
+
+.case-section--decrypt .case-decrypt-outcome--lose {
+  border-color: rgba(239, 90, 103, 0.5);
+  background-color: var(--story-glass-fill);
+  background-image: linear-gradient(145deg, rgba(239, 90, 103, 0.16), transparent 72%);
+}
+
+@media (max-width: 900px) {
+
+  .case-decrypt-signals {
+    align-self: stretch;
+  }
+
+  .case-decrypt-level {
+    width: calc(100% - (var(--mode-index) * 1.6rem));
+    margin-left: calc(var(--mode-index) * 1.6rem);
+  }
+
+  .case-decrypt-engine__board {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'mode'
+      'mode-route'
+      'password'
+      'timer'
+      'timer-route'
+      'rules'
+      'resolution'
+      'outcomes';
+    width: min(100%, 39rem);
+    margin-inline: auto;
+  }
+
+  .case-decrypt-engine__route {
+    min-height: 3.2rem;
+  }
+
+  .case-decrypt-engine__route svg {
+    rotate: 90deg;
+  }
+
+  .case-decrypt-mutations > ol {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .case-decrypt-build .case-code__pre {
+    min-height: 0;
+  }
+}
+
+@media (max-width: 620px) {
+
+  .case-decrypt-signals dd {
+    grid-template-columns: auto 1fr;
+  }
+
+  .case-decrypt-proof__caption {
+    flex-wrap: wrap;
+  }
+
+  .case-decrypt-level {
+    grid-template-columns: auto minmax(0, 1fr);
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .case-decrypt-level dl {
+    grid-column: 1 / -1;
+    padding-left: 2rem;
+  }
+
+  .case-decrypt-rules li {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .case-decrypt-rules li > small {
+    display: none;
+  }
+
+  .case-decrypt-outcomes,
+  .case-decrypt-mutations > ol {
+    grid-template-columns: 1fr;
+  }
+
+  .case-decrypt-mutations li > svg {
+    top: calc(100% + 0.12rem);
+    left: 50%;
+    rotate: 90deg;
+    translate: -50% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .case-decrypt-engine__password b {
+    animation: none;
+  }
+}
+
+.case-section--decrypt {
+  --case-ink: #fff;
+  --case-soft: rgba(255, 255, 255, 0.99);
+  --case-mute: rgba(255, 255, 255, 0.94);
+  --case-faint: rgba(255, 255, 255, 0.86);
+  --story-glass-border: 1px solid rgba(255, 255, 255, 0.3);
+  --story-glass-fill: rgba(0, 0, 0, 0.24);
+  --story-glass-fill-strong: rgba(0, 0, 0, 0.36);
+  --story-glass-backdrop: blur(6px) saturate(1.12);
+  --story-glass-text-shadow: none;
+  --story-line: rgba(255, 255, 255, 0.28);
+  --story-line-strong: rgba(255, 255, 255, 0.46);
+  --decrypt-violet: #fff;
+  --decrypt-orange: #fff;
+  --decrypt-red: #fff;
+  --decrypt-green: #fff;
+  background:
+    radial-gradient(circle at 84% 14%, rgba(255, 255, 255, 0.028), transparent 23rem),
+    radial-gradient(circle at 13% 58%, rgba(0, 0, 0, 0.05), transparent 26rem);
+}
+
+.case-section--decrypt :is(
+  .case-story-head,
+  .case-decrypt-hero__caption,
+  .case-decrypt-signals,
+  .case-decrypt-level,
+  .case-decrypt-engine,
+  .case-decrypt-rules,
+  .case-decrypt-mutations,
+  .case-decrypt-resolution,
+  .case-decrypt-manual,
+  .case-decrypt-architecture
+) {
+  text-shadow: none;
+  -webkit-text-stroke: 0;
+}
+
+.case-section--decrypt .case-story-head > p {
+  color: var(--case-faint);
+  font-size: 0.66rem;
+}
+
+.case-section--decrypt .case-story-head > span {
+  color: var(--case-mute);
+  font-size: 0.94rem;
+}
+
+.case-decrypt-hero {
+  grid-template-columns: minmax(18rem, 0.78fr) minmax(0, 1.22fr);
+  grid-template-areas:
+    'copy visual'
+    'signals signals';
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+}
+
+.case-decrypt-hero__copy {
+  grid-area: copy;
+  min-width: 0;
+}
+
+.case-decrypt-hero__visual {
+  position: relative;
+  grid-area: visual;
+  min-width: 0;
+  padding-bottom: 1.55rem;
+}
+
+.case-section--decrypt :is(
+  .case-media__frame--hero,
+  .case-media__frame--decrypt-modes,
+  .case-media__frame--decrypt-manual
+) {
+  aspect-ratio: 960 / 470;
+  border-color: rgba(255, 255, 255, 0.42);
+  background: #080808;
+}
+
+.case-decrypt-hero__caption {
+  position: absolute;
+  right: clamp(0.7rem, 2.8vw, 2.2rem);
+  bottom: 0;
+  z-index: 4;
+  display: grid;
+  gap: 0.2rem;
+  max-width: min(25rem, calc(100% - 1.4rem));
+  padding: 0.82rem 1rem;
+  border: var(--story-glass-border);
+  border-radius: 0.7rem;
+  color: #fff;
+  background: var(--story-glass-fill-strong);
+  box-shadow: var(--story-glass-shadow);
+  -webkit-backdrop-filter: var(--story-glass-backdrop);
+  backdrop-filter: var(--story-glass-backdrop);
+  background-clip: padding-box;
+}
+
+.case-decrypt-hero__caption span {
+  color: var(--case-faint);
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.case-decrypt-hero__caption strong {
+  color: #fff;
+  font-size: 0.76rem;
+  line-height: 1.35;
+}
+
+.case-decrypt-signals {
+  grid-area: signals;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+  border-top: 0;
+}
+
+.case-decrypt-signals > div,
+.case-section--decrypt :is(
+  .case-decrypt-level,
+  .case-decrypt-engine__mode,
+  .case-decrypt-engine__password,
+  .case-decrypt-engine__timer,
+  .case-decrypt-rules li,
+  .case-decrypt-mutations li,
+  .case-decrypt-resolution__trigger,
+  .case-decrypt-resolution__burn,
+  .case-decrypt-outcome,
+  .case-decrypt-manual__beats li,
+  .case-decrypt-architecture__rail article,
+  .case-decrypt-architecture__boundary
+) {
+  border: var(--story-glass-border);
+  background: var(--story-glass-fill);
+  box-shadow: var(--story-glass-shadow);
+  -webkit-backdrop-filter: var(--story-glass-backdrop);
+  backdrop-filter: var(--story-glass-backdrop);
+  background-clip: padding-box;
+}
+
+.case-decrypt-signals > div {
+  grid-template-columns: 1fr;
+  gap: 0.55rem;
+  padding: 1rem;
+  border-radius: 0.72rem;
+}
+
+.case-decrypt-signals dd {
+  grid-template-columns: 1fr;
+  gap: 0.45rem;
+}
+
+.case-decrypt-signals strong {
+  color: #fff;
+  font-size: clamp(1.45rem, 2.5vw, 2.15rem);
+}
+
+.case-decrypt-signals span,
+.case-decrypt-signals dt {
+  color: var(--case-faint);
+  font-size: 0.56rem;
+}
+
+.case-decrypt-proof,
+.case-decrypt-modes,
+.case-decrypt-engine,
+.case-decrypt-manual,
+.case-decrypt-architecture {
+  margin-bottom: clamp(5.5rem, 11vw, 9rem);
+}
+
+.case-decrypt-level {
+  border-color: rgba(255, 255, 255, 0.34) !important;
+  background-image: none !important;
+}
+
+.case-decrypt-level--fbi {
+  border-color: rgba(255, 255, 255, 0.46) !important;
+}
+
+.case-decrypt-level--hacker {
+  border-color: rgba(255, 255, 255, 0.62) !important;
+  background: rgba(0, 0, 0, 0.34) !important;
+}
+
+.case-decrypt-level__pressure {
+  background: #fff !important;
+}
+
+.case-decrypt-engine {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.case-decrypt-engine__board {
+  grid-template-areas:
+    'mode mode-route password'
+    'timer timer-route rules';
+}
+
+.case-section--decrypt :is(
+  .case-decrypt-engine__mode,
+  .case-decrypt-engine__password,
+  .case-decrypt-engine__timer
+) {
+  border-color: rgba(255, 255, 255, 0.38);
+  background-color: var(--story-glass-fill);
+  background-image: none;
+}
+
+.case-decrypt-engine__mode > div svg,
+.case-decrypt-engine__timer > svg,
+.case-decrypt-proof__caption strong,
+.case-decrypt-outcome > svg {
+  color: #fff;
+}
+
+.case-decrypt-engine__password b {
+  background-color: #fff;
+}
+
+.case-decrypt-rules::before {
+  background: linear-gradient(#fff, rgba(255, 255, 255, 0.18));
+}
+
+.case-section--decrypt .case-decrypt-rules li {
+  border-color: rgba(255, 255, 255, 0.28);
+  background-image: none;
+}
+
+.case-section--decrypt .case-decrypt-rules li.is-passed {
+  border-color: rgba(255, 255, 255, 0.52);
+  background-image: none;
+}
+
+.case-section--decrypt .case-decrypt-rules li.is-active {
+  border-color: rgba(255, 255, 255, 0.76);
+  background: rgba(0, 0, 0, 0.38);
+}
+
+.case-decrypt-rules li::before,
+.case-decrypt-rules li.is-passed::before,
+.case-decrypt-rules li.is-active::before {
+  border-color: #fff;
+  background: #fff;
+}
+
+.case-decrypt-rules li > :is(span, small),
+.case-decrypt-engine__mode > span,
+.case-decrypt-engine__password > span,
+.case-decrypt-engine__timer > span {
+  color: var(--case-faint);
+  font-size: 0.56rem;
+}
+
+.case-decrypt-mutations {
+  grid-template-columns: 1fr;
+  gap: 1.35rem;
+  margin-top: clamp(5rem, 10vw, 8rem);
+  padding-top: 1rem;
+  border-top: 1px solid var(--story-line);
+}
+
+.case-decrypt-mutations__head {
+  max-width: 42rem;
+}
+
+.case-decrypt-mutations__head > span {
+  color: var(--case-faint);
+  font-size: 0.64rem;
+}
+
+.case-decrypt-mutations__head h3 {
+  max-width: 17ch;
+  color: #fff;
+  font-size: clamp(1.8rem, 4vw, 3.25rem);
+}
+
+.case-decrypt-mutations > ol {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.case-decrypt-mutations li {
+  min-width: 0;
+  border-color: rgba(255, 255, 255, 0.38);
+}
+
+.case-decrypt-mutations__symbol {
+  border-color: rgba(255, 255, 255, 0.38);
+  background: rgba(0, 0, 0, 0.28);
+}
+
+.case-decrypt-mutations small {
+  color: var(--case-mute);
+  font-size: 0.56rem;
+  overflow-wrap: anywhere;
+}
+
+.case-decrypt-resolution {
+  margin-top: clamp(5rem, 10vw, 8rem);
+}
+
+.case-decrypt-resolution__flow {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(10rem, 0.55fr) minmax(0, 1.3fr);
+  gap: clamp(0.8rem, 2vw, 1.25rem);
+  align-items: stretch;
+}
+
+.case-decrypt-resolution__flow > .case-decrypt-outcomes {
+  grid-area: auto;
+}
+
+.case-decrypt-resolution__trigger,
+.case-decrypt-resolution__burn {
+  display: grid;
+  align-content: center;
+  min-width: 0;
+  min-height: 12rem;
+  padding: 1.15rem;
+  border-radius: 0.75rem;
+}
+
+.case-decrypt-resolution__trigger > span,
+.case-decrypt-resolution__burn > span,
+.case-decrypt-outcome > span {
+  color: var(--case-faint);
+  font-family: var(--font-mono);
+  font-size: 0.56rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.case-decrypt-resolution__trigger h3,
+.case-decrypt-resolution__burn strong {
+  margin: 0.75rem 0 0;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 2.7vw, 2rem);
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.case-decrypt-resolution__trigger h3 i {
+  color: var(--case-faint);
+  font-style: normal;
+}
+
+.case-decrypt-resolution__trigger p {
+  margin: 0.7rem 0 0;
+  color: var(--case-mute);
+  font-size: 0.76rem;
+  line-height: 1.5;
+}
+
+.case-decrypt-resolution__burn {
+  justify-items: start;
+  border-color: rgba(255, 255, 255, 0.62);
+  background: rgba(0, 0, 0, 0.36);
+}
+
+.case-decrypt-resolution__burn svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+.case-decrypt-resolution__burn strong {
+  font-size: clamp(1.1rem, 2.2vw, 1.65rem);
+}
+
+.case-decrypt-outcomes {
+  grid-template-columns: 1fr;
+}
+
+.case-section--decrypt :is(.case-decrypt-outcome--win, .case-decrypt-outcome--lose) {
+  border-color: rgba(255, 255, 255, 0.42);
+  background-color: var(--story-glass-fill);
+  background-image: none;
+}
+
+.case-decrypt-manual__stage {
+  align-items: center;
+}
+
+.case-decrypt-manual__beats li {
+  border-radius: 0.68rem;
+}
+
+.case-decrypt-manual__beats span {
+  color: #fff;
+}
+
+.case-decrypt-architecture__rail {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.9rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.case-decrypt-architecture__rail li {
+  min-width: 0;
+}
+
+.case-decrypt-architecture__rail article {
+  display: grid;
+  align-content: start;
+  min-height: 13.5rem;
+  padding: 1.05rem;
+  border-radius: 0.76rem;
+}
+
+.case-decrypt-architecture__rail header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--case-faint);
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+}
+
+.case-decrypt-architecture__rail header svg {
+  width: 1rem;
+  height: 1rem;
+  color: #fff;
+}
+
+.case-decrypt-architecture__rail h3 {
+  margin: 2.5rem 0 0;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.5vw, 2rem);
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.case-decrypt-architecture__rail p {
+  margin: 0.7rem 0 0;
+  color: var(--case-mute);
+  font-size: 0.78rem;
+  line-height: 1.55;
+}
+
+.case-decrypt-architecture__boundary {
+  display: flex;
+  gap: 0.65rem;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  margin: 1rem 0 0 auto;
+  padding: 0.75rem 0.9rem;
+  border-radius: 999px;
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+}
+
+.case-decrypt-architecture__boundary svg {
+  flex: 0 0 auto;
+  width: 0.95rem;
+  height: 0.95rem;
+}
+
+.case-decrypt-architecture .tech-stack-list--case {
+  margin-top: clamp(2.2rem, 5vw, 3.5rem);
+  margin-bottom: 0;
+}
+
+.scroll-perspective-wave.case-section--decrypt.is-scroll-wave-active :is(
+  .case-decrypt-level,
+  .case-decrypt-engine__mode,
+  .case-decrypt-engine__password,
+  .case-decrypt-engine__timer,
+  .case-decrypt-rules li,
+  .case-decrypt-outcome,
+  .case-decrypt-mutations li
+)[data-wave-follow] {
+  translate: var(--scroll-wave-x, 0px) var(--scroll-wave-y, 0px) !important;
+  scale: var(--scroll-wave-scale, 1) !important;
+  will-change: translate, scale !important;
+}
+
+@media (max-width: 900px) {
+  .case-decrypt-hero {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'copy'
+      'visual'
+      'signals';
+  }
+
+  .case-decrypt-signals {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .case-decrypt-level {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .case-decrypt-engine__board {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'mode'
+      'password'
+      'timer'
+      'rules';
+  }
+
+  .case-decrypt-engine__route {
+    display: none;
+  }
+
+  .case-decrypt-mutations > ol,
+  .case-decrypt-resolution__flow,
+  .case-decrypt-architecture__rail {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .case-decrypt-mutations li > svg {
+    display: none;
+  }
+
+  .case-decrypt-architecture__rail article {
+    min-height: 0;
+  }
+
+  .case-decrypt-architecture__rail h3 {
+    margin-top: 1.6rem;
+  }
+}
+
+@media (max-width: 620px) {
+  .case-decrypt-hero__visual {
+    padding-bottom: 0;
+  }
+
+  .case-decrypt-hero__caption {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    width: 100%;
+    max-width: none;
+    margin-top: 0.6rem;
+  }
+
+  .case-decrypt-signals {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .case-decrypt-resolution__trigger,
+  .case-decrypt-resolution__burn {
+    min-height: 0;
+  }
+
+  .case-decrypt-architecture__boundary {
+    align-items: flex-start;
+    border-radius: 0.75rem;
+  }
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .case-section--decrypt :is(
+    .case-decrypt-hero__caption,
+    .case-decrypt-signals > div,
+    .case-decrypt-level,
+    .case-decrypt-engine__mode,
+    .case-decrypt-engine__password,
+    .case-decrypt-engine__timer,
+    .case-decrypt-rules li,
+    .case-decrypt-mutations li,
+    .case-decrypt-resolution__trigger,
+    .case-decrypt-resolution__burn,
+    .case-decrypt-outcome,
+    .case-decrypt-manual__beats li,
+    .case-decrypt-architecture__rail article,
+    .case-decrypt-architecture__boundary
+  ) {
+    background: rgba(0, 0, 0, 0.62);
+  }
+}

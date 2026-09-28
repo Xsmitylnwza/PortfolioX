@@ -1,20 +1,18 @@
 /* ModeNote story — open chapters, local liquid-glass surfaces, one shared wave. */
 .case-section--modenote {
-  --mn-yellow: #f5c44d;
-  --mn-orange: #e96f2d;
-  --mn-mint: #67d9ae;
+  --mn-yellow: var(--color-detail-muted-solid);
+  --mn-orange: var(--color-text-primary);
+  --mn-mint: var(--color-detail-muted-solid);
   --mn-ink: rgba(255, 255, 255, 0.98);
   --mn-muted: rgba(255, 255, 255, 0.94);
   --mn-faint: rgba(255, 255, 255, 0.82);
   --mn-line: rgba(255, 255, 255, 0.18);
   --mn-line-strong: rgba(255, 255, 255, 0.3);
-  --mn-glass: rgba(7, 9, 10, 0.38);
-  --mn-glass-strong: rgba(7, 9, 10, 0.56);
+  --mn-glass: var(--color-detail-panel);
+  --mn-glass-strong: var(--color-detail-panel-strong);
   isolation: auto;
   overflow: visible;
-  background:
-    radial-gradient(circle at 88% 7%, rgba(245, 196, 77, 0.1), transparent 26rem),
-    radial-gradient(circle at 5% 48%, rgba(233, 111, 45, 0.08), transparent 28rem);
+  background: none;
 }
 
 .case-section--modenote .case-reveal,
@@ -103,7 +101,7 @@
   padding: 0.8rem 1rem;
   border: 1px solid var(--mn-line-strong);
   border-radius: 999px;
-  background: rgba(7, 9, 10, 0.76);
+  background: var(--color-detail-panel-heavy);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 16px 32px rgba(0, 0, 0, 0.3);
   -webkit-backdrop-filter: blur(10px) saturate(1.15);
   backdrop-filter: blur(10px) saturate(1.15);
@@ -142,7 +140,7 @@
 }
 
 .modenote-story__shift-before { opacity: 0.92; }
-.modenote-story__shift-after { border-color: rgba(245, 196, 77, 0.4); background: var(--mn-glass-strong); }
+.modenote-story__shift-after { border-color: var(--color-detail-line-strong); background: var(--color-detail-panel-strong); }
 .modenote-story__shift article span,
 .modenote-story__system span,
 .modenote-story__mcp span {
@@ -246,7 +244,7 @@
 .case-section--modenote .modenote-story__demo-media .case-media__frame {
   width: 100%;
   aspect-ratio: 16 / 9;
-  border-color: rgba(245, 196, 77, 0.24);
+  border-color: var(--color-detail-line);
   border-radius: 0.82rem;
   background: #090909;
   box-shadow: 0 24px 64px rgba(0, 0, 0, 0.32);
@@ -411,7 +409,7 @@
   height: 1.2rem;
   margin: 0;
   place-items: center;
-  border: 1px solid rgba(233, 111, 45, 0.5);
+  border: 1px solid var(--mn-line-strong);
   border-radius: 999px;
   color: var(--mn-orange);
   background: #0a0b0b;
@@ -472,7 +470,7 @@
   border: 1px solid var(--mn-line);
   border-radius: 999px;
   color: var(--mn-muted);
-  background: rgba(7, 9, 10, 0.24);
+  background: var(--color-detail-panel-faint);
   font-family: var(--font-mono);
   font-size: 0.58rem;
 }

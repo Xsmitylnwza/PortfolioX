@@ -1,0 +1,471 @@
+/* Keshi responsive, monochrome text, and wave refinements. Surface recipes live in ProjectDetailsKeshiVelumaSurface.css. */
+@media (max-width: 900px) {
+
+  .case-keshi-hero__visual {
+    width: 100%;
+  }
+
+  .case-keshi-states__stage {
+    grid-template-columns: 1fr;
+  }
+
+  .case-keshi-states__switch {
+    min-height: 5rem;
+  }
+
+  .case-keshi-states__switch svg {
+    rotate: 90deg;
+  }
+
+  .case-keshi-atmosphere__feature--settings {
+    padding-top: 0;
+  }
+
+  .case-keshi-rhythm__track {
+    grid-template-columns: 1fr;
+    gap: 2.7rem;
+    width: min(100%, 34rem);
+    margin-inline: auto;
+  }
+
+  .case-keshi-rhythm__node,
+  .case-keshi-rhythm__node--task,
+  .case-keshi-rhythm__node--focus,
+  .case-keshi-rhythm__node--relax,
+  .case-keshi-rhythm__node--evidence,
+  .case-keshi-rhythm__node--discipline {
+    min-height: 9.5rem;
+  }
+
+  .case-keshi-rhythm__connector {
+    top: calc(100% + 0.2rem);
+    left: 50%;
+    width: 2.4rem;
+    translate: -50% 0;
+  }
+
+  .case-keshi-rhythm__connector svg {
+    rotate: 90deg;
+  }
+
+  .case-keshi-rhythm__outputs,
+  .case-keshi-rhythm__return {
+    width: min(100%, 34rem);
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .case-keshi-architecture__rail {
+    grid-template-columns: 1fr;
+    width: min(100%, 35rem);
+    margin-inline: auto;
+  }
+
+  .case-keshi-architecture__link {
+    min-height: 3.5rem;
+  }
+
+  .case-keshi-architecture__link svg {
+    rotate: 90deg;
+  }
+
+  .case-keshi-architecture__stores {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .case-keshi-architecture__hermes {
+    grid-column: auto;
+    justify-self: stretch;
+    width: 100%;
+  }
+
+  .case-keshi-rhythm__loop {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+    grid-template-areas:
+      'session'
+      'truth'
+      'hermes'
+      'mirror'
+      'next';
+    gap: 2.4rem;
+    width: min(100%, 38rem);
+    min-height: 0;
+    margin-inline: auto;
+    padding: 0 0 0 1.85rem;
+  }
+
+  .case-keshi-rhythm__loop::before {
+    top: 2rem;
+    bottom: 2rem;
+    left: 0.55rem;
+    width: 1px;
+    height: auto;
+    aspect-ratio: auto;
+    border-radius: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(198, 37, 47, 0.52),
+      rgba(224, 166, 90, 0.5),
+      rgba(167, 139, 250, 0.5),
+      rgba(72, 199, 142, 0.5)
+    );
+    translate: none;
+  }
+
+  .case-keshi-rhythm__connections {
+    display: none;
+  }
+
+  .case-keshi-rhythm__slot::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -1.58rem;
+    width: 0.62rem;
+    height: 0.62rem;
+    border: 2px solid var(--color-detail-line-strong);
+    border-radius: 999px;
+    background: #bd3037;
+    box-shadow: 0 0 0 0.28rem rgba(198, 37, 47, 0.09);
+    translate: 0 -50%;
+  }
+
+  .case-keshi-rhythm__slot--truth::before { background: var(--keshi-evidence); }
+  .case-keshi-rhythm__slot--hermes::before,
+  .case-keshi-rhythm__slot--mirror::before { background: var(--keshi-discipline); }
+  .case-keshi-rhythm__slot--next::before { background: var(--keshi-relax); }
+
+  .case-keshi-rhythm__node {
+    min-height: 11rem;
+  }
+
+  .case-keshi-rhythm__control-note {
+    width: min(100%, 38rem);
+    margin-inline: auto;
+  }
+}
+
+@media (max-width: 620px) {
+
+  .case-keshi-state__caption {
+    grid-template-columns: 1fr;
+  }
+
+  .case-keshi-state__caption strong {
+    grid-row: auto;
+    grid-column: auto;
+  }
+
+  .case-keshi-rhythm__outputs {
+    grid-template-columns: 1fr;
+  }
+
+  .case-keshi-rhythm__return {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .case-keshi-rhythm__return strong {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
+  .case-keshi-rhythm__loop {
+    gap: 1.65rem;
+    padding-left: 1.3rem;
+  }
+
+  .case-keshi-rhythm__loop::before {
+    left: 0.28rem;
+  }
+
+  .case-keshi-rhythm__slot::before {
+    left: -1.28rem;
+    width: 0.52rem;
+    height: 0.52rem;
+  }
+
+  .case-keshi-rhythm__node {
+    min-height: 0;
+  }
+
+  .case-keshi-rhythm__hermes-head {
+    grid-template-columns: 4rem minmax(0, 1fr);
+  }
+
+  .case-keshi-rhythm__hermes-icon {
+    width: 4rem;
+    height: 4rem;
+  }
+
+  .case-keshi-rhythm__hermes-icon svg {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .case-keshi-rhythm__hermes-status {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
+  .case-keshi-rhythm__hermes h3 {
+    font-size: clamp(1.55rem, 8vw, 2.15rem);
+  }
+
+  .case-keshi-rhythm__hermes-steps li {
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+  }
+
+  .case-keshi-rhythm__control-note {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .case-keshi-rhythm__control-note strong {
+    text-align: left;
+  }
+
+  .case-keshi-proof__caption {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    grid-template-columns: 1fr;
+    width: 100%;
+    margin-top: 0.6rem;
+  }
+
+  .case-keshi-proof__media {
+    padding-bottom: 0;
+  }
+
+  .case-keshi-proof__caption ul {
+    justify-content: flex-start;
+  }
+
+  .case-keshi-matrix {
+    padding: 0.72rem;
+  }
+
+  .case-keshi-matrix__head {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .case-keshi-matrix table {
+    border-spacing: 0.18rem;
+  }
+
+  .case-keshi-matrix th {
+    padding: 0.15rem;
+    font-size: 0.4rem;
+  }
+
+  .case-keshi-matrix th:first-child {
+    width: 2.5rem;
+  }
+
+  .case-keshi-pattern__facts > div {
+    grid-template-columns: 0.72fr 1.28fr;
+  }
+
+  .case-keshi-architecture__stores {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .case-keshi-rhythm__flow-signal path,
+  .case-keshi-rhythm.is-visible .case-keshi-rhythm__hermes-icon::after {
+    animation: none;
+  }
+
+  .case-keshi-rhythm__flow-signal path {
+    stroke-dasharray: none;
+    opacity: 0.72;
+  }
+}
+
+.case-section--keshi {
+  --case-ink: #fff;
+  --case-soft: rgba(255, 255, 255, 0.99);
+  --case-mute: rgba(255, 255, 255, 0.94);
+  --case-faint: rgba(255, 255, 255, 0.88);
+  --story-glass-border: 1px solid rgba(255, 255, 255, 0.3);
+  --story-glass-fill: rgba(0, 0, 0, 0.24);
+  --story-glass-fill-strong: rgba(0, 0, 0, 0.34);
+  --story-glass-text-shadow: none;
+  --story-line: rgba(255, 255, 255, 0.28);
+  --story-line-strong: rgba(255, 255, 255, 0.44);
+  --keshi-focus: #fff;
+  --keshi-relax: #fff;
+  --keshi-evidence: #fff;
+  --keshi-discipline: #fff;
+  --keshi-focus-soft: rgba(255, 255, 255, 0.07);
+  --keshi-relax-soft: rgba(255, 255, 255, 0.05);
+  background:
+    radial-gradient(circle at 10% 21%, rgba(255, 255, 255, 0.025), transparent 24rem),
+    radial-gradient(circle at 91% 36%, rgba(0, 0, 0, 0.04), transparent 25rem);
+}
+
+.case-section--keshi :is(
+  .case-story-head,
+  .case-keshi-state__caption,
+  .case-keshi-atmosphere__caption,
+  .case-keshi-rhythm__node,
+  .case-keshi-rhythm__hermes,
+  .case-keshi-proof__caption,
+  .case-keshi-pattern__facts,
+  .case-keshi-architecture__node
+) {
+  text-shadow: none;
+}
+
+.case-section--keshi .case-story-head > p {
+  font-size: 0.66rem;
+}
+
+.case-section--keshi :is(
+  .case-keshi-state__caption > span,
+  .case-keshi-atmosphere__caption span,
+  .case-keshi-rhythm__node header > span:first-child,
+  .case-keshi-rhythm__hermes-head > div span,
+  .case-keshi-rhythm__hermes-status,
+  .case-keshi-proof__caption > span,
+  .case-keshi-pattern__facts dt,
+  .case-keshi-architecture__node > span,
+  .case-keshi-architecture__link span
+) {
+  font-size: 0.58rem;
+}
+
+.case-section--keshi :is(
+  .case-keshi-rhythm__node p,
+  .case-keshi-rhythm__hermes > p,
+  .case-keshi-state__caption p,
+  .case-keshi-atmosphere__caption p,
+  .case-keshi-architecture__node p,
+  .case-keshi-pattern__facts span
+) {
+  color: var(--case-mute);
+  text-shadow: none;
+}
+
+.case-section--keshi .case-keshi-rhythm__node p {
+  font-size: 0.76rem;
+}
+
+.case-section--keshi .case-keshi-rhythm__hermes > p {
+  font-size: 0.78rem;
+}
+
+.case-section--keshi :is(
+  .case-keshi-rhythm__node li,
+  .case-keshi-rhythm__hermes footer span,
+  .case-keshi-proof__caption li
+) {
+  border-color: rgba(255, 255, 255, 0.32);
+  color: #fff;
+  background: rgba(0, 0, 0, 0.22);
+  font-size: 0.52rem;
+}
+
+.case-section--keshi .case-keshi-rhythm__hermes-steps small {
+  color: var(--case-mute);
+  font-size: 0.52rem;
+}
+
+.case-section--keshi .case-keshi-rhythm__flow-label {
+  border-color: rgba(255, 255, 255, 0.34);
+  color: #fff;
+  background: rgba(0, 0, 0, 0.66);
+  font-size: 0.52rem;
+  text-shadow: none;
+}
+
+.case-section--keshi .case-keshi-hero__caption i,
+.case-section--keshi .case-keshi-rhythm__hermes-status i,
+.case-section--keshi .case-keshi-rhythm__slot::before {
+  border-color: #090909;
+  background: #fff !important;
+  box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.14);
+}
+
+.case-section--keshi :is(
+  .case-keshi-states__switch svg,
+  .case-keshi-rhythm__icon,
+  .case-keshi-rhythm__output-icon,
+  .case-keshi-rhythm__hermes-icon,
+  .case-keshi-architecture__hermes-icon
+) {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #fff;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.case-section--keshi :is(
+  .case-keshi-rhythm__hermes-head > div span,
+  .case-keshi-rhythm__hermes-status,
+  .case-keshi-rhythm__hermes h3 span + span,
+  .case-keshi-rhythm__hermes-steps li > span,
+  .case-keshi-rhythm__control-note span
+) {
+  color: #fff;
+}
+
+.case-section--keshi .case-keshi-rhythm__hermes-status {
+  border-color: rgba(255, 255, 255, 0.28);
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.case-section--keshi .case-keshi-rhythm__loop::before,
+.case-section--keshi .case-keshi-rhythm__connections marker path {
+  fill: #fff;
+}
+
+.case-section--keshi .case-keshi-rhythm__flow-signal .is-capture { stroke: rgba(255, 255, 255, 0.96); }
+
+.case-section--keshi .case-keshi-rhythm__flow-signal .is-pull { stroke: rgba(255, 255, 255, 0.82); }
+
+.case-section--keshi .case-keshi-rhythm__flow-signal .is-return { stroke: rgba(255, 255, 255, 0.72); }
+
+.case-section--keshi .case-keshi-rhythm__flow-signal .is-shape { stroke: rgba(255, 255, 255, 0.86); }
+
+.case-section--keshi .case-keshi-rhythm__flow-signal .is-loop { stroke: rgba(255, 255, 255, 0.56); }
+
+.case-section--keshi .case-keshi-rhythm__flow-label {
+  border-color: var(--color-detail-line-strong);
+  background: var(--color-detail-panel);
+}
+
+.case-section--keshi .case-keshi-matrix td.is-done {
+  border-color: #fff;
+  color: #090909;
+  background: #fff;
+}
+
+.scroll-perspective-wave.case-section--keshi.is-scroll-wave-active :is(
+  .case-keshi-hero__caption,
+  .case-keshi-state__caption,
+  .case-keshi-proof__caption,
+  .case-keshi-pattern__facts > div,
+  .case-keshi-architecture__node
+)[data-wave-follow] {
+  translate: var(--scroll-wave-x, 0px) var(--scroll-wave-y, 0px) !important;
+  scale: var(--scroll-wave-scale, 1) !important;
+  will-change: translate, scale !important;
+}
+
+@media (max-width: 900px) {
+  .case-keshi-pattern__facts--wide {
+    grid-template-columns: 1fr;
+  }
+
+  .case-section--keshi .case-keshi-rhythm__loop::before {
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.22),
+      rgba(255, 255, 255, 0.76),
+      rgba(255, 255, 255, 0.22)
+    );
+  }
+}

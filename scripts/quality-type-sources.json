@@ -1,0 +1,32 @@
+[
+  {
+    "path": "src/data/projectTypes.ts",
+    "owner": "project-data",
+    "proof": "typecheck",
+    "reason": "Type-only project contracts are erased from the Vite runtime graph."
+  },
+  {
+    "path": "src/features/project-details/types.ts",
+    "owner": "project-details",
+    "proof": "typecheck",
+    "reason": "Case component contracts are erased from the Vite runtime graph."
+  },
+  {
+    "path": "src/types/react-css.d.ts",
+    "owner": "shared-react-types",
+    "proof": "typecheck",
+    "reason": "React custom CSS property declarations are compile-time only."
+  },
+  {
+    "path": "src/components/GallerySceneTypes.ts",
+    "owner": "gallery-scene",
+    "proof": "typecheck",
+    "reason": "WebGL poster resources and scene props are type-only contracts erased by Vite."
+  },
+  {
+    "path": "src/components/ScrollPerspectiveWaveTypes.ts",
+    "owner": "scroll-wave",
+    "proof": "typecheck",
+    "reason": "Wave resource and public props contracts are erased by Vite."
+  }
+]

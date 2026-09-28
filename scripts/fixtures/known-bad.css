@@ -1,0 +1,76 @@
+/* Every declaration here must produce a design/token-usage error.
+   Each block names the bypass it represents. */
+
+/* 1. raw hex */
+.fixture-raw-hex {
+  color: #ff0000;
+}
+
+/* 2. raw colour function */
+.fixture-raw-rgba {
+  background-color: rgba(255, 0, 0, 0.5);
+}
+
+/* 3. named colour */
+.fixture-named-color {
+  border-top-color: crimson;
+}
+
+/* 4. local custom property used as if it were a semantic role */
+.fixture-local-variable-bypass {
+  --local-red: #f00;
+  color: var(--local-red);
+}
+
+/* 5. raw fallback inside var() */
+.fixture-raw-fallback {
+  color: var(--text-primary, #f00);
+}
+
+/* 6. token that is not declared anywhere */
+.fixture-undefined-token {
+  color: var(--color-does-not-exist);
+}
+
+/* 7. token from the wrong family */
+.fixture-wrong-family {
+  color: var(--font-body);
+}
+
+/* 8. literal buried inside a gradient */
+.fixture-gradient-literal {
+  background-image: linear-gradient(180deg, #101010, rgba(0, 0, 0, 0.4));
+}
+
+/* 9. literal buried inside a multi-layer shadow */
+.fixture-shadow-literal {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), inset 0 0 0 1px #222222;
+}
+
+/* --- families enabled in plan step 3 --- */
+
+/* 10. raw spacing */
+.fixture-raw-spacing {
+  padding: 0.85rem 1.1rem;
+}
+
+/* 11. raw radius */
+.fixture-raw-radius {
+  border-radius: 0.95rem;
+}
+
+/* 12. raw type scale */
+.fixture-raw-type {
+  font-size: 0.52rem;
+  letter-spacing: 0.14em;
+}
+
+/* 13. length literal buried in calc() */
+.fixture-calc-literal {
+  padding-top: calc(100% - 12px);
+}
+
+/* 14. composite property with a raw literal beside a valid token */
+.fixture-composite-partial {
+  box-shadow: inset 0 0 0 1px var(--color-media-hairline);
+}

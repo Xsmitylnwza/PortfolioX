@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "functions": [
+    {
+      "path": "src/App.tsx",
+      "hash": "c0742a8f35298bd28cb67544ebb720c90c0d994e747d845c93d6e0b27e731942",
+      "lines": 526,
+      "count": 1
+    },
+    {
+      "path": "src/components/About.tsx",
+      "hash": "5117f14de21ef60a22f6e0af00418058fbc164966a28f2f7b086dbc5c0c816f9",
+      "lines": 387,
+      "count": 1
+    },
+    {
+      "path": "src/components/Cursor.tsx",
+      "hash": "97a5b8fea7f05dcbbf4be585b052945ae8caccf1161ea4e35ea5bc6f65bc661c",
+      "lines": 197,
+      "count": 1
+    },
+    {
+      "path": "src/components/Experience.tsx",
+      "hash": "1763f875f0b534350c7a6d0fbd7e7f413cdb0ad02a90eeb9b1afb6e20277d6b5",
+      "lines": 300,
+      "count": 1
+    },
+    {
+      "path": "src/components/GalleryScene.tsx",
+      "hash": "31c7d8e57ba314f060ba9077d782fb5b1e73642174662bf6d18a2d5e3d6ff52d",
+      "lines": 866,
+      "count": 1
+    },
+    {
+      "path": "src/components/GalleryScene.tsx",
+      "hash": "163c20c732e86282b349939950fa69c4b6e8e4000bdfd4460316d3f8fe1bbd82",
+      "lines": 804,
+      "count": 1
+    },
+    {
+      "path": "src/components/GalleryScene.tsx",
+      "hash": "b0c26859c49f590a5f8c515c196c31f28dc32d8720552f9d48d5771f3bc7691d",
+      "lines": 795,
+      "count": 1
+    },
+    {
+      "path": "src/components/GalleryScene.tsx",
+      "hash": "821baf40be86879ad3e3732ec9abeedd934704346dccf64a8baee4974201d399",
+      "lines": 205,
+      "count": 1
+    },
+    {
+      "path": "src/components/PersonaReloadView.tsx",
+      "hash": "0996a8fdeab46742d90326eb44ab1cad9e28fd21dfaafe19c5145c7023e57997",
+      "lines": 187,
+      "count": 1
+    },
+    {
+      "path": "src/components/ProjectConstellation.tsx",
+      "hash": "1684b6daf4a2bea8da980617440212e2311c4bbb44fdb98b32e9a30e47b0d850",
+      "lines": 509,
+      "count": 1
+    },
+    {
+      "path": "src/components/ProjectConstellation.tsx",
+      "hash": "d089039e41e32ca7032b0e78d679bebc21ed24f064717734a65d16950482b9a2",
+      "lines": 385,
+      "count": 1
+    },
+    {
+      "path": "src/components/ProjectConstellation.tsx",
+      "hash": "c56c7125002e407ebf20efbaa96de5e2b285b3092868fb987118e38b0b913e06",
+      "lines": 369,
+      "count": 1
+    },
+    {
+      "path": "src/components/ProjectDetailsHermes.tsx",
+      "hash": "05d0f52ea50bf4d755a6096595bb9b563e427a7b85e9c492da7bc726d62bff20",
+      "lines": 218,
+      "count": 1
+    },
+    {
+      "path": "src/components/ProjectDetailsMedia.tsx",
+      "hash": "7881cce20d117e8e049e63871f207b6a47feaf107705bf1ee2d4569d852440c1",
+      "lines": 182,
+      "count": 1
+    },
+    {
+      "path": "src/components/Projects.tsx",
+      "hash": "20ef9c835679172a1ec740454fa4ae6455dd66a6b782873b375328729029f8a4",
+      "lines": 289,
+      "count": 1
+    },
+    {
+      "path": "src/components/Scribbles.tsx",
+      "hash": "cacc7c663a44c3492b27c840ce85cd84e3ee3780bab5e4bc926fcb6eac8d66e2",
+      "lines": 234,
+      "count": 1
+    },
+    {
+      "path": "src/components/Scribbles.tsx",
+      "hash": "0358b9eecaaf54f896c622fc52d85d932a884700f9af496876a3958119db4c7e",
+      "lines": 214,
+      "count": 1
+    },
+    {
+      "path": "src/components/ScrollPerspectiveWave.tsx",
+      "hash": "8b7dddbe9aeaba0728b7224b65cbf874da0202bca493ad00c47921ce2096088d",
+      "lines": 692,
+      "count": 1
+    },
+    {
+      "path": "src/components/ScrollPerspectiveWave.tsx",
+      "hash": "25367452c81c3a62df2b616365b15950bb45eca5db45a83289df8607e79455e4",
+      "lines": 666,
+      "count": 1
+    },
+    {
+      "path": "src/components/ScrollPerspectiveWave.tsx",
+      "hash": "89c6864d2c770f0d4f719a0e246494033ca448907aecbd33a1def97d7759de71",
+      "lines": 641,
+      "count": 1
+    }
+  ]
+}

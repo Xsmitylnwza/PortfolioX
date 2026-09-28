@@ -49,16 +49,46 @@ html.document-room-active .case-section--freeflow {
   color: var(--story-muted);
 }
 
+.case-section--freeflow .case-story-head {
+  /* Beat copy column is already narrow; don't squeeze titles into a 26% grid. */
+  grid-template-columns: 1fr;
+  gap: 0.45rem;
+  max-width: 36rem;
+}
+
 .case-section--freeflow .case-story-head > p {
+  grid-row: auto;
   color: var(--story-faint);
 }
 
 .case-section--freeflow .case-story-head h2 {
+  max-width: none;
   color: var(--story-ink);
+  font-size: clamp(1.55rem, 2.6vw, 2.35rem);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
 }
 
 .case-section--freeflow .case-story-head > span {
+  max-width: 34rem;
   color: var(--story-muted);
+  font-size: 0.98rem;
+  line-height: 1.55;
+}
+
+.case-freeflow-beat {
+  grid-template-columns: minmax(18rem, 1fr) minmax(0, 1.15fr);
+  gap: clamp(1.75rem, 4vw, 3.25rem);
+}
+
+.case-freeflow-beat--reverse {
+  grid-template-columns: minmax(0, 1.15fr) minmax(18rem, 1fr);
+}
+
+.case-freeflow-beat__copy {
+  min-width: 0;
+  max-width: 34rem;
 }
 
 .case-freeflow-wave-glass,
@@ -158,15 +188,6 @@ html.document-room-active .case-section--freeflow {
   color: var(--story-muted);
 }
 
-.case-freeflow-hero__media::before {
-  content: '';
-  position: absolute;
-  inset: 8% -4% -8% 14%;
-  border: 1px solid rgba(255, 255, 255, 0.17);
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.04), transparent 62%);
-  pointer-events: none;
-}
-
 .case-section--freeflow .case-freeflow-hero__media .case-media__frame--hero,
 .case-section--freeflow .case-freeflow-hero__media .case-media__frame--freeflow-hero {
   aspect-ratio: 16 / 9;
@@ -181,47 +202,21 @@ html.document-room-active .case-section--freeflow {
   margin: clamp(-3.4rem, -4vw, -2.4rem) 1rem 0 auto;
 }
 
+/* Liquid Glass was piloted here and lost a live blind comparison against
+   this original flat-blur treatment (DESIGN-DISCOVERY Round 16). Reverted to
+   the original surface treatment, with one kept change: a clear
+   border-radius (the owner liked the glass pilot's rounded corners even
+   though the flat fill won overall) — reused, not invented, same role
+   Keshi's own compact glass card already uses. */
 .case-freeflow-hero__caption {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 0.35rem 1rem;
   padding: 0.95rem 1rem;
+  border-radius: var(--radius-glass-compact);
   background: rgba(3, 3, 4, 0.32);
   -webkit-backdrop-filter: var(--story-glass-backdrop-media);
   backdrop-filter: var(--story-glass-backdrop-media);
-}
-
-.case-freeflow-hero__caption span {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  color: var(--story-soft);
-  font-size: 0.58rem;
-  letter-spacing: 0.12em;
-}
-
-.case-freeflow-hero__caption span i {
-  width: 0.48rem;
-  height: 0.48rem;
-  border: 1px solid #fff;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.82);
-}
-
-.case-freeflow-hero__caption strong {
-  color: var(--story-ink);
-  font-family: var(--font-display);
-  font-size: 0.98rem;
-  letter-spacing: -0.02em;
-  text-align: right;
-}
-
-.case-freeflow-hero__caption small {
-  grid-column: 1 / -1;
-  color: var(--story-faint);
-  font-size: 0.56rem;
-  letter-spacing: 0.08em;
-  line-height: 1.45;
 }
 
 .case-freeflow-capabilities {
@@ -1642,12 +1637,17 @@ html.document-room-active .case-section--freeflow {
   font-size: 0.82rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  /* Legibility over the now-quiet glass border: reused, not invented — the
+     same role already carries this job for Keshi/Decrypt captions
+     (ProjectDetailsStories.css, .case-keshi-hero__caption and siblings). */
+  text-shadow: var(--story-glass-text-shadow);
 }
 
 .case-freeflow-path small {
   display: block;
   color: var(--story-faint);
   font-size: 0.78rem;
+  text-shadow: var(--story-glass-text-shadow);
 }
 
 .case-freeflow-path svg {
@@ -1659,14 +1659,14 @@ html.document-room-active .case-section--freeflow {
 
 .case-freeflow-beat {
   display: grid;
-  grid-template-columns: minmax(16rem, 0.9fr) minmax(0, 1.2fr);
-  gap: clamp(1.5rem, 4vw, 3.5rem);
+  grid-template-columns: minmax(18rem, 1fr) minmax(0, 1.15fr);
+  gap: clamp(1.75rem, 4vw, 3.25rem);
   align-items: center;
   margin: clamp(2.5rem, 6vw, 4.5rem) 0;
 }
 
 .case-freeflow-beat--reverse {
-  grid-template-columns: minmax(0, 1.2fr) minmax(16rem, 0.9fr);
+  grid-template-columns: minmax(0, 1.15fr) minmax(18rem, 1fr);
 }
 
 .case-freeflow-beat--reverse .case-freeflow-beat__copy { order: 2; }
@@ -1694,7 +1694,7 @@ html.document-room-active .case-section--freeflow {
   height: 1rem;
   margin-top: 0.18rem;
   flex: 0 0 auto;
-  color: #8dffb0;
+  color: var(--color-detail-ink);
 }
 
 .case-section--freeflow .case-media__frame--freeflow-evidence {
@@ -1808,7 +1808,7 @@ html.document-room-active .case-section--freeflow {
   height: 1.1rem;
   margin-top: 0.15rem;
   flex: 0 0 auto;
-  color: #8dffb0;
+  color: var(--color-detail-ink);
 }
 
 .case-freeflow-boundary__row {
@@ -1835,7 +1835,7 @@ html.document-room-active .case-section--freeflow {
   text-transform: uppercase;
 }
 
-.case-freeflow-boundary__card.is-live { border-color: rgba(120, 255, 170, 0.35); }
+.case-freeflow-boundary__card.is-live { border-color: var(--color-detail-line-strong); }
 .case-freeflow-boundary__card.is-roadmap { opacity: 0.9; }
 
 .case-freeflow-system-rail__node { display: grid; gap: 0.35rem; }
@@ -1872,4 +1872,258 @@ html.document-room-active .case-section--freeflow {
   .case-freeflow-path { gap: 0.45rem 0.55rem; }
   .case-freeflow-path strong { font-size: 0.72rem; }
   .case-freeflow-beat { margin: 2rem 0; }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Round A ownership + compact boundary */
+/* -------------------------------------------------------------------------- */
+
+.case-freeflow-owned {
+  margin: clamp(2.25rem, 5vw, 3.75rem) 0;
+}
+
+.case-freeflow-owned__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin: 1.35rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.case-freeflow-owned__card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.85rem;
+  align-items: start;
+  min-width: 0;
+  border-radius: 1.1rem;
+  padding: 1rem 1.05rem 1.1rem;
+}
+
+.case-freeflow-owned__icon {
+  display: inline-grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 999px;
+  border: 1px solid var(--story-line);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.case-freeflow-owned__icon svg {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.case-freeflow-owned__card h3 {
+  margin: 0 0 0.35rem;
+  color: var(--story-ink);
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.case-freeflow-owned__card p {
+  margin: 0;
+  color: var(--story-muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+
+.case-freeflow-boundary-line {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  margin: 1.25rem 0 0;
+  padding: 0.95rem 1.05rem;
+  border-radius: 1rem;
+  color: var(--story-soft);
+  line-height: 1.5;
+}
+
+.case-freeflow-boundary-line svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  margin-top: 0.15rem;
+  flex: 0 0 auto;
+  color: var(--color-detail-ink);
+}
+
+@media (max-width: 1020px) {
+  .case-freeflow-owned__list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .case-freeflow-owned {
+    margin: 1.75rem 0;
+  }
+}
+
+
+/* -------------------------------------------------------------------------- */
+
+
+/* -------------------------------------------------------------------------- */
+/* FreeFlow problem + journey (problem-first story) */
+/* -------------------------------------------------------------------------- */
+
+.case-freeflow-problem,
+.case-freeflow-journey {
+  margin: clamp(2.25rem, 5vw, 3.75rem) 0;
+}
+
+.case-freeflow-problem__list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin: 1.35rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.case-freeflow-problem__card,
+.case-freeflow-journey__node {
+  min-width: 0;
+  border-radius: 1.1rem;
+  padding: 1rem 1.05rem 1.1rem;
+}
+
+.case-freeflow-problem__card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.85rem;
+  align-items: start;
+  height: 100%;
+}
+
+.case-freeflow-problem__icon {
+  display: inline-grid;
+  place-items: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 999px;
+  border: 1px solid var(--story-line);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.case-freeflow-problem__icon svg {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.case-freeflow-problem__card h3 {
+  margin: 0 0 0.35rem;
+  color: var(--story-ink);
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.case-freeflow-problem__card p {
+  margin: 0;
+  color: var(--story-muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.case-freeflow-journey__strip {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.55rem;
+  margin: 1.35rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.case-freeflow-journey__strip > li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.35rem;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.case-freeflow-journey__node {
+  display: grid;
+  gap: 0.25rem;
+  align-content: start;
+}
+
+.case-freeflow-journey__node > span:first-child {
+  color: var(--story-faint);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+}
+
+.case-freeflow-journey__node strong {
+  color: var(--story-ink);
+  font-size: 0.98rem;
+  line-height: 1.25;
+}
+
+.case-freeflow-journey__node small {
+  color: var(--story-muted);
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.case-freeflow-journey__arrow {
+  display: grid;
+  place-items: center;
+  color: var(--story-faint);
+  align-self: center;
+}
+
+.case-freeflow-journey__note {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  margin: 1.1rem 0 0;
+  padding: 0.9rem 1.05rem;
+  border-radius: 1rem;
+  border: 1px solid var(--story-line);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--story-soft);
+  font-size: 0.94rem;
+  line-height: 1.5;
+}
+
+.case-freeflow-journey__note svg {
+  width: 1.05rem;
+  height: 1.05rem;
+  margin-top: 0.15rem;
+  flex: 0 0 auto;
+  color: var(--color-detail-ink);
+}
+
+@media (max-width: 1100px) {
+  .case-freeflow-journey__strip {
+    grid-template-columns: 1fr;
+  }
+
+  .case-freeflow-journey__strip > li {
+    grid-template-columns: 1fr;
+  }
+
+  .case-freeflow-journey__arrow {
+    transform: rotate(90deg);
+    justify-self: center;
+    padding: 0.1rem 0 0.25rem;
+  }
+}
+
+@media (max-width: 1020px) {
+  .case-freeflow-problem__list {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .case-freeflow-problem,
+  .case-freeflow-journey {
+    margin: 1.75rem 0;
+  }
 }

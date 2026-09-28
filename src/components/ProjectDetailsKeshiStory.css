@@ -1266,7 +1266,7 @@
   width: 2.2rem;
   height: 2.2rem;
   margin-bottom: 0.35rem;
-  color: #ffd08e;
+  color: var(--color-detail-soft);
 }
 
 .case-keshi-architecture__link {

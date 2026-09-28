@@ -15,7 +15,7 @@ export const PROFILE = {
   },
   cvPdf: {
     href: '/assets/Chaimongkon-Sokgampang_CV.pdf',
-    label: 'CV PDF',
+    label: 'Download PDF',
   },
 };
 

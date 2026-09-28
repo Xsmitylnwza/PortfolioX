@@ -205,7 +205,7 @@
 .case-decrypt-level__index {
   color: var(--case-faint);
   font-family: var(--font-mono);
-  font-size: 0.47rem;
+  font-size: var(--type-size-case-metadata);
   letter-spacing: 0.1em;
 }
 
@@ -217,7 +217,7 @@
 .case-decrypt-level__identity span {
   color: var(--case-faint);
   font-family: var(--font-mono);
-  font-size: 0.46rem;
+  font-size: var(--type-size-case-metadata);
   letter-spacing: 0.11em;
   text-transform: uppercase;
 }
@@ -243,7 +243,7 @@
 .case-decrypt-level dt {
   color: var(--case-faint);
   font-family: var(--font-mono);
-  font-size: 0.4rem;
+  font-size: var(--type-size-case-metadata);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -323,7 +323,7 @@
 .case-decrypt-engine__timer > span {
   color: var(--case-faint);
   font-family: var(--font-mono);
-  font-size: 0.48rem;
+  font-size: var(--type-size-case-metadata);
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -449,7 +449,7 @@
 .case-decrypt-engine__route span,
 .case-decrypt-engine__resolution span {
   font-family: var(--font-mono);
-  font-size: 0.42rem;
+  font-size: var(--type-size-case-metadata);
   letter-spacing: 0.1em;
   text-align: center;
   text-transform: uppercase;
@@ -534,7 +534,7 @@
 .case-decrypt-rules li > small {
   color: var(--case-faint);
   font-family: var(--font-mono);
-  font-size: 0.45rem;
+  font-size: var(--type-size-case-metadata);
   letter-spacing: 0.09em;
   text-transform: uppercase;
 }
@@ -618,7 +618,7 @@
   margin-top: 1.2rem;
   color: var(--case-faint);
   font-family: var(--font-mono);
-  font-size: 0.45rem;
+  font-size: var(--type-size-case-metadata);
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
@@ -729,7 +729,7 @@
 .case-decrypt-mutations small {
   color: var(--case-mute);
   font-family: var(--font-mono);
-  font-size: 0.43rem;
+  font-size: var(--type-size-case-metadata);
   letter-spacing: 0.06em;
   line-height: 1.35;
   text-transform: uppercase;

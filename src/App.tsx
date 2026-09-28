@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, Suspense, lazy } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { projects, galleryMediaRevision } from './data/projects';
+import { featuredProjects as projects, galleryMediaRevision } from './data/projects';
 import Navigation from './components/Navigation';
 import GalleryScene from './components/GalleryScene';
 import ScrollManager from './components/ScrollManager';

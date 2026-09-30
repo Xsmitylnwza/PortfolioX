@@ -19,7 +19,7 @@ export default function AppPageRoutes() {
       <Route
         path="/persona"
         element={
-          <Suspense fallback={<div className="loading-fallback loading-fallback--persona" />}>
+          <Suspense fallback={<div className="loading-fallback loading-fallback--persona" role="status">Loading page…</div>}>
             <PersonaReloadView />
           </Suspense>
         }
@@ -31,7 +31,7 @@ export default function AppPageRoutes() {
       <Route
         path="/stack"
         element={
-          <Suspense fallback={<div className="loading-fallback" />}>
+          <Suspense fallback={<div className="loading-fallback" role="status">Loading page…</div>}>
             <StackPage />
           </Suspense>
         }
@@ -40,7 +40,7 @@ export default function AppPageRoutes() {
       <Route
         path="/contact"
         element={
-          <Suspense fallback={<div className="loading-fallback" />}>
+          <Suspense fallback={<div className="loading-fallback" role="status">Loading page…</div>}>
             <ContactPage />
           </Suspense>
         }

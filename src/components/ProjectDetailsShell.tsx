@@ -1,8 +1,6 @@
 import { createElement, useEffect, useRef } from 'react';
 import { useDocumentRoomReveal } from '../hooks/useDocumentRoomReveal';
-import { CaseTop } from './ProjectDetailsPrimitives';
 import ScrollPerspectiveWave from './ScrollPerspectiveWave';
-import { formatIndex } from './ProjectDetailsFormat';
 import type { CaseShellProps } from '../features/project-details/types';
 
 const PROJECT_DECISIONS: Record<string, string> = {
@@ -22,7 +20,7 @@ const PROJECT_DECISIONS: Record<string, string> = {
     'Each rule is evaluated live against the current password. Difficulty, countdown, and game-state transitions layer pressure progressively while keeping validation feedback immediate.',
 };
 
-const ProjectDetailsShell = ({ project, layout, LayoutBody, isKeshiNext = false, currentIndex, caseTotal }: CaseShellProps) => {
+const ProjectDetailsShell = ({ project, layout, LayoutBody, isKeshiNext = false }: CaseShellProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   useDocumentRoomReveal(sectionRef, {
     paths: [`/project/${project.id}`],
@@ -36,8 +34,6 @@ const ProjectDetailsShell = ({ project, layout, LayoutBody, isKeshiNext = false,
   const hasLive = Boolean(project.link && project.link !== '#');
   const hasRepo = Boolean(project.repo);
   const gallery = Array.isArray(project.gallery) ? project.gallery : [];
-  const caseNumber = formatIndex(currentIndex + 1);
-  const total = formatIndex(caseTotal);
   const techItems = project.tags || [];
   return (
     <div className="document-room document-room--project">
@@ -66,7 +62,6 @@ const ProjectDetailsShell = ({ project, layout, LayoutBody, isKeshiNext = false,
         syncStage
       >
         <div className="case-shell" data-wave-surface>
-          <CaseTop caseNumber={caseNumber} caseTotal={total} />
           {createElement(LayoutBody, {
             project,
             decision,

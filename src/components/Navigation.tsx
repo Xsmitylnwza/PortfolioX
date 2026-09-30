@@ -121,6 +121,9 @@ const Navigation = ({ currentPath, onRoomNavigate, routeReady = false }: Navigat
             ].filter(Boolean).join(' ')}
             aria-label="Primary navigation"
             onMouseLeave={() => setActiveLabel(null)}
+            onKeyDown={(event) => {
+                if ([' ', 'ArrowDown', 'ArrowUp', 'PageDown', 'PageUp'].includes(event.key)) event.stopPropagation();
+            }}
             onBlur={(event) => {
                 if (!event.currentTarget.contains(event.relatedTarget)) {
                     setOpen(false);

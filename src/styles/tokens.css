@@ -153,6 +153,7 @@
   /* Chip type: the uppercase mono stamp on media. Shared by label and kind. */
   --type-size-chip: 0.52rem;
   --type-tracking-chip: 0.14em;
+  --type-size-case-metadata: 0.7rem;
 
   /* --- shape ------------------------------------------------------------ */
   --radius-pill: 999px;

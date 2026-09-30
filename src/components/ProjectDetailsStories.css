@@ -19,8 +19,8 @@
     0 0 12px rgba(0, 0, 0, 0.18);
   --story-surface: var(--story-glass-fill);
   --story-surface-strong: var(--story-glass-fill-strong);
-  --story-line: rgba(255, 253, 249, 0.14);
-  --story-line-strong: rgba(255, 253, 249, 0.24);
+  --story-line: var(--color-detail-line);
+  --story-line-strong: var(--color-detail-line-strong);
 
   /* .case-section defaults create a backdrop root. Release it so document-room
      glass can sample the persistent Gallery WebGL stage just like the toast. */

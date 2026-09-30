@@ -6,8 +6,28 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "typecheck": "tsc --project tsconfig.json",
+    "typecheck:tools": "tsc --project tsconfig.tools.json",
+    "check:quality": "node scripts/quality-check.mjs",
+    "preview": "vite preview",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "lint:css": "stylelint \"src/**/*.css\"",
+    "check:design": "node scripts/design-check.mjs",
+    "design:snapshot": "node scripts/design-snapshot.mjs",
+    "design:baseline": "node scripts/design-baseline.mjs --capture",
+    "design:baseline:verify": "node scripts/design-baseline.mjs --verify",
+    "test:design": "node --test scripts/design-check.test.mjs",
+    "design:baseline:prune": "node scripts/design-baseline.mjs --prune",
+    "test:modularization": "node --test scripts/modularization-compare.test.mjs",
+    "test:project-data": "node --import tsx --test scripts/project-data-contract.test.mjs",
+    "capture:modularization": "node scripts/modularization-capture.mjs",
+    "capture:modularization-global": "node scripts/modularization-global-capture.mjs",
+    "compare:modularization": "node scripts/modularization-compare.mjs",
+    "smoke:modularization-media": "node scripts/modularization-media-smoke.mjs",
+    "smoke:modularization-runtime": "node scripts/modularization-runtime-lifecycle.mjs",
+    "smoke:modularization-context": "node scripts/modularization-context-recovery.mjs",
+    "audit:modularization-reachability": "node scripts/modularization-reachability.mjs",
+    "test:modularization-fallback": "node scripts/modularization-fallback-fixture.mjs"
   },
   "dependencies": {
     "@iconify/react": "^6.0.2",
@@ -20,6 +40,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@types/node": "^26.6.2",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
@@ -27,6 +48,12 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
+    "playwright": "^1.60.0",
+    "postcss-value-parser": "4.2.0",
+    "stylelint": "16.25.0",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.70.1",
     "vite": "^7.2.4"
   }
 }

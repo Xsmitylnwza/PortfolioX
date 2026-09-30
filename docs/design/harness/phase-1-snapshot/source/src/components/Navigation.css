@@ -1,0 +1,450 @@
+.corner-menu {
+    --menu-ink: #f3eee4;
+    --menu-mute: rgba(243, 238, 228, 0.58);
+    --menu-accent: #e84b42;
+    --menu-glow: rgba(232, 75, 66, 0.28);
+    --glyph-size: 1.12rem;
+    --arrow-size: 0.88rem;
+    position: fixed;
+    z-index: 150;
+    top: clamp(1rem, 2vw, 2rem);
+    right: clamp(1rem, 2vw, 2rem);
+    display: grid;
+    justify-items: end;
+    color: var(--menu-ink);
+    font-family: var(--font-display);
+    font-weight: 800;
+    opacity: 0;
+    mix-blend-mode: normal;
+}
+
+html.portfolio-ready:not(.loader-active):not(.boot-loader-active) .corner-menu {
+    animation: corner-menu-reveal 0.78s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
+}
+
+.corner-menu.is-route-ready {
+    opacity: 1;
+}
+
+html.loader-active .corner-menu,
+html.boot-loader-active .corner-menu {
+    opacity: 0 !important;
+    animation: none !important;
+    pointer-events: none !important;
+}
+
+@keyframes corner-menu-reveal {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.corner-menu__trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.48rem;
+    min-height: 1.35em;
+    padding: 0.38rem 0;
+    border: 0;
+    color: inherit;
+    background: transparent;
+    font: inherit;
+    font-size: clamp(1rem, 1.35vw, 1.35rem);
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.corner-menu__trigger-mark {
+    display: grid;
+    place-items: center;
+    width: 1.2em;
+    height: 1.2em;
+    border: 1px solid rgba(243, 238, 228, 0.28);
+    border-radius: 999px;
+    color: #f3eee4;
+    background: rgba(8, 8, 8, 0.28);
+    box-shadow: 0 0 0 1px rgba(8, 8, 8, 0.18);
+    transition: border-color 180ms ease, background-color 180ms ease, transform 220ms ease;
+}
+
+.corner-menu__trigger-mark svg {
+    width: 0.62em;
+    height: 0.62em;
+}
+
+.corner-menu__trigger:hover .corner-menu__trigger-mark,
+.corner-menu__trigger:focus-visible .corner-menu__trigger-mark,
+.corner-menu.is-open .corner-menu__trigger-mark {
+    border-color: rgba(243, 238, 228, 0.72);
+    background: rgba(232, 75, 66, 0.16);
+    transform: rotate(-8deg) scale(1.04);
+}
+
+.corner-menu__panel {
+    display: grid;
+    justify-items: end;
+    gap: 0.08rem;
+    min-width: 0;
+    padding: 0.45rem 0 0.15rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    pointer-events: none;
+    transition: opacity 220ms ease, transform 360ms cubic-bezier(0.16, 1, 0.3, 1), visibility 220ms;
+}
+
+.corner-menu__link {
+    --glyph-width: 0px;
+    --glyph-gap: 0px;
+    --glyph-opacity: 0;
+    --glyph-shift: 10px;
+    --arrow-width: 0px;
+    --arrow-gap: 0px;
+    --arrow-opacity: 0;
+    --arrow-shift: -8px;
+    --meta-max: 0px;
+    --meta-opacity: 0;
+    --meta-shift: -4px;
+    display: grid;
+    justify-items: end;
+    width: max-content;
+    max-width: min(20rem, calc(100vw - 2rem));
+    margin-left: auto;
+    padding: 0.38rem 0;
+    color: inherit;
+    text-align: right;
+    text-decoration: none;
+    transform: translateX(10px);
+    transition:
+        transform 380ms cubic-bezier(0.16, 1, 0.3, 1),
+        background-color 220ms ease,
+        opacity 180ms ease;
+}
+
+.corner-menu__link:nth-child(2) { transition-delay: 20ms; }
+.corner-menu__link:nth-child(3) { transition-delay: 40ms; }
+.corner-menu__link:nth-child(4) { transition-delay: 60ms; }
+
+/* Label row only — icon, text, and arrow share one baseline center. */
+.corner-menu__row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    min-height: 1.35em;
+    line-height: 1;
+}
+
+.corner-menu__glyph {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: var(--glyph-width);
+    height: 1em;
+    margin-right: var(--glyph-gap);
+    overflow: hidden;
+    color: rgba(243, 238, 228, 0.82);
+    opacity: var(--glyph-opacity);
+    transform: translateX(var(--glyph-shift));
+    filter: none;
+    transition:
+        width 340ms cubic-bezier(0.16, 1, 0.3, 1),
+        margin 340ms cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 220ms ease,
+        transform 340ms cubic-bezier(0.16, 1, 0.3, 1),
+        color 180ms ease;
+}
+
+.corner-menu__glyph-icon {
+    display: block;
+    flex: 0 0 auto;
+    width: var(--glyph-size);
+    height: var(--glyph-size);
+    min-width: var(--glyph-size);
+    min-height: var(--glyph-size);
+    stroke-width: 1.9;
+}
+
+.corner-menu__label {
+    display: inline-flex;
+    align-items: center;
+    height: 1em;
+    font-size: clamp(1rem, 1.35vw, 1.35rem);
+    font-weight: 800;
+    letter-spacing: -0.045em;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.corner-menu__arrow {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: var(--arrow-width);
+    height: 1em;
+    margin-left: var(--arrow-gap);
+    overflow: hidden;
+    color: rgba(243, 238, 228, 0.72);
+    opacity: var(--arrow-opacity);
+    transform: translateX(var(--arrow-shift));
+    transition:
+        width 340ms cubic-bezier(0.16, 1, 0.3, 1),
+        margin 340ms cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 220ms ease,
+        transform 340ms cubic-bezier(0.16, 1, 0.3, 1),
+        color 180ms ease;
+}
+
+.corner-menu__arrow svg {
+    display: block;
+    width: var(--arrow-size);
+    height: var(--arrow-size);
+    min-width: var(--arrow-size);
+    min-height: var(--arrow-size);
+}
+
+.corner-menu__meta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.4rem;
+    max-width: 12rem;
+    max-height: var(--meta-max);
+    margin-top: 0;
+    overflow: hidden;
+    color: var(--menu-mute);
+    font-family: var(--font-mono);
+    font-size: 0.56rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    line-height: 1.15;
+    text-transform: uppercase;
+    opacity: var(--meta-opacity);
+    transform: translateY(var(--meta-shift));
+    transition:
+        max-height 340ms cubic-bezier(0.16, 1, 0.3, 1),
+        margin 340ms cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 220ms ease,
+        transform 320ms cubic-bezier(0.16, 1, 0.3, 1),
+        color 180ms ease;
+}
+
+.corner-menu__code {
+    color: rgba(243, 238, 228, 0.72);
+    flex: 0 0 auto;
+}
+
+.corner-menu__hint {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.corner-menu__link.is-disabled {
+    opacity: 0.38;
+    cursor: default;
+}
+
+.corner-menu__link.is-current .corner-menu__code {
+    color: var(--menu-accent);
+}
+
+.corner-menu.is-open .corner-menu__panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.corner-menu.is-open .corner-menu__link {
+    transform: translateX(0);
+}
+
+/* Expanded state for hover/focus/active, and for current page when nothing else is active. */
+.corner-menu__link:hover,
+.corner-menu__link:focus-visible,
+.corner-menu__link.is-active,
+.corner-menu__link.is-current {
+    --glyph-width: var(--glyph-size);
+    --glyph-gap: 0.3rem;
+    --glyph-opacity: 1;
+    --glyph-shift: 0px;
+    --arrow-width: var(--arrow-size);
+    --arrow-gap: 0.26rem;
+    --arrow-opacity: 1;
+    --arrow-shift: 0px;
+    --meta-max: 1.1rem;
+    --meta-opacity: 1;
+    --meta-shift: 0px;
+    color: inherit;
+}
+
+.corner-menu__link:hover .corner-menu__glyph,
+.corner-menu__link:focus-visible .corner-menu__glyph,
+.corner-menu__link.is-active .corner-menu__glyph,
+.corner-menu__link.is-current .corner-menu__glyph {
+    color: rgba(243, 238, 228, 0.92);
+}
+
+.corner-menu__link:hover .corner-menu__meta,
+.corner-menu__link:focus-visible .corner-menu__meta,
+.corner-menu__link.is-active .corner-menu__meta,
+.corner-menu__link.is-current .corner-menu__meta {
+    margin-top: 0.18rem;
+}
+
+/* When another item is hovered/focused, collapse the current page item. */
+.corner-menu.has-active .corner-menu__link.is-current:not(.is-active):not(:hover):not(:focus-visible) {
+    --glyph-width: 0px;
+    --glyph-gap: 0px;
+    --glyph-opacity: 0;
+    --glyph-shift: 10px;
+    --arrow-width: 0px;
+    --arrow-gap: 0px;
+    --arrow-opacity: 0;
+    --arrow-shift: -8px;
+    --meta-max: 0px;
+    --meta-opacity: 0;
+    --meta-shift: -4px;
+}
+
+.corner-menu.has-active .corner-menu__link.is-current:not(.is-active):not(:hover):not(:focus-visible) .corner-menu__meta {
+    margin-top: 0;
+}
+
+.corner-menu__link.is-disabled:hover,
+.corner-menu__link.is-disabled:focus-visible,
+.corner-menu__link.is-disabled.is-active {
+    --arrow-opacity: 0.9;
+}
+
+.corner-menu__link.is-disabled:hover .corner-menu__glyph,
+.corner-menu__link.is-disabled:focus-visible .corner-menu__glyph,
+.corner-menu__link.is-disabled.is-active .corner-menu__glyph {
+    color: rgba(243, 238, 228, 0.7);
+}
+
+.corner-menu__link.is-disabled:hover .corner-menu__arrow,
+.corner-menu__link.is-disabled:focus-visible .corner-menu__arrow,
+.corner-menu__link.is-disabled.is-active .corner-menu__arrow {
+    color: rgba(243, 238, 228, 0.58);
+}
+
+
+@media (max-width: 700px) {
+    .corner-menu {
+        --menu-ink: #eeeae2;
+        --menu-mute: rgba(238, 234, 226, 0.58);
+        --glyph-size: 1.18rem;
+        top: max(0.85rem, env(safe-area-inset-top, 0px));
+        right: max(0.85rem, env(safe-area-inset-right, 0px));
+        color: #eeeae2;
+        mix-blend-mode: normal;
+    }
+
+    .corner-menu__trigger {
+        min-height: 44px;
+        min-width: 44px;
+        justify-content: flex-end;
+        padding: 0.55rem 0.15rem;
+    }
+
+    .corner-menu__panel {
+        min-width: min(15.5rem, calc(100vw - 1.5rem));
+        padding: 0.7rem 0.75rem 0.55rem;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+        mix-blend-mode: normal;
+    }
+
+    .corner-menu__link {
+        min-height: 44px;
+        padding: 0.62rem 0.1rem;
+        max-width: 100%;
+    }
+
+    .corner-menu__trigger,
+    .corner-menu__label {
+        font-size: 1.4rem;
+    }
+
+    .corner-menu__meta {
+        max-width: 10.5rem;
+    }
+}
+
+@media (max-width: 420px) {
+    .corner-menu__panel {
+        min-width: min(14.25rem, calc(100vw - 1rem));
+    }
+
+    .corner-menu__trigger,
+    .corner-menu__label {
+        font-size: 1.25rem;
+    }
+}
+
+/* Input capability, not viewport width, owns the interactive hit area. */
+@media (pointer: coarse) {
+    .corner-menu__trigger,
+    .corner-menu__link {
+        min-height: 44px;
+    }
+
+    .corner-menu__trigger {
+        padding-block: 0.55rem;
+    }
+
+    .corner-menu__link {
+        padding-block: 0.62rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .corner-menu {
+        opacity: 1;
+        animation: none !important;
+    }
+
+    .corner-menu,
+    .corner-menu * {
+        transition: none !important;
+    }
+
+    .corner-menu__link.is-current,
+    .corner-menu__link.is-active,
+    .corner-menu__link:hover,
+    .corner-menu__link:focus-visible {
+        --glyph-width: var(--glyph-size);
+        --glyph-gap: 0.3rem;
+        --glyph-opacity: 1;
+        --glyph-shift: 0px;
+        --arrow-width: var(--arrow-size);
+        --arrow-gap: 0.26rem;
+        --arrow-opacity: 1;
+        --arrow-shift: 0px;
+        --meta-max: 1.1rem;
+        --meta-opacity: 1;
+        --meta-shift: 0px;
+    }
+
+    .corner-menu.has-active .corner-menu__link.is-current:not(.is-active):not(:hover):not(:focus-visible) {
+        --glyph-width: 0px;
+        --glyph-gap: 0px;
+        --glyph-opacity: 0;
+        --arrow-width: 0px;
+        --arrow-gap: 0px;
+        --arrow-opacity: 0;
+        --meta-max: 0px;
+        --meta-opacity: 0;
+    }
+
+    .corner-menu__meta {
+        margin-top: 0.18rem;
+    }
+}

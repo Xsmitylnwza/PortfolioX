@@ -7,30 +7,10 @@
 /* Decrypt — pressure escalates into a branching outcome                       */
 /* -------------------------------------------------------------------------- */
 /* -------------------------------------------------------------------------- */
-/* Shared material and responsive rules for Keshi and Decrypt.
-   Import after project base styles, before project refinements. */
+/* Shared responsive rules for Keshi and Decrypt; Decrypt retains the legacy
+   material here. Keshi's trial material lives in its own later stylesheet. */
 /* -------------------------------------------------------------------------- */
-/* Keep each layout's geometry and the poster-hover toast's border/fill/shadow.
-   Blur is deliberately lighter because the project backdrop is a sparse grid,
-   not a detailed poster. Large chapter shells stay transparent so glass does
-   not become one full-width red panel. */
-.case-section--keshi :is(
-  .case-keshi-hero__caption,
-  .case-keshi-state__caption,
-  .case-keshi-states__switch svg,
-  .case-keshi-atmosphere__caption > svg,
-  .case-keshi-rhythm__node,
-  .case-keshi-rhythm__outputs article,
-  .case-keshi-rhythm__output-icon,
-  .case-keshi-rhythm__hermes,
-  .case-keshi-rhythm__hermes-icon,
-  .case-keshi-proof__caption,
-  .case-keshi-matrix,
-  .case-keshi-pattern__facts > div,
-  .case-keshi-architecture__node,
-  .case-keshi-architecture__hermes,
-  .case-keshi-architecture__hermes-icon
-),
+/* Decrypt keeps its previous material. Chapter shells remain open. */
 .case-section--decrypt :is(
   .case-decrypt-proof__caption,
   .case-decrypt-level,
@@ -65,10 +45,6 @@
   backdrop-filter: none;
   isolation: auto;
 }
-.case-section--keshi :is(
-  .case-keshi-hero__caption,
-  .case-keshi-proof__caption
-),
 .case-section--decrypt .case-decrypt-proof__caption {
   -webkit-backdrop-filter: var(--story-glass-backdrop-media);
   backdrop-filter: var(--story-glass-backdrop-media);

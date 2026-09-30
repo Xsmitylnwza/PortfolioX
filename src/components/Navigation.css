@@ -26,6 +26,13 @@ html.portfolio-ready:not(.loader-active):not(.boot-loader-active) .corner-menu {
     opacity: 1;
 }
 
+/* Hide all navigation chrome for the full handoff, including an open panel. */
+html.poster-transition-active .corner-menu,
+html.room-content-exiting .corner-menu,
+html.room-content-entering .corner-menu {
+    display: none;
+}
+
 html.loader-active .corner-menu,
 html.boot-loader-active .corner-menu {
     opacity: 0 !important;
@@ -251,8 +258,6 @@ html.boot-loader-active .corner-menu {
     color: var(--menu-accent);
 }
 
-.corner-menu:hover .corner-menu__panel,
-.corner-menu:focus-within .corner-menu__panel,
 .corner-menu.is-open .corner-menu__panel {
     opacity: 1;
     visibility: visible;
@@ -260,8 +265,6 @@ html.boot-loader-active .corner-menu {
     pointer-events: auto;
 }
 
-.corner-menu:hover .corner-menu__link,
-.corner-menu:focus-within .corner-menu__link,
 .corner-menu.is-open .corner-menu__link {
     transform: translateX(0);
 }
@@ -345,7 +348,7 @@ html.boot-loader-active .corner-menu {
         top: max(0.85rem, env(safe-area-inset-top, 0px));
         right: max(0.85rem, env(safe-area-inset-right, 0px));
         color: #eeeae2;
-        mix-blend-mode: difference;
+        mix-blend-mode: normal;
     }
 
     .corner-menu__trigger {
@@ -358,10 +361,11 @@ html.boot-loader-active .corner-menu {
     .corner-menu__panel {
         min-width: min(15.5rem, calc(100vw - 1.5rem));
         padding: 0.7rem 0.75rem 0.55rem;
-        border: 1px solid rgba(243, 238, 228, 0.08);
-        border-radius: 1.25rem;
-        background: rgba(8, 8, 8, 0.92);
-        backdrop-filter: blur(14px);
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
         mix-blend-mode: normal;
     }
 
@@ -389,6 +393,22 @@ html.boot-loader-active .corner-menu {
     .corner-menu__trigger,
     .corner-menu__label {
         font-size: 1.25rem;
+    }
+}
+
+/* Input capability, not viewport width, owns the interactive hit area. */
+@media (pointer: coarse) {
+    .corner-menu__trigger,
+    .corner-menu__link {
+        min-height: 44px;
+    }
+
+    .corner-menu__trigger {
+        padding-block: 0.55rem;
+    }
+
+    .corner-menu__link {
+        padding-block: 0.62rem;
     }
 }
 

@@ -1,0 +1,508 @@
+/* Keshi — "next" preview (?layout=next).
+ *
+ * The page is a Pomodoro session: dense Focus beats alternate with spacious
+ * Relax beats (DESIGN.md A21), and a fixed session clock counts each beat
+ * down. Everything here is scoped to .case-section--keshi-next, so the
+ * shipped Keshi page cannot change.
+ *
+ * Roles are declared locally because this is a preview, not adopted design.
+ * If it is adopted, the spacing and type roles below are the first concrete
+ * answer to DESIGN.md G2/G3 and move into src/styles/tokens.css.
+ */
+
+/* The session clock is portalled to <body>, outside the section scope, so
+   it declares the same roles for itself. Keshi's product colours are
+   mirrored here for the same reason (source: ProjectDetailsStories.css). */
+.case-section--keshi-next,
+.keshi-session {
+  --color-keshi-focus: var(--color-text-primary);
+  --color-keshi-relax: var(--color-text-primary);
+  --color-keshi-ink: var(--color-detail-ink);
+  --color-keshi-soft: var(--color-detail-soft);
+  --color-keshi-mute: var(--color-detail-muted);
+  --color-keshi-faint: var(--color-detail-faint);
+  --color-keshi-rule: var(--color-detail-line);
+  --color-keshi-session-surface: var(--color-detail-session-surface);
+  --color-keshi-session-edge: var(--color-detail-line);
+
+  /* The rhythm: Focus is tight, Relax is air. The ratio is the design. */
+  --space-beat-focus: clamp(3.5rem, 8vw, 6.5rem);
+  --space-beat-relax: clamp(7rem, 17vw, 13rem);
+  --space-beat-gap: clamp(1.25rem, 2.6vw, 2.25rem);
+  --space-hero-gap: clamp(1.5rem, 3.4vw, 3rem);
+  --space-mark-gap: 0.7rem;
+  --space-mark-after: clamp(1.5rem, 3vw, 2.5rem);
+  --space-choice-row: 0.6rem;
+  --space-choice-pad: clamp(1.4rem, 2.8vw, 2.2rem);
+  --space-placard-pad: 0.35rem 0 0.35rem clamp(1.1rem, 2vw, 1.6rem);
+  --space-placard-row: 0.85rem;
+  --space-session-inset: clamp(0.9rem, 2vw, 1.5rem);
+  --space-session-pad: 0.6rem 0.85rem 0.65rem 0.75rem;
+  --space-session-gap: 0.6rem;
+  --space-session-row: 0.5rem;
+  --space-end-link: 0.35rem;
+  /* Asymmetric indents replace margin-left:auto, which pinned blocks to the
+     column's right edge — exactly where the wave pushes them off-screen. */
+  --space-breath-indent: clamp(0rem, 22vw, 22rem);
+  --space-placard-indent: clamp(0rem, 34vw, 36rem);
+
+  /* Syne 800 sets "Pomodoro" at ~7em wide. 12.5vw overflowed the shell at
+     1440px (clipped to "Pomodor"); 9.5vw keeps the longest word inside the
+     column from 390px (2.8rem ≈ 314px) up to the 8.5rem cap. */
+  --type-size-hero: clamp(2.8rem, 9.5vw, 8.5rem);
+  /* Sized for the page wave, not just the layout box: the wave magnifies a
+     block as it crosses mid-screen, and at 6rem the breath line measured
+     inside the shell (160-1223px) yet rendered past the right edge. */
+  --type-size-breath: clamp(2.2rem, 5.2vw, 4.6rem);
+  --type-size-choice: clamp(1.7rem, 3.2vw, 2.8rem);
+  --type-size-thesis: clamp(1.35rem, 2.4vw, 2rem);
+  --type-size-choices-title: clamp(1.1rem, 1.6vw, 1.35rem);
+  --type-size-body-lg: clamp(1rem, 1.25vw, 1.15rem);
+  --type-size-placard-title: clamp(1.4rem, 2.2vw, 1.85rem);
+  --type-size-placard: 0.95rem;
+  --type-size-mark: 0.62rem;
+  --type-size-session: 0.62rem;
+  --type-size-session-time: 0.92rem;
+  --type-tracking-hero: -0.065em;
+  --type-tracking-tight: -0.045em;
+  --type-tracking-mark: 0.2em;
+  --type-leading-hero: 0.82;
+  --type-leading-tight: 0.96;
+  --type-leading-body: 1.6;
+
+  --measure-breath: 14ch;
+  --measure-lede: 30rem;
+  --measure-thesis: 14ch;
+  --measure-choice-body: 34rem;
+  --measure-placard: 30rem;
+  --radius-session: 0.85rem;
+}
+
+/* --- beats ---------------------------------------------------------------- */
+
+.case-section--keshi-next .keshi-beat {
+  position: relative;
+}
+
+.case-section--keshi-next .keshi-beat--focus {
+  padding-block: var(--space-beat-focus);
+}
+
+.case-section--keshi-next .keshi-beat--relax {
+  padding-block: var(--space-beat-relax);
+}
+
+/* A hairline in the beat's own colour marks every change of mode. */
+.case-section--keshi-next .keshi-beat::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--color-keshi-focus), transparent 55%);
+  opacity: 0.6;
+}
+
+.case-section--keshi-next .keshi-beat--relax::before {
+  background: linear-gradient(90deg, var(--color-keshi-relax), transparent 55%);
+}
+
+.case-section--keshi-next .keshi-next-hero::before {
+  display: none;
+}
+
+.case-section--keshi-next .keshi-beat__mark {
+  display: flex;
+  align-items: center;
+  gap: var(--space-mark-gap);
+  margin: 0 0 var(--space-mark-after);
+  color: var(--color-keshi-faint);
+  font-family: var(--type-family-mono);
+  font-size: var(--type-size-mark);
+  letter-spacing: var(--type-tracking-mark);
+  text-transform: uppercase;
+}
+
+.case-section--keshi-next .keshi-beat__mark i {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-keshi-focus);
+}
+
+.case-section--keshi-next .keshi-beat__mark--relax i {
+  background: var(--color-keshi-relax);
+}
+
+.case-section--keshi-next .keshi-beat__mark span:last-child {
+  color: var(--color-keshi-mute);
+}
+
+/* --- FOCUS 01: hero -------------------------------------------------------- */
+
+.case-section--keshi-next .keshi-next-hero {
+  padding-block-start: 0;
+}
+
+.case-section--keshi-next .keshi-next-hero__meta {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-mark-gap);
+  margin: 0 0 var(--space-beat-gap);
+  color: var(--color-keshi-faint);
+  font-family: var(--type-family-mono);
+  font-size: var(--type-size-mark);
+  letter-spacing: var(--type-tracking-mark);
+  text-transform: uppercase;
+}
+
+.case-section--keshi-next .keshi-next-hero__title {
+  display: grid;
+  margin: 0;
+  color: var(--color-keshi-ink);
+  font-family: var(--type-family-display);
+  font-size: var(--type-size-hero);
+  font-weight: 800;
+  letter-spacing: var(--type-tracking-hero);
+  line-height: var(--type-leading-hero);
+}
+
+/* The second word steps right: an asymmetry the eye does not expect. */
+.case-section--keshi-next .keshi-next-hero__title span:last-child {
+  justify-self: end;
+}
+
+.case-section--keshi-next .keshi-next-hero__brief {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 30rem);
+  align-items: end;
+  gap: var(--space-hero-gap);
+  margin-block: var(--space-hero-gap);
+}
+
+.case-section--keshi-next .keshi-next-hero__thesis {
+  max-width: var(--measure-thesis);
+  margin: 0;
+  color: var(--color-keshi-ink);
+  font-family: var(--type-family-display);
+  font-size: var(--type-size-thesis);
+  font-weight: 700;
+  letter-spacing: var(--type-tracking-tight);
+  line-height: var(--type-leading-tight);
+}
+
+.case-section--keshi-next .keshi-next-hero__lede p {
+  max-width: var(--measure-lede);
+  margin: 0 0 var(--space-beat-gap);
+  color: var(--color-keshi-soft);
+  font-size: var(--type-size-body-lg);
+  line-height: var(--type-leading-body);
+}
+
+/* --- RELAX 01: breath ------------------------------------------------------ */
+
+.case-section--keshi-next .keshi-next-breath h2 {
+  max-width: var(--measure-breath);
+  margin: 0;
+  color: var(--color-keshi-ink);
+  font-family: var(--type-family-display);
+  font-size: var(--type-size-breath);
+  font-weight: 700;
+  letter-spacing: var(--type-tracking-tight);
+  line-height: var(--type-leading-tight);
+}
+
+.case-section--keshi-next .keshi-next-breath p:not(.keshi-beat__mark) {
+  max-width: var(--measure-lede);
+  margin: var(--space-beat-gap) 0 0 var(--space-breath-indent);
+  color: var(--color-keshi-mute);
+  font-size: var(--type-size-body-lg);
+  line-height: var(--type-leading-body);
+}
+
+/* --- RELAX 02: refusals ---------------------------------------------------- */
+
+.case-section--keshi-next .keshi-next-choices__title {
+  margin: 0;
+  color: var(--color-keshi-soft);
+  font-family: var(--type-family-mono);
+  font-size: var(--type-size-choices-title);
+  font-weight: 400;
+  letter-spacing: var(--type-tracking-mark);
+  text-transform: uppercase;
+}
+
+.case-section--keshi-next .keshi-next-choices__list {
+  display: grid;
+  margin: var(--space-beat-gap) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.case-section--keshi-next .keshi-next-choices__list li {
+  display: grid;
+  grid-template-columns: minmax(12rem, 0.8fr) minmax(0, 1.2fr);
+  grid-template-areas:
+    'not choice'
+    'not body';
+  column-gap: var(--space-hero-gap);
+  row-gap: var(--space-choice-row);
+  padding-block: var(--space-choice-pad);
+  border-top: var(--border-width-hairline) solid var(--color-keshi-rule);
+}
+
+.case-section--keshi-next .keshi-next-choices__not {
+  grid-area: not;
+  margin: 0;
+  color: var(--color-keshi-faint);
+  font-family: var(--type-family-mono);
+  font-size: var(--type-size-mark);
+  letter-spacing: var(--type-tracking-mark);
+  text-transform: uppercase;
+}
+
+.case-section--keshi-next .keshi-next-choices__not s {
+  color: var(--color-keshi-mute);
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--color-keshi-focus);
+}
+
+.case-section--keshi-next .keshi-next-choices__list h3 {
+  grid-area: choice;
+  margin: 0;
+  color: var(--color-keshi-ink);
+  font-family: var(--type-family-display);
+  font-size: var(--type-size-choice);
+  font-weight: 700;
+  letter-spacing: var(--type-tracking-tight);
+  line-height: var(--type-leading-tight);
+}
+
+.case-section--keshi-next .keshi-next-choices__body {
+  grid-area: body;
+  max-width: var(--measure-choice-body);
+  margin: 0;
+  color: var(--color-keshi-mute);
+  font-size: var(--type-size-body-lg);
+  line-height: var(--type-leading-body);
+}
+
+/* --- RELAX 03: the wall label ---------------------------------------------- */
+
+.case-section--keshi-next .keshi-next-placard__card {
+  max-width: var(--measure-placard);
+  margin-left: var(--space-placard-indent);
+  padding: var(--space-placard-pad);
+  border-left: var(--border-width-hairline) solid var(--color-keshi-relax);
+}
+
+.case-section--keshi-next .keshi-next-placard__card h2 {
+  display: grid;
+  gap: var(--space-choice-row);
+  margin: 0 0 var(--space-beat-gap);
+  color: var(--color-keshi-ink);
+  font-family: var(--type-family-display);
+  font-size: var(--type-size-placard-title);
+  font-weight: 700;
+  letter-spacing: var(--type-tracking-tight);
+  line-height: var(--type-leading-tight);
+}
+
+.case-section--keshi-next .keshi-next-placard__card h2 span {
+  color: var(--color-keshi-faint);
+  font-family: var(--type-family-mono);
+  font-size: var(--type-size-mark);
+  font-weight: 400;
+  letter-spacing: var(--type-tracking-mark);
+}
+
+.case-section--keshi-next .keshi-next-placard__card dl {
+  display: grid;
+  gap: var(--space-placard-row);
+  margin: 0;
+}
+
+.case-section--keshi-next .keshi-next-placard__card dl div {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: var(--space-mark-gap);
+}
+
+.case-section--keshi-next .keshi-next-placard__card dt {
+  color: var(--color-keshi-faint);
+  font-family: var(--type-family-mono);
+  font-size: var(--type-size-mark);
+  letter-spacing: var(--type-tracking-mark);
+  text-transform: uppercase;
+}
+
+.case-section--keshi-next .keshi-next-placard__card dd {
+  margin: 0;
+  color: var(--color-keshi-soft);
+  font-size: var(--type-size-placard);
+  line-height: var(--type-leading-body);
+}
+
+/* --- end ------------------------------------------------------------------ */
+
+.case-section--keshi-next .keshi-next-end {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-beat-gap);
+  padding-block: var(--space-beat-focus) var(--space-beat-relax);
+  border-top: var(--border-width-hairline) solid var(--color-keshi-rule);
+}
+
+.case-section--keshi-next .keshi-next-end__line {
+  margin: 0;
+  color: var(--color-keshi-ink);
+  font-family: var(--type-family-display);
+  font-size: var(--type-size-breath);
+  font-weight: 800;
+  letter-spacing: var(--type-tracking-hero);
+  line-height: var(--type-leading-hero);
+}
+
+.case-section--keshi-next .keshi-next-end__link {
+  padding-bottom: var(--space-end-link);
+  border-bottom: var(--border-width-hairline) solid var(--color-keshi-rule);
+  color: var(--color-keshi-soft);
+  font-family: var(--type-family-mono);
+  font-size: var(--type-size-mark);
+  letter-spacing: var(--type-tracking-mark);
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.case-section--keshi-next .keshi-next-end__link:hover,
+.case-section--keshi-next .keshi-next-end__link:focus-visible {
+  border-bottom-color: var(--color-keshi-relax);
+  color: var(--color-keshi-ink);
+}
+
+.case-section--keshi-next .keshi-next-end__link:focus-visible {
+  outline: var(--border-width-focus) solid var(--color-media-focus-ring);
+  outline-offset: 4px;
+}
+
+/* --- session clock (portalled to <body>) ----------------------------------- */
+
+.keshi-session {
+  position: fixed;
+  left: var(--space-session-inset);
+  bottom: var(--space-session-inset);
+  z-index: 60;
+  display: inline-grid;
+  grid-template-columns: auto auto auto;
+  align-items: center;
+  column-gap: var(--space-session-gap);
+  row-gap: var(--space-session-row);
+  padding: var(--space-session-pad);
+  border: var(--border-width-hairline) solid var(--color-keshi-session-edge);
+  border-radius: var(--radius-session);
+  background: var(--color-keshi-session-surface);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  color: var(--color-keshi-soft);
+  font-family: var(--type-family-mono);
+  font-size: var(--type-size-session);
+  letter-spacing: var(--type-tracking-mark);
+  text-transform: uppercase;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 400ms ease;
+}
+
+.keshi-session[data-ready='true'] {
+  opacity: 1;
+}
+
+.keshi-session__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-keshi-focus);
+  transition: background-color 300ms ease;
+}
+
+.keshi-session[data-mode='relax'] .keshi-session__dot {
+  background: var(--color-keshi-relax);
+}
+
+.keshi-session[data-mode='end'] .keshi-session__dot {
+  background: var(--color-keshi-ink);
+}
+
+.keshi-session__time {
+  color: var(--color-keshi-ink);
+  font-size: var(--type-size-session-time);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+.keshi-session__bar {
+  grid-column: 1 / -1;
+  height: 2px;
+  overflow: hidden;
+  border-radius: var(--radius-pill);
+  background: var(--color-keshi-rule);
+}
+
+.keshi-session__bar i {
+  display: block;
+  height: 100%;
+  background: var(--color-keshi-focus);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+.keshi-session[data-mode='relax'] .keshi-session__bar i {
+  background: var(--color-keshi-relax);
+}
+
+.keshi-session[data-mode='end'] .keshi-session__bar i {
+  background: var(--color-keshi-ink);
+}
+
+/* --- responsive ------------------------------------------------------------ */
+
+@media (max-width: 900px) {
+  .case-section--keshi-next .keshi-next-hero__title span:last-child {
+    justify-self: start;
+  }
+
+  .case-section--keshi-next .keshi-next-hero__brief {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .case-section--keshi-next .keshi-next-choices__list li {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'not'
+      'choice'
+      'body';
+  }
+
+  .case-section--keshi-next .keshi-next-breath p:not(.keshi-beat__mark),
+  .case-section--keshi-next .keshi-next-placard__card {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 620px) {
+  .keshi-session {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .keshi-session,
+  .keshi-session__dot {
+    transition: none;
+  }
+}

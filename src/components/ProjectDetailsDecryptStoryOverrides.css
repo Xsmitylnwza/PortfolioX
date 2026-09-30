@@ -1,3 +1,5 @@
+
+
 /* Decrypt-specific material, responsive, monochrome, and wave refinements. */
 .case-section--decrypt .case-decrypt-level--spy {
   border-color: rgba(155, 135, 245, 0.44);
@@ -376,6 +378,7 @@
 
 .case-section--decrypt .case-decrypt-rules li.is-passed {
   border-color: rgba(255, 255, 255, 0.52);
+  background-image: none;
 }
 
 .case-section--decrypt .case-decrypt-rules li.is-active {
@@ -450,6 +453,10 @@
   grid-template-columns: minmax(0, 0.8fr) minmax(10rem, 0.55fr) minmax(0, 1.3fr);
   gap: clamp(0.8rem, 2vw, 1.25rem);
   align-items: stretch;
+}
+
+.case-decrypt-resolution__flow > .case-decrypt-outcomes {
+  grid-area: auto;
 }
 
 .case-decrypt-resolution__trigger,

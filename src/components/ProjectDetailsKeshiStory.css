@@ -1,3 +1,5 @@
+
+
 /* Keshi story composition: state pair, atmosphere, evidence, architecture. */
 .case-section--keshi {
   --keshi-focus: #c6252f;
@@ -58,11 +60,10 @@
   aspect-ratio: 40 / 19;
 }
 
-.case-section--keshi .case-media__frame {
-  border-color: rgba(255, 248, 236, 0.16);
-  border-radius: 0.78rem;
-  background: #090909;
-}
+/* Keshi's media chrome now comes from the project theme block in
+   src/styles/tokens.css (.case-section--keshi), which overrides the semantic
+   roles the base rule already reads. The values are unchanged; this rule is
+   kept only as the pointer to where they live. */
 
 .case-keshi-hero__caption {
   position: absolute;
@@ -280,10 +281,7 @@
   padding: clamp(1.15rem, 3.5vw, 2.4rem);
   border: 1px solid var(--story-line);
   border-radius: 1.15rem;
-  background:
-    linear-gradient(115deg, rgba(198, 37, 47, 0.055), transparent 34%),
-    linear-gradient(300deg, rgba(167, 139, 250, 0.055), transparent 32%),
-    rgba(255, 255, 255, 0.018);
+  background: var(--story-surface);
 }
 
 .case-keshi-rhythm__track {
@@ -674,7 +672,7 @@
 
 .case-keshi-rhythm__hermes::after {
   inset: 0.42rem;
-  border: 1px solid rgba(255, 253, 249, 0.055);
+  border: 1px solid var(--color-detail-hairline);
   border-radius: 0.86rem;
 }
 
@@ -703,7 +701,7 @@
   content: '';
   position: absolute;
   inset: -0.36rem;
-  border: 1px solid rgba(224, 166, 90, 0.26);
+  border: 1px solid var(--story-line);
   border-radius: inherit;
   opacity: 0;
 }
@@ -804,7 +802,7 @@
   gap: 0.72rem;
   align-items: center;
   padding: 0.58rem 0.7rem;
-  border: 1px solid rgba(255, 253, 249, 0.08);
+  border: 1px solid var(--color-detail-hairline);
   border-radius: 0.58rem;
   background: rgba(12, 8, 9, 0.12);
 }
@@ -866,7 +864,7 @@
 }
 
 .case-keshi-rhythm__flow-base path {
-  stroke: rgba(255, 253, 249, 0.13);
+  stroke: var(--color-detail-line);
   stroke-width: 1;
 }
 
@@ -890,12 +888,12 @@
 
 .case-keshi-rhythm__flow-signal .is-shape { stroke: #75dbaa; animation-delay: -1.65s; }
 
-.case-keshi-rhythm__flow-signal .is-loop { stroke: rgba(255, 253, 249, 0.62); animation-delay: -2.2s; }
+.case-keshi-rhythm__flow-signal .is-loop { stroke: var(--color-detail-mid); animation-delay: -2.2s; }
 
 .case-keshi-rhythm__flow-label {
   position: absolute;
   padding: 0.26rem 0.42rem;
-  border: 1px solid rgba(255, 253, 249, 0.09);
+  border: 1px solid var(--color-detail-hairline);
   border-radius: 999px;
   color: var(--case-faint);
   background: rgba(25, 10, 11, 0.42);
@@ -1268,7 +1266,7 @@
   width: 2.2rem;
   height: 2.2rem;
   margin-bottom: 0.35rem;
-  color: #ffd08e;
+  color: var(--color-detail-soft);
 }
 
 .case-keshi-architecture__link {

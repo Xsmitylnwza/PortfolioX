@@ -1,0 +1,737 @@
+{
+  "label": "phase-1-before-render",
+  "plan": "docs/design/AI-DESIGN-HARNESS-PLAN.md step 1",
+  "capturedAt": "2026-09-22",
+  "sourceSnapshot": {
+    "manifest": "docs/design/harness/phase-1-snapshot/manifest.json",
+    "gitHead": "92f1e424dd22cd8dda3acae6cfca614b9578807c",
+    "treeHash": "89f2639f377cb398bb06e004f4aa1916c323cec293552f07ff268356accbabbf",
+    "cleanCheckout": false
+  },
+  "driver": {
+    "tool": "Claude desktop built-in browser pane (Chromium), driven via the session's allowed local rendering tooling",
+    "probe": "scripts/design-probe.mjs (buildCollectorSource), imported over the Vite dev server at http://localhost:5173",
+    "readiness": "await document.fonts.ready before every capture; route allowed to settle after navigation",
+    "knownLimitation": "devicePixelRatio is set by the pane, not by the probe. Chrome snaps used border widths to device pixels, so border-top-width reads 1px at dpr 1/2 and 0.8px at dpr 1.25. Compare after-values only against a before-capture with the same devicePixelRatio, or compare declared values instead. Pinning dpr requires the Playwright setup scheduled for plan step 4.",
+    "notPersisted": "Reference screenshots are not written to disk yet; image capture is part of the step 4 Playwright setup. Step 1 locks computed values and reference state only."
+  },
+  "observations": [
+    "The pilot media frame and the non-pilot consumer share identical chip primitives (.case-media__label, .case-media__kind, .case-media__kind-dot: rgb(21,21,19) on rgb(255,255,255), 8.32px mono, 999px radius) while their frame chrome differs per project (Keshi rgb(9,9,9) / rgba(255,248,236,0.16) / 12.48px radius vs Zucchini rgb(5,5,5) / rgba(255,255,255,0.44) / 15.2px radius). That split is exactly what a semantic-token migration must preserve.",
+    ".case-keshi-state__caption renders with padding 0, transparent background and no backdrop-filter: KeshiLiquidGlass.css neutralises it into a layout-only slot. Its declared padding/border/background/backdrop-filter rules in ProjectDetailsStories.css are dead for this route.",
+    "At 390x844 the fixed MENU control overlaps the section heading text. Pre-existing, outside the pilot scope, recorded so it is not later mistaken for a harness regression."
+  ],
+  "captures": [
+    {
+      "route": "pilot-keshi",
+      "viewport": "desktop",
+      "environment": {
+        "routeId": "pilot-keshi",
+        "href": "http://localhost:5173/project/keshi-pomodoro",
+        "innerWidth": 1440,
+        "innerHeight": 900,
+        "devicePixelRatio": 1,
+        "rootFontSize": "16px",
+        "fontsStatus": "loaded",
+        "reducedMotion": false
+      },
+      "results": [
+        {
+          "id": "pilot-frame",
+          "selector": ".case-keshi-state .case-media__frame--keshi-state",
+          "found": true,
+          "box": { "width": 486.41, "height": 231.03 },
+          "values": {
+            "color": "rgb(255, 255, 255)",
+            "background-color": "rgb(9, 9, 9)",
+            "border-top-color": "rgba(255, 248, 236, 0.16)",
+            "box-shadow": "rgba(0, 0, 0, 0.28) 0px 18px 42px 0px, rgba(255, 248, 236, 0.06) 0px 1px 0px 0px inset",
+            "padding-top": "0px",
+            "padding-right": "0px",
+            "padding-bottom": "0px",
+            "padding-left": "0px",
+            "row-gap": "normal",
+            "column-gap": "normal",
+            "border-top-left-radius": "12.48px",
+            "border-top-width": "1px",
+            "aspect-ratio": "40 / 19"
+          }
+        },
+        {
+          "id": "pilot-frame-label",
+          "selector": ".case-keshi-state .case-media__frame--keshi-state .case-media__label",
+          "found": true,
+          "box": { "width": 80.5, "height": 25.52 },
+          "values": {
+            "color": "rgb(21, 21, 19)",
+            "background-color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0.08)",
+            "box-shadow": "rgba(0, 0, 0, 0.22) 0px 6px 16px 0px",
+            "font-family": "SFMono-Regular, Consolas, \"Liberation Mono\", monospace",
+            "font-size": "8.32px",
+            "line-height": "13.312px",
+            "letter-spacing": "1.1648px",
+            "font-weight": "400",
+            "padding-top": "5.12px",
+            "padding-right": "10.56px",
+            "padding-bottom": "5.12px",
+            "padding-left": "10.56px",
+            "row-gap": "normal",
+            "column-gap": "normal",
+            "border-top-left-radius": "999px",
+            "border-top-width": "1px",
+            "aspect-ratio": "auto"
+          }
+        },
+        {
+          "id": "pilot-frame-kind",
+          "selector": ".case-media__frame--keshi-atmosphere .case-media__kind",
+          "found": true,
+          "box": { "width": 93.91, "height": 24.89 },
+          "values": {
+            "color": "rgb(21, 21, 19)",
+            "background-color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0.08)",
+            "box-shadow": "rgba(0, 0, 0, 0.22) 0px 6px 16px 0px",
+            "font-family": "SFMono-Regular, Consolas, \"Liberation Mono\", monospace",
+            "font-size": "8.32px",
+            "line-height": "13.312px",
+            "letter-spacing": "1.1648px",
+            "font-weight": "400",
+            "padding-top": "4.8px",
+            "padding-right": "9.28px",
+            "padding-bottom": "4.8px",
+            "padding-left": "7.68px",
+            "row-gap": "6.08px",
+            "column-gap": "6.08px",
+            "border-top-left-radius": "999px",
+            "border-top-width": "1px",
+            "aspect-ratio": "auto"
+          }
+        },
+        {
+          "id": "pilot-frame-kind-dot",
+          "selector": ".case-media__frame--keshi-atmosphere .case-media__kind-dot",
+          "found": true,
+          "box": { "width": 5.75, "height": 5.75 },
+          "values": {
+            "color": "rgb(21, 21, 19)",
+            "background-color": "rgb(21, 21, 19)",
+            "border-top-color": "rgb(21, 21, 19)",
+            "box-shadow": "none",
+            "border-top-left-radius": "999px",
+            "border-top-width": "0px",
+            "aspect-ratio": "auto"
+          }
+        },
+        {
+          "id": "pilot-caption-slot",
+          "selector": ".case-keshi-state--focus .case-keshi-state__caption",
+          "found": true,
+          "box": { "width": 460.8, "height": 138 },
+          "values": {
+            "color": "rgb(255, 255, 255)",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "border-top-color": "rgb(255, 255, 255)",
+            "box-shadow": "none",
+            "padding-top": "0px",
+            "padding-right": "0px",
+            "padding-bottom": "0px",
+            "padding-left": "0px",
+            "row-gap": "5.6px",
+            "column-gap": "16px",
+            "border-top-left-radius": "0px",
+            "border-top-width": "0px",
+            "aspect-ratio": "auto",
+            "backdrop-filter": "none"
+          }
+        },
+        {
+          "id": "pilot-caption-cue",
+          "selector": ".case-keshi-state--focus .keshi-liquid-glass__content > span",
+          "found": true,
+          "box": { "width": 288.56, "height": 14.84 },
+          "values": {
+            "color": "rgba(255, 255, 255, 0.88)",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "border-top-color": "rgba(255, 255, 255, 0.88)",
+            "box-shadow": "none",
+            "font-family": "SFMono-Regular, Consolas, \"Liberation Mono\", monospace",
+            "font-size": "9.28px",
+            "line-height": "14.848px",
+            "letter-spacing": "1.2064px",
+            "font-weight": "400"
+          }
+        },
+        {
+          "id": "pilot-caption-body",
+          "selector": ".case-keshi-state--focus .keshi-liquid-glass__content p",
+          "found": true,
+          "box": { "width": 288.56, "height": 39.38 },
+          "values": {
+            "color": "rgba(255, 255, 255, 0.94)",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "border-top-color": "rgba(255, 255, 255, 0.94)",
+            "box-shadow": "none",
+            "font-family": "\"Space Grotesk\", sans-serif",
+            "font-size": "13.12px",
+            "line-height": "19.68px",
+            "letter-spacing": "normal",
+            "font-weight": "400"
+          }
+        },
+        {
+          "id": "glass-surface",
+          "sentinel": true,
+          "selector": ".case-keshi-state__glass",
+          "found": true,
+          "box": { "width": 460.8, "height": 138 },
+          "values": {
+            "color": "rgb(255, 255, 255)",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "border-top-color": "rgb(255, 255, 255)",
+            "box-shadow": "none",
+            "border-top-left-radius": "32px",
+            "border-top-width": "0px",
+            "aspect-ratio": "auto",
+            "backdrop-filter": "blur(1.3px) saturate(1.04) url(\"#keshi-glass-_r_2_\")",
+            "border-radius": "32px"
+          }
+        },
+        {
+          "id": "glass-inner",
+          "sentinel": true,
+          "selector": ".case-keshi-state__glass .keshi-liquid-glass__glass",
+          "found": true,
+          "box": { "width": 460.8, "height": 138 },
+          "values": {
+            "color": "rgb(255, 255, 255)",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "border-top-color": "rgba(255, 255, 255, 0.26)",
+            "box-shadow": "rgba(0, 0, 0, 0.25) 0px 12px 40px 0px",
+            "border-top-left-radius": "32px",
+            "border-top-width": "1px",
+            "aspect-ratio": "auto"
+          }
+        },
+        {
+          "id": "glass-atmosphere",
+          "sentinel": true,
+          "selector": ".case-keshi-atmosphere__glass",
+          "found": true,
+          "box": { "width": 464, "height": 146 },
+          "values": {
+            "color": "rgb(255, 255, 255)",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "border-top-color": "rgb(255, 255, 255)",
+            "box-shadow": "none",
+            "border-top-left-radius": "32px",
+            "border-top-width": "0px",
+            "aspect-ratio": "auto",
+            "backdrop-filter": "blur(1.3px) saturate(1.04) url(\"#keshi-glass-_r_6_\")",
+            "border-radius": "32px"
+          }
+        },
+        {
+          "id": "case-section-body",
+          "selector": ".case-section p",
+          "found": true,
+          "box": { "width": 378.72, "height": 15.88 },
+          "values": {
+            "color": "rgba(255, 255, 255, 0.94)",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "border-top-color": "rgba(255, 255, 255, 0.94)",
+            "box-shadow": "none",
+            "font-family": "SFMono-Regular, Consolas, \"Liberation Mono\", monospace",
+            "font-size": "9.92px",
+            "line-height": "15.872px",
+            "letter-spacing": "1.5872px",
+            "font-weight": "400"
+          }
+        }
+      ]
+    },
+    {
+      "route": "pilot-keshi",
+      "viewport": "mobile",
+      "environment": {
+        "routeId": "pilot-keshi",
+        "href": "http://localhost:5173/project/keshi-pomodoro",
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "devicePixelRatio": 2,
+        "rootFontSize": "16px",
+        "fontsStatus": "loaded",
+        "reducedMotion": false
+      },
+      "results": [
+        {
+          "id": "pilot-frame",
+          "selector": ".case-keshi-state .case-media__frame--keshi-state",
+          "found": true,
+          "box": { "width": 358, "height": 170.05 },
+          "values": {
+            "color": "rgb(255, 255, 255)",
+            "background-color": "rgb(9, 9, 9)",
+            "border-top-color": "rgba(255, 248, 236, 0.16)",
+            "box-shadow": "rgba(0, 0, 0, 0.28) 0px 18px 42px 0px, rgba(255, 248, 236, 0.06) 0px 1px 0px 0px inset",
+            "padding-top": "0px",
+            "padding-right": "0px",
+            "padding-bottom": "0px",
+            "padding-left": "0px",
+            "row-gap": "normal",
+            "column-gap": "normal",
+            "border-top-left-radius": "12.48px",
+            "border-top-width": "1px",
+            "aspect-ratio": "40 / 19"
+          }
+        },
+        {
+          "id": "pilot-frame-label",
+          "selector": ".case-keshi-state .case-media__frame--keshi-state .case-media__label",
+          "found": true,
+          "box": { "width": 80.5, "height": 25.52 },
+          "values": {
+            "color": "rgb(21, 21, 19)",
+            "background-color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0.08)",
+            "box-shadow": "rgba(0, 0, 0, 0.22) 0px 6px 16px 0px",
+            "font-family": "SFMono-Regular, Consolas, \"Liberation Mono\", monospace",
+            "font-size": "8.32px",
+            "line-height": "13.312px",
+            "letter-spacing": "1.1648px",
+            "font-weight": "400",
+            "padding-top": "5.12px",
+            "padding-right": "10.56px",
+            "padding-bottom": "5.12px",
+            "padding-left": "10.56px",
+            "row-gap": "normal",
+            "column-gap": "normal",
+            "border-top-left-radius": "999px",
+            "border-top-width": "1px",
+            "aspect-ratio": "auto"
+          }
+        },
+        {
+          "id": "pilot-frame-kind",
+          "selector": ".case-media__frame--keshi-atmosphere .case-media__kind",
+          "found": true,
+          "box": { "width": 93.91, "height": 24.89 },
+          "values": {
+            "color": "rgb(21, 21, 19)",
+            "background-color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0.08)",
+            "box-shadow": "rgba(0, 0, 0, 0.22) 0px 6px 16px 0px",
+            "font-family": "SFMono-Regular, Consolas, \"Liberation Mono\", monospace",
+            "font-size": "8.32px",
+            "line-height": "13.312px",
+            "letter-spacing": "1.1648px",
+            "font-weight": "400",
+            "padding-top": "4.8px",
+            "padding-right": "9.28px",
+            "padding-bottom": "4.8px",
+            "padding-left": "7.68px",
+            "row-gap": "6.08px",
+            "column-gap": "6.08px",
+            "border-top-left-radius": "999px",
+            "border-top-width": "1px",
+            "aspect-ratio": "auto"
+          }
+        },
+        {
+          "id": "pilot-frame-kind-dot",
+          "selector": ".case-media__frame--keshi-atmosphere .case-media__kind-dot",
+          "found": true,
+          "box": { "width": 5.75, "height": 5.75 },
+          "values": {
+            "color": "rgb(21, 21, 19)",
+            "background-color": "rgb(21, 21, 19)",
+            "border-top-color": "rgb(21, 21, 19)",
+            "box-shadow": "none",
+            "border-top-left-radius": "999px",
+            "border-top-width": "0px",
+            "aspect-ratio": "auto"
+          }
+        },
+        {
+          "id": "pilot-caption-slot",
+          "selector": ".case-keshi-state--focus .case-keshi-state__caption",
+          "found": true,
+          "box": { "width": 345.19, "height": 95.41 },
+          "values": {
+            "color": "rgb(255, 255, 255)",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "border-top-color": "rgb(255, 255, 255)",
+            "box-shadow": "none",
+            "padding-top": "0px",
+            "padding-right": "0px",
+            "padding-bottom": "0px",
+            "padding-left": "0px",
+            "row-gap": "5.6px",
+            "column-gap": "16px",
+            "border-top-left-radius": "0px",
+            "border-top-width": "0px",
+            "aspect-ratio": "auto",
+            "backdrop-filter": "none"
+          }
+        },
+        {
+          "id": "pilot-caption-cue",
+          "selector": ".case-keshi-state--focus .keshi-liquid-glass__content > span",
+          "found": true,
+          "box": { "width": 221.02, "height": 14.84 },
+          "values": {
+            "color": "rgba(255, 255, 255, 0.88)",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "border-top-color": "rgba(255, 255, 255, 0.88)",
+            "box-shadow": "none",
+            "font-family": "SFMono-Regular, Consolas, \"Liberation Mono\", monospace",
+            "font-size": "9.28px",
+            "line-height": "14.848px",
+            "letter-spacing": "1.2064px",
+            "font-weight": "400"
+          }
+        },
+        {
+          "id": "pilot-caption-body",
+          "selector": ".case-keshi-state--focus .keshi-liquid-glass__content p",
+          "found": true,
+          "box": { "width": 221.02, "height": 39.38 },
+          "values": {
+            "color": "rgba(255, 255, 255, 0.94)",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "border-top-color": "rgba(255, 255, 255, 0.94)",
+            "box-shadow": "none",
+            "font-family": "\"Space Grotesk\", sans-serif",
+            "font-size": "13.12px",
+            "line-height": "19.68px",
+            "letter-spacing": "normal",
+            "font-weight": "400"
+          }
+        },
+        {
+          "id": "glass-surface",
+          "sentinel": true,
+          "selector": ".case-keshi-state__glass",
+          "found": true,
+          "box": { "width": 345.19, "height": 95.41 },
+          "values": {
+            "color": "rgb(255, 255, 255)",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "border-top-color": "rgb(255, 255, 255)",
+            "box-shadow": "none",
+            "border-top-left-radius": "21.6px",
+            "border-top-width": "0px",
+            "aspect-ratio": "auto",
+            "backdrop-filter": "blur(1.3px) saturate(1.04) url(\"#keshi-glass-_r_2_\")",
+            "border-radius": "21.6px"
+          }
+        },
+        {
+          "id": "glass-inner",
+          "sentinel": true,
+          "selector": ".case-keshi-state__glass .keshi-liquid-glass__glass",
+          "found": true,
+          "box": { "width": 345.19, "height": 95.41 },
+          "values": {
+            "color": "rgb(255, 255, 255)",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "border-top-color": "rgba(255, 255, 255, 0.26)",
+            "box-shadow": "rgba(0, 0, 0, 0.25) 0px 12px 40px 0px",
+            "border-top-left-radius": "21.6px",
+            "border-top-width": "1px",
+            "aspect-ratio": "auto"
+          }
+        },
+        {
+          "id": "glass-atmosphere",
+          "sentinel": true,
+          "selector": ".case-keshi-atmosphere__glass",
+          "found": true,
+          "box": { "width": 358, "height": 122.91 },
+          "values": {
+            "color": "rgb(255, 255, 255)",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "border-top-color": "rgb(255, 255, 255)",
+            "box-shadow": "none",
+            "border-top-left-radius": "21.6px",
+            "border-top-width": "0px",
+            "aspect-ratio": "auto",
+            "backdrop-filter": "blur(1.3px) saturate(1.04) url(\"#keshi-glass-_r_6_\")",
+            "border-radius": "21.6px"
+          }
+        },
+        {
+          "id": "case-section-body",
+          "selector": ".case-section p",
+          "found": true,
+          "box": { "width": 358, "height": 15.88 },
+          "values": {
+            "color": "rgba(255, 255, 255, 0.94)",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "border-top-color": "rgba(255, 255, 255, 0.94)",
+            "box-shadow": "none",
+            "font-family": "SFMono-Regular, Consolas, \"Liberation Mono\", monospace",
+            "font-size": "9.92px",
+            "line-height": "15.872px",
+            "letter-spacing": "1.5872px",
+            "font-weight": "400"
+          }
+        }
+      ]
+    },
+    {
+      "route": "nonpilot-zucchini",
+      "viewport": "desktop",
+      "environment": {
+        "routeId": "nonpilot-zucchini",
+        "href": "http://localhost:5173/project/zucchini-review",
+        "innerWidth": 1440,
+        "innerHeight": 900,
+        "devicePixelRatio": 1,
+        "rootFontSize": "16px",
+        "fontsStatus": "loaded",
+        "reducedMotion": false
+      },
+      "results": [
+        {
+          "id": "nonpilot-frame",
+          "selector": ".case-media__frame--zucchini-proof",
+          "found": true,
+          "box": { "width": 706.55, "height": 397.42 },
+          "values": {
+            "color": "rgb(255, 255, 255)",
+            "background-color": "rgb(5, 5, 5)",
+            "border-top-color": "rgba(255, 255, 255, 0.44)",
+            "box-shadow": "rgba(0, 0, 0, 0.28) 0px 18px 42px 0px, rgba(255, 248, 236, 0.06) 0px 1px 0px 0px inset",
+            "padding-top": "0px",
+            "padding-right": "0px",
+            "padding-bottom": "0px",
+            "padding-left": "0px",
+            "row-gap": "normal",
+            "column-gap": "normal",
+            "border-top-left-radius": "15.2px",
+            "border-top-width": "1px",
+            "aspect-ratio": "16 / 9"
+          }
+        },
+        {
+          "id": "nonpilot-frame-label",
+          "selector": ".case-media__frame--zucchini-proof .case-media__label",
+          "found": true,
+          "box": { "width": 155.11, "height": 25.52 },
+          "values": {
+            "color": "rgb(21, 21, 19)",
+            "background-color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0.08)",
+            "box-shadow": "rgba(0, 0, 0, 0.22) 0px 6px 16px 0px",
+            "font-family": "SFMono-Regular, Consolas, \"Liberation Mono\", monospace",
+            "font-size": "8.32px",
+            "line-height": "13.312px",
+            "letter-spacing": "1.1648px",
+            "font-weight": "400",
+            "padding-top": "5.12px",
+            "padding-right": "10.56px",
+            "padding-bottom": "5.12px",
+            "padding-left": "10.56px",
+            "row-gap": "normal",
+            "column-gap": "normal",
+            "border-top-left-radius": "999px",
+            "border-top-width": "1px",
+            "aspect-ratio": "auto"
+          }
+        },
+        {
+          "id": "nonpilot-frame-kind",
+          "selector": ".case-media__frame--zucchini-proof .case-media__kind",
+          "found": true,
+          "box": { "width": 151.3, "height": 24.89 },
+          "values": {
+            "color": "rgb(21, 21, 19)",
+            "background-color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0.08)",
+            "box-shadow": "rgba(0, 0, 0, 0.22) 0px 6px 16px 0px",
+            "font-family": "SFMono-Regular, Consolas, \"Liberation Mono\", monospace",
+            "font-size": "8.32px",
+            "line-height": "13.312px",
+            "letter-spacing": "1.1648px",
+            "font-weight": "400",
+            "padding-top": "4.8px",
+            "padding-right": "9.28px",
+            "padding-bottom": "4.8px",
+            "padding-left": "7.68px",
+            "row-gap": "6.08px",
+            "column-gap": "6.08px",
+            "border-top-left-radius": "999px",
+            "border-top-width": "1px",
+            "aspect-ratio": "auto"
+          }
+        },
+        {
+          "id": "nonpilot-frame-hero",
+          "selector": ".case-media__frame--zucchini-hero",
+          "found": true,
+          "box": { "width": 679.95, "height": 424.97 },
+          "values": {
+            "color": "rgb(255, 255, 255)",
+            "background-color": "rgb(5, 5, 5)",
+            "border-top-color": "rgba(255, 255, 255, 0.44)",
+            "box-shadow": "rgba(0, 0, 0, 0.28) 0px 18px 42px 0px, rgba(255, 248, 236, 0.06) 0px 1px 0px 0px inset",
+            "padding-top": "0px",
+            "padding-right": "0px",
+            "padding-bottom": "0px",
+            "padding-left": "0px",
+            "row-gap": "normal",
+            "column-gap": "normal",
+            "border-top-left-radius": "15.2px",
+            "border-top-width": "1px",
+            "aspect-ratio": "8 / 5"
+          }
+        },
+        {
+          "id": "case-section-body",
+          "selector": ".case-section p",
+          "found": true,
+          "box": { "width": 382.45, "height": 15.88 },
+          "values": {
+            "color": "rgba(255, 255, 255, 0.94)",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "border-top-color": "rgba(255, 255, 255, 0.94)",
+            "box-shadow": "none",
+            "font-family": "SFMono-Regular, Consolas, \"Liberation Mono\", monospace",
+            "font-size": "9.92px",
+            "line-height": "15.872px",
+            "letter-spacing": "1.5872px",
+            "font-weight": "400"
+          }
+        }
+      ]
+    },
+    {
+      "route": "nonpilot-zucchini",
+      "viewport": "mobile",
+      "environment": {
+        "routeId": "nonpilot-zucchini",
+        "href": "http://localhost:5173/project/zucchini-review",
+        "innerWidth": 390,
+        "innerHeight": 844,
+        "devicePixelRatio": 2,
+        "rootFontSize": "16px",
+        "fontsStatus": "loaded",
+        "reducedMotion": false
+      },
+      "results": [
+        {
+          "id": "nonpilot-frame",
+          "selector": ".case-media__frame--zucchini-proof",
+          "found": true,
+          "box": { "width": 358, "height": 201.38 },
+          "values": {
+            "color": "rgb(255, 255, 255)",
+            "background-color": "rgb(5, 5, 5)",
+            "border-top-color": "rgba(255, 255, 255, 0.44)",
+            "box-shadow": "rgba(0, 0, 0, 0.28) 0px 18px 42px 0px, rgba(255, 248, 236, 0.06) 0px 1px 0px 0px inset",
+            "padding-top": "0px",
+            "padding-right": "0px",
+            "padding-bottom": "0px",
+            "padding-left": "0px",
+            "row-gap": "normal",
+            "column-gap": "normal",
+            "border-top-left-radius": "15.2px",
+            "border-top-width": "1px",
+            "aspect-ratio": "16 / 9"
+          }
+        },
+        {
+          "id": "nonpilot-frame-label",
+          "selector": ".case-media__frame--zucchini-proof .case-media__label",
+          "found": true,
+          "box": { "width": 155.11, "height": 25.52 },
+          "values": {
+            "color": "rgb(21, 21, 19)",
+            "background-color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0.08)",
+            "box-shadow": "rgba(0, 0, 0, 0.22) 0px 6px 16px 0px",
+            "font-family": "SFMono-Regular, Consolas, \"Liberation Mono\", monospace",
+            "font-size": "8.32px",
+            "line-height": "13.312px",
+            "letter-spacing": "1.1648px",
+            "font-weight": "400",
+            "padding-top": "5.12px",
+            "padding-right": "10.56px",
+            "padding-bottom": "5.12px",
+            "padding-left": "10.56px",
+            "row-gap": "normal",
+            "column-gap": "normal",
+            "border-top-left-radius": "999px",
+            "border-top-width": "1px",
+            "aspect-ratio": "auto"
+          }
+        },
+        {
+          "id": "nonpilot-frame-kind",
+          "selector": ".case-media__frame--zucchini-proof .case-media__kind",
+          "found": true,
+          "box": { "width": 151.3, "height": 24.89 },
+          "values": {
+            "color": "rgb(21, 21, 19)",
+            "background-color": "rgb(255, 255, 255)",
+            "border-top-color": "rgba(0, 0, 0, 0.08)",
+            "box-shadow": "rgba(0, 0, 0, 0.22) 0px 6px 16px 0px",
+            "font-family": "SFMono-Regular, Consolas, \"Liberation Mono\", monospace",
+            "font-size": "8.32px",
+            "line-height": "13.312px",
+            "letter-spacing": "1.1648px",
+            "font-weight": "400",
+            "padding-top": "4.8px",
+            "padding-right": "9.28px",
+            "padding-bottom": "4.8px",
+            "padding-left": "7.68px",
+            "row-gap": "6.08px",
+            "column-gap": "6.08px",
+            "border-top-left-radius": "999px",
+            "border-top-width": "1px",
+            "aspect-ratio": "auto"
+          }
+        },
+        {
+          "id": "nonpilot-frame-hero",
+          "selector": ".case-media__frame--zucchini-hero",
+          "found": true,
+          "box": { "width": 358, "height": 223.75 },
+          "values": {
+            "color": "rgb(255, 255, 255)",
+            "background-color": "rgb(5, 5, 5)",
+            "border-top-color": "rgba(255, 255, 255, 0.44)",
+            "box-shadow": "rgba(0, 0, 0, 0.28) 0px 18px 42px 0px, rgba(255, 248, 236, 0.06) 0px 1px 0px 0px inset",
+            "padding-top": "0px",
+            "padding-right": "0px",
+            "padding-bottom": "0px",
+            "padding-left": "0px",
+            "row-gap": "normal",
+            "column-gap": "normal",
+            "border-top-left-radius": "15.2px",
+            "border-top-width": "1px",
+            "aspect-ratio": "8 / 5"
+          }
+        },
+        {
+          "id": "case-section-body",
+          "selector": ".case-section p",
+          "found": true,
+          "box": { "width": 358, "height": 15.88 },
+          "values": {
+            "color": "rgba(255, 255, 255, 0.94)",
+            "background-color": "rgba(0, 0, 0, 0)",
+            "border-top-color": "rgba(255, 255, 255, 0.94)",
+            "box-shadow": "none",
+            "font-family": "SFMono-Regular, Consolas, \"Liberation Mono\", monospace",
+            "font-size": "9.92px",
+            "line-height": "15.872px",
+            "letter-spacing": "1.5872px",
+            "font-weight": "400"
+          }
+        }
+      ]
+    }
+  ]
+}

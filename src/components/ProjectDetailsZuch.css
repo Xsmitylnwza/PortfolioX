@@ -1,8 +1,8 @@
 /* Zucchini Review — ProjectMux choreography + liquid-glass system */
 .case-section--zuch {
-  --case-soft: rgba(255, 253, 249, 0.94);
-  --case-mute: rgba(255, 253, 249, 0.84);
-  --case-faint: rgba(255, 253, 249, 0.72);
+  --case-soft: var(--color-detail-soft-strong);
+  --case-mute: var(--color-detail-muted-strong);
+  --case-faint: var(--color-detail-faint-strong);
 }
 
 .case-zuch-hero {
@@ -54,11 +54,11 @@
 
 .case-zuch-hero__copy .case-lede {
   max-width: 30rem;
-  color: rgba(255, 253, 249, 0.9);
+  color: var(--color-detail-soft-strong);
 }
 
 .case-zuch-hero__copy .case-role {
-  color: rgba(255, 253, 249, 0.96);
+  color: var(--color-detail-soft-strong);
 }
 
 .case-zuch-hero__media .case-media__frame--hero {
@@ -417,7 +417,7 @@
   border-color: rgba(255, 255, 255, 0.82);
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.88), rgba(255, 252, 248, 0.68) 56%, rgba(211, 255, 224, 0.58)),
-    rgba(255, 253, 249, 0.58);
+    var(--color-detail-mid);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.96),
     inset 0 -1px 0 rgba(255, 255, 255, 0.34),
@@ -739,8 +739,8 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.18),
     0 6px 18px rgba(0, 0, 0, 0.08);
   --zuch-gallery-glass-backdrop: blur(24px) saturate(1.35);
-  --case-paper: rgba(255, 253, 249, 0.97);
-  --case-paper-ink: #111110;
+  --case-paper: var(--color-detail-paper);
+  --case-paper-ink: var(--color-detail-paper-ink);
 }
 /* Extra-specific: document project stage glass must not create a section backdrop root. */
 html.document-room-active .case-section--zuch {
@@ -839,17 +839,17 @@ html.document-room-active .case-section--zuch {
 
 .case-section--zuch .case-zuch-shift__copy > span,
 .case-section--zuch .case-zuch-shift__index {
-  color: rgba(255, 253, 249, 0.72);
+  color: var(--color-detail-faint-strong);
 }
 
 .case-section--zuch .case-zuch-agents__copy > span,
 .case-section--zuch .case-zuch-agents__name small,
 .case-section--zuch .case-zuch-pipeline__stage {
-  color: rgba(255, 253, 249, 0.68);
+  color: var(--color-detail-muted);
 }
 
 .case-section--zuch .case-zuch-pipeline__node--focus .case-zuch-pipeline__stage {
-  color: rgba(255, 253, 249, 0.68);
+  color: var(--color-detail-muted);
 }
 
 /* Wave follow must not sit on the glass shell (translate/scale break backdrop sampling). */
@@ -913,7 +913,7 @@ html.document-room-active .case-section--zuch {
 .case-zuch-signal__index {
   align-self: start;
   padding-top: 0.28rem;
-  color: rgba(255, 253, 249, 0.62);
+  color: var(--color-detail-mid);
   font-family: var(--font-mono);
   font-size: 0.54rem;
   letter-spacing: 0.14em;
@@ -942,7 +942,7 @@ html.document-room-active .case-section--zuch {
 }
 
 .case-zuch-signal__copy > span {
-  color: rgba(255, 253, 249, 0.68);
+  color: var(--color-detail-muted);
   font-family: var(--font-mono);
   font-size: 0.55rem;
   letter-spacing: 0.13em;
@@ -1038,8 +1038,8 @@ html.document-room-active .case-section--zuch {
   inset: 17%;
   z-index: -1;
   background:
-    linear-gradient(45deg, transparent 49.85%, rgba(255, 253, 249, 0.26) 50%, transparent 50.15%),
-    linear-gradient(-45deg, transparent 49.85%, rgba(255, 253, 249, 0.26) 50%, transparent 50.15%);
+    linear-gradient(45deg, transparent 49.85%, var(--color-detail-line-strong) 50%, transparent 50.15%),
+    linear-gradient(-45deg, transparent 49.85%, var(--color-detail-line-strong) 50%, transparent 50.15%);
   opacity: 0.72;
 }
 
@@ -1100,7 +1100,7 @@ html.document-room-active .case-section--zuch {
 }
 
 .case-zuch-hub__center small {
-  color: rgba(255, 253, 249, 0.62);
+  color: var(--color-detail-mid);
 }
 
 .case-zuch-hub__center h3,
@@ -1156,7 +1156,7 @@ html.document-room-active .case-section--zuch {
 }
 
 .case-zuch-hub__stage {
-  color: rgba(255, 253, 249, 0.66);
+  color: var(--color-detail-mid);
 }
 
 .case-zuch-hub__icon {
@@ -1249,7 +1249,7 @@ html.document-room-active .case-section--zuch {
 }
 
 .case-zuch-story__copy > span {
-  color: rgba(255, 253, 249, 0.68);
+  color: var(--color-detail-muted);
   font-family: var(--font-mono);
   font-size: 0.52rem;
   letter-spacing: 0.13em;

@@ -1,0 +1,233 @@
+/* PortfolioX design tokens — canonical source.
+ *
+ * Structure: primitive values -> semantic roles -> scoped project themes.
+ * Imported once, from src/index.css, before any component stylesheet.
+ *
+ * CASCADE RULE, READ BEFORE ADDING A THEME:
+ * A custom property is resolved where it is DECLARED, and only the resolved
+ * value inherits. `--role: var(--primitive)` declared at :root is already
+ * resolved at :root, so overriding `--primitive` on a descendant does NOT
+ * change `--role` on that descendant.
+ *
+ * Measured, not assumed: overriding --palette-white on .case-section--keshi
+ * left .case-media__label's background at rgb(255,255,255); overriding
+ * --color-chip-surface there changed it. See phase-3 report §3.
+ *
+ * So a project theme overrides the SEMANTIC ROLE. (A primitive override does
+ * happen to work when the theme declares the role in the same block, as
+ * Layer 3 does — but that is a coincidence of scope, not a pattern to copy.)
+ *
+ * Every value here was lifted from what the site already rendered. Nothing in
+ * this file is a new design decision. See DESIGN.md for what is still open.
+ */
+
+/* ===========================================================================
+ * Layer 1 — primitives. Raw values, no meaning attached.
+ * ======================================================================== */
+
+:root {
+  /* Neutrals: the near-black stage and card surfaces. */
+  --palette-black-950: #050505;
+  --palette-black-900: #0b0b0b;
+  --palette-black-880: #090909;
+  --palette-black-870: #141618;
+  --palette-black-850: #111111;
+  --palette-ink-900: #151513;
+  --palette-white: #ffffff;
+
+  /* Red environment. */
+  --palette-red-stage: #dc2626;
+  --palette-red-500: #e3262e;
+  --palette-red-900: #7f1118;
+
+  /* Warm off-white: the light the editorial room casts on media edges. */
+  --palette-warm-050: #e8e0d1;
+
+  /* Grey text ramp. */
+  --palette-grey-100: #f2f2f2;
+  --palette-grey-400: #aaa6a0;
+  --palette-grey-600: #77736e;
+
+  /* Type families. */
+  --palette-font-serif: 'Instrument Serif', serif;
+  --palette-font-display: 'Syne', sans-serif;
+  --palette-font-body: 'Space Grotesk', sans-serif;
+  --palette-font-hand: 'Permanent Marker', cursive;
+  --palette-font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+}
+
+/* ===========================================================================
+ * Layer 2 — semantic roles. What a value is FOR.
+ * These are the names components consume.
+ * ======================================================================== */
+
+:root {
+  /* --- surfaces and environment --------------------------------------- */
+  --color-surface-black: var(--palette-black-950);
+  --color-surface-dark: var(--palette-black-900);
+  --color-surface-card: var(--palette-black-850);
+  --color-stage: var(--palette-red-stage);
+  --color-stage-grid: rgba(8, 8, 8, 0.24);
+  --color-stage-grid-strong: rgba(8, 8, 8, 0.79);
+  --color-stage-glow: rgba(255, 174, 148, 0.17);
+
+  /* --- text ------------------------------------------------------------ */
+  --color-text-primary: var(--palette-grey-100);
+  --color-text-secondary: var(--palette-grey-400);
+  --color-text-muted: var(--palette-grey-600);
+
+  /* Project-detail chrome: grayscale on the red stage, outside source media. */
+  --color-detail-ink: rgba(255, 255, 255, 0.98);
+  --color-detail-soft: rgba(255, 255, 255, 0.86);
+  --color-detail-muted: rgba(255, 255, 255, 0.7);
+  --color-detail-mid: rgba(255, 255, 255, 0.62);
+  --color-detail-faint: rgba(255, 255, 255, 0.52);
+  --color-detail-disabled: rgba(255, 255, 255, 0.3);
+  --color-detail-hairline: rgba(255, 255, 255, 0.06);
+  --color-detail-soft-strong: rgba(255, 255, 255, 0.94);
+  --color-detail-muted-strong: rgba(255, 255, 255, 0.84);
+  --color-detail-faint-strong: rgba(255, 255, 255, 0.72);
+  --color-detail-muted-solid: #aaaaaa;
+  --color-detail-line: rgba(255, 255, 255, 0.14);
+  --color-detail-line-strong: rgba(255, 255, 255, 0.28);
+  --color-detail-paper: rgba(255, 255, 255, 0.97);
+  --color-detail-paper-soft: rgba(232, 232, 232, 0.95);
+  --color-detail-paper-ink: #111111;
+  --color-detail-panel-strong: rgba(0, 0, 0, 0.56);
+  --color-detail-panel: rgba(0, 0, 0, 0.38);
+  --color-detail-panel-faint: rgba(0, 0, 0, 0.24);
+  --color-detail-panel-heavy: rgba(0, 0, 0, 0.76);
+  --color-detail-session-surface: rgba(10, 10, 10, 0.78);
+
+  /* --- accent ---------------------------------------------------------- */
+  --color-accent: var(--palette-red-500);
+  --color-accent-deep: var(--palette-red-900);
+  --color-accent-glow: rgba(227, 38, 46, 0.4);
+
+  /* --- glass hints (NOT the selected optical material; that recipe stays
+   *     canonical inside KeshiLiquidGlass.css, DESIGN.md A6/A10/A11) ------ */
+  --color-glass-fill: rgba(255, 255, 255, 0.02);
+  --color-glass-edge: rgba(255, 255, 255, 0.05);
+  --color-glass-edge-active: rgba(239, 68, 68, 0.5);
+
+  /* --- quiet annotation surface --------------------------------------- */
+  --color-annotation-matte-fill: rgba(11, 11, 11, 0.27);
+  --color-annotation-matte-edge: rgba(255, 255, 255, 0.14);
+  --color-annotation-matte-ink: var(--palette-white);
+  --color-annotation-matte-lift: rgba(0, 0, 0, 0.14);
+
+  /* --- media frame chrome ---------------------------------------------
+   * The pilot slice. Each alpha is a distinct role, not a shade of one
+   * colour: default edge, demo edge, hover edge, top sheen, inner hairline.
+   * Keeping them separate is why a project theme can raise its edge
+   * contrast without also brightening the sheen.
+   */
+  --color-media-surface: var(--palette-black-900);
+  /* Authored cover art sits on a slightly cooler letterbox than a product
+     screenshot does; the cover variant sets this role on itself. */
+  --color-media-surface-cover: var(--palette-black-870);
+  --color-media-edge: rgba(255, 248, 236, 0.14);
+  --color-media-edge-demo: rgba(255, 248, 236, 0.18);
+  --color-media-edge-hover: rgba(255, 248, 236, 0.28);
+  --color-media-sheen: rgba(255, 248, 236, 0.06);
+  --color-media-sheen-hover: rgba(255, 248, 236, 0.08);
+  --color-media-hairline: rgba(255, 248, 236, 0.05);
+  --color-media-focus-ring: rgba(255, 253, 249, 0.7);
+  --color-media-lift: rgba(0, 0, 0, 0.28);
+  --color-media-lift-hover: rgba(0, 0, 0, 0.34);
+
+  /* --- media chips (label + media-kind): one pair, two consumers -------- */
+  --color-chip-surface: var(--palette-white);
+  --color-chip-ink: var(--palette-ink-900);
+  --color-chip-edge: rgba(0, 0, 0, 0.08);
+  --color-chip-lift: rgba(0, 0, 0, 0.22);
+
+  /* --- type roles ------------------------------------------------------ */
+  --type-family-serif: var(--palette-font-serif);
+  --type-family-editorial: var(--palette-font-serif);
+  --type-family-display: var(--palette-font-display);
+  --type-family-body: var(--palette-font-body);
+  --type-family-hand: var(--palette-font-hand);
+  --type-family-mono: var(--palette-font-mono);
+
+  /* Chip type: the uppercase mono stamp on media. Shared by label and kind. */
+  --type-size-chip: 0.52rem;
+  --type-tracking-chip: 0.14em;
+  --type-size-case-metadata: 0.7rem;
+
+  /* --- shape ------------------------------------------------------------ */
+  --radius-pill: 999px;
+  --radius-media: 0.95rem;
+  --radius-annotation-matte: 2rem;
+  --radius-annotation-matte-compact: 1.35rem;
+  --size-annotation-matte-blur: 2px;
+  --border-width-hairline: 1px;
+  --border-width-focus: 2px;
+
+  /* --- spacing ----------------------------------------------------------
+   * The label and kind chips used to sit on near-identical but non-identical
+   * values: inset 0.85 vs 0.8rem, block padding 0.32 vs 0.3rem. Those were
+   * unified on owner instruction (DESIGN.md D1), which moved the label chip
+   * 0.8px and shrank its block padding by 0.32px. That is a deliberate,
+   * recorded change, not migration drift.
+   *
+   * The kind chip's inline padding stays asymmetric (0.48 leading, 0.58
+   * trailing): the status dot sits on the leading edge, so the difference is
+   * optical balance rather than a duplicate, and collapsing it would be a
+   * visible redesign nobody asked for.
+   */
+  --space-media-chip-inset: 0.8rem;
+  --space-chip-pad-block: 0.3rem;
+  --space-chip-pad-inline: 0.66rem;
+  --space-chip-pad-inline-start: 0.48rem;
+  --space-chip-pad-inline-end: 0.58rem;
+  --space-chip-gap: 0.38rem;
+  --size-chip-dot: 0.36rem;
+  --space-annotation-matte-lift-y: 8px;
+  --space-annotation-matte-lift-blur: 24px;
+}
+
+/* ===========================================================================
+ * Layer 3 — scoped project themes.
+ *
+ * Overrides the SEMANTIC ROLE, not the primitive. `--color-media-surface` is
+ * resolved at :root, so redefining `--palette-black-900` here would change
+ * nothing for elements that read the role.
+ *
+ * Keshi runs its media frames darker and slightly tighter than the shared
+ * default. Those are the values the route already rendered.
+ * ======================================================================== */
+
+.case-section--keshi {
+  --color-media-surface: var(--palette-black-880);
+  --color-media-edge: rgba(255, 248, 236, 0.16);
+  --radius-media: 0.78rem;
+
+  /* Veluma's rendered three-tier material, scoped to the Keshi comparison. */
+  --color-keshi-surface-base: rgba(12, 12, 14, 0.18);
+  --color-keshi-surface-base-edge: rgba(255, 255, 255, 0.18);
+  --color-keshi-surface-base-shadow: 0 10px 30px rgba(0, 0, 2, 0.3);
+  --color-keshi-surface-base-filter: blur(52px) brightness(68%) saturate(104%);
+  --color-keshi-surface-base-sheen:
+    radial-gradient(ellipse 70% 46% at 8% 0%, rgba(255, 255, 255, 0.18), transparent 68%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 28%, transparent 72%, rgba(255, 255, 255, 0.045));
+  --color-keshi-surface-base-inset:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 1px 0 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 2, 0.16);
+  --color-keshi-surface-dark: rgba(12, 12, 14, 0.36);
+  --color-keshi-surface-dark-edge: rgba(255, 255, 255, 0.18);
+  --color-keshi-surface-dark-shadow: 0 6px 18px rgba(0, 0, 2, 0.24);
+  --color-keshi-surface-dark-filter: blur(22px) brightness(68%) saturate(105%);
+  --color-keshi-surface-paper: rgba(255, 255, 255, 0.76);
+  --color-keshi-surface-paper-edge: rgba(255, 255, 255, 0.72);
+  --color-keshi-surface-paper-shadow: 0 10px 30px rgba(0, 0, 2, 0.3);
+  --color-keshi-surface-paper-filter: blur(44px) brightness(94%) saturate(101%);
+  --color-keshi-surface-paper-sheen:
+    radial-gradient(ellipse 72% 48% at 8% 0%, rgba(255, 255, 255, 0.58), transparent 68%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.34), transparent 32%, transparent 72%, rgba(17, 17, 16, 0.035));
+  --color-keshi-surface-paper-inset:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    inset 1px 0 0 rgba(255, 255, 255, 0.26),
+    inset 0 -1px 0 rgba(17, 17, 16, 0.1);
+}

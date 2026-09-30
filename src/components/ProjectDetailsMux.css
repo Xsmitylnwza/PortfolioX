@@ -1,8 +1,8 @@
 /* ProjectMux — same visual system, tighter product-story choreography */
 .case-section--mux {
-  --case-soft: rgba(255, 253, 249, 0.94);
-  --case-mute: rgba(255, 253, 249, 0.84);
-  --case-faint: rgba(255, 253, 249, 0.72);
+  --case-soft: var(--color-detail-soft-strong);
+  --case-mute: var(--color-detail-muted-strong);
+  --case-faint: var(--color-detail-faint-strong);
 }
 
 .case-mux-hero {
@@ -26,11 +26,11 @@
 
 .case-mux-hero__copy .case-lede {
   max-width: 30rem;
-  color: rgba(255, 253, 249, 0.9);
+  color: var(--color-detail-soft-strong);
 }
 
 .case-mux-hero__copy .case-role {
-  color: rgba(255, 253, 249, 0.96);
+  color: var(--color-detail-soft-strong);
 }
 
 .case-mux-hero__media .case-media__frame--hero {
@@ -392,7 +392,7 @@
   border-color: rgba(255, 255, 255, 0.82);
   background:
     linear-gradient(145deg, rgba(255, 255, 255, 0.88), rgba(255, 252, 248, 0.68) 56%, rgba(255, 224, 211, 0.58)),
-    rgba(255, 253, 249, 0.58);
+    var(--color-detail-mid);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.96),
     inset 0 -1px 0 rgba(255, 255, 255, 0.34),
@@ -798,13 +798,13 @@
 
 .case-section--mux .case-mux-shift__copy > span,
 .case-section--mux .case-mux-shift__index {
-  color: rgba(255, 253, 249, 0.72);
+  color: var(--color-detail-faint-strong);
 }
 
 .case-section--mux .case-mux-agents__copy > span,
 .case-section--mux .case-mux-agents__name small,
 .case-section--mux .case-mux-pipeline__stage {
-  color: rgba(255, 253, 249, 0.68);
+  color: var(--color-detail-muted);
 }
 
 .case-section--mux .case-mux-pipeline__node--focus .case-mux-pipeline__stage {

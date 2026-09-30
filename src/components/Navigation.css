@@ -26,6 +26,13 @@ html.portfolio-ready:not(.loader-active):not(.boot-loader-active) .corner-menu {
     opacity: 1;
 }
 
+/* Hide all navigation chrome for the full handoff, including an open panel. */
+html.poster-transition-active .corner-menu,
+html.room-content-exiting .corner-menu,
+html.room-content-entering .corner-menu {
+    display: none;
+}
+
 html.loader-active .corner-menu,
 html.boot-loader-active .corner-menu {
     opacity: 0 !important;

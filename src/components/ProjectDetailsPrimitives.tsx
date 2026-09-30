@@ -1,10 +1,7 @@
-import { Link } from 'react-router-dom';
-import { Icon } from '@iconify/react';
 import CaseMediaFrame from './ProjectDetailsMedia';
 import type { ReactNode } from 'react';
 import type { ProjectMedia, ProjectRecord } from '../data/projectTypes';
 
-interface CaseTopProps { caseNumber: string; caseTotal: string }
 interface CaseFactsProps { project: ProjectRecord; techCount: number }
 interface CaseBlockProps {
   title: string;
@@ -28,22 +25,6 @@ interface StorySectionHeadProps {
   id?: string;
   className?: string;
 }
-
-const CaseTop = ({ caseNumber, caseTotal }: CaseTopProps) => (
-  <header className="case-top case-reveal" data-reveal="mount" data-wave-follow style={{ '--reveal-index': 0 }}>
-    <div className="case-top__meta">
-      <span>{caseNumber}</span>
-      <span>Selected system</span>
-      <span>
-        {caseNumber} / {caseTotal}
-      </span>
-    </div>
-    <Link to="/" className="case-top__back" data-cursor="default">
-      <Icon icon="lucide:arrow-left" aria-hidden="true" />
-      Back to gallery
-    </Link>
-  </header>
-);
 
 const CaseFacts = ({ project, techCount }: CaseFactsProps) => (
   <dl className="case-facts">
@@ -190,4 +171,4 @@ const StorySectionHead = ({ eyebrow, title, body, id, className = '' }: StorySec
   </header>
 );
 
-export { CaseTop, CaseFacts, CaseBlock, CaseHeroMedia, CaseGallery, CaseCode, StorySectionHead };
+export { CaseFacts, CaseBlock, CaseHeroMedia, CaseGallery, CaseCode, StorySectionHead };

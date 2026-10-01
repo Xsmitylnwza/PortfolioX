@@ -442,7 +442,7 @@ export const RENDER_TARGETS = [
       ...PROJECT_SHARED_SOURCES,
       /^src\/features\/project-details\/cases\/hermes\/HermesCase[.](?:jsx|tsx)$/,
       /^src\/styles\/tokens[.]css$/,
-      /^src\/components\/ProjectDetails(?:Layouts|Lightbox|Process)?[.](css|jsx?|tsx?)$/,
+      /^src\/components\/ProjectDetails(?:Shared|Format|Layouts|Lightbox|Process)?[.](css|jsx?|tsx?)$/,
       /^src\/components\/ProjectDetailsHermes[.](?:css|jsx|tsx)$/,
     ],
   },

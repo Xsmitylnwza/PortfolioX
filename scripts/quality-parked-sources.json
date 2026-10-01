@@ -2,8 +2,6 @@
   "src/App.css",
   "src/components/About.tsx",
   "src/components/BrushReveal.tsx",
-  "src/components/CaseMatteSurface.css",
-  "src/components/CaseMatteSurface.tsx",
   "src/components/Footer.css",
   "src/components/Footer.tsx",
   "src/components/Hero.tsx",

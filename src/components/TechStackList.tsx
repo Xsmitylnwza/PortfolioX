@@ -105,11 +105,12 @@ const TechStackList = ({
       <ul className="tech-stack-list__items" aria-label={listLabel} {...followProps}>
         {tools.map((tool, index) => (
           <li
+            data-surface={variant === 'case' ? 'dark' : undefined}
             key={tool.label}
             className={['tech-stack-list__item', phaseClassName].filter(Boolean).join(' ')}
             style={{ '--phase-index': index }}
           >
-            <span className="tech-stack-list__icon" aria-hidden="true">
+            <span className="tech-stack-list__icon" data-surface={variant === 'case' ? 'dark' : undefined} aria-hidden="true">
               <Icon icon={tool.icon} />
             </span>
             <span className="tech-stack-list__label">{tool.label}</span>

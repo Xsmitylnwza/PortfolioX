@@ -208,15 +208,7 @@ const HermesSectionHead = ({ label, title, copy, id }: { label: string; title: s
   </header>
 );
 
-const HermesCommandMap = () => {
-  const [selection, setSelection] = useState<{ domainId: DomainId; mode: ModeId }>({ domainId: 'daily', mode: 'talk' });
-  const { domainId, mode } = selection;
-  const domain: DomainConfig = DOMAIN_ROUTES[domainId];
-  const modeMeta = EVENT_MODES.find((item) => item.id === mode);
-  const availableModes = useMemo(() => new Set(domain.modes), [domain]);
-  const trace = domain.traces[mode];
-  if (!modeMeta || !trace) throw new Error('Incomplete Hermes command route');
-
+const buildHermesJunctions = (domain: DomainConfig, modeMeta: EventMode, trace: string[]) => {
   const routeJunctions = [
     {
       id: 'router',
@@ -257,6 +249,20 @@ const HermesCommandMap = () => {
       edge: 'represent in owning room',
     },
   ];
+
+  return { routeJunctions, returnJunctions };
+};
+
+const HermesCommandMap = () => {
+  const [selection, setSelection] = useState<{ domainId: DomainId; mode: ModeId }>({ domainId: 'daily', mode: 'talk' });
+  const { domainId, mode } = selection;
+  const domain: DomainConfig = DOMAIN_ROUTES[domainId];
+  const modeMeta = EVENT_MODES.find((item) => item.id === mode);
+  const availableModes = useMemo(() => new Set(domain.modes), [domain]);
+  const trace = domain.traces[mode];
+  if (!modeMeta || !trace) throw new Error('Incomplete Hermes command route');
+
+  const { routeJunctions, returnJunctions } = buildHermesJunctions(domain, modeMeta, trace);
 
   const selectDomain = (nextId: DomainId) => {
     const next: DomainConfig = DOMAIN_ROUTES[nextId];
@@ -307,7 +313,7 @@ const HermesCommandMap = () => {
                   disabled={!supported}
                   aria-pressed={mode === item.id}
                   aria-controls="hermes-route-list hermes-map-caption hermes-map-status"
-                  data-mode={item.id}
+                  data-surface={mode === item.id ? 'paper' : 'dark'} data-mode={item.id}
                   title={supported ? `${item.label} mode` : `${item.label} is not supported for ${domain.label}`}
                   onClick={() => supported && selectMode(item.id)}
                 >
@@ -339,7 +345,7 @@ const HermesCommandMap = () => {
                   data-domain={id}
                   onClick={() => selectDomain(id)}
                 >
-                  <span className="hermes-patchbay__socket">
+                  <span className="hermes-patchbay__socket" data-surface={domainId === id ? 'paper' : 'dark'}>
                     <Icon icon={item.icon} aria-hidden="true" />
                   </span>
                   <span>{item.shortLabel}</span>
@@ -371,8 +377,8 @@ const HermesCommandMap = () => {
               <rect className="hermes-switchboard__gate" x="602" y="192" width="12" height="12" rx="1" />
             </svg>
 
-            <article className="hermes-core hermes-liquid-glass">
-              <span className="hermes-switchboard__inbound-edge">{modeMeta.entryVerb}</span>
+            <article data-surface="base" data-surface-sheen="" className="hermes-core hermes-liquid-glass">
+              <span data-surface-positioned="" data-surface="dark" className="hermes-switchboard__inbound-edge">{modeMeta.entryVerb}</span>
               <span className="hermes-core__discord"><Icon icon="simple-icons:discord" aria-hidden="true" /></span>
               <small>Discord · Hermes Gateway</small>
               <strong>Command surface</strong>
@@ -382,14 +388,14 @@ const HermesCommandMap = () => {
             <ol id="hermes-route-list" className="hermes-route" aria-label={`${domain.label} ${modeMeta.label} forward route`}>
               {routeJunctions.map((step, index) => (
                 <li className={`hermes-route__junction hermes-route__junction--${step.id}`} key={step.id}>
-                  <span className="hermes-route__edge">{index === 0 ? 'receive event' : step.edge}</span>
-                  <span className="hermes-route__mark"><Icon icon={step.icon} aria-hidden="true" /></span>
+                  <span data-surface="dark" className="hermes-route__edge">{index === 0 ? 'receive event' : step.edge}</span>
+                  <span data-surface="dark" className="hermes-route__mark"><Icon icon={step.icon} aria-hidden="true" /></span>
                   <span className="hermes-route__copy"><small>{step.label}</small><strong>{step.value}</strong></span>
                 </li>
               ))}
             </ol>
 
-            <article className="hermes-source hermes-liquid-glass">
+            <article data-surface="base" data-surface-sheen="" className="hermes-source hermes-liquid-glass">
               <span className="hermes-source__icon"><Icon icon={domain.sourceIcon} aria-hidden="true" /></span>
               <small>Authoritative source</small>
               <strong>{domain.source}</strong>
@@ -400,14 +406,14 @@ const HermesCommandMap = () => {
             <ol className="hermes-return" aria-label="Evidence return route">
               {returnJunctions.map((step) => (
                 <li className={`hermes-return__junction hermes-return__junction--${step.id}`} key={step.id}>
-                  <span className="hermes-return__edge">{step.edge}</span>
-                  <span className="hermes-return__mark"><Icon icon={step.icon} aria-hidden="true" /></span>
+                  <span data-surface="dark" className="hermes-return__edge">{step.edge}</span>
+                  <span className="hermes-return__mark" data-surface={step.id === 'room' ? 'paper' : 'dark'}><Icon icon={step.icon} aria-hidden="true" /></span>
                   <span className="hermes-return__copy"><small>{step.label}</small><strong>{step.value}</strong></span>
                 </li>
               ))}
             </ol>
 
-            <aside id="hermes-map-caption" className="hermes-map__caption hermes-liquid-glass">
+            <aside data-surface="base" data-surface-sheen="" id="hermes-map-caption" className="hermes-map__caption hermes-liquid-glass">
               <span className="hermes-map__caption-meta">
                 <Icon icon={domain.icon} aria-hidden="true" />
                 {domain.label}
@@ -436,7 +442,7 @@ const HermesProjectDetails = ({ project, techItems }: CaseLayoutProps) => (
         <p className="hermes-hero__thesis">One Discord server. Separate operational contexts. Verified actions stay tied to their source.</p>
         <p className="case-role">{project.role}</p>
         <p className="case-lede">{project.description}</p>
-        <p className="hermes-private"><Icon icon="lucide:lock-keyhole" aria-hidden="true" /> Private system · no public live workspace or repository</p>
+        <p data-surface="dark" className="hermes-private"><Icon icon="lucide:lock-keyhole" aria-hidden="true" /> Private system · no public live workspace or repository</p>
       </div>
       <figure className={`hermes-hero__poster${project.heroMedia.kind === 'cover' ? ' hermes-hero__poster--cover' : ''}`} data-wave-follow data-poster-transition-target="">
         <img
@@ -459,18 +465,18 @@ const HermesProjectDetails = ({ project, techItems }: CaseLayoutProps) => (
       />
       <div className="hermes-incident__story">
         <div className="hermes-incident__motion hermes-incident__motion--failure" data-wave-follow>
-          <article className="hermes-incident__node hermes-liquid-glass">
-            <Icon icon="lucide:circle-alert" aria-hidden="true" />
+          <article data-surface="base" data-surface-sheen="" className="hermes-incident__node hermes-liquid-glass">
+            <Icon data-surface-positioned="" icon="lucide:circle-alert" aria-hidden="true" />
             <span><small>Observed failure</small><strong>Process state looked healthy.</strong></span>
             <p>The result people expected had not reached its owning room.</p>
           </article>
         </div>
-        <div className="hermes-incident__bridge" data-wave-follow aria-hidden="true">
+        <div data-surface="dark" className="hermes-incident__bridge" data-wave-follow aria-hidden="true">
           <Icon icon="lucide:arrow-down-right" />
         </div>
         <div className="hermes-incident__motion hermes-incident__motion--rule" data-wave-follow>
-          <article className="hermes-incident__node hermes-liquid-glass">
-            <Icon icon="lucide:shield-check" aria-hidden="true" />
+          <article data-surface="base" data-surface-sheen="" className="hermes-incident__node hermes-liquid-glass">
+            <Icon data-surface-positioned="" icon="lucide:shield-check" aria-hidden="true" />
             <span><small>Durable rule</small><strong>Verify the observable outcome.</strong></span>
             <p>Persistent state, downstream delivery, deduplication, and read-back now define done.</p>
           </article>

@@ -9,13 +9,14 @@ The case-study CSS was split by consumer on 2026-09-23. A project-specific selec
 | Fullscreen media lightbox and its reduced-motion rule | `src/components/ProjectDetailsLightbox.css` |
 | Shared why/flow/process layouts | `src/components/ProjectDetailsProcess.css` |
 | Shared Keshi/Decrypt story heading and backdrop-root rules | `src/components/ProjectDetailsStories.css` |
-| Shared Keshi/Decrypt material and responsive rules | `src/components/ProjectDetailsStorySharedOverrides.css` |
+| Shared Keshi/Decrypt legacy declarations and responsive rules | `src/components/ProjectDetailsStorySharedOverrides.css` |
+| Shared project detail material: base/dark/paper fill, edge, shadow and sheen | `src/styles/detail-surface.css`; semantic roles in `src/styles/tokens.css` |
 | Veluma / ProjectMux composition | `src/components/ProjectDetailsMux.css` |
 | Zucchini composition outside its story | `src/components/ProjectDetailsZuch.css` |
 | Zucchini story | `src/components/ProjectDetailsZuchStory.css` |
 | Keshi story structure | `src/components/ProjectDetailsKeshiStory.css` |
 | Keshi mobile, monochrome text and wave refinements | `src/components/ProjectDetailsKeshiStoryOverrides.css` |
-| Keshi trial of Veluma's three-level container material | `src/components/ProjectDetailsKeshiVelumaSurface.css` (imported last for this route) |
+| Keshi wrapper geometry around the shared three-level material | `src/components/ProjectDetailsKeshiVelumaSurface.css` (imported last for this route) |
 | Decrypt story structure | `src/components/ProjectDetailsDecryptStory.css` |
 | Decrypt later material, mobile, monochrome and wave refinements | `src/components/ProjectDetailsDecryptStoryOverrides.css` |
 | FreeFlow, ModeNote, Hermes, Keshi next preview | Their existing `ProjectDetailsFreeflow.css`, `ProjectDetailsModeNote*.css`, `ProjectDetailsHermes.css`, `ProjectDetailsKeshiNext.css` |

@@ -103,11 +103,7 @@ html.document-room-active .case-section--freeflow {
 
 .case-freeflow-glass {
   border: 1px solid var(--story-line);
-  background: var(--story-glass-fill);
   background-clip: padding-box;
-  box-shadow: var(--story-glass-shadow);
-  -webkit-backdrop-filter: var(--story-glass-backdrop);
-  backdrop-filter: var(--story-glass-backdrop);
 }
 
 .case-freeflow-glass--strong {

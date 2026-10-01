@@ -1,0 +1,64 @@
+/* Explicit opt-in material, shared by Veluma and Keshi. The route ID makes
+   this owner win over legacy project paint without changing import order.
+   Wrappers retain radius, clipping, geometry and layout. No backdrop sampling. */
+:where(#project-details [data-surface='base']) {
+  --color-detail-surface-fill: var(--color-detail-surface-base);
+  --color-detail-surface-edge: var(--color-detail-surface-base-edge);
+  --color-detail-surface-shadow: var(--color-detail-surface-base-shadow);
+}
+
+:where(#project-details [data-surface='dark']) {
+  --color-detail-surface-fill: var(--color-detail-surface-dark);
+  --color-detail-surface-edge: var(--color-detail-surface-dark-edge);
+  --color-detail-surface-shadow: var(--color-detail-surface-dark-shadow);
+}
+
+:where(#project-details [data-surface='paper']) {
+  --color-detail-surface-fill: var(--color-detail-surface-paper);
+  --color-detail-surface-edge: var(--color-detail-surface-paper-edge);
+  --color-detail-surface-shadow: var(--color-detail-surface-paper-shadow);
+  --color-detail-surface-sheen: var(--color-detail-surface-paper-sheen);
+  --color-detail-surface-inset: var(--color-detail-surface-paper-inset);
+  --opacity-detail-surface-sheen: 0.58;
+}
+
+/* Tier aliases have zero specificity so project controls can override semantic
+   roles. Only this owner paints the opted-in material. */
+#project-details [data-surface] {
+  background: var(--color-detail-surface-fill);
+  border-color: var(--color-detail-surface-edge);
+  box-shadow: var(--color-detail-surface-shadow);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* Sheen is optional: compact chips keep their original lack of a pseudo. */
+#project-details [data-surface-anchor] {
+  position: relative;
+}
+
+#project-details [data-surface-sheen]::before {
+  content: '';
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+  z-index: 0;
+  border-radius: inherit;
+  background: var(--color-detail-surface-sheen);
+  box-shadow: var(--color-detail-surface-inset);
+  opacity: var(--opacity-detail-surface-sheen);
+  filter: var(--detail-surface-sheen-filter, none);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  pointer-events: none;
+}
+
+#project-details [data-surface-sheen] > * {
+  z-index: 1;
+}
+
+#project-details [data-surface-sheen] > :not([data-surface-positioned]) {
+  position: relative;
+}

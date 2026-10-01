@@ -18,6 +18,7 @@ import stylelint from 'stylelint';
 import {
   IMPORTANT_ALLOWANCES,
   PROTECTED_INTERNALS,
+  DETAIL_SURFACE,
 } from './design-check.config.mjs';
 
 const ruleName = 'design/ownership-boundaries';
@@ -30,6 +31,9 @@ const messages = stylelint.utils.ruleMessages(ruleName, {
   protectedInternal: (selector, owner, reason) =>
     `This rule styles "${selector}", which belongs to ${owner}. ${reason} ` +
     `Position the component from the outside and change the recipe in its own file.`,
+  detailSurfaceBackdrop: (property) =>
+    `"${property}" must be none on the detail-surface material (DESIGN.md A28). ` +
+    `Use its fill, rim, sheen and shadow tokens without backdrop sampling.`,
 });
 
 /** @type {import('stylelint').Rule<boolean>} */
@@ -41,6 +45,15 @@ const ruleFunction = (primary) => (root, result) => {
   if (!valid || primary === false) return;
 
   const file = (root.source?.input?.from ?? '').split(/[/\\]/).join('/');
+
+  // Find token consumers first so a later rule with the same selector cannot
+  // reintroduce a filter by separating it from the material declarations.
+  const surfaceSelectors = new Set();
+  root.walkRules((rule) => {
+    rule.walkDecls((decl) => {
+      if (DETAIL_SURFACE.tokenPattern.test(decl.value)) surfaceSelectors.add(rule.selector);
+    });
+  });
 
   root.walkDecls((decl) => {
     if (!decl.important) return;
@@ -54,6 +67,17 @@ const ruleFunction = (primary) => (root, result) => {
   });
 
   root.walkRules((rule) => {
+    if (surfaceSelectors.has(rule.selector) || DETAIL_SURFACE.selectorPattern.test(rule.selector)) {
+      rule.walkDecls((decl) => {
+        if (!/^(?:-webkit-)?backdrop-filter$/i.test(decl.prop) || decl.value.trim().toLowerCase() === 'none') return;
+        stylelint.utils.report({
+          ruleName,
+          result,
+          node: decl,
+          message: messages.detailSurfaceBackdrop(decl.prop),
+        });
+      });
+    }
     for (const protectedSet of PROTECTED_INTERNALS) {
       // The owning file is allowed to style its own internals.
       if (file === protectedSet.owner || file.endsWith(`/${protectedSet.owner}`)) continue;

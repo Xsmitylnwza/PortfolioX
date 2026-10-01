@@ -99,6 +99,48 @@
   --color-detail-panel-heavy: rgba(0, 0, 0, 0.76);
   --color-detail-session-surface: rgba(10, 10, 10, 0.78);
 
+  /* Veluma's rendered three-tier material. Veluma paints these with no working
+     backdrop-filter (its .case-reveal is a backdrop root), so filters are none. */
+  --color-detail-surface-base: rgba(12, 12, 14, 0.18);
+  --color-detail-surface-base-edge: rgba(255, 255, 255, 0.18);
+  --color-detail-surface-base-shadow: 0 10px 30px rgba(0, 0, 2, 0.3);
+  --color-detail-surface-base-filter: none;
+  --color-detail-surface-base-sheen:
+    radial-gradient(ellipse 70% 46% at 8% 0%, rgba(255, 255, 255, 0.18), transparent 68%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 28%, transparent 72%, rgba(255, 255, 255, 0.045));
+  --color-detail-surface-base-inset:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 1px 0 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 2, 0.16);
+  --color-detail-surface-dark: rgba(12, 12, 14, 0.16);
+  --color-detail-surface-dark-edge: rgba(255, 255, 255, 0.18);
+  --color-detail-surface-dark-shadow: 0 6px 18px rgba(0, 0, 2, 0.24);
+  --color-detail-surface-dark-filter: none;
+  --color-detail-surface-paper: rgba(255, 255, 255, 0.76);
+  --color-detail-surface-paper-edge: rgba(255, 255, 255, 0.72);
+  --color-detail-surface-paper-shadow: 0 10px 30px rgba(0, 0, 2, 0.3);
+  --color-detail-surface-paper-filter: none;
+  --color-detail-surface-paper-sheen:
+    radial-gradient(ellipse 72% 48% at 8% 0%, rgba(255, 255, 255, 0.58), transparent 68%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.34), transparent 32%, transparent 72%, rgba(17, 17, 16, 0.035));
+  --color-detail-surface-paper-inset:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    inset 1px 0 0 rgba(255, 255, 255, 0.26),
+    inset 0 -1px 0 rgba(17, 17, 16, 0.1);
+  --radius-detail-surface: 1rem;
+  --color-detail-surface-sheen: var(--color-detail-surface-base-sheen);
+  --color-detail-surface-inset: var(--color-detail-surface-base-inset);
+  --opacity-detail-surface-sheen: 0.72;
+  /* Per-control roles are assigned by the selected material tier. */
+  --color-detail-surface-fill: var(--color-detail-surface-base);
+  --color-detail-surface-edge: var(--color-detail-surface-base-edge);
+  --color-detail-surface-shadow: var(--color-detail-surface-base-shadow);
+  --color-detail-surface-control-paper: rgba(255, 255, 255, 0.3);
+  --color-detail-surface-control-paper-edge: rgba(17, 17, 16, 0.16);
+  --color-detail-surface-control-paper-shadow: 0 6px 18px rgba(0, 0, 2, 0.12);
+  --color-detail-surface-control-paper-ink: rgba(17, 17, 16, 0.72);
+  --color-detail-surface-paper-label: rgba(17, 17, 16, 0.6);
+
   /* --- accent ---------------------------------------------------------- */
   --color-accent: var(--palette-red-500);
   --color-accent-deep: var(--palette-red-900);
@@ -185,6 +227,39 @@
   --size-chip-dot: 0.36rem;
   --space-annotation-matte-lift-y: 8px;
   --space-annotation-matte-lift-blur: 24px;
+
+  /* Project Details scale — derived from Veluma 2026-10-01 */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.65rem;
+  --space-4: 0.85rem;
+  --space-5: 1rem;
+  --space-6: 1.25rem;
+  --space-7: 1.5rem;
+  --space-8: 2rem;
+  --space-9: 3rem;
+  --space-10: 3.75rem;
+  --space-11: 5.5rem;
+  --space-section: clamp(3.25rem, 7vw, 5.75rem);
+  --space-gutter: clamp(1rem, 3vw, 2rem);
+  --type-size-label: 0.55rem;
+  --type-size-body-sm: 0.84rem;
+  --type-size-body: 0.92rem;
+  --type-size-heading-sm: clamp(1.15rem, 1.8vw, 1.45rem);
+  --type-size-heading-md: clamp(1.65rem, 3vw, 2.5rem);
+  --type-size-heading-lg: clamp(1.9rem, 3.6vw, 3rem);
+  --type-size-display: clamp(2.7rem, 5.4vw, 4.7rem);
+  --type-tracking-eyebrow: 0.14em;
+  --type-tracking-heading: -0.04em;
+  --type-tracking-display: -0.055em;
+  --type-leading-display: 0.92;
+  --type-leading-heading: 1.06;
+  --type-leading-body: 1.5;
+  --radius-detail-control: 0.95rem;
+  --radius-detail-mark: 0.72rem;
+  --radius-detail-tag: 0.45rem;
+  --measure-heading: 22ch;
+  --measure-copy: 30rem;
 }
 
 /* ===========================================================================
@@ -203,31 +278,5 @@
   --color-media-edge: rgba(255, 248, 236, 0.16);
   --radius-media: 0.78rem;
 
-  /* Veluma's rendered three-tier material, scoped to the Keshi comparison. */
-  --color-keshi-surface-base: rgba(12, 12, 14, 0.18);
-  --color-keshi-surface-base-edge: rgba(255, 255, 255, 0.18);
-  --color-keshi-surface-base-shadow: 0 10px 30px rgba(0, 0, 2, 0.3);
-  --color-keshi-surface-base-filter: blur(52px) brightness(68%) saturate(104%);
-  --color-keshi-surface-base-sheen:
-    radial-gradient(ellipse 70% 46% at 8% 0%, rgba(255, 255, 255, 0.18), transparent 68%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 28%, transparent 72%, rgba(255, 255, 255, 0.045));
-  --color-keshi-surface-base-inset:
-    inset 0 1px 0 rgba(255, 255, 255, 0.22),
-    inset 1px 0 0 rgba(255, 255, 255, 0.08),
-    inset 0 -1px 0 rgba(0, 0, 2, 0.16);
-  --color-keshi-surface-dark: rgba(12, 12, 14, 0.36);
-  --color-keshi-surface-dark-edge: rgba(255, 255, 255, 0.18);
-  --color-keshi-surface-dark-shadow: 0 6px 18px rgba(0, 0, 2, 0.24);
-  --color-keshi-surface-dark-filter: blur(22px) brightness(68%) saturate(105%);
-  --color-keshi-surface-paper: rgba(255, 255, 255, 0.76);
-  --color-keshi-surface-paper-edge: rgba(255, 255, 255, 0.72);
-  --color-keshi-surface-paper-shadow: 0 10px 30px rgba(0, 0, 2, 0.3);
-  --color-keshi-surface-paper-filter: blur(44px) brightness(94%) saturate(101%);
-  --color-keshi-surface-paper-sheen:
-    radial-gradient(ellipse 72% 48% at 8% 0%, rgba(255, 255, 255, 0.58), transparent 68%),
-    linear-gradient(135deg, rgba(255, 255, 255, 0.34), transparent 32%, transparent 72%, rgba(17, 17, 16, 0.035));
-  --color-keshi-surface-paper-inset:
-    inset 0 1px 0 rgba(255, 255, 255, 0.72),
-    inset 1px 0 0 rgba(255, 255, 255, 0.26),
-    inset 0 -1px 0 rgba(17, 17, 16, 0.1);
+
 }

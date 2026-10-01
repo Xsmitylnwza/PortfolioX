@@ -1,137 +1,17 @@
-/* Veluma's rendered material hierarchy, mapped to Keshi's existing story.
-   Geometry and media stay in the Keshi layout files; this owns surface only. */
-.case-section--keshi :is(
-  .case-keshi-hero__caption,
-  .case-keshi-state__caption,
-  .case-keshi-atmosphere__caption,
-  .case-keshi-rhythm__node,
-  .case-keshi-matrix,
-  .case-keshi-pattern__facts > div,
-  .case-keshi-architecture__node,
-  .case-keshi-architecture__hermes
-) {
+/* Keshi owns the existing shape; detail-surface.css owns the material.
+   Media, spacing and story layout remain in the original Keshi owners. */
+.case-section--keshi [data-surface-sheen] {
   position: relative;
   isolation: auto;
   overflow: hidden;
-  border: var(--border-width-hairline) solid var(--color-keshi-surface-base-edge);
+  border-width: var(--border-width-hairline);
+  border-style: solid;
   border-radius: var(--radius-media);
-  background: var(--color-keshi-surface-base);
-  box-shadow: var(--color-keshi-surface-base-shadow);
-  -webkit-backdrop-filter: var(--color-keshi-surface-base-filter);
-  backdrop-filter: var(--color-keshi-surface-base-filter);
 }
 
-.case-section--keshi :is(
-  .case-keshi-hero__caption,
-  .case-keshi-state__caption,
-  .case-keshi-atmosphere__caption,
-  .case-keshi-rhythm__node,
-  .case-keshi-matrix,
-  .case-keshi-pattern__facts > div,
-  .case-keshi-architecture__node,
-  .case-keshi-architecture__hermes
-)::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  border-radius: inherit;
-  background: var(--color-keshi-surface-base-sheen);
-  box-shadow: var(--color-keshi-surface-base-inset);
-  opacity: 0.72;
-  pointer-events: none;
-}
-
-.case-section--keshi :is(
-  .case-keshi-hero__caption,
-  .case-keshi-state__caption,
-  .case-keshi-atmosphere__caption,
-  .case-keshi-rhythm__node,
-  .case-keshi-matrix,
-  .case-keshi-pattern__facts > div,
-  .case-keshi-architecture__node,
-  .case-keshi-architecture__hermes
-) > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* Middle tier: deliberately darker than the surrounding transparent cards. */
-.case-section--keshi .case-keshi-proof .case-keshi-proof__caption,
-.case-section--keshi .case-keshi-rhythm .case-keshi-rhythm__node--focus,
-.case-section--keshi .case-keshi-architecture .case-keshi-architecture__node--hermes {
-  position: relative;
-  isolation: auto;
-  overflow: hidden;
-  border: var(--border-width-hairline) solid var(--color-keshi-surface-dark-edge);
-  border-radius: var(--radius-media);
-  background: var(--color-keshi-surface-dark);
-  box-shadow: var(--color-keshi-surface-dark-shadow);
-  -webkit-backdrop-filter: var(--color-keshi-surface-dark-filter);
-  backdrop-filter: var(--color-keshi-surface-dark-filter);
-}
-
-.case-section--keshi .case-keshi-proof__caption::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  border-radius: inherit;
-  background: var(--color-keshi-surface-base-sheen);
-  box-shadow: var(--color-keshi-surface-base-inset);
-  opacity: 0.72;
-  pointer-events: none;
-}
-
-.case-section--keshi .case-keshi-proof__caption > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* Veluma's inset dark chips carry controls and small diagram markers. */
-.case-section--keshi :is(
-  .case-keshi-states__switch svg,
-  .case-keshi-atmosphere__caption > svg,
-  .case-keshi-rhythm__icon,
-  .case-keshi-rhythm__output-icon,
-  .case-keshi-rhythm__outputs article,
-  .case-keshi-rhythm__node li,
-  .case-keshi-rhythm__hermes-icon,
-  .case-keshi-rhythm__hermes-steps li,
-  .case-keshi-architecture__hermes-icon
-) {
-  border-color: var(--color-keshi-surface-dark-edge);
-  background: var(--color-keshi-surface-dark);
-  box-shadow: var(--color-keshi-surface-dark-shadow);
-  -webkit-backdrop-filter: var(--color-keshi-surface-dark-filter);
-  backdrop-filter: var(--color-keshi-surface-dark-filter);
-}
-
-/* The center of the feedback loop gets Veluma's paper treatment. */
+/* The feedback bridge keeps its paper content treatment. */
 .case-section--keshi .case-keshi-rhythm .case-keshi-rhythm__hermes {
-  position: relative;
-  isolation: auto;
-  overflow: hidden;
-  border: var(--border-width-hairline) solid var(--color-keshi-surface-paper-edge);
-  border-radius: var(--radius-media);
   color: var(--color-detail-paper-ink);
-  background: var(--color-keshi-surface-paper);
-  box-shadow: var(--color-keshi-surface-paper-shadow);
-  -webkit-backdrop-filter: var(--color-keshi-surface-paper-filter);
-  backdrop-filter: var(--color-keshi-surface-paper-filter);
-}
-
-.case-section--keshi .case-keshi-rhythm__hermes::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  width: auto;
-  height: auto;
-  border-radius: inherit;
-  background: var(--color-keshi-surface-paper-sheen);
-  box-shadow: var(--color-keshi-surface-paper-inset);
-  opacity: 0.58;
-  pointer-events: none;
 }
 
 .case-section--keshi .case-keshi-rhythm__hermes::after {
@@ -157,27 +37,15 @@
   .case-keshi-rhythm__hermes-steps li,
   footer span
 ) {
-  border-color: var(--color-detail-line);
+  --color-detail-surface-edge: var(--color-detail-line);
+  --color-detail-surface-fill: var(--color-detail-paper-soft);
   color: var(--color-detail-paper-ink);
-  background: var(--color-detail-paper-soft);
-  box-shadow: var(--color-keshi-surface-dark-shadow);
 }
 
 .case-section--keshi .case-keshi-rhythm__hermes-steps li {
-  background: var(--color-detail-paper);
+  --color-detail-surface-fill: var(--color-detail-paper);
 }
 
 .case-section--keshi .case-keshi-rhythm__hermes-icon {
   background-image: none;
-}
-
-.case-section--keshi .case-keshi-state .case-keshi-state__caption {
-  border-color: var(--color-keshi-surface-base-edge);
-  box-shadow: var(--color-keshi-surface-base-shadow);
-}
-
-@supports not (backdrop-filter: blur(1px)) {
-  .case-section--keshi .case-keshi-rhythm .case-keshi-rhythm__hermes {
-    background: var(--color-detail-paper);
-  }
 }

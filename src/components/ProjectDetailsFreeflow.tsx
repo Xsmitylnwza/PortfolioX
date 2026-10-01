@@ -187,8 +187,8 @@ const FreeflowProblem = () => (
     <ul className="case-freeflow-problem__list" aria-label="Freelance ops pain">
       {FREEFLOW_PROBLEMS.map((item) => (
         <li data-wave-follow key={item.title}>
-          <article className="case-freeflow-glass case-freeflow-problem__card">
-            <span className="case-freeflow-problem__icon" aria-hidden="true">
+          <article data-surface="base" data-surface-sheen="" data-surface-anchor="" className="case-freeflow-glass case-freeflow-problem__card">
+            <span data-surface="dark" className="case-freeflow-problem__icon" aria-hidden="true">
               <Icon icon={item.icon} />
             </span>
             <div>
@@ -218,7 +218,7 @@ const FreeflowJourney = () => (
     <ol className="case-freeflow-journey__strip" aria-label="FreeFlow ops journey">
       {FREEFLOW_JOURNEY.map((step, index) => (
         <li data-wave-follow key={step.label}>
-          <article className="case-freeflow-glass case-freeflow-journey__node">
+          <article data-surface="base" data-surface-sheen="" data-surface-anchor="" className="case-freeflow-glass case-freeflow-journey__node">
             <span>{formatIndex(index + 1)}</span>
             <strong>{step.label}</strong>
             <small>{step.cue}</small>
@@ -231,8 +231,8 @@ const FreeflowJourney = () => (
         </li>
       ))}
     </ol>
-    <p className="case-freeflow-journey__note" data-wave-follow>
-      <Icon icon="simple-icons:line" aria-hidden="true" />
+    <p data-surface="base" data-surface-sheen="" data-surface-anchor="" className="case-freeflow-journey__note" data-wave-follow>
+      <Icon data-surface-positioned="" icon="simple-icons:line" aria-hidden="true" />
       <span>LINE OA is optional intake into the client record — not a chat product at the center of FreeFlow.</span>
     </p>
   </section>
@@ -254,8 +254,8 @@ const FreeflowOwned = () => (
     <ul className="case-freeflow-owned__list" aria-label="Backend ownership">
       {FREEFLOW_OWNED.map((item) => (
         <li data-wave-follow key={item.title}>
-          <article className="case-freeflow-glass case-freeflow-owned__card">
-            <span className="case-freeflow-owned__icon" aria-hidden="true">
+          <article data-surface="base" data-surface-sheen="" data-surface-anchor="" className="case-freeflow-glass case-freeflow-owned__card">
+            <span data-surface="dark" className="case-freeflow-owned__icon" aria-hidden="true">
               <Icon icon={item.icon} />
             </span>
             <div>
@@ -285,7 +285,7 @@ const FreeflowSystem = ({ techItems }: { techItems: string[] }) => (
     <ol className="case-freeflow-system-rail__list" aria-label="FreeFlow system map">
       {FREEFLOW_SYSTEM.map((node, index) => (
         <li data-wave-follow key={node.title}>
-          <article
+          <article data-surface="base" data-surface-sheen="" data-surface-anchor=""
             className={
               node.focus
                 ? 'case-freeflow-glass case-freeflow-system-rail__node is-focus'
@@ -293,7 +293,7 @@ const FreeflowSystem = ({ techItems }: { techItems: string[] }) => (
             }
           >
             <span>{formatIndex(index + 1)}</span>
-            <span className="case-freeflow-system-rail__icon" aria-hidden="true">
+            <span data-surface="dark" className="case-freeflow-system-rail__icon" aria-hidden="true">
               <Icon icon={node.icon} />
             </span>
             <small>{node.label}</small>
@@ -308,8 +308,8 @@ const FreeflowSystem = ({ techItems }: { techItems: string[] }) => (
         </li>
       ))}
     </ol>
-    <p className="case-freeflow-glass case-freeflow-boundary-line" data-wave-follow>
-      <Icon icon="lucide:circle-check-big" aria-hidden="true" />
+    <p data-surface="base" data-surface-sheen="" data-surface-anchor="" className="case-freeflow-glass case-freeflow-boundary-line" data-wave-follow>
+      <Icon data-surface-positioned="" icon="lucide:circle-check-big" aria-hidden="true" />
       <span>This is a freelance ops workspace. LINE OA is a shipped intake path; other channels stay roadmap — not a multi-chat product claim.</span>
     </p>
     <StackBlock items={techItems} reveal="scroll" revealIndex={2} title="Stack on that path" />
@@ -354,7 +354,7 @@ const FreeflowLayout = ({ project, techItems, gallery, hasLive, hasRepo }: CaseL
                 treatment — DESIGN-DISCOVERY Round 16. Reverted; do not
                 reapply without new evidence the glass wins for this
                 consumer specifically. */}
-            <aside className="case-freeflow-glass case-freeflow-hero__caption">
+            <aside data-surface="base" data-surface-sheen="" data-surface-anchor="" className="case-freeflow-glass case-freeflow-hero__caption">
               <div className="case-freeflow-path" aria-label="FreeFlow product path">
                 {FREEFLOW_PATH.map((step, index) => (
                   <span key={step.label}>

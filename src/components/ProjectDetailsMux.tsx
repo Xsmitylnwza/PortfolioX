@@ -108,15 +108,15 @@ const ProjectMuxGlassDefs = () => (
 );
 
 const ProjectMuxAgentRail = () => (
-  <div className="case-mux-agents" data-wave-follow>
+  <div className="case-mux-agents" data-surface="base" data-surface-sheen="" data-wave-follow>
     <div className="case-mux-agents__copy">
       <span>Canvas contract</span>
       <strong>The scene is the project context.</strong>
     </div>
     <ul aria-label="Veluma Canvas signals">
       {MUX_CANVAS_SIGNALS.map((signal) => (
-        <li key={signal.label}>
-          <span className="case-mux-agents__mark" aria-hidden="true">
+        <li data-surface="dark" key={signal.label}>
+          <span className="case-mux-agents__mark" data-surface="dark" aria-hidden="true">
             <Icon icon={signal.icon} />
           </span>
           <span className="case-mux-agents__name">
@@ -142,9 +142,9 @@ const ProjectMuxShiftDiagram = () => (
     </header>
     <div className="case-mux-shifts__grid">
       {MUX_SHIFTS.map((item, index) => (
-        <article className="case-mux-shift" data-wave-follow key={item.to}>
-          <span className="case-mux-shift__index">{formatIndex(index + 1)}</span>
-          <Icon className="case-mux-shift__icon" icon={item.icon} aria-hidden="true" />
+        <article className="case-mux-shift" data-surface="base" data-surface-sheen="" data-wave-follow key={item.to}>
+          <span className="case-mux-shift__index" data-surface-positioned="">{formatIndex(index + 1)}</span>
+          <Icon data-surface-positioned="" className="case-mux-shift__icon" icon={item.icon} aria-hidden="true" />
           <div className="case-mux-shift__copy">
             <span>{item.from}</span>
             <Icon icon="lucide:arrow-right" aria-hidden="true" />
@@ -178,15 +178,17 @@ const ProjectMuxPipeline = () => (
             .filter(Boolean)
             .join(' ')}
           data-wave-follow
+          data-surface={node.focus ? 'paper' : 'base'}
+          data-surface-sheen=""
           key={node.stage}
         >
           <span className="case-mux-pipeline__stage">{node.stage}</span>
-          <span className="case-mux-pipeline__icon" aria-hidden="true">
+          <span className="case-mux-pipeline__icon" data-surface="dark" aria-hidden="true">
             <Icon icon={node.icon} />
           </span>
           <h3>{node.title}</h3>
           <ul className={node.grid ? 'case-mux-pipeline__items case-mux-pipeline__items--grid' : 'case-mux-pipeline__items'}>
-            {node.items.map((item) => <li key={item}>{item}</li>)}
+            {node.items.map((item) => <li data-surface="dark" key={item}>{item}</li>)}
           </ul>
         </li>
       ))}
@@ -296,9 +298,9 @@ const MuxLayout = ({ project, techItems, gallery, hasLive, hasRepo }: CaseLayout
             <h2 id="mux-proof-title">{demoLabel}</h2>
             {demoDescription && <p>{demoDescription}</p>}
             <ul aria-label="Demo signals">
-              <li>Project-scoped scene</li>
-              <li>Dock reveals on demand</li>
-              <li>Canvas stays intact</li>
+              <li data-surface="dark">Project-scoped scene</li>
+              <li data-surface="dark">Dock reveals on demand</li>
+              <li data-surface="dark">Canvas stays intact</li>
             </ul>
           </header>
           <CaseMediaFrame

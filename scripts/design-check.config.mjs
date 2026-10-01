@@ -281,10 +281,11 @@ export const RENDER_TARGETS = [
   {
     path: '/project/keshi-pomodoro',
     viewports: ['desktop 1440x900', 'mobile 390x844'],
-    note: 'Keshi Veluma-surface trial with three material levels',
+    note: 'Keshi shared deterministic surface with three material levels',
     sources: [
       ...GLOBAL_SOURCES,
       ...WAVE_RUNTIME_SOURCES,
+      /^src\/styles\/detail-surface[.]css$/,
       ...PROJECT_SHARED_SOURCES,
       /^src\/components\/ProjectMedia[.](?:jsx|tsx)$/,
       /^src\/components\/ProjectDetailsPrimitives[.](?:jsx|tsx)$/,
@@ -314,6 +315,7 @@ export const RENDER_TARGETS = [
     sources: [
       ...GLOBAL_SOURCES,
       ...WAVE_RUNTIME_SOURCES,
+      /^src\/styles\/detail-surface[.]css$/,
       ...PROJECT_SHARED_SOURCES,
       /^src\/components\/ProjectMedia[.](?:jsx|tsx)$/,
       /^src\/components\/ProjectDetailsPrimitives[.](?:jsx|tsx)$/,
@@ -334,6 +336,7 @@ export const RENDER_TARGETS = [
     sources: [
       ...GLOBAL_SOURCES,
       ...WAVE_RUNTIME_SOURCES,
+      /^src\/styles\/detail-surface[.]css$/,
       ...PROJECT_SHARED_SOURCES,
       /^src\/components\/ProjectMedia[.](?:jsx|tsx)$/,
       /^src\/components\/ProjectDetailsPrimitives[.](?:jsx|tsx)$/,
@@ -351,10 +354,11 @@ export const RENDER_TARGETS = [
   {
     path: '/project/freeflow',
     viewports: ['desktop 1440x900', 'mobile 390x844'],
-    note: 'Liquid Glass was piloted on the hero caption here and reverted after losing a live comparison (DESIGN-DISCOVERY Round 16); back on its own flat-blur treatment',
+    note: 'FreeFlow uses the shared deterministic detail surface; the historical optical Liquid Glass pilot remains superseded',
     sources: [
       ...GLOBAL_SOURCES,
       ...WAVE_RUNTIME_SOURCES,
+      /^src\/styles\/detail-surface[.]css$/,
       ...PROJECT_SHARED_SOURCES,
       /^src\/components\/ProjectMedia[.](?:jsx|tsx)$/,
       /^src\/components\/ProjectDetailsPrimitives[.](?:jsx|tsx)$/,
@@ -375,9 +379,9 @@ export const RENDER_TARGETS = [
     sources: [
       ...GLOBAL_SOURCES,
       ...WAVE_RUNTIME_SOURCES,
+      /^src\/styles\/detail-surface[.]css$/,
       ...PROJECT_SHARED_SOURCES,
       /^src\/components\/ProjectMedia[.](?:jsx|tsx)$/,
-      /^src\/components\/ProjectDetailsPrimitives[.](?:jsx|tsx)$/,
       /^src\/features\/project-details\/cases\/modenote\/ModeNoteCase[.](?:jsx|tsx)$/,
       /^src\/components\/ProjectDetailsModeNote(?:Data|Proofs)?[.](?:js|jsx|ts|tsx)$/,
       /^src\/components\/ProjectDetailsStorySharedOverrides[.]css$/,
@@ -395,6 +399,7 @@ export const RENDER_TARGETS = [
     sources: [
       ...GLOBAL_SOURCES,
       ...WAVE_RUNTIME_SOURCES,
+      /^src\/styles\/detail-surface[.]css$/,
       ...PROJECT_SHARED_SOURCES,
       /^src\/components\/ProjectMedia[.](?:jsx|tsx)$/,
       /^src\/components\/ProjectDetailsPrimitives[.](?:jsx|tsx)$/,
@@ -415,6 +420,7 @@ export const RENDER_TARGETS = [
     sources: [
       ...GLOBAL_SOURCES,
       ...WAVE_RUNTIME_SOURCES,
+      /^src\/styles\/detail-surface[.]css$/,
       ...PROJECT_SHARED_SOURCES,
       /^src\/components\/ProjectMedia[.](?:jsx|tsx)$/,
       /^src\/features\/project-details\/cases\/veluma\/VelumaCase[.](?:jsx|tsx)$/,
@@ -433,6 +439,7 @@ export const RENDER_TARGETS = [
     sources: [
       ...GLOBAL_SOURCES,
       ...WAVE_RUNTIME_SOURCES,
+      /^src\/styles\/detail-surface[.]css$/,
       ...PROJECT_SHARED_SOURCES,
       /^src\/features\/project-details\/cases\/hermes\/HermesCase[.](?:jsx|tsx)$/,
       /^src\/styles\/tokens[.]css$/,
@@ -535,6 +542,11 @@ export const RENDER_TARGETS = [
  */
 export const PROTECTED_INTERNALS = [
   {
+    owner: 'src/styles/detail-surface.css',
+    patterns: [/[.]detail-surface__/, /\[data-surface(?:-sheen)?(?:[\s~|^$*]*=[^\]]*)?\][\s)]*::before/],
+    reason: 'The shared detail surface owns its sheen and material layers (DESIGN.md A28).',
+  },
+  {
     owner: 'src/components/KeshiLiquidGlass.css',
     // __content is deliberately excluded: it is the component's documented
     // extension point (KeshiLiquidGlass.jsx renders children into it), sized
@@ -547,6 +559,12 @@ export const PROTECTED_INTERNALS = [
       'styling them from a consumer stylesheet is what broke the first production integration.',
   },
 ];
+
+/** Deterministic fill/rim/sheen/shadow material: backdrop sampling is forbidden. */
+export const DETAIL_SURFACE = {
+  tokenPattern: /--color-detail-surface-[\w-]+/,
+  selectorPattern: /\[data-surface(?:-sheen)?(?:[\s~|^$*]*=[^\]]*)?\]|[.]detail-surface(?:--|__|\b)/,
+};
 
 /**
  * Registered `!important` allowances. Each names a file, optionally a selector

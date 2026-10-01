@@ -119,15 +119,15 @@ const ProjectZuchArchitecture = () => (
           data-wave-follow
           key={node.id}
         >
-          <div className="case-zucchini-glass case-zucchini-architecture__node">
+          <div data-surface="base" data-surface-sheen="" data-surface-anchor="" className="case-zucchini-glass case-zucchini-architecture__node">
             <header>
-              <span aria-hidden="true"><Icon icon={node.icon} /></span>
+              <span data-surface="dark" aria-hidden="true"><Icon icon={node.icon} /></span>
               <small>{node.eyebrow}</small>
             </header>
             <h3>{node.title}</h3>
             <p>{node.body}</p>
             <ul aria-label={`${node.title} signals`}>
-              {node.tags.map((tag) => <li key={tag}>{tag}</li>)}
+              {node.tags.map((tag) => <li data-surface="dark" key={tag}>{tag}</li>)}
             </ul>
           </div>
         </article>
@@ -135,8 +135,8 @@ const ProjectZuchArchitecture = () => (
     </div>
 
     <aside className="case-zucchini-architecture__boundary" data-wave-follow>
-      <div className="case-zucchini-glass">
-        <Icon icon="lucide:shield-alert" aria-hidden="true" />
+      <div data-surface="base" data-surface-sheen="" data-surface-anchor="" className="case-zucchini-glass">
+        <Icon data-surface-positioned="" icon="lucide:shield-alert" aria-hidden="true" />
         <div>
           <span>Identity boundary</span>
           <strong>Pinia restores a browser-local user object; this project does not use Supabase Auth, server sessions, or a custom backend.</strong>
@@ -163,7 +163,7 @@ const ProjectZuchWorkflow = () => (
     <ol className="case-zucchini-workflow__rail">
       {ZUCH_WORKFLOW.map((item, index) => (
         <li data-wave-follow key={item.label}>
-          <article className="case-zucchini-glass case-zucchini-workflow__card">
+          <article data-surface="base" data-surface-sheen="" data-surface-anchor="" className="case-zucchini-glass case-zucchini-workflow__card">
             <header>
               <span>{formatIndex(index + 1)}</span>
               <Icon icon={item.icon} aria-hidden="true" />
@@ -209,12 +209,12 @@ const ProjectZuchReviewLoop = () => (
       </div>
 
       <article className="case-zucchini-loop__slot case-zucchini-loop__slot--input" data-wave-follow>
-        <div className="case-zucchini-glass case-zucchini-loop__node">
-          <header><span>01</span><small>Human input</small></header>
+        <div data-surface="base" data-surface-sheen="" data-surface-anchor="" className="case-zucchini-glass case-zucchini-loop__node">
+          <header><span data-surface="dark">01</span><small>Human input</small></header>
           <h3>Rate the film</h3>
           <ul className="case-zucchini-loop__axes" aria-label="Five Zucchinitor rating categories">
             {ZUCH_REVIEW_AXES.map((axis) => (
-              <li key={axis.label}>
+              <li data-surface="dark" key={axis.label}>
                 <Icon icon={axis.icon} aria-hidden="true" />
                 <span>{axis.label}</span>
                 <small>0–100</small>
@@ -226,20 +226,20 @@ const ProjectZuchReviewLoop = () => (
       </article>
 
       <article className="case-zucchini-loop__slot case-zucchini-loop__slot--rows" data-wave-follow>
-        <div className="case-zucchini-glass case-zucchini-loop__node">
-          <header><span>02</span><small>Captured rows</small></header>
+        <div data-surface="base" data-surface-sheen="" data-surface-anchor="" className="case-zucchini-glass case-zucchini-loop__node">
+          <header><span data-surface="dark">02</span><small>Captured rows</small></header>
           <h3>Rating + review</h3>
           <p>Supabase stores a rating row first, then a review row carrying movieId, userId, ratingId, text, and likeCount.</p>
           <ul className="case-zucchini-loop__tags">
-            <li>ratings</li><li>reviews</li><li>movieId</li>
+            <li data-surface="dark">ratings</li><li data-surface="dark">reviews</li><li data-surface="dark">movieId</li>
           </ul>
         </div>
       </article>
 
       <article className="case-zucchini-loop__slot case-zucchini-loop__slot--mean" data-wave-follow>
-        <div className="case-zucchini-glass case-zucchini-loop__node case-zucchini-loop__node--core">
+        <div data-surface="base" data-surface-sheen="" data-surface-anchor="" className="case-zucchini-glass case-zucchini-loop__node case-zucchini-loop__node--core">
           <header>
-            <span aria-hidden="true"><Icon icon="lucide:calculator" /></span>
+            <span data-surface="dark" aria-hidden="true"><Icon icon="lucide:calculator" /></span>
             <small>03 · Browser calculation</small>
           </header>
           <h3>Zucchinitor</h3>
@@ -253,31 +253,31 @@ const ProjectZuchReviewLoop = () => (
       </article>
 
       <article className="case-zucchini-loop__slot case-zucchini-loop__slot--result" data-wave-follow>
-        <div className="case-zucchini-glass case-zucchini-loop__node">
-          <header><span>04</span><small>Visible result</small></header>
+        <div data-surface="base" data-surface-sheen="" data-surface-anchor="" className="case-zucchini-glass case-zucchini-loop__node">
+          <header><span data-surface="dark">04</span><small>Visible result</small></header>
           <h3>Score + reviews</h3>
           <p>The movie view renders the five category means, the overall mean, review text, likes, sorting, and three-at-a-time pagination.</p>
           <ul className="case-zucchini-loop__tags">
-            <li>most liked</li><li>high / low</li><li>3 per page</li>
+            <li data-surface="dark">most liked</li><li data-surface="dark">high / low</li><li data-surface="dark">3 per page</li>
           </ul>
         </div>
       </article>
 
       <article className="case-zucchini-loop__slot case-zucchini-loop__slot--revisit" data-wave-follow>
-        <div className="case-zucchini-glass case-zucchini-loop__node">
-          <header><span>05</span><small>Next choice</small></header>
+        <div data-surface="base" data-surface-sheen="" data-surface-anchor="" className="case-zucchini-glass case-zucchini-loop__node">
+          <header><span data-surface="dark">05</span><small>Next choice</small></header>
           <h3>Revisit Reviewed</h3>
           <p>The signed-in person can reopen the review editor or explicitly delete a review from their own Reviewed list.</p>
           <ul className="case-zucchini-loop__tags">
-            <li>edit</li><li>delete</li><li>human decides</li>
+            <li data-surface="dark">edit</li><li data-surface="dark">delete</li><li data-surface="dark">human decides</li>
           </ul>
         </div>
       </article>
     </div>
 
     <aside className="case-zucchini-loop__control" data-wave-follow>
-      <div className="case-zucchini-glass">
-        <Icon icon="lucide:user-round-check" aria-hidden="true" />
+      <div data-surface="base" data-surface-sheen="" data-surface-anchor="" className="case-zucchini-glass">
+        <Icon data-surface-positioned="" icon="lucide:user-round-check" aria-hidden="true" />
         <span>Every create, edit, like, and delete starts with a person. The product does not act autonomously.</span>
       </div>
     </aside>
@@ -323,7 +323,7 @@ const ProjectZuchEvidence = ({ project, gallery }: { project: ProjectRecord; gal
               kindLabel={item.origin}
             />
             <div className="case-zucchini-proof__copy" data-wave-follow>
-              <div className="case-zucchini-glass">
+              <div data-surface="base" data-surface-sheen="" data-surface-anchor="" className="case-zucchini-glass">
                 <span>{item.origin}</span>
                 <h3>{item.label}</h3>
                 {item.description && <p>{item.description}</p>}
@@ -360,7 +360,7 @@ const ZuchLayout = ({ project, decision, techItems, gallery, hasLive, hasRepo }:
             transitionTarget
           />
           <aside className="case-zucchini-hero__caption" data-wave-follow>
-            <div className="case-zucchini-glass">
+            <div data-surface="base" data-surface-sheen="" data-surface-anchor="" className="case-zucchini-glass">
               <span>Live still · Anonymous view</span>
               <strong>Search, a recommended title, five visible rating axes, and genre shelves share the first screen.</strong>
               <p>The current live proof is limited to this public discovery surface; repository demo stills below document the signed-in review path.</p>

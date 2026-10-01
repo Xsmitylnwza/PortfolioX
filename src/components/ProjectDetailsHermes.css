@@ -61,14 +61,6 @@ html.document-room-active .case-section--hermes {
   position: relative;
   border: 1px solid var(--hm-line);
   border-radius: 0.9rem;
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.075), transparent 72%),
-    var(--hm-glass);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    0 20px 58px rgba(0, 0, 0, 0.2);
-  -webkit-backdrop-filter: blur(6px) saturate(1.04);
-  backdrop-filter: blur(6px) saturate(1.04);
   background-clip: padding-box;
 }
 
@@ -1292,7 +1284,6 @@ html.document-room-active .case-section--hermes {
 
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .hermes-liquid-glass {
-    background: rgba(0, 0, 0, 0.76);
   }
 }
 

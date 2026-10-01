@@ -8,8 +8,8 @@ const project = {
     description: 'A calm Canvas for every project: terminals, agents, backdrop, and arrangement return exactly where you left them.',
     fullDescription: 'Veluma is a local-first Windows desktop app for solo developers who move between projects and terminal-heavy work. Each Project owns a persistent Canvas: agents, servers, shells, pane material, backdrop, and arrangement are restored as one working scene. Reveal the Dock to start a stack deliberately, focus the task at hand, or use Auto Tile to reset a busy Canvas. Nothing auto-runs when you open a Project. Built with Electron, React, TypeScript, xterm.js, node-pty, Zod-validated local config, and secret-safe IPC.',
     tags: ['Electron', 'React 19', 'TypeScript', 'xterm.js', 'node-pty', 'Zod', 'pnpm'],
-    coverImage: '/assets/project-covers/veluma-cover-v3.webp',
-    heroMedia: { image: '/assets/project-covers/veluma-cover-v3.webp', kind: 'cover' },
+    coverImage: '/assets/project-covers/veluma-cover-v4.webp',
+    heroMedia: { image: '/assets/project-covers/veluma-cover-v4.webp', kind: 'cover' },
     link: 'https://veluma.xsmity.cloud/',
     code: `// Workspace start is explicit — nothing auto-runs on open/import/restore.
 async function startWorkspace(workspace) {

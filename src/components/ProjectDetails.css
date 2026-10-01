@@ -449,6 +449,8 @@
 }
 
 
+/* will-change: opacity makes this a backdrop root. Detail surfaces deliberately
+   use fill/rim/sheen/shadow with no backdrop-filter (DESIGN.md A28). */
 .case-reveal {
   opacity: 0;
   transform: translate3d(0, 0.9rem, 0);

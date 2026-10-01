@@ -74,12 +74,6 @@
       "count": 1
     },
     {
-      "path": "src/components/ProjectDetailsHermes.tsx",
-      "hash": "05d0f52ea50bf4d755a6096595bb9b563e427a7b85e9c492da7bc726d62bff20",
-      "lines": 218,
-      "count": 1
-    },
-    {
       "path": "src/components/ProjectDetailsMedia.tsx",
       "hash": "7881cce20d117e8e049e63871f207b6a47feaf107705bf1ee2d4569d852440c1",
       "lines": 182,

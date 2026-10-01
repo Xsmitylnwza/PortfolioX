@@ -13,7 +13,7 @@ import { test } from 'node:test';
 import stylelint from 'stylelint';
 import { ESLint } from 'eslint';
 
-import { TOKEN_SOURCES, governedPropertyMap, selectorSubjects, strictScopeFor } from './design-check.config.mjs';
+import { RENDER_TARGETS, TOKEN_SOURCES, governedPropertyMap, selectorSubjects, strictScopeFor } from './design-check.config.mjs';
 import { fingerprint as fingerprintOf, newViolations } from './design-baseline.mjs';
 
 const registrySources = TOKEN_SOURCES.map((path) => [path, readFileSync(path, 'utf8')]);
@@ -362,6 +362,65 @@ test('boundary: the owning file may style its own internals', async () => {
     'src/components/KeshiLiquidGlass.css',
   );
   assert.deepEqual(warnings, []);
+});
+
+test('boundary: detail surface rejects backdrop sampling on token consumers', async () => {
+  for (const property of ['backdrop-filter', '-webkit-backdrop-filter']) {
+    const warnings = await lintBoundaries(
+      `.card { background: var(--color-detail-surface-base); ${property}: blur(52px); }`,
+    );
+    assert.equal(warnings.length, 1);
+    assert.match(warnings[0].text, /must be none on the detail-surface material/);
+  }
+});
+
+test('boundary: separating a filter from the token declaration does not bypass the guard', async () => {
+  const warnings = await lintBoundaries(
+    '.card { background: var(--color-detail-surface-base); } @media (min-width: 600px) { .card { backdrop-filter: brightness(.68); } }',
+  );
+  assert.equal(warnings.length, 1);
+});
+
+test('boundary: surface selectors reject filters even without token declarations', async () => {
+  for (const selector of ['[data-surface]', '[data-surface="dark"]', '.detail-surface--base', '#project-details [data-surface-sheen]::before']) {
+    const warnings = await lintBoundaries(`${selector} { backdrop-filter: var(--filter); }`, 'src/styles/detail-surface.css');
+    assert.equal(warnings.length, 1);
+  }
+});
+
+test('boundary: shared material permits explicit none and leaves unrelated filters alone', async () => {
+  assert.deepEqual(await lintBoundaries(
+    '[data-surface] { background: var(--color-detail-surface-base); backdrop-filter: none; -webkit-backdrop-filter: none; }',
+    'src/styles/detail-surface.css',
+  ), []);
+  assert.deepEqual(await lintBoundaries('.unrelated { backdrop-filter: blur(12px); }'), []);
+});
+
+test('boundary: consumers cannot style detail-surface internals or its attribute sheen', async () => {
+  for (const selector of ['.detail-surface__sheen', '[data-surface="paper"]::before', '#project-details [data-surface-sheen]::before', ':where(#project-details [data-surface-sheen])::before']) {
+    const css = `${selector} { opacity: .5; }`;
+    const warnings = await lintBoundaries(css, 'src/components/ProjectDetailsMux.css');
+    assert.equal(warnings.length, 1);
+    assert.match(warnings[0].text, /belongs to src\/styles\/detail-surface\.css/);
+    assert.deepEqual(await lintBoundaries(css, 'src/styles/detail-surface.css'), []);
+  }
+});
+
+test('boundary: zero-specificity tier aliases remain guarded and the actual material owner passes', async () => {
+  const selector = ":where(#project-details [data-surface='dark'])";
+  const css = `${selector} { --color-detail-surface-fill: var(--color-detail-surface-dark); backdrop-filter: none; }`;
+  assert.deepEqual(await lintBoundaries(css, 'src/styles/detail-surface.css'), []);
+  assert.equal((await lintBoundaries(css.replace('backdrop-filter: none', 'backdrop-filter: blur(1px)'))).length, 1);
+  assert.deepEqual(await lintBoundaries(readFileSync('src/styles/detail-surface.css', 'utf8'), 'src/styles/detail-surface.css'), []);
+});
+
+test('render scope: shared detail surface names every live project render', () => {
+  const routes = RENDER_TARGETS.filter((target) => target.sources.some((pattern) => pattern.test('src/styles/detail-surface.css')));
+  assert.deepEqual(routes.map((target) => target.path), [
+    '/project/keshi-pomodoro', '/project/keshi-pomodoro?layout=next',
+    '/project/zucchini-review', '/project/freeflow', '/project/modenote',
+    '/project/decrypt-password', '/project/veluma', '/project/hermes-command-center',
+  ]);
 });
 
 test('boundary: __content is the documented extension point, not a protected internal', async () => {

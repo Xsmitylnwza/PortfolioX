@@ -61,12 +61,13 @@
 | A23 | สีแดง/ดำของเดิมคือ stage color ที่ยืนยันแล้ว — ทดสอบ live 3 ทางเลือก (burgundy, terracotta, near-black+accent) บนหน้าเว็บจริงแล้วแพ้สีเดิมทั้งหมด "ดูแพงขึ้น" ต้องมาจาก material/motion/typography/detail ไม่ใช่การลดความอิ่มตัวของสีพื้น | ทั้งเว็บ | DESIGN-DISCOVERY Round 14 criterion 1–2 |
 | A24 | ฟอนต์ display/section heading = **Syne** ยืนยันแล้ว — ทดสอบ live เทียบ Syne vs Instrument Serif (แกลเลอรี่/บทกวี) vs Permanent Marker (ลายมือ/การ์ตูน) บนหัวข้อจริงของ Keshi แล้วเลือก Syne ตรงกับที่ใช้อยู่แล้ว 17/18 จุดพอดี | display/heading | DESIGN-DISCOVERY Round 15 |
 | A25 | **หน้า `/project/:id` ใช้สีดำ ขาว และระดับเทาเท่านั้นสำหรับ UI chrome**: ตัวหนังสือ, icon, diagram ที่เว็บวาดเอง, chip, container, border, shadow และ state marker ห้ามยืมเขียว/ส้ม/เหลือง/ม่วงหรือสีแบรนด์จากแอปมาเป็น accent สีแดงสงวนไว้ให้ background stage เท่านั้น ภาพ/วิดีโอเดโมจริงคงสีต้นฉบับเพราะเป็นหลักฐาน | project details ทุกหน้า | คำสั่งเจ้าของ 2026-09-23: “ใช้แค่สองสี... สีดำกับสีขาวและโทนที่ไล่ความเข้ม... สีเขียว สีส้ม...ห้ามใช้เด็ดขาด” |
-| A26 | Caption บน Keshi ใช้วัสดุ **ด้านโปร่ง 27% + blur 2px** ผ่าน `CaseMatteSurface`; material เป็นเจ้าของ fill/edge/blur/shadow, wrapper เป็นเจ้าของตำแหน่ง, content เป็นเจ้าของข้อความและ layout ภายใน ไม่มี optical refraction/animated rim | Keshi pilot; reuse ตามบทบาทหลังตรวจหน้าอื่น | การเลือกของเจ้าของ 2026-09-23; `src/components/CaseMatteSurface.*` |
+| A26 (superseded) | Caption บน Keshi เคยเลือกวัสดุ **ด้านโปร่ง 27% + blur 2px** ผ่าน `CaseMatteSurface`; ถูกแทนด้วยการทดลอง Veluma 2026-09-24 และ A28; เก็บหลักการ material/wrapper/content ownership | ประวัติ Keshi pilot | การเลือกของเจ้าของ 2026-09-23; [material contract เดิม](docs/design/CASE-MATTE-SURFACE-SPEC.md) |
 | A27 | เส้นขอบขาวต้องมีหน้าที่ระบุ focus, selection, grouping หรือ evidence boundary ถ้าเป็นแค่กรอบตกแต่งให้ตัดออก ป้าย media สีขาวมุมซ้ายบนของ demo เป็น element ที่เจ้าของเลือกเก็บ | project details chrome | คำสั่งเจ้าของ 2026-09-23; ตำแหน่งเส้นขอบในภาพอ้างอิงยังต้องพิสูจน์ก่อนแก้เฉพาะจุด |
+| A28 | Detail surface ใช้ recipe ที่ตรงกับ Veluma render จริง: fill โปร่ง + rim + sheen + shadow และ **ไม่มี `backdrop-filter`** ทุก tier (`base`, `dark`, `paper`); CSS-only material เป็นเจ้าของพื้นผิวโดยไม่เพิ่ม DOM wrapper และไม่พึ่ง backdrop root ของ ancestor; คง radius/layout/spacing เดิม | ทุก project detail รวม Keshi next preview; เจ้าของสั่ง scan และแก้ทุกหน้าหลังพบ ModeNote ยังใช้พื้นผิวเดิม | [Veluma surface spec 2026-09-30](docs/design/2026-09-30-veluma-surface-spec.md) §2–4; [full rollout report](docs/design/2026-09-30-detail-surface-rollout-report.md) |
 
-**การทบทวนปัจจุบัน (2026-09-23):** A6–A11 เป็นบันทึกสูตร optical glass เดิม ไม่ใช่ทิศทางสำหรับงานใหม่หลัง A26; อย่านำกลับมาใช้กับ caption หรือขยายไปทุกหน้า `CaseMatteSurface` เป็นวัสดุที่เลือกแล้วบน Keshi แต่บทบาท/รูปทรงของ container ในแต่ละ story beat ยังต้องทดสอบ ดู [criteria log](docs/design/DESIGN-DISCOVERY.md), [quality contract draft](docs/design/PROJECT-PAGE-QUALITY-CONTRACT-DRAFT.md) และ [material component contract](docs/design/CASE-MATTE-SURFACE-SPEC.md)
+**การทบทวนปัจจุบัน (2026-09-30):** A6–A11 เป็นบันทึกสูตร optical glass เดิม และ A26 เป็นวัสดุ matte เดิมที่ถูกแทนแล้ว; อย่านำกลับมาใช้กับ caption หรือขยายไปทุกหน้า ทิศทางวัสดุปัจจุบันคือ A28 ส่วนบทบาท/รูปทรงของ container ในแต่ละ story beat ยังต้องตรวจ render ดู [criteria log](docs/design/DESIGN-DISCOVERY.md), [quality contract draft](docs/design/PROJECT-PAGE-QUALITY-CONTRACT-DRAFT.md) และ [Veluma surface spec](docs/design/2026-09-30-veluma-surface-spec.md)
 
-**การทดลองปัจจุบัน (2026-09-24):** ตามคำสั่งล่าสุด หน้า Keshi ใช้ surface สามระดับจากสูตร Veluma (`ProjectDetailsKeshiVelumaSurface.css`) แทน matte caption เดิมเพื่อดูผลบนหน้าเต็ม: พื้นโปร่งและแผ่นขาวใช้ค่าสูตร Veluma, จุดรองเข้มเพิ่มความเข้มจากสูตร inset ของ Veluma นี่เป็นการทดลองบน route จริง ยังไม่ใช่การอนุมัติให้เปลี่ยนกฎวัสดุของทุกโปรเจกต์; A26 บันทึกการเลือกก่อนการทดลองนี้
+**การทดลอง 2026-09-24 → recipe ปัจจุบัน 2026-09-30:** Keshi ใช้ surface สามระดับจาก Veluma แทน matte caption เดิม การตรวจพบว่า `backdrop-filter` บน Veluma ถูก backdrop root ของ `.case-reveal` กั้น จึงเห็น fill/rim/sheen/shadow โดยไม่มี blur/brightness ของ stage; สูตรที่ลอกไปแล้ว filter ทำงานจริงทำให้ Keshi เข้มเกินต้นแบบ A28 จึงกำหนด `backdrop-filter: none` ที่ material โดยตรง และ tier `dark` ใช้ alpha `.16` ไม่ใช่ inset `.36` เดิม เจ้าของสั่ง scan และแก้ทุกหน้าหลังพบ ModeNote ยังเป็นวัสดุเดิม จึงขยายครบทุก project detail รวม Hermes; ผล quality gate และ render review อยู่ใน [full rollout report](docs/design/2026-09-30-detail-surface-rollout-report.md) และยังต้องให้เจ้าของรับงานด้านภาพ
 
 ### 2.1a Decisions made during harness work
 
@@ -92,6 +93,7 @@ Inline padding ของ kind chip **ไม่ถูกรวม** (`0.48rem` �
 | S3 | Layout candidates W/X/Y/Z รอบแรก | ปฏิเสธทั้งหมด; material ต้องเลือกก่อน layout | DESIGN-DISCOVERY Round 2 |
 | S4 | Cleaned fallback ที่ลด glass เหลือ transparent border | ปฏิเสธ; ต้อง reuse layer model ของ `optical.html` ตรง ๆ | DESIGN-DISCOVERY Round 12 |
 | S5 | `.case-keshi-state__caption` เคยเป็นเจ้าของ padding/border/background/backdrop-filter ของ caption | ตอนนี้เป็น layout slot เปล่า — `KeshiLiquidGlass.css` reset ทิ้งหมด (A9) กฎเดิมใน `ProjectDetailsStories.css:239` เป็น dead code สำหรับ route นี้ | วัดจาก render: [phase-1-before-render.json](docs/design/harness/phase-1-before-render.json) `pilot-caption-slot` |
+| S6 | Matte caption ผ่าน `CaseMatteSurface` (A26), ด้านโปร่ง 27% + blur 2px | Detail surface สาม tier ที่ไม่มี `backdrop-filter` (A28); component เดิมไม่มี consumer ใน `src/` และถูกลบตาม T7 | [Veluma surface spec](docs/design/2026-09-30-veluma-surface-spec.md) §3, T7; [Wave 5 reachability decision](docs/architecture/2026-09-24-modularization-wave5-report.md) |
 
 ### 2.4 Open
 
@@ -132,7 +134,7 @@ override `--color-chip-surface` ที่เดียวกัน → เปล�
 ### ยังไม่ migrate
 
 CSS อีก 27 ไฟล์ (~5,297 governed literals ณ snapshot เดิม) ยังอยู่ใน debt baseline
-`CaseMatteSurface.css` เป็น material source ปัจจุบันของ annotation บน Keshi; `KeshiLiquidGlass.css` เป็นไฟล์ optical เก่าที่ยังมี Keshi content-layout selectors ระหว่าง migration ห้ามใช้เป็น reference ของ material ใหม่
+Material source ของทุก project detail คือ [`src/styles/detail-surface.css`](src/styles/detail-surface.css) และ semantic roles `--color-detail-surface-*` ใน tokens.css; ใช้ `data-surface="base|dark|paper"` เพื่อเลือก tier โดยไม่เพิ่ม wrapper `CaseMatteSurface.*` ไม่มี consumer และถูกลบตาม T7; `KeshiLiquidGlass.css` เป็นไฟล์ optical เก่าที่ยังมี Keshi content-layout selectors ระหว่าง migration ห้ามใช้เป็น reference ของ material ใหม่
 ชื่อเดิม (`--text-primary`, `--bg-dark`, …) ยังใช้ได้ เป็น compatibility alias ที่ forward ไป semantic role
 
 ### Ownership ที่ตกลงแล้ว
@@ -156,7 +158,7 @@ CSS อีก 27 ไฟล์ (~5,297 governed literals ณ snapshot เดิ�
 | Hermes Command Center | [source-of-truth](docs/projects/hermes-command-center-source-of-truth.md), [capture plan](docs/projects/hermes-demo-capture-plan.md) — media ยังไม่อนุมัติ (A14) |
 | Veluma | [product vision](docs/projects/veluma-product-vision.md) — mood/สี/บุคลิกเป็นส่วนหนึ่งของ product purpose |
 | ทุกโปรเจกต์ | ข้อมูลแต่ละโปรเจกต์ใน [`src/data/projects/`](src/data/projects/) ผ่าน ordered exports ใน [`src/data/projects.js`](src/data/projects.js); media ใน `public/assets/` |
-| Cover | [cover spec](docs/design/2026-09-05-project-cover-spec.md) |
+| Cover | [banner playbook](docs/design/project-banner-playbook.md) (รสนิยมที่เจ้าของยืนยันแล้ว + pipeline — อ่านก่อนทำปกใหม่), [cover spec](docs/design/2026-09-05-project-cover-spec.md) |
 
 ให้รายละเอียดได้ แต่ห้าม invent capability และห้ามลบข้อมูลจริงทิ้งเพราะกลัวกล่าวเกินจริง
 
@@ -164,7 +166,9 @@ CSS อีก 27 ไฟล์ (~5,297 governed literals ณ snapshot เดิ�
 
 ## 5. Examples
 
-**วัสดุปัจจุบัน:** `src/components/CaseMatteSurface.*` — ด้านโปร่ง 27% + blur 2px; `design/ab/keshi-matte-r3/` เก็บภาพเปรียบเทียบก่อนเลือก
+**วัสดุปัจจุบัน:** [`src/styles/detail-surface.css`](src/styles/detail-surface.css) — base/dark/paper ผ่าน `data-surface`; fill/rim/sheen/shadow ไม่มี `backdrop-filter` (A28) สูตรและหลักฐาน root cause อยู่ใน [Veluma surface spec](docs/design/2026-09-30-veluma-surface-spec.md)
+
+**Matte caption เดิม (superseded A26):** `design/ab/keshi-matte-r3/` เก็บภาพเปรียบเทียบก่อนเลือกด้านโปร่ง 27% + blur 2px; ไม่ใช่ reference สำหรับ material ใหม่
 
 **ประวัติที่ถูกแทน:** `design/ab/keshi-liquid-glass-material-r1/` (`optical.html` / `optical.jsx` / `optical.css` / `optical-haze.css`) — เคยเป็น prototype selection ก่อน A26
 
@@ -212,7 +216,7 @@ Legacy 5,297 literals อยู่ใน baseline (ไม่ต้องไล�
 | G3 | Spacing / radius / control-size scale กลาง | **มีบางส่วนแล้ว** สำหรับ pilot slice; ที่เหลือยังเป็น literal กระจายใน 27 ไฟล์ |
 | G3b | `width` / `height` ยังไม่ถูกคุม — `--size-chip-dot` จึงไม่มีอะไรบังคับ | สอง property นี้ส่วนใหญ่เป็น structural (`100%`, `auto`, fluid) การคุมแบบเหมารวมจะได้ false positive จำนวนมาก ต้องนิยาม control/icon size ให้ชัดก่อน |
 | G4 | Composition: alignment และ content constraint ร่วม โดยไม่บังคับ section order เดียวกัน | **ตอบบางส่วนแล้ว** — A22 ยืนยันหลักการ (ห้าม template เดียวกัน, ต้องมี gimmick ต่อโปรเจกต์) แต่ยังไม่มีเกณฑ์ alignment/content constraint ที่วัดได้ |
-| G5 | Matte surface: supported backgrounds, aspect ratios, fallback browsers, touch behavior | A26 ใช้จริงบน Keshi; การ reuse ข้ามโปรเจกต์ยังต้องตรวจ render และ contrast |
+| G5 | Detail surface: supported backgrounds, aspect ratios, fallback browsers, touch behavior | A28 rollout ตรวจ Chrome/Firefox ที่ desktop/mobile ครบแปด render states แล้ว; owner visual acceptance และการใช้งานบนอุปกรณ์ touch จริงยังไม่ยืนยัน ดู full rollout report |
 | G6 | Motion: ownership ของ transform, interruption, reduced motion, easing | **ตอบบางส่วนแล้ว** — A21 ให้หลักการ pacing ("รถไฟเหาะ" ขึ้นลงตั้งใจ) แต่ยังไม่มีกลไกที่วัดได้ (transform ownership, interruption, easing curve จริง) |
 | G7 | Interaction states (focus / hover / active / disabled / loading / error / no-WebGL / no-optics) | **Deprioritized ตามคำสั่งเจ้าของ 2026-09-22** — โฟกัสความสวยงามก่อน ไม่ใช่ว่าตัดสินแล้ว; ความเสี่ยงจริงที่พบ: `GalleryScene.jsx` ไม่มี fallback ถ้า WebGL ใช้ไม่ได้ ยังไม่มี fallback UI |
 | G8 | Composite contrast ของ text บนผิวด้านโปร่ง | ต้องวัดจาก render composite จริง ยังไม่ได้วัด |

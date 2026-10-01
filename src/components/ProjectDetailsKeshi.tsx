@@ -76,7 +76,7 @@ const KeshiState = ({ state }: { state: (typeof KESHI_STATES)[number] }) => (
       className="case-media__frame--keshi-state"
       label={`${state.mode} mode`}
     />
-    <div className="case-keshi-state__caption" data-wave-follow>
+    <div className="case-keshi-state__caption" data-surface="base" data-surface-sheen="" data-wave-follow>
       <span>{state.cue}</span>
       <strong>{state.time}</strong>
       <p>{state.body}</p>
@@ -101,7 +101,7 @@ const KeshiStatePair = () => (
       <KeshiState state={KESHI_STATES[0]} />
       <div className="case-keshi-states__switch" data-wave-follow aria-label="Completing focus switches to relax">
         <span>complete</span>
-        <Icon icon="lucide:arrow-right" aria-hidden="true" />
+        <Icon icon="lucide:arrow-right" data-surface="dark" aria-hidden="true" />
         <small>mode switches</small>
       </div>
       <KeshiState state={KESHI_STATES[1]} />
@@ -138,8 +138,8 @@ const KeshiAtmosphere = ({ project, gallery }: { project: ProjectRecord; gallery
               className="case-media__frame--keshi-atmosphere"
               label={project.galleryLabels?.[0] || 'Theme studio'}
             />
-            <div className="case-keshi-atmosphere__caption" data-wave-follow>
-              <Icon icon="lucide:palette" aria-hidden="true" />
+            <div className="case-keshi-atmosphere__caption" data-surface="base" data-surface-sheen="" data-wave-follow>
+              <Icon data-surface-positioned="" icon="lucide:palette" data-surface="dark" aria-hidden="true" />
               <div>
                 <span>Theme studio</span>
                 <p>{project.galleryDescriptions?.[0]}</p>
@@ -149,8 +149,8 @@ const KeshiAtmosphere = ({ project, gallery }: { project: ProjectRecord; gallery
         ) : null}
         {settingsMedia ? (
           <article className="case-keshi-atmosphere__feature case-keshi-atmosphere__feature--settings">
-            <div className="case-keshi-atmosphere__caption" data-wave-follow>
-              <Icon icon="lucide:sliders-horizontal" aria-hidden="true" />
+            <div className="case-keshi-atmosphere__caption" data-surface="base" data-surface-sheen="" data-wave-follow>
+              <Icon data-surface-positioned="" icon="lucide:sliders-horizontal" data-surface="dark" aria-hidden="true" />
               <div>
                 <span>Session controls</span>
                 <p>{project.galleryDescriptions?.[1]}</p>
@@ -175,17 +175,17 @@ const KeshiFeedbackNode = ({ node, position }: { node: (typeof KESHI_FEEDBACK_NO
     className={`case-keshi-rhythm__slot case-keshi-rhythm__slot--${position}`}
     data-wave-follow
   >
-    <article className={`case-keshi-rhythm__node case-keshi-rhythm__node--${node.tone}`}>
+    <article className={`case-keshi-rhythm__node case-keshi-rhythm__node--${node.tone}`} data-surface={node.tone === 'focus' ? 'dark' : 'base'} data-surface-sheen="">
       <header>
         <span>{node.step} / {node.eyebrow}</span>
-        <span className="case-keshi-rhythm__icon" aria-hidden="true">
+        <span className="case-keshi-rhythm__icon" data-surface="dark" aria-hidden="true">
           <Icon icon={node.icon} />
         </span>
       </header>
       <h3>{node.title}</h3>
       <p>{node.body}</p>
       <ul aria-label={`${node.title} signals`}>
-        {node.tags.map((tag) => <li key={tag}>{tag}</li>)}
+        {node.tags.map((tag) => <li key={tag} data-surface="dark">{tag}</li>)}
       </ul>
     </article>
   </div>
@@ -231,27 +231,27 @@ const KeshiRhythmDiagram = () => (
             <path className="is-loop" pathLength="100" d="M 855 640 C 725 720 455 720 335 645 C 175 545 70 430 95 315 C 105 270 135 240 185 225" />
           </g>
         </svg>
-        <span className="case-keshi-rhythm__flow-label case-keshi-rhythm__flow-label--capture">capture</span>
-        <span className="case-keshi-rhythm__flow-label case-keshi-rhythm__flow-label--pull">pull latest review</span>
-        <span className="case-keshi-rhythm__flow-label case-keshi-rhythm__flow-label--return">return quiet signal</span>
-        <span className="case-keshi-rhythm__flow-label case-keshi-rhythm__flow-label--shape">shape next session</span>
-        <span className="case-keshi-rhythm__flow-label case-keshi-rhythm__flow-label--loop">behavior changes through the next choice</span>
+        <span data-surface="dark" className="case-keshi-rhythm__flow-label case-keshi-rhythm__flow-label--capture">capture</span>
+        <span data-surface="dark" className="case-keshi-rhythm__flow-label case-keshi-rhythm__flow-label--pull">pull latest review</span>
+        <span data-surface="dark" className="case-keshi-rhythm__flow-label case-keshi-rhythm__flow-label--return">return quiet signal</span>
+        <span data-surface="dark" className="case-keshi-rhythm__flow-label case-keshi-rhythm__flow-label--shape">shape next session</span>
+        <span data-surface="dark" className="case-keshi-rhythm__flow-label case-keshi-rhythm__flow-label--loop">behavior changes through the next choice</span>
       </div>
 
       <KeshiFeedbackNode node={KESHI_FEEDBACK_NODES.session} position="session" />
       <KeshiFeedbackNode node={KESHI_FEEDBACK_NODES.truth} position="truth" />
 
       <div className="case-keshi-rhythm__slot case-keshi-rhythm__slot--hermes" data-wave-follow>
-        <article className="case-keshi-rhythm__hermes">
+        <article className="case-keshi-rhythm__hermes" data-surface="paper" data-surface-sheen="">
           <header className="case-keshi-rhythm__hermes-head">
-            <span className="case-keshi-rhythm__hermes-icon" aria-hidden="true">
+            <span className="case-keshi-rhythm__hermes-icon" data-surface="dark" aria-hidden="true">
               <Icon icon={HERMES_AGENT_ICON} />
             </span>
             <div>
               <span>03 / Hermes Agent</span>
               <strong>Scoped feedback bridge</strong>
             </div>
-            <span className="case-keshi-rhythm__hermes-status"><i /> live loop</span>
+            <span className="case-keshi-rhythm__hermes-status" data-surface="dark"><i /> live loop</span>
           </header>
           <h3>
             <span>Pull → interpret</span>
@@ -262,23 +262,23 @@ const KeshiRhythmDiagram = () => (
             then turns the pattern into context for the next session.
           </p>
           <ol className="case-keshi-rhythm__hermes-steps">
-            <li>
+            <li data-surface="dark">
               <span>GET</span>
               <div><strong>Latest daily review</strong><small>sessions · habits · logs</small></div>
             </li>
-            <li>
+            <li data-surface="dark">
               <span>READ</span>
               <div><strong>Pattern + load</strong><small>consistency · recovery · gaps</small></div>
             </li>
-            <li>
+            <li data-surface="dark">
               <span>SEND</span>
               <div><strong>Next-session cue</strong><small>human confirms the change</small></div>
             </li>
           </ol>
           <footer>
-            <span>agent key</span>
-            <span>per-user</span>
-            <span>idempotent writes</span>
+            <span data-surface="dark">agent key</span>
+            <span data-surface="dark">per-user</span>
+            <span data-surface="dark">idempotent writes</span>
           </footer>
         </article>
       </div>
@@ -321,25 +321,25 @@ const KeshiDisciplineProof = ({ project, gallery }: { project: ProjectRecord; ga
           label="Actual application capture"
           kindLabel="Product · Still"
         />
-        <aside className="case-keshi-proof__caption" data-wave-follow>
+        <aside className="case-keshi-proof__caption" data-surface="dark" data-surface-sheen="" data-wave-follow>
           <span>Captured from the Keshi application</span>
           <ul>
-            <li>habit checks</li>
-            <li>focus sessions</li>
-            <li>tasks + activity</li>
+            <li data-surface="dark">habit checks</li>
+            <li data-surface="dark">focus sessions</li>
+            <li data-surface="dark">tasks + activity</li>
           </ul>
         </aside>
       </div>
       <dl className="case-keshi-pattern__facts case-keshi-pattern__facts--wide">
-        <div data-wave-follow>
+        <div data-surface="base" data-surface-sheen="" data-wave-follow>
           <dt>Habit value</dt>
           <dd><strong>0 / 1</strong><span>not done / done</span></dd>
         </div>
-        <div data-wave-follow>
+        <div data-surface="base" data-surface-sheen="" data-wave-follow>
           <dt>Day total</dt>
           <dd><strong>done ÷ active</strong><span>habits completed</span></dd>
         </div>
-        <div data-wave-follow>
+        <div data-surface="base" data-surface-sheen="" data-wave-follow>
           <dt>Reading range</dt>
           <dd><strong>7D / 30D</strong><span>same underlying truth</span></dd>
         </div>
@@ -363,14 +363,14 @@ const KeshiArchitecture = ({ techItems }: { techItems: string[] }) => (
     />
     <div className="case-keshi-architecture__rail">
       <div className="case-keshi-architecture__inputs">
-        <article className="case-keshi-architecture__node case-keshi-architecture__node--browser" data-wave-follow>
-          <Icon icon="lucide:monitor-dot" aria-hidden="true" />
+        <article className="case-keshi-architecture__node case-keshi-architecture__node--browser" data-surface="base" data-surface-sheen="" data-wave-follow>
+          <Icon data-surface-positioned="" icon="lucide:monitor-dot" aria-hidden="true" />
           <span>Human path</span>
           <h3>React timer</h3>
           <p>Focus · tasks · history</p>
         </article>
-        <article className="case-keshi-architecture__node case-keshi-architecture__node--hermes" data-wave-follow>
-          <Icon icon={HERMES_AGENT_ICON} aria-hidden="true" />
+        <article className="case-keshi-architecture__node case-keshi-architecture__node--hermes" data-surface="dark" data-surface-sheen="" data-wave-follow>
+          <Icon data-surface-positioned="" icon={HERMES_AGENT_ICON} aria-hidden="true" />
           <span>Hermes Agent</span>
           <h3>Scoped read + write</h3>
           <p>review · reconcile · signal</p>
@@ -380,8 +380,8 @@ const KeshiArchitecture = ({ techItems }: { techItems: string[] }) => (
         <span>same contract</span>
         <Icon icon="lucide:arrow-right" />
       </div>
-      <article className="case-keshi-architecture__node case-keshi-architecture__node--api" data-wave-follow>
-        <Icon icon="lucide:route" aria-hidden="true" />
+      <article className="case-keshi-architecture__node case-keshi-architecture__node--api" data-surface="base" data-surface-sheen="" data-wave-follow>
+        <Icon data-surface-positioned="" icon="lucide:route" aria-hidden="true" />
         <span>Node API</span>
         <h3>One write path</h3>
         <p>Per-user · idempotent</p>
@@ -391,14 +391,14 @@ const KeshiArchitecture = ({ techItems }: { techItems: string[] }) => (
         <Icon icon="lucide:arrow-right" />
       </div>
       <div className="case-keshi-architecture__stores">
-        <article className="case-keshi-architecture__node" data-wave-follow>
-          <Icon icon="lucide:database" aria-hidden="true" />
+        <article className="case-keshi-architecture__node" data-surface="base" data-surface-sheen="" data-wave-follow>
+          <Icon data-surface-positioned="" icon="lucide:database" aria-hidden="true" />
           <span>SQLite</span>
           <h3>Discipline</h3>
           <p>habits · scores · logs</p>
         </article>
-        <article className="case-keshi-architecture__node" data-wave-follow>
-          <Icon icon="lucide:braces" aria-hidden="true" />
+        <article className="case-keshi-architecture__node" data-surface="base" data-surface-sheen="" data-wave-follow>
+          <Icon data-surface-positioned="" icon="lucide:braces" aria-hidden="true" />
           <span>JSON stores</span>
           <h3>Timer state</h3>
           <p>tasks · sessions · history</p>
@@ -427,11 +427,11 @@ const KeshiLayout = ({ project, techItems, gallery, hasLive, hasRepo }: CaseLayo
       </div>
       <div className="case-keshi-hero__visual">
         <CaseHeroMedia project={project} sizes="(max-width: 900px) 100vw, 700px" />
-        <div className="case-keshi-hero__caption" data-wave-follow>
+        <div className="case-keshi-hero__caption" data-surface="base" data-surface-sheen="" data-wave-follow>
           <span><i className="is-focus" />Focus</span>
-          <Icon icon="lucide:arrow-right" aria-hidden="true" />
+          <Icon data-surface-positioned="" icon="lucide:arrow-right" aria-hidden="true" />
           <span><i className="is-relax" />Relax</span>
-          <Icon icon="lucide:arrow-right" aria-hidden="true" />
+          <Icon data-surface-positioned="" icon="lucide:arrow-right" aria-hidden="true" />
           <strong>Evidence</strong>
         </div>
       </div>

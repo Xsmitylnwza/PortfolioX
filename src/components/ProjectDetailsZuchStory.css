@@ -65,10 +65,6 @@ html.document-room-active .case-section--zuch {
 
 .case-zucchini-glass {
   border: 1px solid var(--zucchini-line);
-  background: var(--zucchini-glass);
-  box-shadow: var(--zucchini-glass-shadow);
-  -webkit-backdrop-filter: var(--zucchini-glass-blur);
-  backdrop-filter: var(--zucchini-glass-blur);
   background-clip: padding-box;
 }
 

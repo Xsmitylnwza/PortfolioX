@@ -54,21 +54,21 @@ const DecryptHero = ({ project, hasLive, hasRepo }: { project: ProjectRecord; ha
     </div>
     <div className="case-decrypt-hero__visual">
       <CaseHeroMedia project={project} sizes="(max-width: 900px) 100vw, 760px" />
-      <div className="case-decrypt-hero__caption" data-wave-follow>
+      <div data-surface="base" data-surface-sheen="" className="case-decrypt-hero__caption" data-wave-follow>
         <span>Actual Hardest run</span>
         <strong>11 rules correct · crown still live</strong>
       </div>
     </div>
     <dl className="case-decrypt-signals">
-      <div data-wave-follow>
+      <div data-surface="base" data-surface-sheen="" data-surface-anchor="" data-wave-follow>
         <dt>Levels</dt>
         <dd><strong>3</strong><span>Hard · Veryhard · Hardest</span></dd>
       </div>
-      <div data-wave-follow>
+      <div data-surface="base" data-surface-sheen="" data-surface-anchor="" data-wave-follow>
         <dt>Rule budget</dt>
         <dd><strong>10 / 11 / 12</strong><span>unlock in sequence</span></dd>
       </div>
-      <div data-wave-follow>
+      <div data-surface="base" data-surface-sheen="" data-surface-anchor="" data-wave-follow>
         <dt>Time budget</dt>
         <dd><strong>10:00 → 05:00</strong><span>starts on first input</span></dd>
       </div>
@@ -102,7 +102,7 @@ const DecryptModeRail = ({ project, media }: { project: ProjectRecord; media?: P
       ) : null}
       <ol className="case-decrypt-levels">
         {DECRYPT_MODES.map((mode, index) => (
-          <li
+          <li data-surface="base" data-surface-sheen=""
             className={`case-decrypt-level case-decrypt-level--${mode.tone}`}
             data-wave-follow
             style={{ '--mode-index': index }}
@@ -117,7 +117,7 @@ const DecryptModeRail = ({ project, media }: { project: ProjectRecord; media?: P
               <div><dt>Rules</dt><dd>{mode.rules}</dd></div>
               <div><dt>Time</dt><dd>{mode.time}</dd></div>
             </dl>
-            <span className="case-decrypt-level__pressure" aria-hidden="true" />
+            <span data-surface-positioned="" className="case-decrypt-level__pressure" aria-hidden="true" />
           </li>
         ))}
       </ol>
@@ -139,7 +139,7 @@ const DecryptPressureChamber = () => (
       id="decrypt-engine-title"
     />
     <div className="case-decrypt-engine__board">
-      <article className="case-decrypt-engine__mode" data-wave-follow>
+      <article data-surface="base" data-surface-sheen="" data-surface-anchor="" className="case-decrypt-engine__mode" data-wave-follow>
         <span>Selected pressure</span>
         <div>
           <Icon icon="lucide:terminal" aria-hidden="true" />
@@ -151,7 +151,7 @@ const DecryptPressureChamber = () => (
         <span>selects</span>
         <Icon icon="lucide:arrow-right" />
       </div>
-      <article
+      <article data-surface="base" data-surface-sheen="" data-surface-anchor=""
         className="case-decrypt-engine__password"
         data-wave-follow
         aria-label="Illustrative password validation diagram, not an application capture"
@@ -166,8 +166,8 @@ const DecryptPressureChamber = () => (
         </div>
         <small>@input re-runs the selected checker</small>
       </article>
-      <article className="case-decrypt-engine__timer" data-wave-follow>
-        <Icon icon="lucide:timer" aria-hidden="true" />
+      <article data-surface="base" data-surface-sheen="" data-surface-anchor="" className="case-decrypt-engine__timer" data-wave-follow>
+        <Icon data-surface-positioned="" icon="lucide:timer" aria-hidden="true" />
         <span>First input starts</span>
         <strong>05:00</strong>
         <small>toward 00:00</small>
@@ -178,13 +178,13 @@ const DecryptPressureChamber = () => (
       </div>
       <ol className="case-decrypt-rules" aria-label="Live rule progression">
         {DECRYPT_RULE_STACK.map((rule) => (
-          <li className={`is-${rule.state}`} data-wave-follow key={rule.id}>
+          <li data-surface="base" data-surface-sheen="" className={`is-${rule.state}`} data-wave-follow key={rule.id}>
             <span>{rule.id}</span>
             <strong>{rule.label}</strong>
             <small>
               {rule.state === 'passed' ? 'correct' : rule.state === 'active' ? 'live now' : 'waiting'}
             </small>
-            <Icon
+            <Icon data-surface-positioned=""
               icon={rule.state === 'passed' ? 'lucide:check' : rule.state === 'active' ? 'lucide:radio' : 'lucide:lock-keyhole'}
               aria-hidden="true"
             />
@@ -198,18 +198,18 @@ const DecryptPressureChamber = () => (
         <h3>Rules 8 and 11 alter the password itself.</h3>
       </div>
       <ol>
-        <li data-wave-follow>
-          <span className="case-decrypt-mutations__symbol" aria-hidden="true"><Icon icon="lucide:bug" /></span>
+        <li data-surface="base" data-surface-sheen="" data-wave-follow>
+          <span data-surface="dark" className="case-decrypt-mutations__symbol" aria-hidden="true"><Icon icon="lucide:bug" /></span>
           <div><strong>Clear the virus</strong><small>rule 8 · another character every 4 seconds</small></div>
-          <Icon icon="lucide:arrow-right" aria-hidden="true" />
+          <Icon data-surface-positioned="" icon="lucide:arrow-right" aria-hidden="true" />
         </li>
-        <li data-wave-follow>
-          <span className="case-decrypt-mutations__symbol" aria-hidden="true"><Icon icon="lucide:flame" /></span>
+        <li data-surface="base" data-surface-sheen="" data-wave-follow>
+          <span data-surface="dark" className="case-decrypt-mutations__symbol" aria-hidden="true"><Icon icon="lucide:flame" /></span>
           <div><strong>Put out the fire</strong><small>rule 11 · another character every 2 seconds</small></div>
-          <Icon icon="lucide:arrow-right" aria-hidden="true" />
+          <Icon data-surface-positioned="" icon="lucide:arrow-right" aria-hidden="true" />
         </li>
-        <li data-wave-follow>
-          <span className="case-decrypt-mutations__symbol" aria-hidden="true"><Icon icon="lucide:crown" /></span>
+        <li data-surface="base" data-surface-sheen="" data-wave-follow>
+          <span data-surface="dark" className="case-decrypt-mutations__symbol" aria-hidden="true"><Icon icon="lucide:crown" /></span>
           <div><strong>Add the crown</strong><small>rule 12 · exact crown character</small></div>
         </li>
       </ol>
@@ -222,25 +222,25 @@ const DecryptPressureChamber = () => (
         id="decrypt-resolution-title"
       />
       <div className="case-decrypt-resolution__flow" aria-labelledby="decrypt-resolution-title">
-        <article className="case-decrypt-resolution__trigger" data-wave-follow>
+        <article data-surface="base" data-surface-sheen="" data-surface-anchor="" className="case-decrypt-resolution__trigger" data-wave-follow>
           <span>Either trigger</span>
           <h3>All rules correct <i>or</i> clock at zero</h3>
           <p>Both conditions call the same burn function.</p>
         </article>
-        <div className="case-decrypt-resolution__burn" data-wave-follow>
-          <Icon icon="lucide:flame" aria-hidden="true" />
+        <div data-surface="base" data-surface-sheen="" data-surface-anchor="" className="case-decrypt-resolution__burn" data-wave-follow>
+          <Icon data-surface-positioned="" icon="lucide:flame" aria-hidden="true" />
           <span>firePassword</span>
           <strong>one character every 50 ms</strong>
         </div>
         <div className="case-decrypt-outcomes" aria-label="Game outcomes">
-          <article className="case-decrypt-outcome case-decrypt-outcome--win" data-wave-follow>
-            <Icon icon="lucide:crown" aria-hidden="true" />
+          <article data-surface="base" data-surface-sheen="" data-surface-anchor="" className="case-decrypt-outcome case-decrypt-outcome--win" data-wave-follow>
+            <Icon data-surface-positioned="" icon="lucide:crown" aria-hidden="true" />
             <span>Completed rule count matches</span>
             <h3>Victory overlay</h3>
             <p>Win art, victory audio, then restart.</p>
           </article>
-          <article className="case-decrypt-outcome case-decrypt-outcome--lose" data-wave-follow>
-            <Icon icon="lucide:circle-x" aria-hidden="true" />
+          <article data-surface="base" data-surface-sheen="" data-surface-anchor="" className="case-decrypt-outcome case-decrypt-outcome--lose" data-wave-follow>
+            <Icon data-surface-positioned="" icon="lucide:circle-x" aria-hidden="true" />
             <span>Completed rule count falls short</span>
             <h3>Game-over overlay</h3>
             <p>Loss art, lose audio, then restart.</p>
@@ -277,9 +277,9 @@ const DecryptResolutionProof = ({ project, media }: { project: ProjectRecord; me
           kindLabel="Product · Still"
         />
         <ol className="case-decrypt-manual__beats">
-          <li data-wave-follow><span>01</span><strong>Choose one level identity</strong></li>
-          <li data-wave-follow><span>02</span><strong>First input starts the timer</strong></li>
-          <li data-wave-follow><span>03</span><strong>Burn, then show the verdict</strong></li>
+          <li data-surface="base" data-surface-sheen="" data-surface-anchor="" data-wave-follow><span>01</span><strong>Choose one level identity</strong></li>
+          <li data-surface="base" data-surface-sheen="" data-surface-anchor="" data-wave-follow><span>02</span><strong>First input starts the timer</strong></li>
+          <li data-surface="base" data-surface-sheen="" data-surface-anchor="" data-wave-follow><span>03</span><strong>Burn, then show the verdict</strong></li>
         </ol>
       </div>
     </section>
@@ -311,7 +311,7 @@ const DecryptArchitecture = ({ techItems }: { techItems: string[] }) => (
     <ol className="case-decrypt-architecture__rail">
       {DECRYPT_RUNTIME.map(([step, icon, title, body]) => (
         <li data-wave-follow key={step}>
-          <article>
+          <article data-surface="base" data-surface-sheen="" data-surface-anchor="">
             <header><span>{step}</span><Icon icon={icon} aria-hidden="true" /></header>
             <h3>{title}</h3>
             <p>{body}</p>
@@ -319,8 +319,8 @@ const DecryptArchitecture = ({ techItems }: { techItems: string[] }) => (
         </li>
       ))}
     </ol>
-    <p className="case-decrypt-architecture__boundary" data-wave-follow>
-      <Icon icon="lucide:shield-check" aria-hidden="true" />
+    <p data-surface="base" data-surface-sheen="" data-surface-anchor="" className="case-decrypt-architecture__boundary" data-wave-follow>
+      <Icon data-surface-positioned="" icon="lucide:shield-check" aria-hidden="true" />
       No backend, no durable game history, and no saved in-progress password.
     </p>
     <StackBlock items={techItems} reveal="scroll" revealIndex={2} title="Browser-built stack" />

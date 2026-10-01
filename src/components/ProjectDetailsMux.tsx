@@ -133,7 +133,7 @@ const ProjectMuxShiftDiagram = () => (
   <section
     className="case-mux-shifts case-reveal"
     data-reveal="scroll"
-    style={{ '--reveal-index': 0 }}
+    style={{ '--reveal-index': 2 }}
     aria-labelledby="mux-shifts-title"
   >
     <header className="case-mux-section-head" data-wave-follow>
@@ -160,14 +160,13 @@ const ProjectMuxPipeline = () => (
   <section
     className="case-mux-system case-reveal"
     data-reveal="scroll"
-    style={{ '--reveal-index': 1 }}
+    style={{ '--reveal-index': 0 }}
     aria-labelledby="mux-system-title"
   >
     <header className="case-mux-section-head" data-wave-follow>
       <p className="case-mux-section-head__eyebrow">The working loop</p>
       <h2 id="mux-system-title">Return → reveal → start → shape the Canvas.</h2>
     </header>
-    <ProjectMuxAgentRail />
     <ol className="case-mux-pipeline">
       {MUX_PIPELINE.map((node) => (
         <li
@@ -193,6 +192,7 @@ const ProjectMuxPipeline = () => (
         </li>
       ))}
     </ol>
+    <ProjectMuxAgentRail />
     <div className="case-mux-system__loop" data-wave-follow>
       <Icon icon="lucide:refresh-cw" aria-hidden="true" />
       <span>Leave a Project</span>
@@ -202,50 +202,68 @@ const ProjectMuxPipeline = () => (
   </section>
 );
 
-const ProjectMuxEvidence = ({ project, gallery }: { project: ProjectRecord; gallery: ProjectMedia[] }) => {
-  const items = gallery.slice(1).map((media, index) => ({
-    media,
-    label: project.galleryLabels?.[index + 1] || `Feature ${index + 1}`,
-    description: project.galleryDescriptions?.[index + 1],
-  }));
+type MuxMoment = {
+  media: ProjectMedia;
+  label: string;
+  description?: string;
+  key: string;
+};
 
-  if (items.length === 0) return null;
+const mediaKey = (media: ProjectMedia) => (typeof media === 'string' ? media : media.video || media.image);
+
+// Pair every clip with its caption at its SOURCE index in the project record,
+// so captions follow the media even if the gallery is reordered or shortened.
+const buildMuxMoments = (project: ProjectRecord, gallery: ProjectMedia[]): MuxMoment[] =>
+  gallery.map((media, position) => {
+    const key = mediaKey(media);
+    const found = project.gallery?.findIndex((source) => mediaKey(source) === key) ?? -1;
+    const source = found >= 0 ? found : position;
+    return {
+      media,
+      label: project.galleryLabels?.[source] || `Moment ${position + 1}`,
+      description: project.galleryDescriptions?.[source],
+      key: key || `moment-${position}`,
+    };
+  });
+
+const ProjectMuxMoments = ({ project, gallery }: { project: ProjectRecord; gallery: ProjectMedia[] }) => {
+  const moments = buildMuxMoments(project, gallery);
+
+  if (moments.length === 0) return null;
 
   return (
     <section
-      className="case-mux-evidence case-reveal"
+      className="case-mux-moments case-reveal"
       data-reveal="scroll"
-      style={{ '--reveal-index': 2 }}
-      aria-labelledby="mux-evidence-title"
+      style={{ '--reveal-index': 1 }}
+      aria-labelledby="mux-moments-title"
     >
       <header className="case-mux-section-head" data-wave-follow>
         <p className="case-mux-section-head__eyebrow">Interface proof</p>
-        <h2 id="mux-evidence-title">Four recorded moments, one calm workspace.</h2>
+        <h2 id="mux-moments-title">Recorded moments, one calm workspace.</h2>
       </header>
-      <div className="case-mux-evidence__grid">
-        {items.map((item, index) => (
+      <div className="case-mux-moments__list">
+        {moments.map((moment, index) => (
           <article
             className={[
-              'case-mux-evidence__card',
-              index === 0 ? 'case-mux-evidence__card--lead' : '',
+              'case-mux-moment',
+              index % 2 === 1 ? 'case-mux-moment--flip' : '',
             ]
               .filter(Boolean)
               .join(' ')}
-            key={item.label}
+            key={moment.key}
           >
             <CaseMediaFrame
-              media={item.media}
-              alt={`${project.title} — ${item.label}`}
-              sizes={index === 0
-                ? '(max-width: 900px) 100vw, 700px'
-                : '(max-width: 900px) 100vw, 400px'}
-              className="case-media__frame--mux-evidence"
-              label={item.label}
+              media={moment.media}
+              alt={`${project.title} — ${moment.label}`}
+              sizes="(max-width: 900px) 100vw, 720px"
+              className="case-media__frame--mux-moment"
+              label={moment.label}
             />
-            <div className="case-mux-evidence__copy" data-wave-follow>
-              <span>Feature {formatIndex(index + 1)}</span>
-              <h3>{item.label}</h3>
-              {item.description && <p>{item.description}</p>}
+            <div className="case-mux-moment__copy" data-wave-follow>
+              <span>Moment {formatIndex(index + 1)}</span>
+              <h3>{moment.label}</h3>
+              {moment.description && <p>{moment.description}</p>}
             </div>
           </article>
         ))}
@@ -255,10 +273,6 @@ const ProjectMuxEvidence = ({ project, gallery }: { project: ProjectRecord; gall
 };
 
 const MuxLayout = ({ project, techItems, gallery, hasLive, hasRepo }: CaseLayoutProps) => {
-  const demoMedia = gallery[0];
-  const demoLabel = project.galleryLabels?.[0] || 'Live session';
-  const demoDescription = project.galleryDescriptions?.[0];
-
   return (
     <>
       <ProjectMuxGlassDefs />
@@ -284,37 +298,9 @@ const MuxLayout = ({ project, techItems, gallery, hasLive, hasRepo }: CaseLayout
         </div>
       </div>
 
-      <ProjectMuxShiftDiagram />
-
-      {demoMedia && (
-        <section
-          className="case-mux-proof case-reveal"
-          data-reveal="scroll"
-          style={{ '--reveal-index': 0 }}
-          aria-labelledby="mux-proof-title"
-        >
-          <header className="case-mux-proof__copy" data-wave-follow>
-            <p className="case-mux-section-head__eyebrow">Proof 01 · Return to context</p>
-            <h2 id="mux-proof-title">{demoLabel}</h2>
-            {demoDescription && <p>{demoDescription}</p>}
-            <ul aria-label="Demo signals">
-              <li data-surface="dark">Project-scoped scene</li>
-              <li data-surface="dark">Dock reveals on demand</li>
-              <li data-surface="dark">Canvas stays intact</li>
-            </ul>
-          </header>
-          <CaseMediaFrame
-            media={demoMedia}
-            alt={`${project.title} — ${demoLabel}`}
-            sizes="(max-width: 900px) 100vw, 760px"
-            className="case-media__frame--mux-proof"
-            label={demoLabel}
-          />
-        </section>
-      )}
-
       <ProjectMuxPipeline />
-      <ProjectMuxEvidence project={project} gallery={gallery} />
+      <ProjectMuxMoments project={project} gallery={gallery} />
+      <ProjectMuxShiftDiagram />
       <StackBlock items={techItems} reveal="scroll" revealIndex={1} title="Built with" />
     </>
   );

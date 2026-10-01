@@ -69,10 +69,9 @@
 }
 
 .case-mux-shifts,
-.case-mux-proof,
 .case-mux-system,
-.case-mux-evidence {
-  margin-bottom: clamp(3.25rem, 7vw, 5.75rem);
+.case-mux-moments {
+  margin-bottom: var(--space-section);
 }
 
 .case-mux-shifts__grid {
@@ -134,55 +133,6 @@
   font-size: 0.96rem;
   letter-spacing: -0.02em;
   line-height: 1.3;
-}
-
-.case-mux-proof {
-  display: grid;
-  grid-template-columns: minmax(15rem, 0.34fr) minmax(0, 0.66fr);
-  gap: clamp(1.5rem, 4vw, 3rem);
-  align-items: center;
-}
-
-.case-mux-proof__copy h2 {
-  margin: 0;
-  color: var(--case-ink);
-  font-family: var(--font-display);
-  font-size: clamp(1.9rem, 3.6vw, 3rem);
-  font-weight: 700;
-  letter-spacing: -0.045em;
-  line-height: 1;
-}
-
-.case-mux-proof__copy > p:not(.case-mux-section-head__eyebrow) {
-  margin: 1rem 0 0;
-  color: var(--case-mute);
-  font-size: 0.98rem;
-  line-height: 1.55;
-}
-
-.case-mux-proof__copy ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin: 1.2rem 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.case-mux-proof__copy li {
-  padding: 0.34rem 0.6rem;
-  border: 1px solid var(--case-line);
-  border-radius: 999px;
-  color: var(--case-soft);
-  background: var(--case-surface);
-  font-family: var(--font-mono);
-  font-size: 0.56rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.case-media__frame--mux-proof {
-  aspect-ratio: 16 / 10;
 }
 
 .case-mux-agents {
@@ -429,66 +379,64 @@
   font-weight: 500;
 }
 
-.case-mux-evidence__grid {
+.case-mux-moments__list {
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(18rem, 0.7fr);
-  grid-template-rows: repeat(2, minmax(0, auto));
-  gap: clamp(1.4rem, 3vw, 2.25rem) 1rem;
-  align-items: start;
+  gap: var(--space-9);
 }
 
-.case-mux-evidence__card {
+.case-mux-moment {
   display: grid;
-  align-content: start;
-  gap: 0.85rem;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: var(--space-gutter);
+  align-items: center;
   min-width: 0;
 }
 
-.case-mux-evidence__card--lead {
-  grid-row: 1 / span 2;
+.case-mux-moment--flip {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
 }
 
-.case-media__frame--mux-evidence {
-  aspect-ratio: 16 / 9;
+.case-mux-moment--flip > .case-media__frame {
+  order: 2;
 }
 
-.case-mux-evidence__card--lead .case-media__frame--mux-evidence {
+.case-media__frame--mux-moment {
   aspect-ratio: 16 / 10;
 }
 
-.case-mux-evidence__copy {
+.case-mux-moment__copy {
   display: grid;
-  gap: 0.28rem;
+  gap: var(--space-2);
 }
 
-.case-mux-evidence__copy > span {
-  color: var(--case-faint);
+.case-mux-moment__copy > span {
+  color: var(--color-detail-faint-strong);
   font-family: var(--font-mono);
-  font-size: 0.55rem;
-  letter-spacing: 0.13em;
+  font-size: var(--type-size-label);
+  letter-spacing: var(--type-tracking-eyebrow);
   text-transform: uppercase;
 }
 
-.case-mux-evidence__copy h3 {
+.case-mux-moment__copy h3 {
   margin: 0;
-  color: var(--case-ink);
+  color: var(--color-detail-ink);
   font-family: var(--font-display);
-  font-size: clamp(1.2rem, 2vw, 1.7rem);
+  font-size: var(--type-size-heading-sm);
   font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.12;
+  letter-spacing: var(--type-tracking-heading);
+  line-height: var(--type-leading-heading);
 }
 
-.case-mux-evidence__card--lead .case-mux-evidence__copy h3 {
-  font-size: clamp(1.55rem, 2.7vw, 2.15rem);
+.case-mux-moment__copy p {
+  max-width: var(--measure-copy);
+  margin: var(--space-1) 0 0;
+  color: var(--color-detail-muted-strong);
+  font-size: var(--type-size-body);
+  line-height: var(--type-leading-body);
 }
 
-.case-mux-evidence__copy p {
-  max-width: 44rem;
-  margin: 0.15rem 0 0;
-  color: var(--case-mute);
-  font-size: 0.92rem;
-  line-height: 1.5;
+.case-mux-pipeline + .case-mux-agents {
+  margin: var(--space-5) 0 0;
 }
 
 .case-section--mux .tech-stack-list--case {
@@ -499,9 +447,9 @@
 @media (max-width: 900px) {
   .case-mux-hero,
   .case-mux-section-head,
-  .case-mux-proof,
   .case-mux-agents,
-  .case-mux-evidence__grid {
+  .case-mux-moment,
+  .case-mux-moment--flip {
     grid-template-columns: 1fr;
   }
 
@@ -544,8 +492,8 @@
     margin-top: 0.3rem;
   }
 
-  .case-mux-evidence__card--lead {
-    grid-row: auto;
+  .case-mux-moment--flip > .case-media__frame {
+    order: 0;
   }
 }
 

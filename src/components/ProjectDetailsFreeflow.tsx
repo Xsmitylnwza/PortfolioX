@@ -25,18 +25,18 @@ const FREEFLOW_TRAIL = [
 const FREEFLOW_OWNED = [
   {
     title: 'Org-scoped API',
-    body: 'REST and realtime traffic stay inside one organization — clients, jobs, and files do not leak across teams.',
+    body: 'REST and realtime stay in one organization; clients, jobs, files do not leak.',
     icon: 'lucide:building-2',
     focus: true,
   },
   {
     title: 'Ops records, not chat',
-    body: 'Quotations, projects, invoices, appointments, templates, and files are first-class backend objects.',
+    body: 'Quotations, projects, invoices, appointments, templates, files: backend objects.',
     icon: 'lucide:database',
   },
   {
     title: 'LINE as intake',
-    body: 'Official Account messages can open or update a client record; the workspace is where the job runs.',
+    body: 'OA messages open or update a client record; the workspace runs the job.',
     icon: 'simple-icons:line',
   },
 ];
@@ -73,7 +73,17 @@ const FreeflowHead = ({ eyebrow, title, id }: { eyebrow: string; title: string; 
   </header>
 );
 
-const FreeflowClipFigure = ({ project, clip, sizes }: { project: ProjectRecord; clip: FreeflowClip; sizes: string }) => (
+const FreeflowClipFigure = ({
+  project,
+  clip,
+  sizes,
+  Heading = 'h3',
+}: {
+  project: ProjectRecord;
+  clip: FreeflowClip;
+  sizes: string;
+  Heading?: 'h2' | 'h3';
+}) => (
   <article className="case-freeflow-clip">
     <CaseMediaFrame
       media={clip.media}
@@ -84,7 +94,7 @@ const FreeflowClipFigure = ({ project, clip, sizes }: { project: ProjectRecord; 
       kindLabel={KIND_LABEL}
     />
     <div className="case-freeflow-clip__copy" data-wave-follow>
-      <h3>{clip.label}</h3>
+      <Heading>{clip.label}</Heading>
       {clip.description && <p>{clip.description}</p>}
     </div>
   </article>
@@ -100,7 +110,7 @@ const FreeflowLead = ({ project, clip }: { project: ProjectRecord; clip?: Freefl
       style={{ '--reveal-index': 0 }}
       aria-label={`${clip.label} recording`}
     >
-      <FreeflowClipFigure project={project} clip={clip} sizes="(max-width: 900px) 100vw, 1100px" />
+      <FreeflowClipFigure project={project} clip={clip} sizes="(max-width: 900px) 100vw, 1100px" Heading="h2" />
     </section>
   );
 };
@@ -163,6 +173,7 @@ const FreeflowOwnership = () => (
         <li
           className={item.focus ? 'case-freeflow-owned__card case-freeflow-owned__card--focus' : 'case-freeflow-owned__card'}
           data-surface={item.focus ? 'paper' : 'base'}
+          data-surface-anchor=""
           data-surface-sheen=""
           data-wave-follow
           key={item.title}
@@ -175,7 +186,7 @@ const FreeflowOwnership = () => (
         </li>
       ))}
     </ul>
-    <div className="case-freeflow-ledger" data-surface="base" data-surface-sheen="" data-wave-follow>
+    <div className="case-freeflow-ledger" data-surface="base" data-surface-anchor="" data-surface-sheen="" data-wave-follow>
       <div className="case-freeflow-ledger__copy">
         <span>Identity lifecycle · Go Fiber + JWT</span>
         <strong>Every workspace action has a trusted user.</strong>
@@ -201,11 +212,12 @@ const FreeflowWritePath = () => (
     aria-labelledby="freeflow-path-title"
   >
     <FreeflowHead eyebrow="Write path" title="One ops write path." id="freeflow-path-title" />
-    <ol className="case-freeflow-path__band" data-surface="base" data-surface-sheen="" aria-label="FreeFlow system map" data-wave-follow>
+    <ol className="case-freeflow-path__band" data-surface="base" data-surface-anchor="" data-surface-sheen="" aria-label="FreeFlow system map" data-wave-follow>
       {FREEFLOW_PATH.map((segment) => (
         <li
           className={segment.focus ? 'case-freeflow-segment case-freeflow-segment--focus' : 'case-freeflow-segment'}
           data-surface={segment.focus ? 'paper' : undefined}
+          data-surface-anchor={segment.focus ? '' : undefined}
           data-surface-sheen={segment.focus ? '' : undefined}
           key={segment.title}
         >

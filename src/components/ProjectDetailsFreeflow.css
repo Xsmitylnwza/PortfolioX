@@ -466,4 +466,45 @@
   .case-freeflow-ledger > ul {
     grid-template-columns: 1fr;
   }
+
+  /* Compact horizontal station: icon, label + cue, index + chip. */
+  .case-freeflow-trail__row {
+    gap: var(--space-3);
+  }
+
+  .case-freeflow-station {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+      'icon label index'
+      'icon cue chip';
+    align-items: center;
+    column-gap: var(--space-4);
+    row-gap: var(--space-1);
+    padding: var(--space-4);
+  }
+
+  .case-freeflow-station__index {
+    position: static;
+    grid-area: index;
+    justify-self: end;
+  }
+
+  .case-freeflow-station__icon {
+    grid-area: icon;
+  }
+
+  .case-freeflow-station h3 {
+    grid-area: label;
+  }
+
+  .case-freeflow-station p {
+    grid-area: cue;
+  }
+
+  .case-freeflow-station .case-freeflow-chip {
+    grid-area: chip;
+    justify-self: end;
+    align-self: center;
+  }
 }

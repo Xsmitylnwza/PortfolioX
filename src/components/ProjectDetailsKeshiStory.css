@@ -13,44 +13,65 @@
     radial-gradient(circle at 91% 36%, rgba(72, 199, 142, 0.045), transparent 25rem);
 }
 
+/* Hero — media first: the product spans the content width, the copy strip sits beneath. */
 .case-keshi-hero {
   display: grid;
-  grid-template-columns: minmax(17rem, 0.72fr) minmax(0, 1.28fr);
-  gap: clamp(1.8rem, 4.8vw, 4.25rem);
-  align-items: center;
-  margin-bottom: clamp(5rem, 10vw, 8rem);
+  gap: var(--space-8);
+  margin-bottom: var(--space-section);
+}
+
+.case-keshi-hero__visual {
+  min-width: 0;
+}
+
+.case-keshi-hero__copy {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.case-keshi-hero__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-8);
+  margin: 0;
+  color: var(--color-detail-faint-strong);
+  font-family: var(--font-mono);
+  font-size: var(--type-size-label);
+  letter-spacing: var(--type-tracking-eyebrow);
+  text-transform: uppercase;
 }
 
 .case-keshi-hero__copy h1 {
   margin: 0;
-  max-width: 9ch;
-  color: var(--case-ink);
+  color: var(--color-detail-ink);
   font-family: var(--font-display);
-  font-size: clamp(3rem, 6.7vw, 6.4rem);
+  font-size: var(--type-size-display);
   font-weight: 700;
-  letter-spacing: -0.07em;
-  line-height: 0.84;
+  letter-spacing: var(--type-tracking-display);
+  line-height: var(--type-leading-display);
+}
+
+.case-keshi-hero__brief {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr) auto;
+  gap: var(--space-8);
+  align-items: start;
 }
 
 .case-keshi-hero__thesis {
-  max-width: 18ch;
-  margin: 1.2rem 0 0;
-  color: var(--case-soft);
+  margin: 0;
+  color: var(--color-detail-soft-strong);
   font-family: var(--font-display);
-  font-size: clamp(1.45rem, 2.7vw, 2.25rem);
+  font-size: var(--type-size-heading-sm);
   font-weight: 600;
-  letter-spacing: -0.045em;
-  line-height: 1.03;
+  letter-spacing: var(--type-tracking-heading);
+  line-height: var(--type-leading-heading);
 }
 
 .case-keshi-hero .case-lede {
-  max-width: 31rem;
-}
-
-.case-keshi-hero__visual {
-  position: relative;
-  min-width: 0;
-  padding-bottom: 1.65rem;
+  max-width: var(--measure-copy);
+  margin: 0;
+  color: var(--color-detail-soft-strong);
 }
 
 .case-section--keshi .case-media__frame--hero,
@@ -60,66 +81,14 @@
   aspect-ratio: 40 / 19;
 }
 
+.case-section--keshi .case-keshi-hero__visual .case-media__frame--hero {
+  aspect-ratio: 5 / 2;
+}
+
 /* Keshi's media chrome now comes from the project theme block in
    src/styles/tokens.css (.case-section--keshi), which overrides the semantic
    roles the base rule already reads. The values are unchanged; this rule is
    kept only as the pointer to where they live. */
-
-.case-keshi-hero__caption {
-  position: absolute;
-  right: clamp(0.75rem, 3vw, 2rem);
-  bottom: 0;
-  z-index: 4;
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-  padding: 0.8rem 1rem;
-  border: 1px solid var(--story-line-strong);
-  border-radius: 999px;
-  color: var(--case-mute);
-  background: var(--story-glass-fill);
-  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.34);
-  backdrop-filter: blur(18px) saturate(120%);
-  font-family: var(--font-mono);
-  font-size: 0.56rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.case-keshi-hero__caption span,
-.case-keshi-hero__caption strong {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.38rem;
-  white-space: nowrap;
-}
-
-.case-keshi-hero__caption strong {
-  color: var(--case-ink);
-  font-weight: 700;
-}
-
-.case-keshi-hero__caption svg {
-  width: 0.75rem;
-  height: 0.75rem;
-  color: var(--case-faint);
-}
-
-.case-keshi-hero__caption i {
-  width: 0.45rem;
-  height: 0.45rem;
-  border-radius: 999px;
-}
-
-.case-keshi-hero__caption i.is-focus {
-  background: var(--keshi-focus);
-  box-shadow: 0 0 0 0.22rem rgba(198, 37, 47, 0.14);
-}
-
-.case-keshi-hero__caption i.is-relax {
-  background: var(--keshi-relax);
-  box-shadow: 0 0 0 0.22rem rgba(72, 199, 142, 0.13);
-}
 
 .case-keshi-states,
 .case-keshi-atmosphere,
@@ -1346,4 +1315,329 @@
 .case-section--keshi .tech-stack-list--case {
   margin-top: clamp(2.1rem, 5vw, 3.5rem);
   margin-bottom: 0;
+}
+
+/* Signature — Focus ⇄ Relax diptych. Paper clock tile is the group's focal point. */
+.case-keshi-diptych,
+.case-keshi-loop {
+  margin-bottom: var(--space-section);
+}
+
+.case-keshi-diptych__stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: var(--space-5);
+  align-items: center;
+  margin-bottom: var(--space-5);
+}
+
+.case-media__frame--keshi-diptych {
+  aspect-ratio: 16 / 10;
+}
+
+.case-keshi-diptych__seam {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2);
+  padding: var(--space-5) var(--space-4);
+  border: var(--border-width-hairline) solid;
+  border-radius: var(--radius-pill);
+  color: var(--color-detail-soft-strong);
+  font-family: var(--font-mono);
+  font-size: var(--type-size-label);
+  letter-spacing: var(--type-tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.case-keshi-diptych__seam svg {
+  width: var(--space-6);
+  height: var(--space-6);
+}
+
+.case-keshi-diptych__tiles,
+.case-keshi-loop__row {
+  display: grid;
+  gap: var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.case-keshi-diptych__tiles {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.case-keshi-diptych__tile {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto auto 1fr;
+  gap: var(--space-2) var(--space-4);
+  align-items: center;
+  padding: var(--space-6);
+  color: var(--color-detail-ink);
+}
+
+.case-keshi-diptych__mark,
+.case-keshi-loop__icon {
+  display: grid;
+  place-items: center;
+  width: var(--space-9);
+  height: var(--space-9);
+  border: var(--border-width-hairline) solid;
+  border-radius: var(--radius-pill);
+}
+
+.case-keshi-diptych__mark {
+  grid-row: 1 / 3;
+}
+
+.case-keshi-diptych__mark svg,
+.case-keshi-loop__icon svg {
+  width: var(--space-6);
+  height: var(--space-6);
+}
+
+.case-keshi-diptych__label,
+.case-keshi-loop__node header > span:first-child,
+.case-keshi-loop__bridge-head span,
+.case-keshi-loop__note span {
+  color: var(--color-detail-muted);
+  font-family: var(--font-mono);
+  font-size: var(--type-size-label);
+  letter-spacing: var(--type-tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.case-keshi-diptych__tile strong {
+  font-family: var(--font-display);
+  font-size: var(--type-size-heading-md);
+  font-weight: 700;
+  letter-spacing: var(--type-tracking-heading);
+  line-height: var(--type-leading-heading);
+}
+
+.case-keshi-diptych__tile p {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--color-detail-muted-strong);
+  font-size: var(--type-size-body-sm);
+  line-height: var(--type-leading-body);
+}
+
+/* Paper focal tiles: ink text, grey controls. */
+:is(.case-keshi-diptych__tile--clock, .case-keshi-loop__node[data-surface='paper']) {
+  color: var(--color-detail-paper-ink);
+}
+
+:is(.case-keshi-diptych__tile--clock, .case-keshi-loop__node[data-surface='paper']) :is(p, span, li) {
+  color: var(--color-detail-surface-control-paper-ink);
+}
+
+:is(.case-keshi-diptych__tile--clock, .case-keshi-loop__node[data-surface='paper']) [data-surface='dark'] {
+  --color-detail-surface-fill: var(--color-detail-surface-control-paper);
+  --color-detail-surface-edge: var(--color-detail-surface-control-paper-edge);
+  --color-detail-surface-shadow: var(--color-detail-surface-control-paper-shadow);
+}
+
+/* Hermes loop — one equal-height row of four nodes, bridge band beneath. */
+.case-keshi-loop__row {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: var(--space-5);
+}
+
+.case-keshi-loop__node {
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  color: var(--color-detail-ink);
+}
+
+.case-keshi-loop__node header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.case-keshi-loop__node h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--type-size-heading-sm);
+  font-weight: 700;
+  letter-spacing: var(--type-tracking-heading);
+  line-height: var(--type-leading-heading);
+}
+
+.case-keshi-loop__node p {
+  margin: 0;
+  color: var(--color-detail-muted-strong);
+  font-size: var(--type-size-body-sm);
+  line-height: var(--type-leading-body);
+}
+
+.case-keshi-loop__node ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-self: end;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.case-keshi-loop__node li,
+.case-keshi-loop__steps li > span {
+  padding: var(--space-1) var(--space-2);
+  border: var(--border-width-hairline) solid;
+  border-radius: var(--radius-detail-tag);
+  color: var(--color-detail-muted-strong);
+  font-family: var(--font-mono);
+  font-size: var(--type-size-label);
+  letter-spacing: var(--type-tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.case-keshi-loop__bridge {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 2.2fr);
+  gap: var(--space-6);
+  align-items: center;
+  padding: var(--space-5) var(--space-6);
+  color: var(--color-detail-ink);
+}
+
+.case-keshi-loop__bridge-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.case-keshi-loop__bridge-head div {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.case-keshi-loop__bridge-head strong {
+  font-family: var(--font-display);
+  font-size: var(--type-size-body);
+  font-weight: 700;
+}
+
+.case-keshi-loop__steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.case-keshi-loop__steps li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-3) var(--space-4);
+  border: var(--border-width-hairline) solid;
+  border-radius: var(--radius-detail-mark);
+}
+
+.case-keshi-loop__steps li > span {
+  border-color: var(--color-detail-line);
+  color: var(--color-detail-ink);
+}
+
+.case-keshi-loop__steps li > div {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.case-keshi-loop__steps strong {
+  color: var(--color-detail-ink);
+  font-size: var(--type-size-body-sm);
+}
+
+.case-keshi-loop__steps small {
+  color: var(--color-detail-muted);
+  font-family: var(--font-mono);
+  font-size: var(--type-size-label);
+  letter-spacing: var(--type-tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.case-keshi-loop__note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-6);
+  margin: var(--space-5) 0 0;
+}
+
+.case-keshi-loop__note span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.case-keshi-loop__note strong {
+  color: var(--color-detail-soft-strong);
+  font-size: var(--type-size-body-sm);
+  font-weight: 500;
+}
+
+@media (max-width: 900px) {
+  .case-keshi-hero__brief,
+  .case-keshi-loop__bridge {
+    grid-template-columns: 1fr;
+  }
+
+  .case-keshi-diptych__stage {
+    grid-template-columns: 1fr;
+  }
+
+  .case-keshi-diptych__seam {
+    grid-auto-flow: column;
+    justify-self: center;
+    padding: var(--space-3) var(--space-5);
+  }
+
+  .case-keshi-diptych__seam svg {
+    rotate: 90deg;
+  }
+
+  .case-keshi-diptych__tiles {
+    grid-template-columns: 1fr;
+  }
+
+  .case-keshi-loop__row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .case-keshi-loop__steps {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .case-keshi-loop__row {
+    grid-template-columns: 1fr;
+  }
+}
+
+:is(.case-keshi-diptych__tile--clock .case-keshi-diptych__label, .case-keshi-loop__node[data-surface='paper'] header > span:first-child) {
+  color: var(--color-detail-surface-paper-label);
+}
+
+.case-keshi-diptych__tile--clock strong {
+  font-size: var(--type-size-heading-sm);
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .case-section--keshi .case-keshi-hero__visual .case-media__frame--hero {
+    aspect-ratio: 16 / 10;
+  }
 }

@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import { Icon } from '@iconify/react';
 import CaseMediaFrame from './ProjectDetailsMedia';
 import { CaseHeroMedia, StorySectionHead } from './ProjectDetailsPrimitives';
@@ -109,6 +110,65 @@ const KeshiStatePair = () => (
   </section>
 );
 
+const KeshiStateDiptych = () => {
+  const [focus, relax] = KESHI_STATES;
+
+  return (
+    <section
+      className="case-keshi-diptych case-reveal"
+      data-reveal="scroll"
+      style={{ '--reveal-index': 0 }}
+      aria-labelledby="keshi-diptych-title"
+    >
+      <StorySectionHead
+        eyebrow="Two mental states"
+        title="The room changes when the work does."
+        body="Focus and Relax are a rhythm, not two cosmetic themes."
+        id="keshi-diptych-title"
+      />
+      <div className="case-keshi-diptych__stage">
+        {[focus, relax].map((state, index) => (
+          <Fragment key={state.mode}>
+            {index === 1 ? (
+              <div className="case-keshi-diptych__seam" data-surface="dark" data-wave-follow aria-label="Completing focus switches to relax">
+                <Icon icon="lucide:arrow-right" aria-hidden="true" />
+                <span>complete</span>
+              </div>
+            ) : null}
+            <CaseMediaFrame
+              image={state.image}
+              alt={`Keshi Pomodoro ${state.mode} mode`}
+              sizes="(max-width: 900px) 100vw, 540px"
+              className="case-media__frame--keshi-diptych"
+              label={`${state.mode} mode`}
+            />
+          </Fragment>
+        ))}
+      </div>
+      <ul className="case-keshi-diptych__tiles" aria-label="Default Focus and Relax clock">
+        <li className="case-keshi-diptych__tile" data-surface="base" data-surface-sheen="" data-wave-follow>
+          <span className="case-keshi-diptych__mark" data-surface="dark" aria-hidden="true"><Icon icon="lucide:timer" /></span>
+          <span className="case-keshi-diptych__label">{focus.mode} · {focus.cue}</span>
+          <strong>{focus.time}</strong>
+          <p>{focus.body}</p>
+        </li>
+        <li className="case-keshi-diptych__tile case-keshi-diptych__tile--clock" data-surface="paper" data-surface-sheen="" data-wave-follow>
+          <span className="case-keshi-diptych__mark" data-surface="dark" aria-hidden="true"><Icon icon="lucide:arrow-left-right" /></span>
+          <span className="case-keshi-diptych__label">Default clock</span>
+          <strong>{focus.time} → {relax.time}</strong>
+          <p>Complete a sprint and the room switches to the break.</p>
+        </li>
+        <li className="case-keshi-diptych__tile" data-surface="base" data-surface-sheen="" data-wave-follow>
+          <span className="case-keshi-diptych__mark" data-surface="dark" aria-hidden="true"><Icon icon="lucide:coffee" /></span>
+          <span className="case-keshi-diptych__label">{relax.mode} · {relax.cue}</span>
+          <strong>{relax.time}</strong>
+          <p>{relax.body}</p>
+        </li>
+      </ul>
+    </section>
+  );
+};
+
 const KeshiAtmosphere = ({ project, gallery }: { project: ProjectRecord; gallery: ProjectMedia[] }) => {
   const themeMedia = gallery[0];
   const settingsMedia = gallery[1];
@@ -170,30 +230,37 @@ const KeshiAtmosphere = ({ project, gallery }: { project: ProjectRecord; gallery
   );
 };
 
-const KeshiFeedbackNode = ({ node, position }: { node: (typeof KESHI_FEEDBACK_NODES)[keyof typeof KESHI_FEEDBACK_NODES]; position: string }) => (
-  <div
-    className={`case-keshi-rhythm__slot case-keshi-rhythm__slot--${position}`}
+const KESHI_LOOP_ORDER = [
+  KESHI_FEEDBACK_NODES.session,
+  KESHI_FEEDBACK_NODES.truth,
+  KESHI_FEEDBACK_NODES.mirror,
+  KESHI_FEEDBACK_NODES.next,
+];
+
+const KeshiFeedbackNode = ({ node }: { node: (typeof KESHI_FEEDBACK_NODES)[keyof typeof KESHI_FEEDBACK_NODES] }) => (
+  <li
+    className="case-keshi-loop__node"
+    data-surface={node.tone === 'discipline' ? 'paper' : 'base'}
+    data-surface-sheen=""
     data-wave-follow
   >
-    <article className={`case-keshi-rhythm__node case-keshi-rhythm__node--${node.tone}`} data-surface={node.tone === 'focus' ? 'dark' : 'base'} data-surface-sheen="">
-      <header>
-        <span>{node.step} / {node.eyebrow}</span>
-        <span className="case-keshi-rhythm__icon" data-surface="dark" aria-hidden="true">
-          <Icon icon={node.icon} />
-        </span>
-      </header>
-      <h3>{node.title}</h3>
-      <p>{node.body}</p>
-      <ul aria-label={`${node.title} signals`}>
-        {node.tags.map((tag) => <li key={tag} data-surface="dark">{tag}</li>)}
-      </ul>
-    </article>
-  </div>
+    <header>
+      <span>{node.step} / {node.eyebrow}</span>
+      <span className="case-keshi-loop__icon" data-surface="dark" aria-hidden="true">
+        <Icon icon={node.icon} />
+      </span>
+    </header>
+    <h3>{node.title}</h3>
+    <p>{node.body}</p>
+    <ul aria-label={`${node.title} signals`}>
+      {node.tags.map((tag) => <li key={tag} data-surface="dark">{tag}</li>)}
+    </ul>
+  </li>
 );
 
 const KeshiRhythmDiagram = () => (
   <section
-    className="case-keshi-rhythm case-reveal"
+    className="case-keshi-loop case-reveal"
     data-reveal="scroll"
     style={{ '--reveal-index': 0 }}
     aria-labelledby="keshi-rhythm-title"
@@ -205,92 +272,43 @@ const KeshiRhythmDiagram = () => (
       id="keshi-rhythm-title"
     />
 
-    <div
-      className="case-keshi-rhythm__loop"
-      aria-label="Feedback loop from a Keshi focus session to shared evidence, through Hermes interpretation, into a pattern mirror and a human-chosen next session"
+    <ol
+      className="case-keshi-loop__row"
+      aria-label="Feedback loop: act in a session, record shared evidence, reflect in the pattern mirror, adapt the next session"
     >
-      <div className="case-keshi-rhythm__connections" data-wave-follow aria-hidden="true">
-        <svg viewBox="0 0 1200 760" preserveAspectRatio="none">
-          <defs>
-            <marker id="keshi-flow-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-              <path d="M 0 0 L 10 5 L 0 10 z" />
-            </marker>
-          </defs>
-          <g className="case-keshi-rhythm__flow-base">
-            <path d="M 185 225 L 185 535" />
-            <path d="M 345 610 C 430 610 430 460 485 420" />
-            <path d="M 715 335 C 790 285 795 145 855 145" />
-            <path d="M 1015 225 L 1015 535" />
-            <path d="M 855 640 C 725 720 455 720 335 645 C 175 545 70 430 95 315 C 105 270 135 240 185 225" />
-          </g>
-          <g className="case-keshi-rhythm__flow-signal">
-            <path className="is-capture" pathLength="100" d="M 185 225 L 185 535" />
-            <path className="is-pull" pathLength="100" d="M 345 610 C 430 610 430 460 485 420" />
-            <path className="is-return" pathLength="100" d="M 715 335 C 790 285 795 145 855 145" />
-            <path className="is-shape" pathLength="100" d="M 1015 225 L 1015 535" />
-            <path className="is-loop" pathLength="100" d="M 855 640 C 725 720 455 720 335 645 C 175 545 70 430 95 315 C 105 270 135 240 185 225" />
-          </g>
-        </svg>
-        <span data-surface="dark" className="case-keshi-rhythm__flow-label case-keshi-rhythm__flow-label--capture">capture</span>
-        <span data-surface="dark" className="case-keshi-rhythm__flow-label case-keshi-rhythm__flow-label--pull">pull latest review</span>
-        <span data-surface="dark" className="case-keshi-rhythm__flow-label case-keshi-rhythm__flow-label--return">return quiet signal</span>
-        <span data-surface="dark" className="case-keshi-rhythm__flow-label case-keshi-rhythm__flow-label--shape">shape next session</span>
-        <span data-surface="dark" className="case-keshi-rhythm__flow-label case-keshi-rhythm__flow-label--loop">behavior changes through the next choice</span>
+      {KESHI_LOOP_ORDER.map((node) => <KeshiFeedbackNode key={node.step} node={node} />)}
+    </ol>
+
+    <div className="case-keshi-loop__bridge" data-surface="base" data-surface-sheen="" data-wave-follow>
+      <div className="case-keshi-loop__bridge-head">
+        <span className="case-keshi-loop__icon" data-surface="dark" aria-hidden="true">
+          <Icon icon={HERMES_AGENT_ICON} />
+        </span>
+        <div>
+          <span>03 / Hermes Agent</span>
+          <strong>Scoped feedback bridge</strong>
+        </div>
       </div>
-
-      <KeshiFeedbackNode node={KESHI_FEEDBACK_NODES.session} position="session" />
-      <KeshiFeedbackNode node={KESHI_FEEDBACK_NODES.truth} position="truth" />
-
-      <div className="case-keshi-rhythm__slot case-keshi-rhythm__slot--hermes" data-wave-follow>
-        <article className="case-keshi-rhythm__hermes" data-surface="paper" data-surface-sheen="">
-          <header className="case-keshi-rhythm__hermes-head">
-            <span className="case-keshi-rhythm__hermes-icon" data-surface="dark" aria-hidden="true">
-              <Icon icon={HERMES_AGENT_ICON} />
-            </span>
-            <div>
-              <span>03 / Hermes Agent</span>
-              <strong>Scoped feedback bridge</strong>
-            </div>
-            <span className="case-keshi-rhythm__hermes-status" data-surface="dark"><i /> live loop</span>
-          </header>
-          <h3>
-            <span>Pull → interpret</span>
-            <span>Return → adapt</span>
-          </h3>
-          <p>
-            Reads the latest day through the agent gateway, safely fills missing evidence,
-            then turns the pattern into context for the next session.
-          </p>
-          <ol className="case-keshi-rhythm__hermes-steps">
-            <li data-surface="dark">
-              <span>GET</span>
-              <div><strong>Latest daily review</strong><small>sessions · habits · logs</small></div>
-            </li>
-            <li data-surface="dark">
-              <span>READ</span>
-              <div><strong>Pattern + load</strong><small>consistency · recovery · gaps</small></div>
-            </li>
-            <li data-surface="dark">
-              <span>SEND</span>
-              <div><strong>Next-session cue</strong><small>human confirms the change</small></div>
-            </li>
-          </ol>
-          <footer>
-            <span data-surface="dark">agent key</span>
-            <span data-surface="dark">per-user</span>
-            <span data-surface="dark">idempotent writes</span>
-          </footer>
-        </article>
-      </div>
-
-      <KeshiFeedbackNode node={KESHI_FEEDBACK_NODES.mirror} position="mirror" />
-      <KeshiFeedbackNode node={KESHI_FEEDBACK_NODES.next} position="next" />
+      <ol className="case-keshi-loop__steps">
+        <li data-surface="dark">
+          <span>GET</span>
+          <div><strong>Latest daily review</strong><small>sessions · habits · logs</small></div>
+        </li>
+        <li data-surface="dark">
+          <span>READ</span>
+          <div><strong>Pattern + load</strong><small>consistency · recovery · gaps</small></div>
+        </li>
+        <li data-surface="dark">
+          <span>SEND</span>
+          <div><strong>Next-session cue</strong><small>human confirms the change</small></div>
+        </li>
+      </ol>
     </div>
 
-    <div className="case-keshi-rhythm__control-note" data-wave-follow>
+    <p className="case-keshi-loop__note" data-wave-follow>
       <span><Icon icon="lucide:user-round-check" aria-hidden="true" /> Human in the loop</span>
       <strong>Hermes informs the next choice; it never silently takes over the timer.</strong>
-    </div>
+    </p>
   </section>
 );
 
@@ -416,31 +434,29 @@ const KeshiLayout = ({ project, techItems, gallery, hasLive, hasRepo }: CaseLayo
       data-reveal="mount"
       style={{ '--reveal-index': 1 }}
     >
-      <div className="case-keshi-hero__copy" data-wave-follow>
-        <p className="case-kicker">{project.category || 'Selected system'}</p>
-        <h1 id="case-title">{project.title}</h1>
-        <p className="case-keshi-hero__thesis">Focus that leaves evidence.</p>
-        <p className="case-lede">
-          A lo-fi Focus / Relax timer that grows into a quiet Discipline pattern mirror — not a coach or guilt machine.
-        </p>
-        <CaseActions hasLive={hasLive} hasRepo={hasRepo} project={project} />
-      </div>
       <div className="case-keshi-hero__visual">
-        <CaseHeroMedia project={project} sizes="(max-width: 900px) 100vw, 700px" />
-        <div className="case-keshi-hero__caption" data-surface="base" data-surface-sheen="" data-wave-follow>
-          <span><i className="is-focus" />Focus</span>
-          <Icon data-surface-positioned="" icon="lucide:arrow-right" aria-hidden="true" />
-          <span><i className="is-relax" />Relax</span>
-          <Icon data-surface-positioned="" icon="lucide:arrow-right" aria-hidden="true" />
-          <strong>Evidence</strong>
+        <CaseHeroMedia project={project} sizes="(max-width: 900px) 100vw, 1200px" />
+      </div>
+      <div className="case-keshi-hero__copy" data-wave-follow>
+        <p className="case-keshi-hero__meta">
+          <span>{project.category || 'Selected system'}</span>
+          <span>Role — {project.role || 'Software Engineer'}</span>
+        </p>
+        <h1 id="case-title">{project.title}</h1>
+        <div className="case-keshi-hero__brief">
+          <p className="case-keshi-hero__thesis">Focus that leaves evidence.</p>
+          <p className="case-lede">
+            A lo-fi Focus / Relax timer that grows into a quiet Discipline pattern mirror — not a coach or guilt machine.
+          </p>
+          <CaseActions hasLive={hasLive} hasRepo={hasRepo} project={project} />
         </div>
       </div>
     </header>
 
-    <KeshiStatePair />
+    <KeshiStateDiptych />
+    <KeshiDisciplineProof project={project} gallery={gallery} />
     <KeshiAtmosphere project={project} gallery={gallery} />
     <KeshiRhythmDiagram />
-    <KeshiDisciplineProof project={project} gallery={gallery} />
     <KeshiArchitecture techItems={techItems} />
   </>
 );

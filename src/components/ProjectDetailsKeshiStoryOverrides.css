@@ -1,10 +1,6 @@
 /* Keshi responsive, monochrome text, and wave refinements. Surface recipes live in ProjectDetailsKeshiVelumaSurface.css. */
 @media (max-width: 900px) {
 
-  .case-keshi-hero__visual {
-    width: 100%;
-  }
-
   .case-keshi-states__stage {
     grid-template-columns: 1fr;
   }
@@ -382,7 +378,6 @@
   text-shadow: none;
 }
 
-.case-section--keshi .case-keshi-hero__caption i,
 .case-section--keshi .case-keshi-rhythm__hermes-status i,
 .case-section--keshi .case-keshi-rhythm__slot::before {
   border-color: #090909;
@@ -444,7 +439,6 @@
 }
 
 .scroll-perspective-wave.case-section--keshi.is-scroll-wave-active :is(
-  .case-keshi-hero__caption,
   .case-keshi-state__caption,
   .case-keshi-proof__caption,
   .case-keshi-pattern__facts > div,

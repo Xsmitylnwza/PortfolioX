@@ -35,7 +35,33 @@
 }
 
 .hermes-hero__media {
+  position: relative;
   min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  border: var(--border-width-hairline) solid;
+  border-radius: var(--radius-detail-surface);
+}
+
+.hermes-hero__media img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+
+.hermes-hero__media figcaption {
+  width: fit-content;
+  margin: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border: var(--border-width-hairline) solid;
+  border-radius: var(--radius-pill);
+  color: var(--color-detail-soft-strong);
+  font-family: var(--font-mono);
+  font-size: var(--type-size-label);
+  letter-spacing: var(--type-tracking-eyebrow);
+  line-height: var(--type-leading-body);
+  text-transform: uppercase;
 }
 
 .hermes-hero__private {

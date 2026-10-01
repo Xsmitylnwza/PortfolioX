@@ -1,5 +1,4 @@
 import { Icon } from '@iconify/react';
-import CaseMediaFrame from './ProjectDetailsMedia';
 import { CaseActions, StackBlock } from './ProjectDetailsShared';
 import { formatIndex } from './ProjectDetailsFormat';
 import type { CaseLayoutProps } from '../features/project-details/types';
@@ -78,7 +77,7 @@ const HermesSignature = () => (
 
     <ol className="hermes-signature__row" aria-label="Forward route of one request">
       {ROUTE_STEPS.map((step, index) => (
-        <li className="hermes-step" data-surface="base" data-surface-sheen="" data-wave-follow key={step.stage}>
+        <li className="hermes-step" data-surface="base" data-surface-sheen="" data-surface-anchor="" data-wave-follow key={step.stage}>
           <span className="hermes-step__stage">{formatIndex(index + 1)} · {step.stage}</span>
           <span className="hermes-step__icon" data-surface="dark" aria-hidden="true">
             <Icon icon={step.icon} />
@@ -92,7 +91,7 @@ const HermesSignature = () => (
       ))}
     </ol>
 
-    <div className="hermes-return" data-surface="paper" data-surface-sheen="" data-wave-follow>
+    <div className="hermes-return" data-surface="paper" data-surface-sheen="" data-surface-anchor="" data-wave-follow>
       <div className="hermes-return__copy">
         <span>{formatIndex(5)} · Return</span>
         <strong>Verified state returns to the room that owns it.</strong>
@@ -133,7 +132,7 @@ const HermesContexts = ({ description }: { description: string }) => (
         <li
           className="hermes-context"
           data-surface={context.focus ? 'paper' : 'base'}
-          data-surface-sheen=""
+          data-surface-sheen="" data-surface-anchor=""
           data-wave-follow
           key={context.label}
         >
@@ -156,14 +155,14 @@ const HermesRule = () => (
   <section className="hermes-rule case-reveal" data-reveal="scroll" style={{ '--reveal-index': 2 }} aria-labelledby="hermes-rule-title">
     <HermesSectionHead eyebrow="Failure → rule" title="Scheduler health is not delivery proof." id="hermes-rule-title" />
     <div className="hermes-rule__pair">
-      <article className="hermes-rule__tile" data-surface="base" data-surface-sheen="" data-wave-follow>
+      <article className="hermes-rule__tile" data-surface="base" data-surface-sheen="" data-surface-anchor="" data-wave-follow>
         <span className="hermes-rule__icon" data-surface="dark" aria-hidden="true"><Icon icon="lucide:circle-alert" /></span>
         <small>Observed failure</small>
         <h3>Process state looked healthy.</h3>
         <p>A cron job reported OK while the poller had not run from the correct path.</p>
       </article>
       <span className="hermes-rule__bridge" data-surface="dark" aria-hidden="true"><Icon icon="lucide:arrow-right" /></span>
-      <article className="hermes-rule__tile" data-surface="paper" data-surface-sheen="" data-wave-follow>
+      <article className="hermes-rule__tile" data-surface="paper" data-surface-sheen="" data-surface-anchor="" data-wave-follow>
         <span className="hermes-rule__icon" data-surface="dark" aria-hidden="true"><Icon icon="lucide:shield-check" /></span>
         <small>Durable rule</small>
         <h3>Verify the observable outcome.</h3>
@@ -176,19 +175,14 @@ const HermesRule = () => (
 const HermesProjectDetails = ({ project, techItems, hasLive, hasRepo }: CaseLayoutProps) => (
   <>
     <header className="hermes-hero case-reveal" data-reveal="mount" style={{ '--reveal-index': 1 }}>
-      <div className="hermes-hero__media">
-        <CaseMediaFrame
-          media={project.heroMedia}
+      <figure className="hermes-hero__media" data-surface="base" data-wave-follow data-poster-transition-target="">
+        <img
+          data-wave-media
+          src={project.heroMedia.image}
           alt="Gold Hermes Agent emblem connected to Discord conversations, Notion project records and Google Calendar in a conceptual command center"
-          cover
-          eager
-          sizes="(max-width: 900px) 100vw, 760px"
-          className="case-media__frame--hero"
-          label="Conceptual cover"
-          kindLabel="Conceptual illustration"
-          transitionTarget
         />
-      </div>
+        <figcaption data-surface="dark">Conceptual cover · no private operational data</figcaption>
+      </figure>
       <div className="hermes-hero__copy" data-wave-follow>
         <p className="case-kicker">{project.category}</p>
         <h1 id="case-title">Hermes<br />Command Center</h1>

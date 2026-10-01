@@ -1,7 +1,7 @@
 # PortfolioX — Design Rules
 
 **สถานะ: DRAFT (จบขั้น 4 ของ [AI Design Harness Plan](docs/design/AI-DESIGN-HARNESS-PLAN.md))**
-วันที่: 2026-09-22 · แก้ล่าสุดโดย: harness ขั้น 3
+วันที่: 2026-09-22 · แก้ล่าสุด: 2026-10-01 (เพิ่ม A29–A33, G13–G15 จาก ModeNote pilot)
 
 **บังคับใช้ได้แล้ว:** central tokens ที่ [`src/styles/tokens.css`](src/styles/tokens.css),
 กฎ `design/token-usage` ทั้งสี่ตระกูล (CSS + static JSX), `design/ownership-boundaries`
@@ -57,13 +57,18 @@
 | A19 | ความรู้สึกศิลปะ/คาดเดาไม่ได้ต่อเนื่องจาก gallery เข้าสู่ case study — **ไม่**เปลี่ยนเป็นโหมดนิ่ง/ปลอดภัยกว่า | case studies | DESIGN-DISCOVERY Round 13 criterion 4 |
 | A20 | Evidence และเนื้อหาข้อเท็จจริง (สิ่งที่สร้างจริง, บทบาทของเจ้าของ, technical claim) ต้องหาเจอและอ่านออกเสมอ ไม่ว่าบรรยากาศรอบข้างจะคาดเดายากแค่ไหน — art ควบคุม frame/จังหวะ/ความประหลาดใจ ไม่ควบคุมว่าจะหาข้อเท็จจริงเจอไหม **เงื่อนไขคู่กับ A19 เสมอ** | case studies | DESIGN-DISCOVERY Round 13 criterion 5; ประสาน [PRODUCT.md](PRODUCT.md) §Positioning "recruiter-readable" |
 | A21 | จังหวะการเล่าแบบ "รถไฟเหาะ" — ขึ้นลงของความเข้มข้นทางภาพ/อารมณ์ตลอดหน้าอย่างตั้งใจ ไม่ใช่จังหวะเรียบเดียวตลอด เป้าหมายคือให้คนดูตื่นเต้นและอยากเลื่อนต่อ | motion / pacing | DESIGN-DISCOVERY Round 13 criterion 6 |
-| A22 | แต่ละโปรเจกต์ต้องเดาแพทเทิร์นจากโปรเจกต์อื่นไม่ได้ — ห้ามใช้ shared section-order template; แต่ทั้งเว็บยังต้องอ่านเป็น art direction เดียวกัน และแต่ละโปรเจกต์ต้องมี gimmick/hook ของตัวเอง | composition | DESIGN-DISCOVERY Round 13 criterion 7 |
+| A22 | แต่ละโปรเจกต์ต้องเดาแพทเทิร์นจากโปรเจกต์อื่นไม่ได้ — ห้ามใช้ shared section-order template; แต่ทั้งเว็บยังต้องอ่านเป็น art direction เดียวกัน และแต่ละโปรเจกต์ต้องมี gimmick/hook ของตัวเอง | composition | DESIGN-DISCOVERY Round 13 criterion 7 · ความหมายเชิงปฏิบัติ: ดู A31 |
 | A23 | สีแดง/ดำของเดิมคือ stage color ที่ยืนยันแล้ว — ทดสอบ live 3 ทางเลือก (burgundy, terracotta, near-black+accent) บนหน้าเว็บจริงแล้วแพ้สีเดิมทั้งหมด "ดูแพงขึ้น" ต้องมาจาก material/motion/typography/detail ไม่ใช่การลดความอิ่มตัวของสีพื้น | ทั้งเว็บ | DESIGN-DISCOVERY Round 14 criterion 1–2 |
 | A24 | ฟอนต์ display/section heading = **Syne** ยืนยันแล้ว — ทดสอบ live เทียบ Syne vs Instrument Serif (แกลเลอรี่/บทกวี) vs Permanent Marker (ลายมือ/การ์ตูน) บนหัวข้อจริงของ Keshi แล้วเลือก Syne ตรงกับที่ใช้อยู่แล้ว 17/18 จุดพอดี | display/heading | DESIGN-DISCOVERY Round 15 |
 | A25 | **หน้า `/project/:id` ใช้สีดำ ขาว และระดับเทาเท่านั้นสำหรับ UI chrome**: ตัวหนังสือ, icon, diagram ที่เว็บวาดเอง, chip, container, border, shadow และ state marker ห้ามยืมเขียว/ส้ม/เหลือง/ม่วงหรือสีแบรนด์จากแอปมาเป็น accent สีแดงสงวนไว้ให้ background stage เท่านั้น ภาพ/วิดีโอเดโมจริงคงสีต้นฉบับเพราะเป็นหลักฐาน | project details ทุกหน้า | คำสั่งเจ้าของ 2026-09-23: “ใช้แค่สองสี... สีดำกับสีขาวและโทนที่ไล่ความเข้ม... สีเขียว สีส้ม...ห้ามใช้เด็ดขาด” |
 | A26 (superseded) | Caption บน Keshi เคยเลือกวัสดุ **ด้านโปร่ง 27% + blur 2px** ผ่าน `CaseMatteSurface`; ถูกแทนด้วยการทดลอง Veluma 2026-09-24 และ A28; เก็บหลักการ material/wrapper/content ownership | ประวัติ Keshi pilot | การเลือกของเจ้าของ 2026-09-23; [material contract เดิม](docs/design/CASE-MATTE-SURFACE-SPEC.md) |
 | A27 | เส้นขอบขาวต้องมีหน้าที่ระบุ focus, selection, grouping หรือ evidence boundary ถ้าเป็นแค่กรอบตกแต่งให้ตัดออก ป้าย media สีขาวมุมซ้ายบนของ demo เป็น element ที่เจ้าของเลือกเก็บ | project details chrome | คำสั่งเจ้าของ 2026-09-23; ตำแหน่งเส้นขอบในภาพอ้างอิงยังต้องพิสูจน์ก่อนแก้เฉพาะจุด |
 | A28 | Detail surface ใช้ recipe ที่ตรงกับ Veluma render จริง: fill โปร่ง + rim + sheen + shadow และ **ไม่มี `backdrop-filter`** ทุก tier (`base`, `dark`, `paper`); CSS-only material เป็นเจ้าของพื้นผิวโดยไม่เพิ่ม DOM wrapper และไม่พึ่ง backdrop root ของ ancestor; คง radius/layout/spacing เดิม | ทุก project detail รวม Keshi next preview; เจ้าของสั่ง scan และแก้ทุกหน้าหลังพบ ModeNote ยังใช้พื้นผิวเดิม | [Veluma surface spec 2026-09-30](docs/design/2026-09-30-veluma-surface-spec.md) §2–4; [full rollout report](docs/design/2026-09-30-detail-surface-rollout-report.md) |
+| A29 | **ระบบร่วมของ Project Details** (ใช้กับทุกหน้า): Hero มีองค์ประกอบครบ — ชื่อ, คำอธิบายบรรทัดเดียว, meta, ภาพสินค้าหนึ่งภาพที่แข็งแรง, clean · หัว section = mono eyebrow ที่ gutter ซ้าย + หัวข้อ Syne ไม่เกิน 2 บรรทัด · การ์ดเรียงแนวนอน สูงเท่ากัน (icon + label สั้น + chip) และมี `paper` tile หนึ่งใบต่อกลุ่มเป็นจุดโฟกัส ไม่ใช้คอลัมน์สูงแคบอัดข้อความ · media เป็นองค์ประกอบใหญ่สุดของ section (ภาพ/วิดีโอจริงของสินค้า, pill label มุมซ้ายบน, kind badge) · ข้อความในการ์ด 1–2 บรรทัด แบบ abstract และกระชับ แต่ตรงข้อเท็จจริง (§4) · "Built with" ใช้ `StackBlock` ร่วม | ทุก `/project/:id` | เจ้าของยืนยันรายข้อ 2026-10-01 (T2–T7) จากการเทียบ Veluma กับ ModeNote; [taste ledger](docs/design/2026-10-01-taste-ledger.md) |
+| A30 | ความยาวหน้าขึ้นกับความซับซ้อนของโปรเจกต์ ไม่มีงบจำนวนจอตายตัว | ทุก `/project/:id` | เจ้าของ 2026-10-01 (T1) |
+| A31 | **ปรับ A22 ให้ชัดขึ้น:** ทุกหน้าแชร์ *ระบบ* (A25, A28, A29, A32) แต่ไม่แชร์ *ลำดับ* — ลำดับ section, grid rhythm, ตำแหน่ง media และ **Hero** เปลี่ยนต่างกันได้รายโปรเจกต์ (เช่น media เต็มจอ หรือแบ่งซ้ายขวาสลับข้าง) ต่างกัน "เล็กน้อย" ได้ แต่ห้ามกลายเป็น template; ทุกหน้าต้องมี **signature section** อย่างน้อยหนึ่งส่วนที่มาจากกลไกจริงของโปรเจกต์นั้น (ตัวอย่างที่รับแล้ว: working loop ของ Veluma, dual capture ของ ModeNote) · หน้าที่รับแล้วคือตัวเทียบ: หน้าใหม่ต้องไม่ซ้ำลำดับ pattern ทั้งชุดกับหน้าที่รับแล้วหน้าใด | ทุก `/project/:id` | เจ้าของ 2026-10-01 (T9, เลือกให้ Hero เปลี่ยนได้); กลไกตรวจยังไม่มี — ดู G13 |
+| A32 | Project Details ใช้ semantic spacing + type scale กลางใน `tokens.css` (block "Project Details scale") ที่ปัดมาจากค่าจริงของ Veluma ไม่ใช่จังหวะใหม่ ตอบ G2/G3 บางส่วน; migrate หน้าเดิมเข้า scale ทำเป็นงานแยก | Project Details | เจ้าของเลือกตัวเลือก A ระหว่าง ModeNote pilot 2026-10-01 (T8); คอมมิต `c941b98` |
+| A33 | คลิปเดโมที่ใช้ข้อมูลสมมติหรือตัดต่อเวลา ต้องติดป้ายชนิด "Fictional demo" ทุกคลิป และมีบรรทัดแจ้งหนึ่งครั้งใน section ที่ใช้ ("fictional data and edited timing"); คำบรรยายบอกเฉพาะสิ่งที่เห็นในภาพ — คลิปเงียบไม่อ้างว่า "เล่นเสียง"; ไม่อ้างความแม่นยำ ความเร็ว หรือความปลอดภัยที่คลิปไม่ได้แสดง | ModeNote v2 clips; ใช้เป็นแบบกับคลิปลักษณะเดียวกัน | เจ้าของรับ pilot 2026-10-01; หลักฐาน render receipt ของ repo modenote; ที่มาของถ้อยคำ: รีวิว Codex ใน Orca run `run_9d7cd9ec0fac` |
 
 **การทบทวนปัจจุบัน (2026-09-30):** A6–A11 เป็นบันทึกสูตร optical glass เดิม และ A26 เป็นวัสดุ matte เดิมที่ถูกแทนแล้ว; อย่านำกลับมาใช้กับ caption หรือขยายไปทุกหน้า ทิศทางวัสดุปัจจุบันคือ A28 ส่วนบทบาท/รูปทรงของ container ในแต่ละ story beat ยังต้องตรวจ render ดู [criteria log](docs/design/DESIGN-DISCOVERY.md), [quality contract draft](docs/design/PROJECT-PAGE-QUALITY-CONTRACT-DRAFT.md) และ [Veluma surface spec](docs/design/2026-09-30-veluma-surface-spec.md)
 
@@ -211,11 +216,11 @@ Legacy 5,297 literals อยู่ใน baseline (ไม่ต้องไล�
 
 | # | Gap | ทำไมยังเปิดอยู่ |
 | --- | --- | --- |
-| G1 | ขอบเขตที่ project identity (layout, material, imagery) เปลี่ยนจาก shared world ได้แค่ไหน | **เรื่อง composition เปิดกว้างขึ้นบางส่วน** — Round 13 (A22) ยืนยันว่าแต่ละโปรเจกต์ต้องไม่ใช้ shared section-order template และต้องมี gimmick ของตัวเอง **เรื่องสีพื้นหลักปิดแล้ว** — ดู A23 |
+| G1 | ขอบเขตที่ project identity (layout, material, imagery) เปลี่ยนจาก shared world ได้แค่ไหน | **เรื่อง composition เปิดกว้างขึ้นบางส่วน** — Round 13 (A22) ยืนยันว่าแต่ละโปรเจกต์ต้องไม่ใช้ shared section-order template และต้องมี gimmick ของตัวเอง **เรื่องสีพื้นหลักปิดแล้ว** — ดู A23 · ลำดับ section และ Hero ปิดเชิงหลักการโดย A31; ขอบเขตของ "ต่างกันเล็กน้อย" ยังไม่มีตัวเลข |
 | G2 | Typography roles (evidence / caption / control) และเกณฑ์ readability ขั้นต่ำ | **Display/section heading ปิดแล้ว = Syne** (ดู A24) ที่เหลือ (evidence, control, readability minimum) ยังไม่ตัดสิน |
-| G3 | Spacing / radius / control-size scale กลาง | **มีบางส่วนแล้ว** สำหรับ pilot slice; ที่เหลือยังเป็น literal กระจายใน 27 ไฟล์ |
+| G3 | Spacing / radius / control-size scale กลาง | **มีบางส่วนแล้ว** สำหรับ pilot slice; ที่เหลือยังเป็น literal กระจายใน 27 ไฟล์ · A32 เพิ่ม scale ของ Project Details แล้ว หน้าเดิมยังไม่ migrate |
 | G3b | `width` / `height` ยังไม่ถูกคุม — `--size-chip-dot` จึงไม่มีอะไรบังคับ | สอง property นี้ส่วนใหญ่เป็น structural (`100%`, `auto`, fluid) การคุมแบบเหมารวมจะได้ false positive จำนวนมาก ต้องนิยาม control/icon size ให้ชัดก่อน |
-| G4 | Composition: alignment และ content constraint ร่วม โดยไม่บังคับ section order เดียวกัน | **ตอบบางส่วนแล้ว** — A22 ยืนยันหลักการ (ห้าม template เดียวกัน, ต้องมี gimmick ต่อโปรเจกต์) แต่ยังไม่มีเกณฑ์ alignment/content constraint ที่วัดได้ |
+| G4 | Composition: alignment และ content constraint ร่วม โดยไม่บังคับ section order เดียวกัน | **ตอบบางส่วนแล้ว** — A22 ยืนยันหลักการ (ห้าม template เดียวกัน, ต้องมี gimmick ต่อโปรเจกต์) แต่ยังไม่มีเกณฑ์ alignment/content constraint ที่วัดได้ — A29/A31 ให้องค์ประกอบกับหลักการแล้ว ยังขาดเกณฑ์ที่เครื่องตรวจ |
 | G5 | Detail surface: supported backgrounds, aspect ratios, fallback browsers, touch behavior | A28 rollout ตรวจ Chrome/Firefox ที่ desktop/mobile ครบแปด render states แล้ว; owner visual acceptance และการใช้งานบนอุปกรณ์ touch จริงยังไม่ยืนยัน ดู full rollout report |
 | G6 | Motion: ownership ของ transform, interruption, reduced motion, easing | **ตอบบางส่วนแล้ว** — A21 ให้หลักการ pacing ("รถไฟเหาะ" ขึ้นลงตั้งใจ) แต่ยังไม่มีกลไกที่วัดได้ (transform ownership, interruption, easing curve จริง) |
 | G7 | Interaction states (focus / hover / active / disabled / loading / error / no-WebGL / no-optics) | **Deprioritized ตามคำสั่งเจ้าของ 2026-09-22** — โฟกัสความสวยงามก่อน ไม่ใช่ว่าตัดสินแล้ว; ความเสี่ยงจริงที่พบ: `GalleryScene.jsx` ไม่มี fallback ถ้า WebGL ใช้ไม่ได้ ยังไม่มี fallback UI |
@@ -224,6 +229,9 @@ Legacy 5,297 literals อยู่ใน baseline (ไม่ต้องไล�
 | G9 | Media/diagram: crop, caption, loading, playback controls, provenance | ยังไม่ตัดสิน |
 | G10 | Verified-capability registry รวมศูนย์ | มี brief รายโปรเจกต์ แต่ยังไม่รวม |
 | G11 | เกณฑ์ "ดูเป็น AI" ของโปสเตอร์ปก — ยังไม่มีนิยามที่ตรวจได้ว่าโปสเตอร์ใหม่ผ่านหรือไม่ | A18 ยืนยันว่าต้องทำใหม่ทั้งหมด แต่ยังไม่มี reference/solution ที่เลือกแล้ว รอ research |
+| G13 | ตัวตรวจ "ไม่เป็น template": ยังไม่มี vocabulary ของ section pattern, `data-section-pattern`, หรือ check เทียบลำดับกับหน้าที่รับแล้ว | เสนอใน taste ledger T9 แต่ยังไม่สร้าง — ห้ามอ้างว่า gate ตรวจเรื่องนี้ได้จนกว่าจะมี; ค่า N (ซ้ำตำแหน่งเดียวกันได้กี่ที่) ยังไม่ตัดสิน |
+| G14 | ช่วงของ Hero variant ที่ยอมรับ (full-bleed, สลับข้าง ฯลฯ) และ composition brief รายโปรเจกต์ที่ต้องอนุมัติก่อนลงมือ | A31 เปิดให้ Hero เปลี่ยนได้ แต่ยังไม่มีรายการ variant ที่ผ่านการดูจริงนอกจาก Veluma/ModeNote |
+| G15 | ModeNote Interface proof: คลิป 3 ใบเรียงเท่ากันกว้างราว 360px ที่ 1440 อ่านตัวหนังสือไทยในคลิปยาก; chip "low latency" เป็นคำอ้างความเร็วที่สืบมาจาก copy เดิม | เจ้าของรับ pilot ตามสภาพและสั่งเก็บไว้แก้หลังรอบ loop แรก ([ledger](docs/design/2026-10-01-taste-ledger.md) Pilot status) |
 
 ### Open work items
 
@@ -250,6 +258,7 @@ Legacy 5,297 literals อยู่ใน baseline (ไม่ต้องไล�
 - [Design system audit](docs/design/2026-09-22-design-system-audit.md)
 - [Foundation review](docs/design/DESIGN-FOUNDATION-REVIEW.md) — ข้อเสนอ ยังไม่อนุมัติ
 - [Design discovery](docs/design/DESIGN-DISCOVERY.md) — ประวัติ feedback
+- [Taste ledger 2026-10-01](docs/design/2026-10-01-taste-ledger.md) — T1–T9 ที่มาของ A29–A33, G13–G15
 - [PRODUCT.md](PRODUCT.md)
 - [Selected Keshi material](design/ab/keshi-liquid-glass-material-r1/SELECTED.md)
 - [QA matrix](docs/design/implementation/phase-6-final-qa.md)

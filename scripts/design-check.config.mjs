@@ -361,7 +361,6 @@ export const RENDER_TARGETS = [
       /^src\/styles\/detail-surface[.]css$/,
       ...PROJECT_SHARED_SOURCES,
       /^src\/components\/ProjectMedia[.](?:jsx|tsx)$/,
-      /^src\/components\/ProjectDetailsPrimitives[.](?:jsx|tsx)$/,
       /^src\/features\/project-details\/cases\/freeflow\/FreeFlowCase[.](?:jsx|tsx)$/,
       /^src\/components\/ProjectDetailsFreeflow[.](?:jsx|tsx)$/,
       /^src\/components\/ProjectDetailsStorySharedOverrides[.]css$/,

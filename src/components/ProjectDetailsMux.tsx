@@ -211,20 +211,15 @@ type MuxMoment = {
 
 const mediaKey = (media: ProjectMedia) => (typeof media === 'string' ? media : media.video || media.image);
 
-// Pair every clip with its caption at its SOURCE index in the project record,
-// so captions follow the media even if the gallery is reordered or shortened.
-const buildMuxMoments = (project: ProjectRecord, gallery: ProjectMedia[]): MuxMoment[] =>
-  gallery.map((media, position) => {
-    const key = mediaKey(media);
-    const found = project.gallery?.findIndex((source) => mediaKey(source) === key) ?? -1;
-    const source = found >= 0 ? found : position;
-    return {
-      media,
-      label: project.galleryLabels?.[source] || `Moment ${position + 1}`,
-      description: project.galleryDescriptions?.[source],
-      key: key || `moment-${position}`,
-    };
-  });
+// Records are built straight from the source gallery, so each caption is read
+// at its own source index; the index in the key survives duplicate media paths.
+const buildMuxMoments = (project: ProjectRecord, fallback: ProjectMedia[]): MuxMoment[] =>
+  (project.gallery ?? fallback).map((media, sourceIndex) => ({
+    media,
+    label: project.galleryLabels?.[sourceIndex] || `Moment ${sourceIndex + 1}`,
+    description: project.galleryDescriptions?.[sourceIndex],
+    key: `${mediaKey(media)}#${sourceIndex}`,
+  }));
 
 const ProjectMuxMoments = ({ project, gallery }: { project: ProjectRecord; gallery: ProjectMedia[] }) => {
   const moments = buildMuxMoments(project, gallery);

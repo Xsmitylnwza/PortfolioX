@@ -401,7 +401,7 @@
 }
 
 .case-media__frame--mux-moment {
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 16 / 9;
 }
 
 .case-mux-moment__copy {

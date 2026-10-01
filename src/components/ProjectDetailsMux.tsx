@@ -213,8 +213,8 @@ const mediaKey = (media: ProjectMedia) => (typeof media === 'string' ? media : m
 
 // Records are built straight from the source gallery, so each caption is read
 // at its own source index; the index in the key survives duplicate media paths.
-const buildMuxMoments = (project: ProjectRecord, fallback: ProjectMedia[]): MuxMoment[] =>
-  (project.gallery ?? fallback).map((media, sourceIndex) => ({
+const buildMuxMoments = (project: ProjectRecord, gallery: ProjectMedia[]): MuxMoment[] =>
+  gallery.map((media, sourceIndex) => ({
     media,
     label: project.galleryLabels?.[sourceIndex] || `Moment ${sourceIndex + 1}`,
     description: project.galleryDescriptions?.[sourceIndex],
@@ -243,6 +243,7 @@ const ProjectMuxMoments = ({ project, gallery }: { project: ProjectRecord; galle
             className={[
               'case-mux-moment',
               index % 2 === 1 ? 'case-mux-moment--flip' : '',
+              index === 0 ? 'case-mux-evidence__card--lead' : '',
             ]
               .filter(Boolean)
               .join(' ')}
@@ -255,7 +256,7 @@ const ProjectMuxMoments = ({ project, gallery }: { project: ProjectRecord; galle
               className="case-media__frame--mux-moment"
               label={moment.label}
             />
-            <div className="case-mux-moment__copy" data-wave-follow>
+            <div className="case-mux-evidence__copy" data-wave-follow>
               <span>Moment {formatIndex(index + 1)}</span>
               <h3>{moment.label}</h3>
               {moment.description && <p>{moment.description}</p>}

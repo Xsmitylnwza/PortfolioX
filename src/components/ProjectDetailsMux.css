@@ -404,35 +404,39 @@
   aspect-ratio: 16 / 9;
 }
 
-.case-mux-moment__copy {
+.case-mux-evidence__copy {
   display: grid;
-  gap: var(--space-2);
+  gap: 0.28rem;
 }
 
-.case-mux-moment__copy > span {
-  color: var(--color-detail-faint-strong);
+.case-mux-evidence__copy > span {
+  color: var(--case-faint);
   font-family: var(--font-mono);
-  font-size: var(--type-size-label);
-  letter-spacing: var(--type-tracking-eyebrow);
+  font-size: 0.55rem;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
 }
 
-.case-mux-moment__copy h3 {
+.case-mux-evidence__copy h3 {
   margin: 0;
-  color: var(--color-detail-ink);
+  color: var(--case-ink);
   font-family: var(--font-display);
-  font-size: var(--type-size-heading-sm);
+  font-size: clamp(1.2rem, 2vw, 1.7rem);
   font-weight: 700;
-  letter-spacing: var(--type-tracking-heading);
-  line-height: var(--type-leading-heading);
+  letter-spacing: -0.03em;
+  line-height: 1.12;
 }
 
-.case-mux-moment__copy p {
-  max-width: var(--measure-copy);
-  margin: var(--space-1) 0 0;
-  color: var(--color-detail-muted-strong);
-  font-size: var(--type-size-body);
-  line-height: var(--type-leading-body);
+.case-mux-evidence__card--lead .case-mux-evidence__copy h3 {
+  font-size: clamp(1.55rem, 2.7vw, 2.15rem);
+}
+
+.case-mux-evidence__copy p {
+  max-width: 44rem;
+  margin: 0.15rem 0 0;
+  color: var(--case-mute);
+  font-size: 0.92rem;
+  line-height: 1.5;
 }
 
 .case-mux-pipeline + .case-mux-agents {

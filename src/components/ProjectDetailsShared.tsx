@@ -34,6 +34,17 @@ const CaseActions = ({ hasLive, hasRepo, project }: CaseActionsProps) => {
             {project.liveNotice || 'Under maintenance — not open for use yet.'}
           </span>
         </div>
+      ) : hasLive && project.liveStatus === 'public' && project.link ? (
+        <a
+          className="case-btn case-btn--primary"
+          href={project.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          data-cursor="default"
+        >
+          <Icon icon="lucide:external-link" aria-hidden="true" />
+          View live
+        </a>
       ) : hasLive && (
         <button
           type="button"

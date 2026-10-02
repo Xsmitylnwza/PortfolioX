@@ -11,6 +11,7 @@ const project = {
     coverImage: '/assets/project-covers/veluma-cover-v4.webp',
     heroMedia: { image: '/assets/project-covers/veluma-cover-v4.webp', kind: 'cover' },
     link: 'https://veluma.xsmity.cloud/',
+    liveStatus: 'public',
     code: `// Workspace start is explicit — nothing auto-runs on open/import/restore.
 async function startWorkspace(workspace) {
   const ready = await resolveDependencies(workspace.sessions);

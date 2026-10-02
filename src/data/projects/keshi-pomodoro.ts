@@ -9,7 +9,7 @@ const project = {
     fullDescription: 'Keshi Pomodoro sits between sterile stopwatches and aesthetic shells that forget tracking. It pairs an intentional focus/break timer (scrapbook lo-fi UI, theme studio, radio widget) with a Discipline surface that answers whether you actually showed up: binary habit matrices (Grid / Lanes / Weeks / Rank), focus reality (Hours / Days / Rank), 7D–30D range, evidence logs, and per-user habit management. The stack is React 19 + TypeScript + Vite on a Node API with SQLite discipline storage, plus Hermes-ready idempotent writes so humans and agents share the same truth. Live at pomodoro.xsmity.cloud.',
     tags: ['React 19', 'TypeScript', 'Vite', 'Tailwind CSS', 'Node API', 'SQLite', 'Framer Motion'],
     // MP4 can be deformed by the shared WebGL wave; WebP is the clean poster.
-    coverImage: '/assets/project-covers/keshi-pomodoro-cover-v3.webp',
+    coverImage: '/assets/project-covers/keshi-pomodoro-cover-v4.webp',
     heroMedia: {
       image: '/assets/keshi-pomodoro/main_page.webp',
       video: '/assets/keshi-pomodoro/main_page.mp4',

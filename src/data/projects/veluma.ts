@@ -24,17 +24,15 @@ async function startWorkspace(workspace) {
   markWorkspaceRunning(workspace.id);
 }`,
     gallery: [
-      { image: '/assets/veluma/project-return.gif' },
-      { image: '/assets/veluma/start-stack.gif' },
-      { image: '/assets/veluma/reset-canvas.gif' },
-      { image: '/assets/veluma/canvas-material.gif' },
+      { image: '/assets/veluma/v5/hero.jpg', video: '/assets/veluma/v5/hero.mp4' },
+      { image: '/assets/veluma/v5/terminal.jpg', video: '/assets/veluma/v5/terminal.mp4' },
+      { image: '/assets/veluma/v5/canvas.jpg', video: '/assets/veluma/v5/canvas.mp4' },
     ],
-    galleryLabels: ['Return to a Project', 'Start the stack', 'Reset the scene', 'Shape the Canvas'],
+    galleryLabels: ['One Canvas, every agent', 'Add a terminal', 'Shape the Canvas'],
     galleryDescriptions: [
-      'Switch Projects from the revealed Dock and return to the Canvas that belongs to that work.',
-      'Start every ready terminal from one explicit Dock command.',
-      'Use Auto Tile to bring a scattered terminal scene back into balance.',
-      'Change a Project backdrop and pane material without losing its working context.',
+      'Switch to another Project, start every terminal with one command, then follow a server link into a browser pane on the same Canvas.',
+      'Add a terminal from the Dock, name it and pick its command and icon in the session editor, then start it on the Canvas.',
+      'Swap the Project backdrop and tune pane readability without losing the working context.',
     ],
     demoPresentation: 'stacked',
     flow: [

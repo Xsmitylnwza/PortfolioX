@@ -514,3 +514,53 @@
     transition: none;
   }
 }
+
+/* Split hero — the single hero every Project Details page uses (DESIGN.md A29). */
+.case-split-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  gap: var(--space-hero-gap);
+  align-items: center;
+  margin-bottom: var(--space-section);
+}
+
+.case-split-hero__copy h1 {
+  margin: 0;
+  color: var(--color-detail-ink);
+  font-family: var(--font-display);
+  font-size: var(--type-size-display);
+  font-weight: 700;
+  letter-spacing: var(--type-tracking-display);
+  line-height: var(--type-leading-display);
+}
+
+.case-split-hero__copy .case-lede,
+.case-split-hero__copy .case-role {
+  color: var(--color-detail-soft-strong);
+}
+
+.case-split-hero__copy .case-lede {
+  max-width: var(--measure-copy);
+}
+
+/* 8:5 is the template frame. Four classes outrank the later cover (.case-section .case-media__frame.case-media__frame--cover)
+   and Keshi story (40:19) rules without touching import order or any hero outside this block. */
+.case-split-hero .case-split-hero__media .case-media__frame.case-media__frame--hero {
+  aspect-ratio: 8 / 5;
+}
+
+.case-split-hero__caption {
+  margin: var(--space-3) 0 0;
+  color: var(--color-detail-muted-strong);
+  font-family: var(--type-family-mono);
+  font-size: var(--type-size-label);
+  letter-spacing: var(--type-tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+@media (max-width: 900px) {
+  .case-split-hero {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+}

@@ -1,5 +1,5 @@
 import { Icon } from '@iconify/react';
-import { CaseActions, StackBlock } from './ProjectDetailsShared';
+import { CaseSplitHero, StackBlock } from './ProjectDetailsShared';
 import { formatIndex } from './ProjectDetailsFormat';
 import type { CaseLayoutProps } from '../features/project-details/types';
 
@@ -174,24 +174,16 @@ const HermesRule = () => (
 
 const HermesProjectDetails = ({ project, techItems, hasLive, hasRepo }: CaseLayoutProps) => (
   <>
-    <header className="hermes-hero case-reveal" data-reveal="mount" style={{ '--reveal-index': 1 }}>
-      <figure className="hermes-hero__media" data-surface="base" data-wave-follow data-poster-transition-target="">
-        <img
-          data-wave-media
-          src={project.heroMedia.image}
-          alt="Gold Hermes Agent emblem connected to Discord conversations, Notion project records and Google Calendar in a conceptual command center"
-        />
-        <figcaption data-surface="dark">Conceptual cover · no private operational data</figcaption>
-      </figure>
-      <div className="hermes-hero__copy" data-wave-follow>
-        <p className="case-kicker">{project.category}</p>
-        <h1 id="case-title">Hermes<br />Command Center</h1>
-        <p className="case-lede">One Discord server. Separate operational contexts. Verified actions stay tied to their source.</p>
-        <p className="case-role">{project.role}</p>
-        <p data-surface="dark" className="hermes-hero__private"><Icon icon="lucide:lock-keyhole" aria-hidden="true" /> Private system · no public live workspace or repository</p>
-        <CaseActions hasLive={hasLive} hasRepo={hasRepo} project={project} />
-      </div>
-    </header>
+    <CaseSplitHero
+      hasLive={hasLive}
+      hasRepo={hasRepo}
+      project={project}
+      alt="Gold Hermes Agent emblem connected to Discord conversations, Notion project records and Google Calendar in a conceptual command center"
+      title={<>Hermes<br />Command Center</>}
+      lede="One Discord server. Separate operational contexts. Verified actions stay tied to their source."
+      mediaCaption="Conceptual cover · no private operational data"
+      note={<p data-surface="dark" className="hermes-hero__private"><Icon icon="lucide:lock-keyhole" aria-hidden="true" /> Private system · no public live workspace or repository</p>}
+    />
 
     <HermesSignature />
     <HermesContexts description={project.description} />

@@ -5,39 +5,6 @@
   --case-faint: var(--color-detail-faint-strong);
 }
 
-.case-mux-hero {
-  display: grid;
-  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
-  gap: clamp(1.75rem, 4.5vw, 3.6rem);
-  align-items: center;
-  margin-bottom: clamp(3rem, 7vw, 5.5rem);
-}
-
-.case-mux-hero__copy h1 {
-  margin: 0;
-  max-width: 11ch;
-  color: var(--case-ink);
-  font-family: var(--font-display);
-  font-size: clamp(2.7rem, 5.4vw, 4.7rem);
-  font-weight: 700;
-  letter-spacing: -0.055em;
-  line-height: 0.92;
-}
-
-.case-mux-hero__copy .case-lede {
-  max-width: 30rem;
-  color: var(--color-detail-soft-strong);
-}
-
-.case-mux-hero__copy .case-role {
-  color: var(--color-detail-soft-strong);
-}
-
-.case-mux-hero__media .case-media__frame--hero {
-  /* Veluma's branded cover is authored at 16:9; keep its safe logo area intact. */
-  aspect-ratio: 16 / 9;
-}
-
 .case-mux-section-head {
   display: grid;
   grid-template-columns: minmax(8rem, 0.28fr) minmax(0, 1fr);
@@ -449,19 +416,12 @@
 }
 
 @media (max-width: 900px) {
-  .case-mux-hero,
-  .case-mux-section-head,
-  .case-mux-agents,
-  .case-mux-moment,
-  .case-mux-moment--flip {
+  .case-mux-section-head, .case-mux-agents, .case-mux-moment, .case-mux-moment--flip {
     grid-template-columns: 1fr;
   }
 
-  .case-mux-hero {
-    align-items: start;
-  }
 
-  .case-mux-hero__copy h1,
+
   .case-mux-section-head h2 {
     max-width: none;
   }
@@ -502,9 +462,7 @@
 }
 
 @media (max-width: 620px) {
-  .case-mux-hero {
-    margin-bottom: 3.75rem;
-  }
+
 
   .case-mux-shift {
     grid-template-columns: auto minmax(0, 1fr);

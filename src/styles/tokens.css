@@ -242,6 +242,7 @@
   --space-11: 5.5rem;
   --space-section: clamp(3.25rem, 7vw, 5.75rem);
   --space-gutter: clamp(1rem, 3vw, 2rem);
+  --space-hero-gap: clamp(1.75rem, 4.5vw, 3.6rem);
   --type-size-label: 0.55rem;
   --type-size-body-sm: 0.84rem;
   --type-size-body: 0.92rem;

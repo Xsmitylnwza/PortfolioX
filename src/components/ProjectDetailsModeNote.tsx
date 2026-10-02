@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react';
 import CaseMediaFrame from './ProjectDetailsMedia';
-import { CaseActions, StackBlock } from './ProjectDetailsShared';
+import { CaseSplitHero, StackBlock } from './ProjectDetailsShared';
 import { formatIndex } from './ProjectDetailsFormat';
 import { MODENOTE_SHIFTS, MODENOTE_SYSTEM_NODES, MODENOTE_MCP_SIGNALS } from './ProjectDetailsModeNoteData';
 import { ModeNoteSectionHead, ModeNoteContextProof, ModeNoteDualCapture, ModeNoteInterfaceProof } from './ProjectDetailsModeNoteProofs';
@@ -73,26 +73,7 @@ const ModeNoteSystem = () => (
 
 const ModeNoteLayout = ({ project, techItems, gallery, hasLive, hasRepo }: CaseLayoutProps) => (
   <>
-    <header className="case-modenote-hero case-reveal" data-reveal="mount" style={{ '--reveal-index': 1 }}>
-      <div className="case-modenote-hero__copy" data-wave-follow>
-        <p className="case-kicker">{project.category || 'Selected system'}</p>
-        <h1 id="case-title">{project.title}</h1>
-        <p className="case-role">{project.role || 'Software Engineer'}</p>
-        <p className="case-lede">{project.description}</p>
-        <CaseActions hasLive={hasLive} hasRepo={hasRepo} project={project} />
-      </div>
-      <div className="case-modenote-hero__media">
-        <CaseMediaFrame
-          media={project.heroMedia}
-          alt={`${project.title} poster: a recording window with a Thai–English transcript beside the session summary it produced, the same quote highlighted in both`}
-          cover
-          eager
-          sizes="(max-width: 900px) 100vw, 760px"
-          className="case-media__frame--hero"
-          transitionTarget
-        />
-      </div>
-    </header>
+    <CaseSplitHero hasLive={hasLive} hasRepo={hasRepo} project={project} alt={`${project.title} poster: a recording window with a Thai–English transcript beside the session summary it produced, the same quote highlighted in both`} />
 
     <ModeNoteShifts />
     <ModeNoteContextProof project={project} media={gallery[0]} />

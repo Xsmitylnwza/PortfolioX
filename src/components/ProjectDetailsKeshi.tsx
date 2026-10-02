@@ -1,8 +1,8 @@
 import { Fragment } from 'react';
 import { Icon } from '@iconify/react';
 import CaseMediaFrame from './ProjectDetailsMedia';
-import { CaseHeroMedia, StorySectionHead } from './ProjectDetailsPrimitives';
-import { CaseActions, StackBlock } from './ProjectDetailsShared';
+import { StorySectionHead } from './ProjectDetailsPrimitives';
+import { CaseSplitHero, StackBlock } from './ProjectDetailsShared';
 import type { ProjectMedia, ProjectRecord } from '../data/projectTypes';
 import type { CaseLayoutProps } from '../features/project-details/types';
 
@@ -429,29 +429,13 @@ const KeshiArchitecture = ({ techItems }: { techItems: string[] }) => (
 
 const KeshiLayout = ({ project, techItems, gallery, hasLive, hasRepo }: CaseLayoutProps) => (
   <>
-    <header
-      className="case-keshi-hero case-reveal"
-      data-reveal="mount"
-      style={{ '--reveal-index': 1 }}
-    >
-      <div className="case-keshi-hero__visual">
-        <CaseHeroMedia project={project} sizes="(max-width: 900px) 100vw, 1200px" />
-      </div>
-      <div className="case-keshi-hero__copy" data-wave-follow>
-        <p className="case-keshi-hero__meta">
-          <span>{project.category || 'Selected system'}</span>
-          <span>Role — {project.role || 'Software Engineer'}</span>
-        </p>
-        <h1 id="case-title">{project.title}</h1>
-        <div className="case-keshi-hero__brief">
-          <p className="case-keshi-hero__thesis">Focus that leaves evidence.</p>
-          <p className="case-lede">
-            A lo-fi Focus / Relax timer that grows into a quiet Discipline pattern mirror — not a coach or guilt machine.
-          </p>
-          <CaseActions hasLive={hasLive} hasRepo={hasRepo} project={project} />
-        </div>
-      </div>
-    </header>
+    <CaseSplitHero
+      hasLive={hasLive}
+      hasRepo={hasRepo}
+      project={project}
+      alt={project.title}
+      lede="A lo-fi Focus / Relax timer that grows into a quiet Discipline pattern mirror — not a coach or guilt machine."
+    />
 
     <KeshiStateDiptych />
     <KeshiDisciplineProof project={project} gallery={gallery} />

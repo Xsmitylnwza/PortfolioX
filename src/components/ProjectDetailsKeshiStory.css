@@ -14,75 +14,12 @@
 }
 
 /* Hero — media first: the product spans the content width, the copy strip sits beneath. */
-.case-keshi-hero {
-  display: grid;
-  gap: var(--space-8);
-  margin-bottom: var(--space-section);
-}
-
-.case-keshi-hero__visual {
-  min-width: 0;
-}
-
-.case-keshi-hero__copy {
-  display: grid;
-  gap: var(--space-5);
-}
-
-.case-keshi-hero__meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2) var(--space-8);
-  margin: 0;
-  color: var(--color-detail-faint-strong);
-  font-family: var(--font-mono);
-  font-size: var(--type-size-label);
-  letter-spacing: var(--type-tracking-eyebrow);
-  text-transform: uppercase;
-}
-
-.case-keshi-hero__copy h1 {
-  margin: 0;
-  color: var(--color-detail-ink);
-  font-family: var(--font-display);
-  font-size: var(--type-size-display);
-  font-weight: 700;
-  letter-spacing: var(--type-tracking-display);
-  line-height: var(--type-leading-display);
-}
-
-.case-keshi-hero__brief {
-  display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr) auto;
-  gap: var(--space-8);
-  align-items: start;
-}
-
-.case-keshi-hero__thesis {
-  margin: 0;
-  color: var(--color-detail-soft-strong);
-  font-family: var(--font-display);
-  font-size: var(--type-size-heading-sm);
-  font-weight: 600;
-  letter-spacing: var(--type-tracking-heading);
-  line-height: var(--type-leading-heading);
-}
-
-.case-keshi-hero .case-lede {
-  max-width: var(--measure-copy);
-  margin: 0;
-  color: var(--color-detail-soft-strong);
-}
 
 .case-section--keshi .case-media__frame--hero,
 .case-media__frame--keshi-state,
 .case-media__frame--keshi-atmosphere,
 .case-media__frame--keshi-proof {
   aspect-ratio: 40 / 19;
-}
-
-.case-section--keshi .case-keshi-hero__visual .case-media__frame--hero {
-  aspect-ratio: 5 / 2;
 }
 
 /* Keshi's media chrome now comes from the project theme block in
@@ -211,7 +148,7 @@
   gap: 0.85rem;
   align-items: start;
   width: min(100%, 29rem);
-  padding: 0.9rem 0;
+  padding: var(--space-4) var(--space-6);
   color: var(--case-mute);
 }
 
@@ -222,7 +159,7 @@
 .case-keshi-atmosphere__caption > svg {
   width: 2.5rem;
   height: 2.5rem;
-  padding: 0.7rem;
+  padding: var(--space-4);
   border: 1px solid var(--story-line);
   border-radius: 999px;
   color: var(--case-soft);
@@ -911,7 +848,6 @@
 }
 
 @media (max-width: 900px) {
-  .case-keshi-hero__brief,
   .case-keshi-loop__bridge {
     grid-template-columns: 1fr;
   }
@@ -956,10 +892,4 @@
 .case-keshi-diptych__tile--clock strong {
   font-size: var(--type-size-heading-sm);
   white-space: nowrap;
-}
-
-@media (max-width: 900px) {
-  .case-section--keshi .case-keshi-hero__visual .case-media__frame--hero {
-    aspect-ratio: 16 / 10;
-  }
 }

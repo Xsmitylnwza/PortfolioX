@@ -2,43 +2,6 @@
    signature. Colour comes from --color-detail-* roles; paint of the
    data-surface tiers belongs to detail-surface.css. */
 
-.case-freeflow-hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
-  gap: var(--space-6) var(--space-gutter);
-  align-items: end;
-  margin-bottom: var(--space-section);
-}
-
-.case-freeflow-hero__title h1 {
-  margin: 0;
-  color: var(--color-detail-ink);
-  font-family: var(--font-display);
-  font-size: var(--type-size-display);
-  font-weight: 700;
-  letter-spacing: var(--type-tracking-display);
-  line-height: var(--type-leading-display);
-}
-
-.case-freeflow-hero__title .case-role,
-.case-freeflow-hero__summary .case-lede {
-  color: var(--color-detail-soft-strong);
-}
-
-.case-freeflow-hero__summary .case-lede {
-  max-width: var(--measure-copy);
-}
-
-.case-freeflow-hero__media {
-  grid-column: 1 / -1;
-}
-
-.case-freeflow-hero__media .case-media__frame--hero {
-  aspect-ratio: 16 / 9;
-  width: 78%;
-  margin-inline: auto;
-}
-
 .case-freeflow-head {
   display: grid;
   grid-template-columns: minmax(8rem, 0.28fr) minmax(0, 1fr);
@@ -431,13 +394,9 @@
 }
 
 @media (max-width: 900px) {
-  .case-freeflow-hero__media .case-media__frame--hero {
-    width: 100%;
-  }
 
-  .case-freeflow-hero,
-  .case-freeflow-head,
-  .case-freeflow-trail__clips {
+
+  .case-freeflow-head, .case-freeflow-trail__clips {
     grid-template-columns: 1fr;
   }
 

@@ -2,68 +2,6 @@
    signature, contexts grid, failure/rule pair. Colour comes from --color-detail-* roles;
    paint of the data-surface tiers belongs to detail-surface.css. */
 
-.hermes-hero {
-  display: grid;
-  grid-template-columns: minmax(0, 1.28fr) minmax(0, 0.92fr);
-  gap: var(--space-gutter);
-  align-items: center;
-  margin-bottom: var(--space-section);
-}
-
-.hermes-hero__copy {
-  min-width: 0;
-}
-
-.hermes-hero__copy h1 {
-  margin: 0;
-  color: var(--color-detail-ink);
-  font-family: var(--font-display);
-  font-size: var(--type-size-heading-lg);
-  font-weight: 700;
-  letter-spacing: var(--type-tracking-display);
-  line-height: var(--type-leading-display);
-  overflow-wrap: break-word;
-}
-
-.hermes-hero__copy .case-lede,
-.hermes-hero__copy .case-role {
-  color: var(--color-detail-soft-strong);
-}
-
-.hermes-hero__copy .case-lede {
-  max-width: var(--measure-copy);
-}
-
-.hermes-hero__media {
-  position: relative;
-  min-width: 0;
-  margin: 0;
-  overflow: hidden;
-  border: var(--border-width-hairline) solid;
-  border-radius: var(--radius-detail-surface);
-}
-
-.hermes-hero__media img {
-  display: block;
-  width: 100%;
-  aspect-ratio: 3 / 2;
-  object-fit: cover;
-}
-
-.hermes-hero__media figcaption {
-  width: fit-content;
-  margin: var(--space-3);
-  padding: var(--space-2) var(--space-3);
-  border: var(--border-width-hairline) solid;
-  border-radius: var(--radius-pill);
-  color: var(--color-detail-soft-strong);
-  font-family: var(--font-mono);
-  font-size: var(--type-size-label);
-  letter-spacing: var(--type-tracking-eyebrow);
-  line-height: var(--type-leading-body);
-  text-transform: uppercase;
-}
-
 .hermes-hero__private {
   display: inline-flex;
   align-items: center;
@@ -502,15 +440,12 @@
 }
 
 @media (max-width: 900px) {
-  .hermes-hero,
   .hermes-head {
     grid-template-columns: 1fr;
   }
 
   /* Copy first, then the cover. */
-  .hermes-hero__copy {
-    order: -1;
-  }
+
 
   .hermes-head h2 {
     max-width: none;

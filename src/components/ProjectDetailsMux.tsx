@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react';
 import CaseMediaFrame from './ProjectDetailsMedia';
-import { CaseActions, StackBlock } from './ProjectDetailsShared';
+import { CaseSplitHero, StackBlock } from './ProjectDetailsShared';
 import { formatIndex } from './ProjectDetailsFormat';
 import type { ProjectMedia, ProjectRecord } from '../data/projectTypes';
 import type { CaseLayoutProps } from '../features/project-details/types';
@@ -273,26 +273,7 @@ const MuxLayout = ({ project, techItems, gallery, hasLive, hasRepo }: CaseLayout
     <>
       <ProjectMuxGlassDefs />
 
-      <div className="case-mux-hero case-reveal" data-reveal="mount" style={{ '--reveal-index': 1 }}>
-        <div className="case-mux-hero__copy" data-wave-follow>
-          <p className="case-kicker">{project.category || 'Selected system'}</p>
-          <h1 id="case-title">{project.title}</h1>
-          <p className="case-role">{project.role || 'Software Engineer'}</p>
-          <p className="case-lede">{project.description}</p>
-          <CaseActions hasLive={hasLive} hasRepo={hasRepo} project={project} />
-        </div>
-        <div className="case-mux-hero__media">
-          <CaseMediaFrame
-            media={project.heroMedia}
-            alt={`${project.title} V logo and a warm saved Canvas, with Codex, Claude Code, server and shell symbols before Start`}
-            cover
-            eager
-            sizes="(max-width: 900px) 100vw, 560px"
-            className="case-media__frame--hero"
-            transitionTarget
-          />
-        </div>
-      </div>
+      <CaseSplitHero hasLive={hasLive} hasRepo={hasRepo} project={project} alt={`${project.title} V logo and a warm saved Canvas, with Codex, Claude Code, server and shell symbols before Start`} />
 
       <ProjectMuxPipeline />
       <ProjectMuxMoments project={project} gallery={gallery} />

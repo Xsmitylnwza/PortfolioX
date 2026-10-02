@@ -1,6 +1,6 @@
 import { Icon } from '@iconify/react';
 import CaseMediaFrame from './ProjectDetailsMedia';
-import { CaseActions, StackBlock } from './ProjectDetailsShared';
+import { CaseSplitHero, StackBlock } from './ProjectDetailsShared';
 import { formatIndex } from './ProjectDetailsFormat';
 import type { ProjectMedia, ProjectRecord } from '../data/projectTypes';
 import type { CaseLayoutProps } from '../features/project-details/types';
@@ -242,28 +242,7 @@ const FreeflowLayout = ({ project, techItems, gallery, hasLive, hasRepo }: CaseL
 
   return (
     <>
-      <header className="case-freeflow-hero case-reveal" data-reveal="mount" style={{ '--reveal-index': 1 }}>
-        <div className="case-freeflow-hero__title" data-wave-follow>
-          <p className="case-kicker">{project.category || 'Selected system'}</p>
-          <h1 id="case-title">{project.title}</h1>
-          <p className="case-role">{project.role || 'Software Engineer'}</p>
-        </div>
-        <div className="case-freeflow-hero__summary" data-wave-follow>
-          <p className="case-lede">{project.description}</p>
-          <CaseActions hasLive={hasLive} hasRepo={hasRepo} project={project} />
-        </div>
-        <div className="case-freeflow-hero__media">
-          <CaseMediaFrame
-            media={project.heroMedia}
-            alt={`${project.title} blue project dossier with its F logo, LINE client intake, quotations, invoices, document templates and schedule`}
-            cover
-            eager
-            sizes="(max-width: 900px) 100vw, 1100px"
-            className="case-media__frame--hero"
-            transitionTarget
-          />
-        </div>
-      </header>
+      <CaseSplitHero hasLive={hasLive} hasRepo={hasRepo} project={project} alt={`${project.title} blue project dossier with its F logo, LINE client intake, quotations, invoices, document templates and schedule`} />
 
       <FreeflowLead project={project} clip={lead} />
       <FreeflowTrail project={project} clips={rest} />

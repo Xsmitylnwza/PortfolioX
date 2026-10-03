@@ -39,4 +39,4 @@ jobs:
 
       - name: Deploy static files
         run: |
-          rsync -a --no-owner --no-group --no-perms --delete dist/ /opt/portfolio/www/
+          rsync -a --no-owner --no-group --no-perms --omit-dir-times --delete dist/ /opt/portfolio/www/

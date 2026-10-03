@@ -7,6 +7,7 @@ const promises = new Map();
 const loaders: Record<string, () => Promise<{ default: ComponentType<CaseEntryProps> }>> = {
   'hermes-command-center': () => import('./cases/hermes/HermesCase'),
   modenote: () => import('./cases/modenote/ModeNoteCase'),
+  'vibe-studio': () => import('./cases/vibe/VibeStudioCase'),
   freeflow: () => import('./cases/freeflow/FreeFlowCase'),
   veluma: () => import('./cases/veluma/VelumaCase'),
   'keshi-pomodoro': () => import('./cases/keshi/KeshiCase'),

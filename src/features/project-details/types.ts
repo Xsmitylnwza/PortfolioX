@@ -16,7 +16,7 @@ export interface CaseLayoutProps {
   hasRepo: boolean;
 }
 
-export type CaseLayoutName = 'hermes' | 'modenote' | 'freeflow' | 'mux' | 'zuch' | 'keshi' | 'decrypt' | 'default';
+export type CaseLayoutName = 'hermes' | 'modenote' | 'vibe' | 'freeflow' | 'mux' | 'zuch' | 'keshi' | 'decrypt' | 'default';
 
 export interface CaseShellProps extends CaseEntryProps {
   layout: CaseLayoutName;

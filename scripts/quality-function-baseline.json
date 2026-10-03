@@ -20,36 +20,6 @@
       "count": 1
     },
     {
-      "path": "src/components/Experience.tsx",
-      "hash": "1763f875f0b534350c7a6d0fbd7e7f413cdb0ad02a90eeb9b1afb6e20277d6b5",
-      "lines": 300,
-      "count": 1
-    },
-    {
-      "path": "src/components/GalleryScene.tsx",
-      "hash": "31c7d8e57ba314f060ba9077d782fb5b1e73642174662bf6d18a2d5e3d6ff52d",
-      "lines": 866,
-      "count": 1
-    },
-    {
-      "path": "src/components/GalleryScene.tsx",
-      "hash": "163c20c732e86282b349939950fa69c4b6e8e4000bdfd4460316d3f8fe1bbd82",
-      "lines": 804,
-      "count": 1
-    },
-    {
-      "path": "src/components/GalleryScene.tsx",
-      "hash": "b0c26859c49f590a5f8c515c196c31f28dc32d8720552f9d48d5771f3bc7691d",
-      "lines": 795,
-      "count": 1
-    },
-    {
-      "path": "src/components/GalleryScene.tsx",
-      "hash": "821baf40be86879ad3e3732ec9abeedd934704346dccf64a8baee4974201d399",
-      "lines": 205,
-      "count": 1
-    },
-    {
       "path": "src/components/PersonaReloadView.tsx",
       "hash": "0996a8fdeab46742d90326eb44ab1cad9e28fd21dfaafe19c5145c7023e57997",
       "lines": 187,

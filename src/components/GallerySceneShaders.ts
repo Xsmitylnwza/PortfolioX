@@ -50,45 +50,15 @@ attribute vec3 normal;
 uniform mat4 modelViewMatrix;
 uniform mat4 projectionMatrix;
 uniform mat3 normalMatrix;
-uniform float uTime;
-uniform float uLayer;
 varying vec3 vPosition;
 varying vec3 vNormal;
-varying float vFacet;
+varying vec3 vLocal;
 void main(){
-  vec3 pos = position;
-  float angle = atan(pos.y, pos.x);
-  float ring = length(pos.xy) + 1e-5;
-
-  // Hard faceting: quantize ring angle so the torus reads as broken metal plates.
-  float facets = mix(7.0, 13.0, fract(uLayer * 0.37));
-  float stepped = floor(angle / 6.2831853 * facets + 0.5) / facets * 6.2831853;
-  float mixFacet = 0.62 + uLayer * 0.05;
-  float facetedAngle = mix(angle, stepped, mixFacet);
-  float c = cos(facetedAngle);
-  float s = sin(facetedAngle);
-
-  // Squircle + jagged crush so rings feel angular / half-collapsed.
-  float squircle = pow(pow(abs(c), 6.0) + pow(abs(s), 6.0), -0.1667);
-  float crush = 0.82 + 0.18 * sin(facetedAngle * facets * 0.5 + uLayer * 1.7);
-  float dent = 0.07 * sin(facetedAngle * 5.0 + uLayer * 2.1 + uTime * 0.15)
-             + 0.04 * sin(pos.z * 18.0 + uLayer);
-  float radius = ring * mix(1.0, squircle, 0.55) * crush * (1.0 + dent);
-  pos.xy = vec2(c, s) * radius;
-
-  // Axial plate offsets: overlapping broken layers.
-  pos.z += 0.035 * sin(facetedAngle * 3.0 + uLayer) + uLayer * 0.012;
-  pos *= 1.0 + 0.02 * sin(facetedAngle * 2.0 - uTime * 0.1 + uLayer);
-
-  // Faceted normals: less smooth shading, more hard metal panels.
-  vec3 n = normalize(normal);
-  n.xy = mix(n.xy, vec2(c, s), 0.55);
-  n = normalize(n + 0.18 * vec3(sin(facetedAngle * facets), cos(facetedAngle * facets), 0.2));
-
-  vec4 view = modelViewMatrix * vec4(pos, 1.0);
+  // Rigid folds: the surface never deforms, so reflections stay attached to it.
+  vec4 view = modelViewMatrix * vec4(position, 1.0);
   vPosition = view.xyz;
-  vNormal = normalize(normalMatrix * n);
-  vFacet = facetedAngle * facets;
+  vLocal = position;
+  vNormal = normalize(normalMatrix * normal);
   gl_Position = projectionMatrix * view;
 }`;
 
@@ -96,56 +66,70 @@ const sculptureFragment = /* glsl */ `
 precision highp float;
 varying vec3 vNormal;
 varying vec3 vPosition;
-varying float vFacet;
-uniform float uTime;
+varying vec3 vLocal;
+uniform mat4 viewMatrix;
+uniform mat3 normalMatrix;
 uniform float uOpacity;
 uniform float uLayer;
+float hash(vec3 p) {
+  p = fract(p * 0.3183099 + 0.1);
+  p *= 17.0;
+  return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
+}
+float noise(vec3 p) {
+  vec3 i = floor(p);
+  vec3 f = fract(p);
+  f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(mix(hash(i), hash(i + vec3(1, 0, 0)), f.x), mix(hash(i + vec3(0, 1, 0)), hash(i + vec3(1, 1, 0)), f.x), f.y),
+             mix(mix(hash(i + vec3(0, 0, 1)), hash(i + vec3(1, 0, 1)), f.x), mix(hash(i + vec3(0, 1, 1)), hash(i + vec3(1, 1, 1)), f.x), f.y), f.z);
+}
+float softbox(vec3 ray, vec3 center, vec3 right, vec2 halfSize, float softness) {
+  vec3 direction = normalize(center);
+  vec3 horizontal = normalize(right);
+  vec3 vertical = normalize(cross(direction, horizontal));
+  float facing = dot(ray, direction);
+  vec2 uv = vec2(dot(ray, horizontal), dot(ray, vertical)) / max(facing, 0.001);
+  vec2 edge = abs(uv) - halfSize;
+  vec2 coverage = 1.0 - smoothstep(vec2(-softness), vec2(softness), edge);
+  return coverage.x * coverage.y * smoothstep(0.0, 0.3, facing);
+}
+vec3 studioReflection(vec3 ray) {
+  // High-key product studio: broad, very soft boxes on a bright room, like
+  // photographed bullion. Satin roughness, so no hard strip lights to swim.
+  float blur = 0.3;
+  float key = softbox(ray, vec3(-0.45, 0.55, 0.70), vec3(0.84, 0.0, 0.54), vec2(0.9, 0.9), blur);
+  float fill = softbox(ray, vec3(0.75, 0.20, 0.55), vec3(0.59, 0.0, -0.80), vec2(0.7, 1.0), blur);
+  float shade = softbox(ray, vec3(0.10, -0.55, 0.80), vec3(1.0, 0.0, -0.12), vec2(0.8, 0.5), blur);
+  vec3 room = vec3(mix(0.05, 0.34, smoothstep(-0.8, 0.9, ray.y)));
+  return (room + vec3(key * 3.0 + fill * 1.1)) * (1.0 - shade * 0.7);
+}
 void main(){
-  vec3 n = normalize(vNormal);
+  // Fine cast-silver texture, fixed in object space so it turns with the metal.
+  vec3 p = vLocal * 58.0 + uLayer * 3.1;
+  vec3 bump = vec3(noise(p), noise(p + 19.7), noise(p + 41.3)) - 0.5;
+  bump += (vec3(noise(p * 3.1), noise(p * 3.1 + 7.3), noise(p * 3.1 + 13.9)) - 0.5) * 0.45;
+  vec3 n = normalize(vNormal + normalMatrix * bump * 0.09);
+  if (!gl_FrontFacing) n = -n;
   vec3 viewDir = normalize(-vPosition);
-
-  // Multi-light chrome / brushed silver steel.
-  vec3 key = normalize(vec3(-0.55, 0.85, 0.95));
-  vec3 fill = normalize(vec3(0.75, 0.15, 0.55));
-  vec3 rimL = normalize(vec3(-0.2, -0.35, 1.0));
-
-  float ndotv = max(dot(n, viewDir), 0.0);
-  float fresnel = pow(1.0 - ndotv, 3.2);
-
-  float diffKey = max(dot(n, key), 0.0);
-  float diffFill = max(dot(n, fill), 0.0) * 0.35;
-  float diff = 0.12 + 0.72 * diffKey + diffFill;
-
-  vec3 halfKey = normalize(key + viewDir);
-  float specKey = pow(max(dot(n, halfKey), 0.0), 96.0);
-  float specSoft = pow(max(dot(n, halfKey), 0.0), 18.0);
-  float rim = pow(max(dot(n, rimL), 0.0), 2.0) * fresnel;
-
-  // Micro plate seams + brushed grain on silver metal.
-  float seam = smoothstep(0.42, 0.5, abs(fract(vFacet) - 0.5));
-  float brush = 0.5 + 0.5 * sin((vPosition.x * 38.0 + vPosition.y * 11.0) + uTime * 0.4);
-  float flake = 0.5 + 0.5 * sin(vFacet * 2.7 + uLayer * 4.0);
-
-  // Bright pure silver / polished chrome, little to no graphite.
-  vec3 steelDark = vec3(0.34, 0.36, 0.39);
-  vec3 steelMid = vec3(0.78, 0.80, 0.84);
-  vec3 chrome = vec3(0.96, 0.97, 0.99);
-  vec3 highlight = vec3(1.0, 1.0, 1.0);
-
-  vec3 color = mix(steelDark, steelMid, diff);
-  color = mix(color, chrome, fresnel * 0.88 + specSoft * 0.48);
-  color += highlight * (specKey * 1.15 + rim * 0.55);
-  color *= 0.94 + brush * 0.08;
-  color *= 0.92 + seam * 0.14;
-  color += chrome * flake * 0.06;
-
-  // Force cool bright silver (desaturate warmth).
-  float luma = dot(color, vec3(0.299, 0.587, 0.114));
-  color = mix(vec3(luma), color, 0.22);
-  color = mix(color, chrome, 0.28);
-  color = min(color * 1.12, vec3(1.0));
-
-  gl_FragColor = vec4(color, uOpacity);
+  vec3 reflectedView = reflect(-viewDir, n);
+  // normalMatrix is in view space. Transpose the view rotation to sample the room in world space.
+  vec3 reflectedWorld = normalize(vec3(
+    dot(viewMatrix[0].xyz, reflectedView),
+    dot(viewMatrix[1].xyz, reflectedView),
+    dot(viewMatrix[2].xyz, reflectedView)
+  ));
+  vec3 normalWorld = normalize(vec3(dot(viewMatrix[0].xyz, n), dot(viewMatrix[1].xyz, n), dot(viewMatrix[2].xyz, n)));
+  float ndotv = clamp(dot(n, viewDir), 0.0, 1.0);
+  // Satin silver: soft environment reflection plus a broad, geometry-anchored
+  // sheen so each facet keeps a stable value as the bloom turns.
+  vec3 silver = vec3(0.90, 0.905, 0.92);
+  vec3 fresnel = silver + (vec3(1.0) - silver) * pow(1.0 - ndotv, 5.0);
+  float facetLight = 0.55 + 0.45 * clamp(dot(normalWorld, normalize(vec3(-0.35, 0.75, 0.55))), 0.0, 1.0);
+  vec3 radiance = studioReflection(reflectedWorld) * fresnel * mix(1.0, facetLight, 0.55);
+  // Recessed cast pits catch less light.
+  radiance *= 0.94 + 0.06 * smoothstep(-0.3, 0.3, bump.x + bump.y);
+  vec3 mapped = radiance * 1.15 / (vec3(1.0) + radiance * 1.15);
+  gl_FragColor = vec4(pow(mapped, vec3(1.0 / 2.2)), uOpacity);
 }`;
 
 const gridVertex = /* glsl */ `

@@ -250,6 +250,7 @@ export function strictScopeFor({ file, family, selector }) {
 const PROJECT_DATA_SOURCES = [/^src\/data\/projects(?:\/[a-z0-9-]+)?[.](?:js|ts)$/];
 const GALLERY_RUNTIME_SOURCES = [
   /^src\/components\/GalleryScene(?:Shaders|Geometry|PosterTexture)?[.](?:js|jsx|ts|tsx)$/,
+  /^src\/components\/GallerySculpture(?:Geometry|Motion|Shaders)[.](?:js|ts)$/,
 ];
 const WAVE_RUNTIME_SOURCES = [
   /^src\/components\/ScrollPerspectiveWave(?:Capture|Shaders|AnimatedRaster)?[.](?:js|jsx|ts|tsx)$/,
@@ -388,6 +389,26 @@ export const RENDER_TARGETS = [
       /^src\/styles\/tokens[.]css$/,
       /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format|Layouts|Lightbox|Process)?[.](css|jsx?|tsx?)$/,
       /^src\/components\/ProjectDetailsModeNote(?:Story)?[.]css$/,
+      /^src\/components\/ProjectCoverMedia[.]css$/,
+    ],
+  },
+  {
+    path: '/project/vibe-studio',
+    viewports: ['desktop 1440x900', 'mobile 390x844'],
+    note: 'project-detail monochrome chrome and story layout',
+    sources: [
+      ...GLOBAL_SOURCES,
+      ...WAVE_RUNTIME_SOURCES,
+      /^src\/styles\/detail-surface[.]css$/,
+      ...PROJECT_SHARED_SOURCES,
+      /^src\/components\/ProjectMedia[.](?:jsx|tsx)$/,
+      /^src\/features\/project-details\/cases\/vibe\/VibeStudioCase[.](?:jsx|tsx)$/,
+      /^src\/components\/ProjectDetailsVibe(?:Data|Live)?[.](?:js|jsx|ts|tsx)$/,
+      /^src\/components\/ProjectDetailsStorySharedOverrides[.]css$/,
+      /^src\/components\/ProjectDetailsStories[.]css$/,
+      /^src\/styles\/tokens[.]css$/,
+      /^src\/components\/ProjectDetails(?:Media|MediaSource|Shared|Format|Layouts|Lightbox|Process)?[.](css|jsx?|tsx?)$/,
+      /^src\/components\/ProjectDetailsVibe[.]css$/,
       /^src\/components\/ProjectCoverMedia[.]css$/,
     ],
   },

@@ -4,6 +4,7 @@ import { featuredProjects } from '../data/projects';
 import { planeVertex, planeFragment } from './GallerySceneShaders';
 import { createGalleryGeometry } from './GallerySceneGeometry';
 import { rasterizePosterTexture } from './GalleryScenePosterTexture';
+import { animateGallerySculpture, getGalleryFrameDelta } from './GallerySculptureMotion';
 
 const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 500, active = true }: GallerySceneProps) => {
     const hostRef = useRef<HTMLDivElement | null>(null);
@@ -58,7 +59,7 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
         let disposed = false;
         let cleanup = () => {};
         const init = async () => {
-            const { Camera, Geometry, Mesh, Plane, Program, Raycast, Renderer, Texture, Torus, Transform, Vec3 } = await import('ogl');
+            const { Camera, Geometry, Mesh, Plane, Program, Raycast, Renderer, Texture, Transform, Vec3 } = await import('ogl');
             if (disposed || !hostRef.current) return;
             const renderer = new Renderer({
                 alpha: true,
@@ -194,8 +195,8 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                 }
             }
 
-            const { gridGeometry, gridProgram, cylinderGrid, sculpture, torusGeometries, torusMeshes } =
-                createGalleryGeometry(gl, scene, { Geometry, Mesh, Program, Torus, Transform });
+            const { gridGeometry, gridProgram, cylinderGrid, sculpture, sculptureGeometries, sculptureMeshes } =
+                createGalleryGeometry(gl, scene, { Geometry, Mesh, Program, Transform });
             const raycast = new Raycast();
 
             const pointer = { x: 0, y: 0, clientX: 0, clientY: 0, active: false };
@@ -246,7 +247,8 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
             let raf = 0;
             let contextLost = false;
             // Loop gate: document visibility + explicit active prop (not host.isConnected).
-            let previousTime = performance.now();
+            let previousTime: number | null = null;
+            let elapsedSeconds = 0;
             // Every entry path waits for the shared Loader's portfolio:reveal-start.
             // Only snap if the loader already finished before this host mounted.
             let revealStart: number | null = null;
@@ -281,7 +283,7 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
             const syncLoop = () => {
                 if (canRunLoop()) {
                     if (!raf) {
-                        previousTime = performance.now();
+                        previousTime = null;
                         raf = requestAnimationFrame(render);
                     }
                     return;
@@ -575,8 +577,9 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                     raf = 0;
                     return;
                 }
-                const dt = Math.min((time - previousTime) / 1000, 0.05);
+                const dt = getGalleryFrameDelta(previousTime, time);
                 previousTime = time;
+                elapsedSeconds += dt;
                 // Track showContent edge so unmount always runs a 0.5s fade, not a hard cut.
                 const wantsContent = showContentRef.current;
                 if (wantsContent !== previousShowContent) {
@@ -645,11 +648,7 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                     row.userData.opacity = Math.max(0, Math.min(1, edgeDistance / 1.05));
                     row.rotation.y = motion.spin;
                 });
-                // Whole mandala drifts with scroll, while each ring free-orbits on its own axis.
-                sculpture.rotation.y = -motion.spin * 0.85 + Math.sin(time * 0.00019) * 0.18;
-                sculpture.rotation.x = Math.sin(time * 0.00013) * 0.28 + Math.cos(time * 0.00009) * 0.08;
-                sculpture.rotation.z = Math.sin(time * 0.00011 + 1.2) * 0.16;
-                cylinderGrid.rotation.y = motion.spin * 0.11 + Math.sin(time * 0.00008) * 0.016;
+                cylinderGrid.rotation.y = motion.spin * 0.11 + Math.sin(elapsedSeconds * 0.08) * 0.016;
                 const revealElapsed = revealStart === null ? 0 : Math.max(0, (time - revealStart) / 1000);
                 const smooth = (value: number) => {
                     const clamped = Math.max(0, Math.min(1, value));
@@ -663,52 +662,21 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                 if (gridReveal >= 0.999) revealComplete = true;
                 gridProgram.uniforms.uOpacity.value = (revealComplete ? 1 : gridReveal) * 0.86;
                 const scrollWave = window.__scrollPerspectiveWave;
-                gridProgram.uniforms.uTime.value = time * 0.001;
+                gridProgram.uniforms.uTime.value = elapsedSeconds;
                 gridProgram.uniforms.uScrollWave.value = scrollWave?.active
                     ? scrollWave.velocity
                     : 0;
                 // sceneOpacity only gates card textures; keep it at 1 after first full reveal.
                 frameUniforms.sceneOpacity = revealComplete ? 1 : sceneReveal;
-                // Dim only the 3D sculpture/tori on non-gallery rooms. Soft-lerp for room swaps.
+                // Dim only the 3D sculpture on non-gallery rooms. Soft-lerp for room swaps.
                 const sculptureDimTarget = document.documentElement.classList.contains('stage-dimmed')
                     ? DIMMED_SCULPTURE_OPACITY
                     : 1;
                 const dimBlend = Math.min(1, Math.max(0.016, dt) * 3.2);
                 sculptureDim += (sculptureDimTarget - sculptureDim) * dimBlend;
                 const sculptureOpacity = sceneReveal * 0.96 * sculptureDim;
-                const tSec = time * 0.001;
-                torusMeshes.forEach((mesh, index) => {
-                    const program = mesh.userData.program;
-                    if (program) {
-                        program.uniforms.uTime.value = tSec;
-                        program.uniforms.uOpacity.value = sculptureOpacity * (0.88 + (index % 3) * 0.04);
-                        program.uniforms.uLayer.value = index;
-                    }
-                    const speed = mesh.userData.speed ?? (0.5 + index * 0.05);
-                    const axis = mesh.userData.axis || { x: 0, y: 1, z: 0 };
-                    const phase = mesh.userData.phase || 0;
-                    // Doctor Strange pattern: independent axis spin + slow precession + counter-orbit.
-                    const spin = tSec * speed + phase;
-                    const precess = tSec * (0.17 + index * 0.03) + phase * 0.5;
-                    const counter = tSec * (-0.21 - index * 0.02);
-                    mesh.rotation.x = (mesh.userData.base?.x || 0)
-                        + axis.x * spin
-                        + Math.sin(precess) * 0.55
-                        + Math.sin(counter + index) * 0.18;
-                    mesh.rotation.y = (mesh.userData.base?.y || 0)
-                        + axis.y * spin
-                        + Math.cos(precess * 0.85) * 0.45
-                        + Math.sin(counter * 1.1) * 0.22;
-                    mesh.rotation.z = (mesh.userData.base?.z || 0)
-                        + axis.z * spin
-                        + Math.sin(precess * 1.25 + 0.6) * 0.35
-                        + Math.cos(counter * 0.75) * 0.16;
-                    const baseZ = [-0.04, -0.01, 0.03, 0, -0.03, 0.05][index] || 0;
-                    mesh.position.x = Math.sin(precess * 0.7 + index) * 0.035;
-                    mesh.position.y = Math.cos(precess * 0.9 + index * 0.8) * 0.03;
-                    mesh.position.z = baseZ + Math.sin(counter + phase) * 0.02;
-                });
-                frameUniforms.time = time * 0.001;
+                animateGallerySculpture(sculpture, sculptureMeshes, elapsedSeconds, motion.spin, sculptureOpacity, reduceMotion);
+                frameUniforms.time = elapsedSeconds;
                 frameUniforms.bendH = motion.bendH;
                 frameUniforms.bendV = motion.bendV;
 
@@ -847,8 +815,8 @@ const GalleryScene = ({ mode = 'gallery', showContent = true, contentExitMs = 50
                 geometry.remove();
                 gridGeometry.remove();
                 gridProgram.remove();
-                torusGeometries.forEach((geo) => geo.remove());
-                torusMeshes.forEach((mesh) => mesh.userData.program?.remove());
+                sculptureGeometries.forEach((geo) => geo.remove());
+                sculptureMeshes.forEach((mesh) => mesh.userData.program.remove());
                 gl.canvas.remove(); gl.getExtension('WEBGL_lose_context')?.loseContext();
             };
         };

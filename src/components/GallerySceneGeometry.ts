@@ -1,15 +1,15 @@
 import { gridVertex, gridFragment, sculptureVertex, sculptureFragment } from './GallerySceneShaders';
-import type { Geometry, Mesh, Program, Renderer, Torus, Transform } from 'ogl';
+import { createSculptureMeshData, SCULPTURE_PLACEMENT } from './GallerySculptureGeometry';
+import type { Geometry, Mesh, Program, Renderer, Transform } from 'ogl';
 type OGLRenderingContext = Renderer['gl'];
 
 interface GeometryConstructors {
     Geometry: typeof Geometry;
     Mesh: typeof Mesh;
     Program: typeof Program;
-    Torus: typeof Torus;
     Transform: typeof Transform;
 }
-export function createGalleryGeometry(gl: OGLRenderingContext, scene: Transform, { Geometry, Mesh, Program, Torus, Transform }: GeometryConstructors) {
+export function createGalleryGeometry(gl: OGLRenderingContext, scene: Transform, { Geometry, Mesh, Program, Transform }: GeometryConstructors) {
     // Triangle ribbons keep the grid thinner than the 1px minimum supported by WebGL lines.
     // Slightly wider radius + denser rings for a rounder cylindrical cage.
     const gridVertices: number[] = [];
@@ -65,33 +65,23 @@ export function createGalleryGeometry(gl: OGLRenderingContext, scene: Transform,
     cylinderGrid.setParent(scene);
 
     const sculpture = new Transform();
-    sculpture.position.z = 1.45;
-    sculpture.scale.set(0.82);
+    sculpture.position.z = SCULPTURE_PLACEMENT.z;
+    sculpture.scale.set(SCULPTURE_PLACEMENT.scale);
     sculpture.setParent(scene);
-    // Doctor Strange-style mandala: nested silver rings (medium size).
-    const torusGeometries = [
-        new Torus(gl, { radius: 0.52, tube: 0.042, radialSegments: 7, tubularSegments: 48 }),
-        new Torus(gl, { radius: 0.62, tube: 0.050, radialSegments: 8, tubularSegments: 52 }),
-        new Torus(gl, { radius: 0.72, tube: 0.038, radialSegments: 6, tubularSegments: 46 }),
-        new Torus(gl, { radius: 0.82, tube: 0.046, radialSegments: 9, tubularSegments: 54 }),
-        new Torus(gl, { radius: 0.92, tube: 0.034, radialSegments: 7, tubularSegments: 44 }),
-        new Torus(gl, { radius: 1.02, tube: 0.044, radialSegments: 8, tubularSegments: 50 }),
-    ];
-    // Each ring owns an independent orbit axis (Strange portal energy).
-    const torusLayerConfig = [
-        { scale: 0.78, rx: 0.22, ry: 0.10, rz: 0.05, ax: 1, ay: 0.15, az: 0.08, speed: 0.55, z: -0.04, phase: 0.0 },
-        { scale: 0.90, rx: 1.05, ry: -0.35, rz: 0.40, ax: 0.2, ay: 1, az: -0.25, speed: -0.72, z: -0.01, phase: 1.1 },
-        { scale: 1.00, rx: -0.70, ry: 0.95, rz: -0.20, ax: -0.35, ay: 0.4, az: 1, speed: 0.48, z: 0.03, phase: 2.3 },
-        { scale: 1.12, rx: 0.40, ry: 1.25, rz: 0.85, ax: 0.75, ay: -0.55, az: 0.35, speed: -0.63, z: 0.00, phase: 0.7 },
-        { scale: 1.24, rx: -1.10, ry: -0.45, rz: 0.55, ax: -0.15, ay: 0.9, az: 0.55, speed: 0.81, z: -0.03, phase: 1.9 },
-        { scale: 1.36, rx: 0.65, ry: 0.25, rz: -0.95, ax: 0.55, ay: 0.25, az: -0.85, speed: -0.44, z: 0.05, phase: 2.8 },
-    ];
-    const torusMeshes = torusLayerConfig.map((config, index) => {
+    const meshData = createSculptureMeshData();
+    const sculptureGeometries = meshData.map(({ positions, normals, indices }) => new Geometry(gl, {
+        position: { size: 3, data: positions },
+        normal: { size: 3, data: normals },
+        index: { data: indices },
+    }));
+    const sculptureMeshes = meshData.map((data, index) => {
         // Unique program per layer so uLayer can differ while sharing shader source.
         const program = new Program(gl, {
             vertex: sculptureVertex,
             fragment: sculptureFragment,
-            cullFace: null,
+            // Closed shells include their real underside. Culling inward faces
+            // prevents hidden inner triangles from blending during the reveal.
+            cullFace: gl.BACK,
             transparent: true,
             depthTest: true,
             depthWrite: true,
@@ -102,22 +92,16 @@ export function createGalleryGeometry(gl: OGLRenderingContext, scene: Transform,
             },
         });
         const mesh = new Mesh(gl, {
-            geometry: torusGeometries[index],
+            geometry: sculptureGeometries[index],
             program,
         });
-        mesh.scale.set(config.scale);
-        mesh.rotation.x = config.rx;
-        mesh.rotation.y = config.ry;
-        mesh.rotation.z = config.rz;
-        mesh.position.z = config.z;
         mesh.setParent(sculpture);
         return Object.assign(mesh, { userData: {
-            speed: config.speed,
-            axis: { x: config.ax, y: config.ay, z: config.az },
-            phase: config.phase,
-            base: { x: config.rx, y: config.ry, z: config.rz },
+            phase: data.phase,
+            base: { x: 0, y: 0, z: 0 },
+            basePosition: { x: 0, y: 0, z: 0 },
             program,
         } });
     });
-    return { gridGeometry, gridProgram, cylinderGrid, sculpture, torusGeometries, torusMeshes };
+    return { gridGeometry, gridProgram, cylinderGrid, sculpture, sculptureGeometries, sculptureMeshes };
 }

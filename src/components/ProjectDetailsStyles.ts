@@ -17,6 +17,7 @@ import './ProjectDetailsZuchStory.css';
 import './ProjectDetailsFreeflow.css';
 import './ProjectDetailsModeNote.css';
 import './ProjectDetailsModeNoteStory.css';
+import './ProjectDetailsVibe.css';
 import './ProjectDetailsHermes.css';
 import './KeshiLiquidGlass.css';
 import './ProjectDetailsKeshiNext.css';

@@ -46,6 +46,9 @@ const CASE_LAYOUT_OWNERS = {
   ProjectDetailsModeNoteData: 'modenote',
   ProjectDetailsModeNoteProofs: 'modenote',
   ProjectDetailsMux: 'veluma',
+  ProjectDetailsVibe: 'vibe',
+  ProjectDetailsVibeData: 'vibe',
+  ProjectDetailsVibeLive: 'vibe',
   ProjectDetailsZucchini: 'zucchini',
   ProjectDetailsFallback: 'fallback',
 };

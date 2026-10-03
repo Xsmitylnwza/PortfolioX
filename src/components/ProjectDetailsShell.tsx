@@ -8,6 +8,8 @@ const PROJECT_DECISIONS: Record<string, string> = {
     'Discord should own the conversation, not every record. Hermes routes intent and evidence; each connected system keeps authority over its own state.',
   'modenote':
     'Live transcription is useful, but durable capture cannot depend on it. ModeNote separates best-effort PCM transcription from recoverable MediaRecorder chunks, then links supported outputs back to the stopped session and its evidence.',
+  'vibe-studio':
+    'Presence should follow what you are actually using, and it should stay on your machine. Vibe Studio pairs apps to Scenes, reads the foreground app locally, and lets the most recently used paired app set the status through local Discord RPC.',
   'freeflow':
     'Freelance work breaks when talk, files, and money split. FreeFlow is the ops trail — client → quote → project → invoice — with LINE as intake only.',
   'veluma':
@@ -47,7 +49,7 @@ const ProjectDetailsShell = ({ project, layout, LayoutBody, isKeshiNext = false 
         intensity={
           layout === 'hermes'
             ? 1.12
-            : layout === 'modenote'
+            : layout === 'modenote' || layout === 'vibe'
             ? 1.15
             : layout === 'freeflow'
             ? 1.08

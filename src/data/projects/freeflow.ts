@@ -8,8 +8,8 @@ const project = {
     description: 'When client talk, job files, and invoices split across tools, freelancers lose the trail. FreeFlow keeps ops in one workspace.',
     fullDescription: 'FreeFlow is a freelance operations platform for freelancers and small teams. The product is the back-office workspace: clients, quotations, projects, invoices, appointments, templates, files, and dashboard follow-up inside one organization-scoped system. LINE OA is an implemented intake path into that workspace; additional messaging channels remain roadmap rather than a multi-chat product claim.',
     tags: ['React 19', 'TypeScript', 'Material UI', 'TanStack Query', 'Socket.IO', 'Go Fiber', 'PostgreSQL', 'MinIO', 'Docker'],
-    coverImage: '/assets/project-covers/freeflow-cover-v3.webp',
-    heroMedia: { image: '/assets/project-covers/freeflow-cover-v3.webp', kind: 'cover' },
+    coverImage: '/assets/project-covers/freeflow-cover-v4.webp',
+    heroMedia: { image: '/assets/project-covers/freeflow-cover-v4.webp', kind: 'cover' },
     link: 'https://bscit.sit.kmutt.ac.th/capstone25/cp25pl2/',
     repo: 'https://gitlab.com/freeflow-capstone/freeflow-service',
     code: `// Identity lifecycle routes implemented by the FreeFlow auth service.

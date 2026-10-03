@@ -35,6 +35,7 @@ const ROUTE_ENTRIES = {
   '/project/freeflow': 'src/features/project-details/cases/freeflow/FreeFlowCase.tsx',
   '/project/modenote': 'src/features/project-details/cases/modenote/ModeNoteCase.tsx',
   '/project/decrypt-password': 'src/features/project-details/cases/decrypt/DecryptCase.tsx',
+  '/project/vibe-studio': 'src/features/project-details/cases/vibe/VibeStudioCase.tsx',
   '/project/veluma': 'src/features/project-details/cases/veluma/VelumaCase.tsx',
   '/project/hermes-command-center': 'src/features/project-details/cases/hermes/HermesCase.tsx',
   '/project/unknown-project': 'src/features/project-details/MissingProject.tsx',

@@ -10,11 +10,12 @@ const PROJECT_ORDER = [
   'hermes-command-center',
   'freeflow',
   'veluma',
+  'vibe-studio',
   'keshi-pomodoro',
   'zucchini-review',
   'decrypt-password',
 ];
-const GALLERY_FEATURED = PROJECT_ORDER.slice(0, 5);
+const GALLERY_FEATURED = PROJECT_ORDER.slice(0, 6);
 
 test('project ids and display order stay stable', () => {
   const ids = projects.map((project) => project.id);

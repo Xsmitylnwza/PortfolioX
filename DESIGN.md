@@ -49,7 +49,7 @@
 | A11 | blur, saturation และ SVG refraction ต้องรันด้วยกันใน `backdrop-filter` บน outer surface — ใส่บน filtered child แล้ว Gallery grid ยังคม | glass material | SELECTED.md §Production integration (live-backdrop correction) |
 | A12 | `ScrollPerspectiveWave` เป็นระบบ motion ระดับหน้าเพียงระบบเดียว; glass เพิ่มแค่ pointer reflection ช้า | shared motion | SELECTED.md §Production integration |
 | A13 | ห้ามใส่ private data, identifiers, secrets, unverified metrics หรือ deployment claim ที่พิสูจน์ไม่ได้ลง public asset/copy | ทั้งเว็บ | [PRODUCT.md](PRODUCT.md) §Capabilities and Constraints |
-| A14 | Hermes screenshots ที่ sanitize แล้วยัง **ไม่** อนุมัติให้ใช้สาธารณะ | Hermes | [PRODUCT.md](PRODUCT.md) §Evidence on Hand |
+| A14 | Hermes screenshots ที่ sanitize แล้วยัง **ไม่** อนุมัติให้ใช้สาธารณะ — ยกเว้น demo clip ข้อมูลจริง 3 ตัว (`01-plan`, `02-money`, `03-memory`) ที่เจ้าของอนุมัติเมื่อ 2026-10-03; clip หรือภาพใหม่ต้องขออนุมัติแยก และรายละเอียดบุคคลที่สามในสลิปต้องถูกเบลอ | Hermes | [PRODUCT.md](PRODUCT.md) §Evidence on Hand |
 | A15 | source changes อยู่ในเครื่องเพื่อให้เจ้าของ review ก่อน commit/push/deploy | workflow | [PRODUCT.md](PRODUCT.md) §Capabilities and Constraints |
 | A16 | North Star ของ landing experience คือ gallery ทรงกระบอก/สไปรัล — เดินวนดูผลงานที่ลอยบนผนัง; `cylinderGrid` orbit ที่มีอยู่เป็นความพยายามแรกแต่ยังไม่พอ วิธี implement จริงต้องผ่าน A/B ก่อนเลือก ไม่ใช่ข้อสรุปจากบทสนทนา | landing / gallery | DESIGN-DISCOVERY Round 13 criterion 1 |
 | A17 | Sitewide personality: มีความเป็นศิลปะ มีจิตวิญญาณมากกว่าความเนี้ยบ แปลก คาดเดาไม่ได้ เรียบหรู ดูแพง; เนื้องาน/คำอธิบายยังต้องโปรเฟสชันนอล | ทั้งเว็บ | DESIGN-DISCOVERY Round 13 criterion 2 |

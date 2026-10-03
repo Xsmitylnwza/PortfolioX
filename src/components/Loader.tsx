@@ -6,6 +6,7 @@ import './Loader.css';
 // Boot posters mirror gallery covers only — one signature image per selected system.
 const loaderProjects = [
     ['modenote', 'MODENOTE'],
+    ['hermes-command-center', 'HERMES'],
     ['freeflow', 'FREEFLOW'],
     ['veluma', 'VELUMA'],
     ['keshi-pomodoro', 'KESHI'],

@@ -9,6 +9,19 @@ import './Experience.css';
 const experiences = [
   {
     id: '01',
+    company: 'CIMB',
+    shortCompany: 'CIMB',
+    role: 'Software Developer',
+    period: '19 Oct 2026 – Present',
+    metric: '',
+    logo: '/assets/optimized/cimb-logo.svg',
+    summary: 'Software Developer at CIMB, starting 19 October 2026.',
+    detail: '',
+    tools: [],
+    layout: 'hero',
+  },
+  {
+    id: '02',
     company: 'SCB - Siam Commercial Bank',
     shortCompany: 'SCB',
     role: 'Software Engineer (Part-time)',
@@ -21,7 +34,7 @@ const experiences = [
     layout: 'hero',
   },
   {
-    id: '02',
+    id: '03',
     company: 'TTB - TMBThanachart Bank',
     shortCompany: 'TTB',
     role: 'Software Engineer (Intern)',
@@ -34,7 +47,7 @@ const experiences = [
     layout: 'offset',
   },
   {
-    id: '03',
+    id: '04',
     company: 'Freelance',
     shortCompany: 'Freelance',
     role: 'Full-Stack Developer (Part-time)',
@@ -48,7 +61,7 @@ const experiences = [
     layout: 'split',
   },
   {
-    id: '04',
+    id: '05',
     company: 'Tomato Ideas Co., Ltd.',
     shortCompany: 'Tomato Ideas',
     role: 'Full Stack Developer (Intern)',
@@ -118,6 +131,190 @@ const RoleIdentity = ({ experience, className = '' }: { experience: ExperienceEn
     </p>
   );
 };
+
+const EducationSection = () => (
+        <article
+          className="experience-education experience-reveal"
+          data-reveal="mount"
+          data-timeline-node
+          style={{ '--reveal-index': 1 }}
+          aria-labelledby="experience-education-title"
+        >
+          <span className="experience-node experience-node--education" aria-hidden="true" />
+          <div className="experience-education__intro" data-wave-follow>
+            <p className="experience-education__status">New graduate · June 2026</p>
+            <h2 id="experience-education-title">Education</h2>
+            <p>
+              Recent Information Technology graduate with applied experience across banking,
+              freelance delivery, internships, and product systems built alongside the degree.
+            </p>
+          </div>
+
+          <div className="experience-education__record" data-wave-follow>
+            <div className="experience-education__brands" aria-label="KMUTT and School of Information Technology">
+              <img
+                className="experience-education__kmutt-logo"
+                src="/assets/education/kmutt-logo.svg"
+                alt="King Mongkut's University of Technology Thonburi"
+                width="44"
+                height="51"
+                loading="eager"
+                decoding="async"
+              />
+              <span aria-hidden="true" />
+              <img
+                className="experience-education__sit-logo"
+                src="/assets/education/sit-logo-white.png"
+                alt="School of Information Technology, KMUTT"
+                width="1024"
+                height="156"
+                loading="eager"
+                decoding="async"
+              />
+            </div>
+            <div>
+              <span>Degree</span>
+              <strong>{education.degree}</strong>
+              <p>{education.school} ({education.shortSchool})</p>
+            </div>
+            <div className="experience-education__scholarship">
+              <span>Scholarship</span>
+              <strong>{education.scholarship}</strong>
+              <p>{education.scholarshipDetail}</p>
+            </div>
+            <dl>
+              <div><dt>GPAX</dt><dd>{education.gpax}</dd></div>
+              <div><dt>Recognition</dt><dd>{education.honours}</dd></div>
+              <div><dt>Completed</dt><dd>{education.completed}</dd></div>
+            </dl>
+          </div>
+        </article>
+
+);
+
+const CurrentRoleSection = () => (
+        <article
+          className="experience-current experience-reveal"
+          data-reveal="mount"
+          data-timeline-node
+          style={{ '--reveal-index': 2 }}
+          id={`exp-${currentRole.id}`}
+          aria-labelledby="experience-current-title"
+        >
+          <span className="experience-node experience-node--current" aria-hidden="true" />
+                    <div className="experience-current__story">
+            <span className="experience-current__status" data-wave-follow>Current role · Starts 19 Oct 2026</span>
+
+            <div className="experience-current__brand">
+              <div className="experience-current__logo-wrap" data-wave-follow>
+                <RoleMark
+                  experience={currentRole}
+                  className="experience-current__logo"
+                  size={112}
+                />
+                <span className="experience-current__index" aria-hidden="true">{currentRole.id}</span>
+              </div>
+              <div className="experience-current__brand-copy" data-wave-follow>
+                <h2 id="experience-current-title" className="experience-current__company">
+                  {currentRole.company}
+                </h2>
+                <div className="experience-current__identity">
+                  <RoleIdentity experience={currentRole} className="experience-current__role" />
+                  <p className="experience-current__period experience-period">{currentRole.period}</p>
+                </div>
+              </div>
+            </div>
+
+            <p className="experience-current__lead" data-wave-follow>{currentRole.summary}</p>
+            {currentRole.metric ? <p className="experience-current__metric" data-wave-follow>{currentRole.metric}</p> : null}
+            {currentRole.detail ? <p className="experience-current__detail" data-wave-follow>{currentRole.detail}</p> : null}
+            {currentRole.tools.length > 0 ? <div className="experience-current__tools" data-wave-follow>
+              <TechStackList
+                variant="layer"
+                title="Used in role"
+                items={currentRole.tools}
+                ariaLabel={`${currentRole.shortCompany} tools`}
+                showDefs={false}
+              />
+            </div> : null}
+          </div>
+        </article>
+);
+
+const EarlierRolesSection = () => (
+  <>
+        <nav
+          className="experience-orbit experience-reveal"
+          data-reveal="scroll"
+          style={{ '--reveal-index': 0 }}
+          aria-label="Earlier roles"
+        >
+          <p className="experience-orbit__label" data-wave-follow>Earlier</p>
+          <ol className="experience-orbit__list">
+            {earlierRoles.map((experience) => (
+              <li key={`orbit-${experience.id}`} data-wave-follow>
+                <a href={`#exp-${experience.id}`} data-cursor="default">
+                  <RoleMark experience={experience} className="experience-orbit__mark" size={40} />
+                  <span>{experience.shortCompany}</span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+
+        <ol className="experience-records" aria-label="Earlier work experience">
+          {earlierRoles.map((experience, index) => (
+            <li
+              className={`experience-record experience-reveal experience-record--${experience.layout}`}
+              key={experience.id}
+              id={`exp-${experience.id}`}
+              data-reveal="scroll"
+              data-timeline-node
+              style={{ '--reveal-index': index }}
+            >
+              <span className="experience-node" aria-hidden="true" />
+              <article className="experience-entry">
+                <header className="experience-entry__head" data-wave-follow>
+                  <div className="experience-entry__brand">
+                    <div className="experience-entry__logo-wrap">
+                      <RoleMark
+                        experience={experience}
+                        className="experience-entry__logo"
+                        size={88}
+                      />
+                      <span className="experience-entry__index" aria-hidden="true">{experience.id}</span>
+                    </div>
+                    <div className="experience-entry__brand-copy">
+                      <h2 className="experience-entry__company">{experience.company}</h2>
+                      <div className="experience-entry__identity">
+                        <RoleIdentity experience={experience} className="experience-entry__role" />
+                        <p className="experience-entry__period experience-period">{experience.period}</p>
+                      </div>
+                    </div>
+                  </div>
+                </header>
+
+                <div className="experience-entry__body">
+                  <p className="experience-entry__lead" data-wave-follow>{experience.summary}</p>
+                  <p className="experience-entry__metric" data-wave-follow>{experience.metric}</p>
+                  <p className="experience-entry__detail" data-wave-follow>{experience.detail}</p>
+                </div>
+
+                <div className="experience-entry__tools" data-wave-follow>
+                  <TechStackList
+                    variant="layer"
+                    title="Used in role"
+                    items={experience.tools}
+                    ariaLabel={`${experience.shortCompany} tools`}
+                    showDefs={false}
+                  />
+                </div>
+              </article>
+            </li>
+          ))}
+        </ol>
+  </>
+);
 
 const Experience = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -219,181 +416,12 @@ const Experience = () => {
           </div>
         </header>
 
-        <article
-          className="experience-education experience-reveal"
-          data-reveal="mount"
-          data-timeline-node
-          style={{ '--reveal-index': 1 }}
-          aria-labelledby="experience-education-title"
-        >
-          <span className="experience-node experience-node--education" aria-hidden="true" />
-          <div className="experience-education__intro" data-wave-follow>
-            <p className="experience-education__status">New graduate · June 2026</p>
-            <h2 id="experience-education-title">Education</h2>
-            <p>
-              Recent Information Technology graduate with applied experience across banking,
-              freelance delivery, internships, and product systems built alongside the degree.
-            </p>
-          </div>
-
-          <div className="experience-education__record" data-wave-follow>
-            <div className="experience-education__brands" aria-label="KMUTT and School of Information Technology">
-              <img
-                className="experience-education__kmutt-logo"
-                src="/assets/education/kmutt-logo.svg"
-                alt="King Mongkut's University of Technology Thonburi"
-                width="44"
-                height="51"
-                loading="eager"
-                decoding="async"
-              />
-              <span aria-hidden="true" />
-              <img
-                className="experience-education__sit-logo"
-                src="/assets/education/sit-logo-white.png"
-                alt="School of Information Technology, KMUTT"
-                width="1024"
-                height="156"
-                loading="eager"
-                decoding="async"
-              />
-            </div>
-            <div>
-              <span>Degree</span>
-              <strong>{education.degree}</strong>
-              <p>{education.school} ({education.shortSchool})</p>
-            </div>
-            <div className="experience-education__scholarship">
-              <span>Scholarship</span>
-              <strong>{education.scholarship}</strong>
-              <p>{education.scholarshipDetail}</p>
-            </div>
-            <dl>
-              <div><dt>GPAX</dt><dd>{education.gpax}</dd></div>
-              <div><dt>Recognition</dt><dd>{education.honours}</dd></div>
-              <div><dt>Completed</dt><dd>{education.completed}</dd></div>
-            </dl>
-          </div>
-        </article>
+        <EducationSection />
 
         {/* First content: current role story */}
-        <article
-          className="experience-current experience-reveal"
-          data-reveal="mount"
-          data-timeline-node
-          style={{ '--reveal-index': 2 }}
-          id={`exp-${currentRole.id}`}
-          aria-labelledby="experience-current-title"
-        >
-          <span className="experience-node experience-node--current" aria-hidden="true" />
-                    <div className="experience-current__story">
-            <span className="experience-current__status" data-wave-follow>Most recent</span>
+        <CurrentRoleSection />
 
-            <div className="experience-current__brand">
-              <div className="experience-current__logo-wrap" data-wave-follow>
-                <RoleMark
-                  experience={currentRole}
-                  className="experience-current__logo"
-                  size={112}
-                />
-                <span className="experience-current__index" aria-hidden="true">{currentRole.id}</span>
-              </div>
-              <div className="experience-current__brand-copy" data-wave-follow>
-                <h2 id="experience-current-title" className="experience-current__company">
-                  {currentRole.company}
-                </h2>
-                <div className="experience-current__identity">
-                  <RoleIdentity experience={currentRole} className="experience-current__role" />
-                  <p className="experience-current__period experience-period">{currentRole.period}</p>
-                </div>
-              </div>
-            </div>
-
-            <p className="experience-current__lead" data-wave-follow>{currentRole.summary}</p>
-            <p className="experience-current__metric" data-wave-follow>{currentRole.metric}</p>
-            <p className="experience-current__detail" data-wave-follow>{currentRole.detail}</p>
-            <div className="experience-current__tools" data-wave-follow>
-              <TechStackList
-                variant="layer"
-                title="Used in role"
-                items={currentRole.tools}
-                ariaLabel={`${currentRole.shortCompany} tools`}
-                showDefs={false}
-              />
-            </div>
-          </div>
-        </article>
-
-        <nav
-          className="experience-orbit experience-reveal"
-          data-reveal="scroll"
-          style={{ '--reveal-index': 0 }}
-          aria-label="Earlier roles"
-        >
-          <p className="experience-orbit__label" data-wave-follow>Earlier</p>
-          <ol className="experience-orbit__list">
-            {earlierRoles.map((experience) => (
-              <li key={`orbit-${experience.id}`} data-wave-follow>
-                <a href={`#exp-${experience.id}`} data-cursor="default">
-                  <RoleMark experience={experience} className="experience-orbit__mark" size={40} />
-                  <span>{experience.shortCompany}</span>
-                </a>
-              </li>
-            ))}
-          </ol>
-        </nav>
-
-        <ol className="experience-records" aria-label="Earlier work experience">
-          {earlierRoles.map((experience, index) => (
-            <li
-              className={`experience-record experience-reveal experience-record--${experience.layout}`}
-              key={experience.id}
-              id={`exp-${experience.id}`}
-              data-reveal="scroll"
-              data-timeline-node
-              style={{ '--reveal-index': index }}
-            >
-              <span className="experience-node" aria-hidden="true" />
-              <article className="experience-entry">
-                <header className="experience-entry__head" data-wave-follow>
-                  <div className="experience-entry__brand">
-                    <div className="experience-entry__logo-wrap">
-                      <RoleMark
-                        experience={experience}
-                        className="experience-entry__logo"
-                        size={88}
-                      />
-                      <span className="experience-entry__index" aria-hidden="true">{experience.id}</span>
-                    </div>
-                    <div className="experience-entry__brand-copy">
-                      <h2 className="experience-entry__company">{experience.company}</h2>
-                      <div className="experience-entry__identity">
-                        <RoleIdentity experience={experience} className="experience-entry__role" />
-                        <p className="experience-entry__period experience-period">{experience.period}</p>
-                      </div>
-                    </div>
-                  </div>
-                </header>
-
-                <div className="experience-entry__body">
-                  <p className="experience-entry__lead" data-wave-follow>{experience.summary}</p>
-                  <p className="experience-entry__metric" data-wave-follow>{experience.metric}</p>
-                  <p className="experience-entry__detail" data-wave-follow>{experience.detail}</p>
-                </div>
-
-                <div className="experience-entry__tools" data-wave-follow>
-                  <TechStackList
-                    variant="layer"
-                    title="Used in role"
-                    items={experience.tools}
-                    ariaLabel={`${experience.shortCompany} tools`}
-                    showDefs={false}
-                  />
-                </div>
-              </article>
-            </li>
-          ))}
-        </ol>
+        <EarlierRolesSection />
 
         <footer
           className="experience-closing experience-reveal"

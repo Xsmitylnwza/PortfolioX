@@ -1,1 +1,8 @@
-[]
+[
+  {
+    "path": "src/components/GalleryScene.tsx",
+    "owner": "GalleryScene WebGL setup, render and teardown",
+    "reason": "The existing cohesive renderer owns its resource lifetime, input handlers, frame loop and context recovery together, as retained by the Wave 4 architecture decision. The bloom change extracts authored geometry and motion into bounded helpers and reduces this owner from 875 lines; splitting its live closure solely to refresh legacy function hashes would broaden the change and weaken disposal ownership.",
+    "reviewTrigger": "Review any renderer lifetime, input, context recovery or teardown change. Keep this owner within its existing 875-line cap and keep new sculpture helpers within the standard module and function budgets; rerun route, pause/resume and context recovery evidence."
+  }
+]

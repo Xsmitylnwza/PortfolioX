@@ -1,6 +1,7 @@
 import modenote from './projects/modenote';
 import hermesCommandCenter from './projects/hermes-command-center';
 import freeflow from './projects/freeflow';
+import vibeStudio from './projects/vibe-studio';
 import veluma from './projects/veluma';
 import keshiPomodoro from './projects/keshi-pomodoro';
 import zucchiniReview from './projects/zucchini-review';
@@ -15,6 +16,7 @@ const projectRecords = [
   hermesCommandCenter,
   freeflow,
   veluma,
+  vibeStudio,
   keshiPomodoro,
   zucchiniReview,
   decryptPassword,
@@ -28,6 +30,7 @@ const featuredIds = [
   'hermes-command-center',
   'freeflow',
   'veluma',
+  'vibe-studio',
   'keshi-pomodoro',
 ] as const satisfies readonly ProjectId[];
 export const featuredProjects = featuredIds.map((id) => {

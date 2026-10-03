@@ -9,15 +9,15 @@ import './Experience.css';
 const experiences = [
   {
     id: '01',
-    company: 'CIMB',
+    company: 'CIMB - Commercial International Merchant Bankers',
     shortCompany: 'CIMB',
     role: 'Software Developer',
     period: '19 Oct 2026 – Present',
-    metric: '',
-    logo: '/assets/optimized/cimb-logo.svg',
-    summary: 'Software Developer at CIMB, starting 19 October 2026.',
-    detail: '',
-    tools: [],
+    metric: 'AI engineering · Core banking',
+    logo: '/assets/optimized/cimb-thai-logo.png',
+    summary: 'Building AI-assisted developer workflows and core-banking services, with Spring Boot as the primary backend framework.',
+    detail: 'The role focuses on AI agents for internal banking services that help developers build software and automate workflows to improve team efficiency. AI harnesses bring guardrails and evaluations into iterative engineering loops while respecting the bank\'s AI governance requirements. Alongside these tools, the role includes developing core-banking services that support revenue-generating banking capabilities.',
+    tools: ['Spring Boot', 'AI Agents', 'Guardrails', 'Evaluation', 'Automation'],
     layout: 'hero',
   },
   {
